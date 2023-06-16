@@ -7,7 +7,7 @@ import Iconoir from 'iconoir/icons/iconoir.svg'
       <div class="contained-flex h-screen w-full">
          <sidebar/>
          <main class=" h-screen mr-8 ml-20">
-            <section>
+            <section class="">
                <slot></slot>
             </section>
          </main>
@@ -15,10 +15,10 @@ import Iconoir from 'iconoir/icons/iconoir.svg'
    </body>
 </template>
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@100;400;500;700&display=swap');
 
 /*Estilo general*/
 body{
-    font-family: 'Poppins', sans-serif;
+   font-family: 'Roboto',sans-serif;
 }
 </style>

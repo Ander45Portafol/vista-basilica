@@ -31,7 +31,7 @@
             </NuxtLink>
           </li>
           <li class="item">
-            <a href="/paginas" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
+            <a href="/page" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
               <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
               <path d="M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#fff" stroke-width="2.5"></path>
               <path d="M6 8h1" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>

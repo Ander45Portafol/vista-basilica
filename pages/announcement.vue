@@ -23,7 +23,7 @@ onMounted(() => {
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <a href="" class="active ml-4">Usuarios</a>
+                <a href="" class="active ml-4">Anuncios</a>
             </div>
             <div class="endtop flex justify-between w-20">
                 <button>
@@ -99,9 +99,9 @@ onMounted(() => {
                     <div class="flex justify-start w-3/4 items-center">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800"/>
                         <div class="datainfo flex-col ml-8">
-                            <p class="font-extrabold text-xl text-salte-900">Anderson Isaac Aguilar Ramos</p>
-                            <p class="font-normal text-sm mt-1text-gray-500">Administrador</p>
-                            <p class="font-normal text-sm text-gray-500">ander23</p>
+                            <p class="font-extrabold text-xl text-salte-900">Reunion eventos</p>
+                            <p class="font-normal text-sm mt-1text-gray-500">http://ricaldone.edu.sv</p>
+                            <p class="font-normal text-sm text-gray-500">2023-05-20</p>
                         </div>
                     </div>
                     <div class="buttons-data flex justify-center items-center">

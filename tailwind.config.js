@@ -10,7 +10,13 @@ module.exports = {
 
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        purpleLogin: '#3F4280',
+        lightPurpleLogin: '#5357aa',
+        space:'#32345A',
+      }
+    },
   },
   plugins: [
     require('flowbite/plugin')
