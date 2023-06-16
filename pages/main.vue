@@ -39,8 +39,8 @@ definePageMeta({
             </button>
         </div>
     </div>
-    <div class="flex sm:flex-row w-full justify-around mt-10 mb-8 ml-4 max-[720px]:flex-col items-center max-[400px]:flex-col">
-        <div class="text-white p-4 flex-col min-h-4 max-[720px]:text-sm min-w-full sm:min-w-[30%] max-[420px]:ml-24" id="usuarios">
+    <div class="flex sm:flex-row w-full justify-around mt-10 mb-8 ml-4 max-[720px]:flex-col items-center max-[400px]:max-w-8">
+        <div class="text-white p-4 flex-col min-h-4 max-[720px]:text-sm min-w-full sm:min-w-[30%] max-[400px]:ml-24" id="usuarios">
             <div class="top flex justify-between">
                 <div class="text">
                     <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Usuarios</p>
@@ -60,7 +60,7 @@ definePageMeta({
                 <p class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">122</p>
             </div>
         </div>
-        <div class="text-white p-4 flex-col mx-4 max-[720px]:my-2 text-sm min-w-full sm:min-w-[30%] max-[420px]:ml-28" id="citas">
+        <div class="text-white p-4 flex-col mx-4 max-[720px]:my-2 text-sm min-w-full sm:min-w-[30%] max-[400px]:ml-28" id="citas">
             <div class="top flex justify-between">
                 <div class="text">
                     <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Citas</p>
@@ -77,7 +77,7 @@ definePageMeta({
                 <p class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">12</p>
             </div>
         </div>
-        <div class="text-white p-4 flex-col max-[720px]:text-sm min-w-full sm:min-w-[30%] max-[420px]:ml-24" id="proyectos">
+        <div class="text-white p-4 flex-col max-[720px]:text-sm min-w-full sm:min-w-[30%] max-[400px]:ml-24" id="proyectos">
             <div class="top flex justify-between">
                 <div class="text">
                     <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Proyectos</p>
