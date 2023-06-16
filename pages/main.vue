@@ -123,8 +123,8 @@ definePageMeta({
                     </div>
                 </div>
                 <div class="right flex justify-center items-center mr-4">
-                    <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                    <svg width="32px" height="32px" stroke-width="2.5"
+                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
                             d="M12 7v6M12 17.01l.01-.011M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -148,8 +148,8 @@ definePageMeta({
                     </div>
                 </div>
                 <div class="right flex justify-center items-center mr-4">
-                    <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                    <svg width="32px" height="32px" stroke-width="2.5"
+                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
                             d="M12 7v6M12 17.01l.01-.011M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -173,8 +173,8 @@ definePageMeta({
                     </div>
                 </div>
                 <div class="right flex justify-center items-center mr-4">
-                    <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                    <svg width="32px" height="32px" stroke-width="2.5"
+                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
                             d="M12 7v6M12 17.01l.01-.011M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -198,8 +198,8 @@ definePageMeta({
                     </div>
                 </div>
                 <div class="right flex justify-center items-center mr-4">
-                    <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                    <svg width="32px" height="32px" stroke-width="2.5"
+                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
                             d="M12 7v6M12 17.01l.01-.011M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -208,12 +208,12 @@ definePageMeta({
             </div>
         </div>
         <p class="next flex text-yellow-600 font-bold">Ver todas las interacciones
-            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                <path d="M9 6l6 6-6 6" stroke="#C99856" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                </path>
-            </svg>
-        </p>
+      <svg width="24px" height="24px" stroke-width="3"
+          viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+          <path d="M9 6l6 6-6 6" stroke="#C99856" stroke-width="3" stroke-linecap="round"
+              stroke-linejoin="round"></path>
+      </svg>
+  </p>
     </div>
 </template>
 <style scoped>
@@ -242,7 +242,6 @@ definePageMeta({
     width: 425px;
     border-radius: 1.2rem;
 }
-
 .interraccion {
     background: #ebeff8;
 }
