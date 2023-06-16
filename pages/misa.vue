@@ -37,9 +37,9 @@ const menuOptions = () => {
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <NuxtLink class="active ml-4" to="/parroquia">Enlaces Amigos</NuxtLink>
-                <NuxtLink class="ml-4" to="/misa">Misas Online</NuxtLink>
-                <NuxtLink class="ml-4" to="/configuracion_parroquia">Configuracion</NuxtLink>
+                <NuxtLink to="/parroquia" class="ml-4">Enlaces Amigos</NuxtLink>
+                <NuxtLink to="/misa" class="active ml-4">Misas Online</NuxtLink>
+                <NuxtLink to="/configuracion_parroquia" class="ml-4">Configuracion</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">
                 <button>
@@ -115,9 +115,9 @@ const menuOptions = () => {
                     <div class="flex justify-start w-3/4 items-center">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800" />
                         <div class="datainfo flex-col ml-8">
-                            <p class="font-extrabold text-xl text-salte-900">Enlace - ONU</p>
-                            <p class="font-normal text-sm mt-1text-gray-500"><a href="#">https://www.un.org/es/</a></p>
-                            <p class="font-normal text-sm text-gray-500">Este enlace redirige a la pagina oficial de la ONU</p>
+                            <p class="font-extrabold text-xl text-salte-900">MISA - Accion de gracias</p>
+                            <p class="font-normal text-sm mt-1text-gray-500"><a href="#">https://www.youtube.com/es</a></p>
+                            <p class="font-normal text-sm text-gray-500">12/12/2023</p>
                         </div>
                     </div>
                     <div class="buttons-data flex justify-center items-center">
@@ -139,14 +139,13 @@ const menuOptions = () => {
                         </button>
                     </div>
                 </div>
-
                 <div class="data-contained flex justify-between mt-4 rounded-xl p-4">
                     <div class="flex justify-start w-3/4 items-center">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800" />
                         <div class="datainfo flex-col ml-8">
-                            <p class="font-extrabold text-xl text-salte-900">Enlace - ONU</p>
-                            <p class="font-normal text-sm mt-1text-gray-500"><a href="#">https://www.un.org/es/</a></p>
-                            <p class="font-normal text-sm text-gray-500">Este enlace redirige a la pagina oficial de la ONU</p>
+                            <p class="font-extrabold text-xl text-salte-900">MISA - Accion de gracias</p>
+                            <p class="font-normal text-sm mt-1text-gray-500"><a href="#">https://www.youtube.com/es</a></p>
+                            <p class="font-normal text-sm text-gray-500">12/12/2023</p>
                         </div>
                     </div>
                     <div class="buttons-data flex justify-center items-center">
