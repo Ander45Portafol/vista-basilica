@@ -2,7 +2,7 @@
 import { onMounted } from 'vue'
 import { Modal } from 'flowbite'
 definePageMeta({
-    layout: "main",
+    layout: "principal",
 })
 
 onMounted(() => {
