@@ -2,7 +2,7 @@
 import { onMounted } from 'vue'
 import { Modal } from 'flowbite'
 definePageMeta({
-    layout: "main",
+    layout: "principal",
 })
 onMounted(() => {
     const $buttonElement = document.querySelector('#btnadd');
@@ -137,7 +137,7 @@ onMounted(() => {
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-5xl max-h-full">
             <!-- Modal content -->
-            <div class="relative rounded-lg shadow modal overflow-hidden">
+            <div class="relative rounded-lg shadow modal">
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
