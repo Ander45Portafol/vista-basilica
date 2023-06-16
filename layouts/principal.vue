@@ -6,7 +6,7 @@ import Iconoir from 'iconoir/icons/iconoir.svg'
    <body class="w-screen overflow-hidden">
       <div class="contained-flex h-screen w-full">
          <sidebar/>
-         <main class=" h-screen mr-8 ml-20">
+         <main class=" h-screen mr-8 ml-20 overflow-hidden">
             <section class="">
                <slot></slot>
             </section>

@@ -2,7 +2,7 @@
 import 'flowbite';
 import Iconoir from 'iconoir/icons/iconoir.svg'
 definePageMeta({
-    layout: "main",
+    layout: "principal",
 })
 
 // Aqui ira la condicion de si existen mas de 3 optiones dentro del menu de navegacion, entonces mostrar el icono de barra de navegacion
