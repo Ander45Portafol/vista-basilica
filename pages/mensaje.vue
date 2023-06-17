@@ -30,8 +30,8 @@ onMounted(() => {
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <NuxtLink to="/contacto" class="active ml-4">Contactos</NuxtLink>
-                <NuxtLink to="/mensaje" class="ml-4">Mensajes</NuxtLink>
+                <NuxtLink to="/contacto" class="ml-4">Contactos</NuxtLink>
+                <NuxtLink to="/mensaje" class="active ml-4">Mensajes</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">
                 <button>
@@ -106,7 +106,8 @@ onMounted(() => {
                 <div class="data-contained flex justify-between mt-4 rounded-xl p-4">
                     <div class="flex justify-start w-3/4 items-center">
                         <div class="datainfo flex-col ml-4">
-                            <p class="font-extrabold text-xl text-salte-900">Guillermo Castillo</p>
+                            <p class="font-extrabold text-xl text-salte-900">Solicitud Permiso</p>
+                            <p class="font-normal text-sm text-black mt-1">Guillermo Alejandro Castillo Campos</p>
                             <p class="font-normal text-sm text-gray-500 mt-1">guillermogacc0526@gmail.com</p>
                         </div>
                     </div>
