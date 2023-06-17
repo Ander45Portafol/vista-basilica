@@ -8,6 +8,8 @@ onMounted(() => {
     const $buttonElement = document.querySelector('#btnadd');
     const $modalElement = document.querySelector('#staticModal');
     const $closeButton = document.querySelector('#closeModal');
+    const $modalText=document.querySelector('#modal_text');
+    const $btnEdit=document.querySelector('.editbtn');
     const modalOptions = {
         //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
         backdrop: 'static',
@@ -16,13 +18,19 @@ onMounted(() => {
 
     if ($modalElement) {
         const modal = new Modal($modalElement, modalOptions);
-        $buttonElement.addEventListener('click', () => modal.show());
+        $buttonElement.addEventListener('click', () => {
+            $modalText.textContent='Registrar';
+            modal.show();
+        });
+        $btnEdit.addEventListener('click',()=>{
+            $modalText.textContent='Editar';
+            modal.show();
+        });
         $closeButton.addEventListener('click', () => modal.hide());
-
         // programatically show
         // modal.show();
     }
-})
+});
 </script>
 <template>
     <div class="principal mt-6">
@@ -86,7 +94,7 @@ onMounted(() => {
                                 stroke="#1B1C30" stroke-width="2.5"></path>
                         </svg>
                     </button>
-                    <button id="btnadd" type="button" @click="abrirModal()"
+                    <button id="btnadd" type="button"
                         class="w-20 h-10 flex items-center justify-center mx-4 font-bold rounded-lg">
                         <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#FFFFFF">
@@ -143,9 +151,7 @@ onMounted(() => {
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
-                        <p class="text-3xl font-bold text-gray-100">
-                            REGISTRAR
-                        </p>
+                        <p class="text-3xl font-bold text-gray-100" id="modal_text"></p>
                         <p class="text-lg font-medium text-gray-400">Donantes</p>
                     </div>
                     <button type="button" id="closeModal"
