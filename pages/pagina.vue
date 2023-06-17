@@ -30,16 +30,20 @@
         </div>
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons">
-                <form action="" class="w-3/4 flex items-center h-full mt-4">
-                    <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none" placeholder="Buscar ...">
+                <div class="w-3/4 flex items-center h-full mt-4">
+                    <!-- Se enlaza el buscador y la variable buscar.buscador por medio del v-model -->
+                    <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none" placeholder="Buscar ..."
+                        v-model="buscar.buscador" @keyup="buscarPaginas()">
                     <div class="flex justify-end items-center">
-                        <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
-                                fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                        <!-- Se le asigna la función para limpiar el buscador al botón -->
+                        <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
+                                stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg></button>
                     </div>
-                </form>
+                </div>
                 <div class="buttons flex items-center">
                     <button class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -366,6 +370,11 @@ const data = ref(null);
 //Se establece una constante para manejar la paginación de registros, se establece como 1 ya que es la pagina default
 const pagina = ref(useRoute().query.pagina || 1);
 
+//Se crea una  variable reactiva para el buscador
+const buscar = ref({
+    buscador: "",
+})
+
 //Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
 await leerPaginas();
 
@@ -376,8 +385,14 @@ let paginas = computed(() => data.value.data);
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
 watch(pagina, async () => {
-    //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-    leerPaginas();
+    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
+    if (buscar.value.buscador != "") {
+        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
+        buscarPaginas();
+    } else {
+        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
+        leerPaginas();
+    }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
     useRouter().push({ query: { pagina: pagina.value } })
 })
@@ -391,4 +406,36 @@ async function leerPaginas() {
     //Se asigna el valor de la respuesta de axios a la constante data
     data.value = res;
 }
+
+//Función para buscar registros dependiendo del valor del buscador
+async function buscarPaginas() {
+    try {
+        //Se evalua que el buscador no este vacio
+        if (buscar.value.buscador != "") {
+            // Realiza la petición axios para llamar a la ruta de búsqueda
+            const { data: res } = await axios.get(`/paginas_r?page=${pagina.value}&buscador=${buscar.value.buscador}`);
+            // Actualiza los datos en la constante data
+            data.value = res;
+            // Actualiza la URL con el parámetro de página
+            useRouter().push({ query: { pagina: pagina.value } });
+        } else {
+            //Se regresa a la página 1 y se cargan todos los registros
+            pagina.value = 1;
+            leerPaginas();
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+//Función para limpiar el buscador
+function limpiarBuscador() {
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
+    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
+    pagina.value = 1;
+    //Se leen todos los registros
+    leerPaginas();
+}
+
 </script>
