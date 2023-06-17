@@ -1,28 +1,6 @@
-<script>
-import { onMounted } from 'vue'
-import { Modal } from 'flowbite'
+<script setup>
 definePageMeta({
     layout: "principal",
-})
-
-onMounted(() => {
-    const $buttonElement = document.querySelector('#btnadd');
-    const $modalElement = document.querySelector('#staticModal');
-    const $closeButton = document.querySelector('#closeModal');
-    const modalOptions = {
-        //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-
-    if ($modalElement) {
-        const modal = new Modal($modalElement, modalOptions);
-        $buttonElement.addEventListener('click', () => modal.show());
-        $closeButton.addEventListener('click', () => modal.hide());
-
-        // programatically show
-        // modal.show();
-    }
 })
 
 const menuOptions = () => {
@@ -172,40 +150,5 @@ const menuOptions = () => {
 .topprincipal .active {
     color: #c99856;
     border-bottom: 3px solid #c99856;
-}
-
-.content-buttons input {
-    border: 3px solid #1b1c30;
-}
-
-.buttons button {
-    border: 3px solid #1b1c30;
-}
-
-#btnadd {
-    background-color: #1b1c30;
-}
-
-.data-contained {
-    border: 3px solid #1b1c30;
-}
-
-.buttons-data .editbtn {
-    border: 3px solid #c99856;
-}
-
-.buttons-data .deletebtn {
-    border: 3px solid #872727;
-}
-
-.modal {
-    background: linear-gradient(180deg,
-            rgba(63, 66, 128, 0.6241) 0%,
-            rgba(49, 50, 71, 0.5609) 100%);
-    background-color: #1e1e1e;
-}
-
-.modal-buttons button {
-    background-color: #32345a;
 }
 </style>
