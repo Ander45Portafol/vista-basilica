@@ -15,11 +15,11 @@
             </NuxtLink>
           </li>
           <li class="item">
-            <a href="/church_config" class="flex items-center justify-center rounded-lg p-2 hover:bg-gray-700">
+            <NuxtLink to="/parroquia" class="flex items-center justify-center rounded-lg p-2 hover:bg-gray-700">
               <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
               <path d="M12 6l-7.718 4.824a.6.6 0 00-.282.508V21.4a.6.6 0 00.6.6H12m0-16l7.718 4.824a.6.6 0 01.282.508V21.4a.6.6 0 01-.6.6H12m0-16V4m0-2v2m-2 0h2m0 0h2m-2 18v-5M16 17.01l.01-.011M16 13.01l.01-.011M12 13.01l.01-.011M8 13.01l.01-.011M8 17.01l.01-.011" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
-            </a>
+            </NuxtLink>
           </li>
           <li class="item">
             <NuxtLink to="/usuario" class="flex items-center p-2 rounded-lg justify-center hover:bg-gray-700">
@@ -39,12 +39,12 @@
             </NuxtLink>
           </li>
           <li class="item">
-            <NuxtLink to="/anuncio" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
+            <a href="/anuncio" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
                 <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M10 15v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2h4a2 2 0 012 2zM16 5v4a2 2 0 01-2 2h-4a2 2 0 01-2-2V5a2 2 0 012-2h4a2 2 0 012 2zM22 15v4a2 2 0 01-2 2h-4a2 2 0 01-2-2v-4a2 2 0 012-2h4a2 2 0 012 2zM6 16v-3M12 6V3M18 16v-3" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-            </NuxtLink>
+            </a>
           </li>
           <li class="item">
-            <a href="/contact" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
+            <NuxtLink to="/contacto" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
                 <svg width="28px" height="28px" stroke-width="2.5"
                 viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                 <path
@@ -52,7 +52,7 @@
                     stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 </path>
             </svg>
-            </a>
+            </NuxtLink>
         </li>
         <li class="item">
             <NuxtLink to="/donacion" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
@@ -66,14 +66,14 @@
             </NuxtLink>
         </li>
         <li class="item">
-            <a href="calendar.html" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
+            <NuxtLink to="calendar.html" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
                 <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M15 4V2m0 2v2m0-2h-4.5M3 10v9a2 2 0 002 2h14a2 2 0 002-2v-9H3zM3 10V6a2 2 0 012-2h2M7 2v4M21 10V6a2 2 0 00-2-2h-.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-            </a>
+            </NuxtLink>
         </li>
         <li class="" id="item">
-            <a href="/staff" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
+            <NuxtLink to="/personal" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
                 <svg width="28px" stroke-width="2.5" height="28px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M4 19V5a2 2 0 012-2h13.4a.6.6 0 01.6.6v13.114" stroke="#fff" stroke-width="2.5" stroke-linecap="round"></path><path d="M8 3v8l2.5-1.6L13 11V3" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 17h14M6 21h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"></path><path d="M6 21a2 2 0 110-4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-            </a>
+            </NuxtLink>
         </li>
         </ul>
       </div>
