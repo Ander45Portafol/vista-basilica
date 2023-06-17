@@ -1,0 +1,8 @@
+Cosas a instalar:
+
+1- Axios (Para las rutas): npm install @nuxtjs/axios
+2- Sweetalert2: npm install sweetalert2
+3- Paginación (Da acceso al componente para paginar los registros): npm install laravel-vue-pagination
+
+--Aun no se usa:
+4- FormKit (Para validar forms con vue): npm install @formkit/vue@next
