@@ -2,16 +2,19 @@
 import 'flowbite';
 import Iconoir from 'iconoir/icons/iconoir.svg'
 definePageMeta({
-    layout: "main",
+    layout: "principal",
 })
+
+// Aqui ira la condicion de si existen mas de 3 optiones dentro del menu de navegacion, entonces mostrar el icono de barra de navegacion
+
 </script>
 <template>
     <div class="principal flex justify-between items-center mt-6 ml-2">
         <div class="topprincipal flex justify-between font-semibold text-base">
             <div class="options">
                 <a href="" class="active ml-4">Inicio</a>
-                <a href="" class="ml-4">Graficas</a>
-                <a href="" class="ml-4">Reportes</a>
+                <a href="" class="ml-4 ">Graficas</a>
+                <a href="" class="ml-4 ">Reportes</a>
             </div>
         </div>
         <div class="endtop flex justify-between w-20">
@@ -36,12 +39,12 @@ definePageMeta({
             </button>
         </div>
     </div>
-    <div class="flex justify-between mt-10 mb-8 ml-4">
-        <div class="text-white p-4 flex-col" id="usuarios">
+    <div class="flex sm:flex-row w-full justify-around mt-10 mb-8 ml-4 max-[720px]:flex-col items-center max-[400px]:max-w-8">
+        <div class="text-white p-4 flex-col min-h-4 max-[720px]:text-sm min-w-full sm:min-w-[30%] max-[400px]:ml-24" id="usuarios">
             <div class="top flex justify-between">
                 <div class="text">
-                    <p class="titule text-2xl font-extrabold mb-0">Usuarios</p>
-                    <p class="subtitule  font-semibold mt-0 pt-0">En Linea</p>
+                    <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Usuarios</p>
+                    <p class="subtitule  font-semibold mt-0 pt-0 max-[720px]:text-[13px]">En Linea</p>
                 </div>
                 <svg width="38px" height="38px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -53,15 +56,15 @@ definePageMeta({
                         stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
             </div>
-            <div class="number h-20 flex items-center">
-                <p class="text-white font-extrabold text-4xl">122</p>
+            <div class="number h-20 flex items-end">
+                <p class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">122</p>
             </div>
         </div>
-        <div class="text-white p-4 flex-col" id="citas">
+        <div class="text-white p-4 flex-col mx-4 max-[720px]:my-2 text-sm min-w-full sm:min-w-[30%] max-[400px]:ml-28" id="citas">
             <div class="top flex justify-between">
                 <div class="text">
-                    <p class="titule text-2xl font-extrabold mb-0">Citas</p>
-                    <p class="subtitule font-semibold mt-0 pt-0">Pendientes</p>
+                    <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Citas</p>
+                    <p class="subtitule font-semibold mt-0 pt-0 max-[720px]:text-[13px]">Pendientes</p>
                 </div>
                 <svg width="38px" height="38px" viewBox="0 0 24 24" stroke-width="2.5" fill="none"
                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -71,14 +74,14 @@ definePageMeta({
                 </svg>
             </div>
             <div class="number h-20 flex items-end">
-                <p class="text-white font-extrabold text-4xl">12</p>
+                <p class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">12</p>
             </div>
         </div>
-        <div class="text-white p-4 flex-col" id="proyectos">
+        <div class="text-white p-4 flex-col max-[720px]:text-sm min-w-full sm:min-w-[30%] max-[400px]:ml-24" id="proyectos">
             <div class="top flex justify-between">
                 <div class="text">
-                    <p class="titule text-2xl font-extrabold mb-0">Proyectos</p>
-                    <p class="subtitule font-semibold mt-0 pt-0">Publicados</p>
+                    <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Proyectos</p>
+                    <p class="subtitule font-semibold mt-0 pt-0 max-[720px]:text-[13px]">Publicados</p>
                 </div>
                 <svg width="38px" height="38px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -99,7 +102,7 @@ definePageMeta({
                 </svg>
             </div>
             <div class="number h-20 flex items-end">
-                <p class="text-white font-extrabold text-4xl">15</p>
+                <p class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">15</p>
             </div>
         </div>
     </div>

@@ -2,12 +2,14 @@
 import { onMounted } from 'vue'
 import { Modal } from 'flowbite'
 definePageMeta({
-    layout: "main",
+    layout: "principal",
 })
 onMounted(() => {
     const $buttonElement = document.querySelector('#btnadd');
     const $modalElement = document.querySelector('#staticModal');
     const $closeButton = document.querySelector('#closeModal');
+    const $modalText = document.querySelector('#modal_text');
+    const $btnEdit = document.querySelector('.editbtn');
     const modalOptions = {
         //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
         backdrop: 'static',
@@ -16,19 +18,27 @@ onMounted(() => {
 
     if ($modalElement) {
         const modal = new Modal($modalElement, modalOptions);
-        $buttonElement.addEventListener('click', () => modal.show());
+        $buttonElement.addEventListener('click', () => {
+            $modalText.textContent = 'Registrar';
+            modal.show();
+        });
+        $btnEdit.addEventListener('click', () => {
+            $modalText.textContent = 'Editar';
+            modal.show();
+        });
         $closeButton.addEventListener('click', () => modal.hide());
-
         // programatically show
         // modal.show();
     }
-})
+});
 </script>
+
 <template>
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <a href="" class="active ml-4">Usuarios</a>
+                <NuxtLink to="" class="active ml-4">Contactos</NuxtLink>
+                <NuxtLink to="/mensaje" class="ml-4">Mensajes</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">
                 <button>
@@ -85,7 +95,7 @@ onMounted(() => {
                                 stroke="#1B1C30" stroke-width="2.5"></path>
                         </svg>
                     </button>
-                    <button id="btnadd" type="button" @click="abrirModal()"
+                    <button id="btnadd" type="button"
                         class="w-20 h-10 flex items-center justify-center mx-4 font-bold rounded-lg">
                         <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#FFFFFF">
@@ -97,16 +107,14 @@ onMounted(() => {
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4">2<span class="text-gray-500 font-normal ml-2">registros
-                    encontrados!</span></p>
+            <p class="font-extrabold text-slate-900 mt-8 ml-4">1<span class="text-gray-500 font-normal ml-2">registro
+                    encontrado!</span></p>
             <div class="contained-data flex-col">
                 <div class="data-contained flex justify-between mt-4 rounded-xl p-4">
                     <div class="flex justify-start w-3/4 items-center">
-                        <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800" />
-                        <div class="datainfo flex-col ml-8">
-                            <p class="font-extrabold text-xl text-salte-900">Anderson Isaac Aguilar Ramos</p>
-                            <p class="font-normal text-sm mt-1text-gray-500">Administrador</p>
-                            <p class="font-normal text-sm text-gray-500">ander23</p>
+                        <div class="datainfo flex-col ml-4">
+                            <p class="font-extrabold text-xl text-salte-900">Guillermo Castillo</p>
+                            <p class="font-normal text-sm text-gray-500 mt-1">guillermogacc0526@gmail.com</p>
                         </div>
                     </div>
                     <div class="buttons-data flex justify-center items-center">
@@ -132,19 +140,17 @@ onMounted(() => {
         </div>
     </div>
 
-    <!-- Main modal -->
+    <!-- Modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-5xl max-h-full">
+        <div class="relative w-full max-w-lg max-h-full">
             <!-- Modal content -->
-            <div class="relative rounded-lg shadow modal overflow-hidden">
+            <div class="relative rounded-lg shadow modal">
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
-                        <p class="text-3xl font-bold text-gray-100">
-                            REGISTRAR
-                        </p>
-                        <p class="text-lg font-medium text-gray-400">Usuario</p>
+                        <p class="text-3xl font-bold text-gray-100" id="modal_text"></p>
+                        <p class="text-base font-medium text-gray-400">Contactos</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -156,31 +162,17 @@ onMounted(() => {
                         </svg>
                     </button>
                 </div>
-                <!-- Modal body -->
-                <div class="p-2 space-y-6 pb-8">
+                <!-- Cuerpo de  -->
+                <div class="p-6 space-y-6 pb-20">
                     <form action="" class="flex justify-evenly">
                         <div class="flex-col w-72">
-                            <div class="relative z-0">
-                                <input type="text" id="username" name="name"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Persona</label>
-                            </div>
-                            <div class="pt-4 mt-2 flex-col">
-                                <label for="" class="absolute text-gray-200">Tipo - Documento</label>
-                                <select id="underline_select"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                </select>
-                            </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="username" name="username"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Usuario</label>
+                                    - Contacto</label>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="username" name="username"
@@ -188,48 +180,16 @@ onMounted(() => {
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                    - Usuario</label>
+                                    - Contacto</label>
                             </div>
                             <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="absolute text-gray-200">Rol - Usuario</label>
+                                <label for="" class="absolute text-gray-200">Tipo - Contacto</label>
                                 <select id="underline_select"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                 </select>
                             </div>
-                        </div>
-                        <div class="flex-col w-72">
-                            <div class="relative z-0">
-                                <input type="text" id="username" name="lastname"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
-                                    - Persona</label>
-                            </div>
-                            <div class="relative z-0 mt-10">
-                                <input type="text" id="username" name="document"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento</label>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="password" id="username" name="password"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Contraseña</label>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="phone-number"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
-                                    - Usuario</label>
-                            </div>
                             <div class="flex-col mt-6">
-                                <label for="" class="text-gray-200">Visibilidad - Usuario</label>
+                                <label for="" class="text-gray-200">Visibilidad - Contacto</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
                                         <input type="checkbox" value="" class="sr-only peer">
@@ -239,13 +199,7 @@ onMounted(() => {
                                     </label>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex-col">
-                            <div class="">
-                                <p class="mb-4 text-center text-gray-200">Imagen - Usuario</p>
-                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-2 rounded-lg" />
-                            </div>
-                            <div class="modal-buttons mt-40 flex justify-end items-end">
+                            <div class="modal-buttons mt-4 flex justify-end items-end">
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -270,18 +224,22 @@ onMounted(() => {
                                             d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
                                             stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round"></path>
-                                    <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </button>
+                                        <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div></template>
-<style scoped>.topprincipal .active {
+</template>
+
+
+<style scoped>
+.topprincipal .active {
     color: #c99856;
     border-bottom: 3px solid #c99856;
 }
