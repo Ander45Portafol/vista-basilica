@@ -8,8 +8,8 @@ onMounted(() => {
     const $buttonElement = document.querySelector('#btnadd');
     const $modalElement = document.querySelector('#staticModal');
     const $closeButton = document.querySelector('#closeModal');
-    const $modalText=document.querySelector('#modal_text');
-    const $btnEdit=document.querySelector('.editbtn');
+    const $modalText = document.querySelector('#modal_text');
+    const $btnEdit = document.querySelector('.editbtn');
     const modalOptions = {
         //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
         backdrop: 'static',
@@ -19,11 +19,11 @@ onMounted(() => {
     if ($modalElement) {
         const modal = new Modal($modalElement, modalOptions);
         $buttonElement.addEventListener('click', () => {
-            $modalText.textContent='Registrar';
+            $modalText.textContent = 'Registrar';
             modal.show();
         });
-        $btnEdit.addEventListener('click',()=>{
-            $modalText.textContent='Editar';
+        $btnEdit.addEventListener('click', () => {
+            $modalText.textContent = 'Editar';
             modal.show();
         });
         $closeButton.addEventListener('click', () => modal.hide());
@@ -62,19 +62,23 @@ onMounted(() => {
             </div>
         </div>
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
-            <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons">
-                <form action="" class="w-3/4 flex items-center h-full mt-4">
-                    <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none" placeholder="Buscar ...">
+            <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
+                <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                    <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
+                        placeholder="Buscar ...">
                     <div class="flex justify-end items-center">
                         <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
                                 fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg></button>
+                            </svg>
+                        </button>
                     </div>
                 </form>
-                <div class="buttons flex items-center">
-                    <button class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg">
+                <div
+                    class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
+                    <button
+                        class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path
@@ -84,7 +88,8 @@ onMounted(() => {
                                 stroke-linejoin="round"></path>
                         </svg>
                     </button>
-                    <button class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg">
+                    <button
+                        class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:mx-8">
                         <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path d="M7 6h10M7 9h10M9 17h6" stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round"
@@ -95,7 +100,7 @@ onMounted(() => {
                         </svg>
                     </button>
                     <button id="btnadd" type="button"
-                        class="w-20 h-10 flex items-center justify-center mx-4 font-bold rounded-lg">
+                        class="w-20 h-10 flex items-center justify-center mx-4 font-bold rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:ml-0">
                         <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#FFFFFF">
                             <path
@@ -105,22 +110,27 @@ onMounted(() => {
                     </button>
                 </div>
             </div>
-            <div class="line bg-slate-800 h-0.5 mt-4 w-full"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4">2<span class="text-gray-500 font-normal ml-2">registros
-                    encontrados!</span></p>
+            <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">1<span
+                    class="text-gray-500 font-normal ml-2">registro
+                    encontrado!</span></p>
             <div class="contained-data flex-col">
-                <div class="data-contained flex justify-between mt-4 rounded-xl p-4">
-                    <div class="flex justify-start w-3/4 items-center">
-                        <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800" />
-                        <div class="datainfo flex-col ml-8">
-                            <p class="font-extrabold text-xl text-salte-900">Rango - Papa</p>
-                            <p class="font-normal text-sm mt-1text-gray-500">Este rango se obtiene al haber donado $10,000
+                <div
+                    class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                    <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                        <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+                        <div
+                            class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
+                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Rango - Papa</p>
+                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
+                                Este rango se obtiene al haber donado <span>$</span>10k</p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Anderson343
                             </p>
-                            <p class="font-normal text-sm text-gray-500">Anderson343</p>
                         </div>
                     </div>
-                    <div class="buttons-data flex justify-center items-center">
-                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn">
+                    <div
+                        class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -128,7 +138,8 @@ onMounted(() => {
                                     stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
-                        <button class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn">
+                        <button
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
                             <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -152,7 +163,7 @@ onMounted(() => {
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modal_text"></p>
-                        <p class="text-lg font-medium text-gray-400">Donantes</p>
+                        <p class="text-lg font-medium text-gray-400">Rangos</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -196,7 +207,7 @@ onMounted(() => {
                         <div class="flex-col w-64">
                             <div class="flex-col">
                                 <p class="mb-4 text-center text-gray-200">Imagen - Rango</p>
-                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg"/>
+                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
                             </div>
                             <div class="modal-buttons mt-24 flex justify-end items-end">
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center">
@@ -274,4 +285,5 @@ onMounted(() => {
 
 .modal-buttons button {
     background-color: #32345a;
-}</style>
+}
+</style>

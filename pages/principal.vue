@@ -39,8 +39,8 @@ definePageMeta({
             </button>
         </div>
     </div>
-    <div class="flex sm:flex-row w-full justify-around mt-10 mb-8 ml-4 max-[720px]:flex-col items-center max-[400px]:max-w-8">
-        <div class="text-white p-4 flex-col min-h-4 max-[720px]:text-sm min-w-full sm:min-w-[30%] max-[400px]:ml-24" id="usuarios">
+    <div class="flex flex-wrap my-8 justify-around">
+        <div class="text-white sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 min-w-[200px] max-[1400px]:max-w-[30%] max-[550px]:max-w-full" id="usuarios">
             <div class="top flex justify-between">
                 <div class="text">
                     <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Usuarios</p>
@@ -60,7 +60,7 @@ definePageMeta({
                 <p class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">122</p>
             </div>
         </div>
-        <div class="text-white p-4 flex-col mx-4 max-[720px]:my-2 text-sm min-w-full sm:min-w-[30%] max-[400px]:ml-28" id="citas">
+        <div class="text-white sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 min-w-[200px] max-[1400px]:max-w-[30%] max-[550px]:max-w-full max-[550px]:my-2" id="citas">
             <div class="top flex justify-between">
                 <div class="text">
                     <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Citas</p>
@@ -77,7 +77,7 @@ definePageMeta({
                 <p class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">12</p>
             </div>
         </div>
-        <div class="text-white p-4 flex-col max-[720px]:text-sm min-w-full sm:min-w-[30%] max-[400px]:ml-24" id="proyectos">
+        <div class="text-white sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 min-w-[200px] max-[1400px]:max-w-[30%] max-[550px]:max-w-full" id="proyectos">
             <div class="top flex justify-between">
                 <div class="text">
                     <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Proyectos</p>
@@ -106,13 +106,13 @@ definePageMeta({
             </div>
         </div>
     </div>
-    <div class="endprincipal ml-4">
-        <p class="text-xl font-extrabold">Interracciones Generales</p>
+    <div class="endprincipal ml-4 flex flex-col justify-around max-[450px]:text-[13px] max-[315px]:text-[10px]">
+        <p class="text-xl font-extrabold max-[450px]:text-center">Interracciones Generales</p>
         <div class="interac_general flex-col mt-4 p-0 ml-0">
-            <div class="interraccion flex justify-between w-full h-16 mb-4 rounded-2xl">
+            <div class="interraccion flex justify-between w-full h-16 mb-4 rounded-2xl min-w-[150px]">
                 <div class="left flex items-center ml-6 w-3/4">
-                    <div class="icon absolute bg-slate-800 flex justify-center items-center w-10 h-10 rounded-full">
-                        <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                    <div class="icon absolute bg-slate-800 flex justify-center items-center w-10 h-10 rounded-full max-[450px]:w-8 max-[450px]:h-8">
+                        <svg class="max-[450px]:w-6" width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path d="M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#fff"
                                 stroke-width="2.5"></path>
@@ -125,9 +125,9 @@ definePageMeta({
                         <p class="section_change font-normal">Página web</p>
                     </div>
                 </div>
-                <div class="right flex justify-center items-center mr-4">
-                    <svg width="32px" height="32px" stroke-width="2.5"
-                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                <div class="right flex justify-center items-center mr-4 max-[400px]:hidden">
+                    <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
                             d="M12 7v6M12 17.01l.01-.011M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -150,9 +150,9 @@ definePageMeta({
                         <p class="section_change font-normal">Página web</p>
                     </div>
                 </div>
-                <div class="right flex justify-center items-center mr-4">
-                    <svg width="32px" height="32px" stroke-width="2.5"
-                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                <div class="right flex justify-center items-center mr-4 max-[400px]:hidden">
+                    <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
                             d="M12 7v6M12 17.01l.01-.011M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -175,9 +175,9 @@ definePageMeta({
                         <p class="section_change font-normal">Página web</p>
                     </div>
                 </div>
-                <div class="right flex justify-center items-center mr-4">
-                    <svg width="32px" height="32px" stroke-width="2.5"
-                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                <div class="right flex justify-center items-center mr-4 max-[400px]:hidden">
+                    <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
                             d="M12 7v6M12 17.01l.01-.011M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -200,9 +200,9 @@ definePageMeta({
                         <p class="section_change font-normal">Página web</p>
                     </div>
                 </div>
-                <div class="right flex justify-center items-center mr-4">
-                    <svg width="32px" height="32px" stroke-width="2.5"
-                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                <div class="right flex justify-center items-center mr-4 max-[400px]:hidden">
+                    <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
                             d="M12 7v6M12 17.01l.01-.011M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -211,15 +211,19 @@ definePageMeta({
             </div>
         </div>
         <p class="next flex text-yellow-600 font-bold">Ver todas las interacciones
-      <svg width="24px" height="24px" stroke-width="3"
-          viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
-          <path d="M9 6l6 6-6 6" stroke="#C99856" stroke-width="3" stroke-linecap="round"
-              stroke-linejoin="round"></path>
-      </svg>
-  </p>
+            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                <path d="M9 6l6 6-6 6" stroke="#C99856" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                </path>
+            </svg>
+        </p>
     </div>
 </template>
 <style scoped>
+
+body {
+    overflow-y: scroll;
+}
 .topprincipal .active {
     color: #c99856;
     border-bottom: 3px solid #c99856;
@@ -245,6 +249,7 @@ definePageMeta({
     width: 425px;
     border-radius: 1.2rem;
 }
+
 .interraccion {
     background: #ebeff8;
 }
