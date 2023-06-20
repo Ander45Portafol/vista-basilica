@@ -1,3 +1,38 @@
+<script setup>
+import { onMounted } from 'vue'
+import { Modal } from 'flowbite'
+definePageMeta({
+    layout: "principal",
+})
+onMounted(() => {
+    const $buttonElement = document.querySelector('#btnadd');
+    const $modalElement = document.querySelector('#staticModal');
+    const $closeButton = document.querySelector('#closeModal');
+    const $modalText = document.querySelector('#modal_text');
+    const $btnEdit = document.querySelector('.editbtn');
+    const modalOptions = {
+        //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+
+    if ($modalElement) {
+        const modal = new Modal($modalElement, modalOptions);
+        $buttonElement.addEventListener('click', () => {
+            $modalText.textContent = 'Registrar';
+            modal.show();
+        });
+        $btnEdit.addEventListener('click', () => {
+            $modalText.textContent = 'Editar';
+            modal.show();
+        });
+        $closeButton.addEventListener('click', () => modal.hide());
+        // programatically show
+        // modal.show();
+    }
+});
+</script>
+
 <template>
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
@@ -27,27 +62,18 @@
                 </button>
             </div>
         </div>
-
-        <!-- Buscador  -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
-
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons">
-                <div action="" class="w-3/4 flex items-center h-full mt-4">
-                    <!-- Se enlaza el buscador y la variable buscar.buscador por medio del v-model -->
-                    <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none" placeholder="Buscar ..."
-                    v-model="buscar.buscador" @keyup="buscarContactos()">
+                <form action="" class="w-3/4 flex items-center h-full mt-4">
+                    <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none" placeholder="Buscar ...">
                     <div class="flex justify-end items-center">
-                        <!-- Se le asigna la función para limpiar el buscador al botón -->
-                        <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
+                        <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
                                 fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg></button>
                     </div>
-
-                </div>
-
-                <!-- Botones de no se que  -->
+                </form>
                 <div class="buttons flex items-center">
                     <button class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -79,56 +105,38 @@
                         </svg>
                     </button>
                 </div>
-
-
-
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full"></div>
-            <!-- Se manda a traer la longitud del array de paginas (el que trae los registros) y así saber cuantos registros son -->
-            <p class="font-extrabold text-slate-900 mt-8 ml-4">{{ contactos.length }} <span class="text-gray-500 font-normal ml-2">registro
+            <p class="font-extrabold text-slate-900 mt-8 ml-4">1<span class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
-
-            <!-- contendor de las cards  -->
-            <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-            <div id="sectionPage" v-for="contacto in contactos">  
-                <!-- v-for="contactos in contacto" -->
-                <div class="contained-data flex-col">
-                    <div class="data-contained flex justify-between mt-4 rounded-xl p-4">
-                        <div class="flex justify-start w-3/4 items-center">
-                            <div class="datainfo flex-col ml-4">
-                                <p class="font-extrabold text-xl text-salte-900">{{ contacto.nombre_contacto }}</p>
-                                <p class="font-normal text-sm text-gray-500 mt-1">{{ contacto.correo_contacto }}</p>
-                            </div>
+            <div class="contained-data flex-col">
+                <div class="data-contained flex justify-between mt-4 rounded-xl p-4">
+                    <div class="flex justify-start w-3/4 items-center">
+                        <div class="datainfo flex-col ml-4">
+                            <p class="font-extrabold text-xl text-salte-900">Guillermo Castillo</p>
+                            <p class="font-normal text-sm text-gray-500 mt-1">guillermogacc0526@gmail.com</p>
                         </div>
-                        <div class="buttons-data flex justify-center items-center">
-                            <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn">
-                                <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path
-                                        d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
-                                        stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                </svg>
-                            </button>
-                            <button class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn">
-                                <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path
-                                        d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
-                                        stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                </svg>
-                            </button>
-                        </div>
+                    </div>
+                    <div class="buttons-data flex justify-center items-center">
+                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn">
+                            <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
+                                    stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
+                        <button class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn">
+                            <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
+                                    stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
-            <!-- div nuevo -->
-            <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
-            este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
-            <div class="flex justify-center mt-6">
-                <TailwindPagination :data="data" @pagination-change-page="contacto = $event" />
-            </div> 
         </div>
     </div>
 
@@ -154,7 +162,7 @@
                         </svg>
                     </button>
                 </div>
-                <!--Modal body -->
+                <!-- Cuerpo de  -->
                 <div class="p-6 space-y-6 pb-20">
                     <form action="" class="flex justify-evenly">
                         <div class="flex-col w-72">
@@ -269,184 +277,4 @@
 
 .modal-buttons button {
     background-color: #32345a;
-}
-</style>
-
-<script setup>
-//El setup se usa para manejar una sintaxis mas concisa del codigo y poder usar la reactividad de vue 3
-
-//Importaciones de plugins y funciones necesarias para el funcionamiento del proyecto
-
-//Importacion para usar el hook de onMounted
-import { onMounted } from 'vue'
-//Importación del modal de flowbite
-import { Modal } from 'flowbite'
-//Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
-import axios from 'axios';
-//Importación del plugin de paginación de registros
-import { TailwindPagination } from 'laravel-vue-pagination';
-//Importación de sweetalert
-import Swal from 'sweetalert2';
-
-/*definePageMeta es un macro compilador (Se ejecuta mientras el programa se compila) para los componentes que se 
-encuentran en /pages, este permite establecer/transformar las propiedades de los componentes de nuxt*/
-definePageMeta({
-    //En este caso se establece que este componente pertenece al layout "principal" haciendo uso del definePageMeta
-    layout: "principal",
-})
-
-onMounted(() => {
-    //Constantes para manejar el modal
-    //Constante para el botón de agregar un registro
-    const buttonElement = document.getElementById('btnadd');
-    //Constante para el botón de eliminar un registro
-    const buttonUpdate = document.getElementsByClassName('editbtn');
-    //Constante para el modal
-    const modalElement = document.getElementById('staticModal');
-    //Constante para el botón de cerrar en el modal
-    const closeButton = document.getElementById('closeModal');
-    //Constante para el titulo del modal
-    const modalText = document.getElementById('modalText');
-    //Constante para el boton de actualizar dentro del modal
-    const modalBtnUpdate = document.getElementById('btnModalUpdate');
-    //Constante para el boton de agregar dentro del modal
-    const modalBtnAdd = document.getElementById('btnModalAdd');
-
-    /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
-    aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
-    const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-
-    //Se evalua si existe un modal y en caso de que si se ejecuta todo lo relacionado a su funcionamiento
-    if (modalElement) {
-        //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
-        const modal = new Modal(modalElement, modalOptions);
-
-        /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
-        del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
-        buttonElement.addEventListener('click', function () {
-            modalBtnAdd.classList.remove('hidden');
-            modalText.textContent = "Registrar";
-            modalBtnUpdate.classList.add('hidden');
-            modal.show();
-        });
-
-        /*Se crea un array para introducir todos los botones de editar registro (en este caso se hace por medio de una 
-        clase personalizada con la que cuentan todos los botones "editbtn". Además se les añade un evento click a cada botón,
-        y este evento click abre el modal, cambia su titulo y oculta el botón de agregar que se encuentra dentro del modal*/
-        Array.from(buttonUpdate).forEach(function (button) {
-            button.addEventListener('click', function () {
-                modalBtnUpdate.classList.remove('hidden');
-                modalText.textContent = "Editar";
-                modalBtnAdd.classList.add('hidden');
-                modal.show();
-            });
-        });
-
-        //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
-        closeButton.addEventListener('click', function () {
-            modal.hide();
-            limpiarForm();
-        });
-    }
-
-})
-
-//Operaciones SCRUD
-
-/*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
-para almacenar la información que traiga el axios*/
-const data = ref(null);
-
-//Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const contacto = ref(useRoute().query.contacto || 1);
-
-//Se crea una variable reactiva para el buscador
-const buscar = ref({
-    buscador: "",
-})
-
-//Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
-await leerContactos();
-
-//Se crea una variable reactiva para manejar la información del modal
-const form = ref({
-    id_contacto: "",
-    nombre_contacto: "",
-    correo_contacto: "",
-    tipo_contacto: "",
-    visibilidad_contacto: false,
-    id_configuracion_parroquia: ""
-})
-
-/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
-y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let contactos = computed(() => data.value.data);
-
-/*Se crea un watch (detecta cada que "contacto" cambia) y ejecuta un select a los registros de esa página,
-además muestra en la url la página actual*/
-watch(contacto, async () => {
-    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
-    if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarContactos();
-    } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerContactos();
-    }
-    //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { contacto: contacto.value } })
-})
-
-/*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
-?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "contacto" se manda a llamar los registros especificos*/
-async function leerContactos() {
-    try {
-        /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
-        además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/contactos?page=${contacto.value}`);
-        //Se asigna el valor de la respuesta de axios a la constante data
-        data.value = res;
-        console.log (data.value)
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-//Función para buscar registros dependiendo del valor del buscador
-async function buscarContactos() {
-    try {
-        //Se evalua que el buscador no este vacio
-        if (buscar.value.buscador != "") {
-            // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/contactos/?contacto=${contacto.value}&buscador=${buscar.value.buscador}`);
-            // Actualiza los datos en la constante data
-            data.value = res;
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { contacto: contacto.value } });
-        } else {
-            //Se regresa a la página 1 y se cargan todos los registros
-            contacto.value = 1;
-            leerContactos();
-        }
-    } catch (error) {
-        console.error(error);
-    }
-}
-//Función para limpiar el buscador
-function limpiarBuscador() {
-    //Se coloca el valor del buscador a nulo
-    buscar.value.buscador = "";
-    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
-    contacto.value = 1;
-    //Se leen todos los registros
-    leerContactos();
-}
-
-
-;
-
-
-</script>
+}</style>
