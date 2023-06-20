@@ -29,11 +29,9 @@
             </div>
         </div>
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
-            <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons">
-                <div class="w-3/4 flex items-center h-full mt-4">
-                    <!-- Se enlaza el buscador y la variable buscar.buscador por medio del v-model -->
-                    <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none" placeholder="Buscar ..."
-                        v-model="buscar.buscador" @keyup="buscarPaginas()">
+            <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
+                <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                    <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]" placeholder="Buscar ...">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -41,11 +39,12 @@
                                 color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg></button>
+                            </svg>
+                        </button>
                     </div>
-                </div>
-                <div class="buttons flex items-center">
-                    <button class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg">
+                </form>
+                <div class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
+                    <button class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path
@@ -55,7 +54,8 @@
                                 stroke-linejoin="round"></path>
                         </svg>
                     </button>
-                    <button class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg">
+                    <button
+                        class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:mx-8">
                         <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path d="M7 6h10M7 9h10M9 17h6" stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round"
@@ -66,7 +66,7 @@
                         </svg>
                     </button>
                     <button id="btnadd" type="button"
-                        class="w-20 h-10 flex items-center justify-center mx-4 font-bold rounded-lg">
+                        class="w-20 h-10 flex items-center justify-center mx-4 font-bold rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:ml-0">
                         <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#FFFFFF">
                             <path
@@ -76,21 +76,19 @@
                     </button>
                 </div>
             </div>
-            <div class="line bg-slate-800 h-0.5 mt-4 w-full"></div>
-            <!-- Se manda a traer la longitud del array de paginas (el que trae los registros) y así saber cuantos registros son -->
-            <p class="font-extrabold text-slate-900 mt-8 ml-4"> {{ paginas.length }} <span
-                    class="text-gray-500 font-normal ml-2"> registros
+            <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">2<span class="text-gray-500 font-normal ml-2">registros
                     encontrados!</span></p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
             <div id="sectionPage" v-for="pagina in paginas" :key="pagina.id_pagina">
                 <div class="contained-data flex-col">
-                    <div class="data-contained flex justify-between mt-4 rounded-xl p-4">
-                        <div class="flex justify-start w-3/4 items-center">
-                            <div class="datainfo flex-col ml-8">
-                                <p class="font-extrabold text-xl text-salte-900">Página- {{ pagina.nombre_pagina }}</p>
-                                <p class="font-normal text-sm mt-1text-gray-500"> {{ pagina.descripcion_pagina }}
+                    <div class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                        <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                            <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
+                                <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Página- {{ pagina.nombre_pagina }}</p>
+                                <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]"> {{ pagina.descripcion_pagina }}
                                 </p>
-                                <p class="font-normal text-sm text-gray-500">Número de página: {{ pagina.numero_pagina }}
+                                <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Número de página: {{ pagina.numero_pagina }}
                                 </p>
                             </div>
                         </div>
@@ -117,12 +115,25 @@
                             </button>
                         </div>
                     </div>
+                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
+                            <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
+                                    stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
+                        <button class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
+                            <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
+                                    stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
-            este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
-            <div class="flex justify-center mt-6">
-                <TailwindPagination :data="data" @pagination-change-page="pagina = $event" />
             </div>
         </div>
     </div>
