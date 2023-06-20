@@ -30,8 +30,10 @@
         </div>
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
-                <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
-                    <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]" placeholder="Buscar ...">
+                <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                    <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
+                    <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
+                        placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarPaginas()">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -42,9 +44,11 @@
                             </svg>
                         </button>
                     </div>
-                </form>
-                <div class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
-                    <button class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
+                </div>
+                <div
+                    class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
+                    <button
+                        class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path
@@ -77,24 +81,31 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">2<span class="text-gray-500 font-normal ml-2">registros
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16"> {{  paginas.length }} <span
+                    class="text-gray-500 font-normal ml-2">registros
                     encontrados!</span></p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
             <div id="sectionPage" v-for="pagina in paginas" :key="pagina.id_pagina">
                 <div class="contained-data flex-col">
-                    <div class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                    <div
+                        class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                            <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                                <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Página- {{ pagina.nombre_pagina }}</p>
-                                <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]"> {{ pagina.descripcion_pagina }}
+                            <div
+                                class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
+                                <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Página- {{
+                                    pagina.nombre_pagina }}</p>
+                                <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]"> {{
+                                    pagina.descripcion_pagina }}
                                 </p>
-                                <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Número de página: {{ pagina.numero_pagina }}
+                                <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Número de página: {{
+                                    pagina.numero_pagina }}
                                 </p>
                             </div>
                         </div>
-                        <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                            <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn" id="btnedit"
-                                @click="leerUnaPagina(pagina.id_pagina)">
+                        <div
+                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                            <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
+                                id="btnedit" @click="leerUnaPagina(pagina.id_pagina)">
                                 <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -103,7 +114,8 @@
                                     </path>
                                 </svg>
                             </button>
-                            <button class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            <button
+                                class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                                 @click="borrarPagina(pagina.id_pagina)">
                                 <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -116,6 +128,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="flex justify-center mt-6">
+                <TailwindPagination :data="data" @pagination-change-page="pagina = $event" />
             </div>
         </div>
     </div>
@@ -450,12 +465,12 @@ async function buscarPaginas() {
 
 //Función para limpiar el buscador
 function limpiarBuscador() {
-    //Se coloca el valor del buscador a nulo
-    buscar.value.buscador = "";
     //Se coloca la constante pagina 1 para que salga la primera pagina de registros
     pagina.value = 1;
     //Se leen todos los registros
     leerPaginas();
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
 }
 
 //Funciones para manejo del modal
@@ -514,7 +529,6 @@ async function crearPagina() {
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnaPagina(id) {
-
     try {
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/paginas/' + id).then(res => {
@@ -529,10 +543,18 @@ async function leerUnaPagina(id) {
             const closeButton = document.getElementById('closeModal');
             //Constante para el titulo del modal
             const modalText = document.getElementById('modalText');
+            //Constante para el boton de agregar dentro del modal
+            const modalBtnAdd = document.getElementById('btnModalAdd');
+            //Constante para el boton de actualizar dentro del modal
+            const modalBtnUpdate = document.getElementById('btnModalUpdate');
             //Instanciamos el modal
             const modal = new Modal(modalElement, modalOptions);
             //Le modificamos el texto del header al modal
-            modalText.textContent='Editar';
+            modalText.textContent = 'Editar';
+            //Colocamos visibilidad al botón de actualizar en el modal
+            modalBtnUpdate.classList.remove('hidden');
+            //Ocultamos el botón de agregar en el modal
+            modalBtnAdd.classList.add('hidden');
             //Abrimos el modal
             modal.show();
             //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
