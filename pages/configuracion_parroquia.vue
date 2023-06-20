@@ -21,7 +21,7 @@ const menuOptions = () => {
             </div>
         </div>
         <div>
-            <form action="" class="flex pt-14 justify-evenly">
+            <form action="" class="flex pt-14 justify-evenly max-[700px]:flex-col max-[700px]:items-center max-[700px]:text-2xl">
                 <div class="flex-col w-80">
                     <div class="relative z-0">
                         <input type="text" id="floating_standard"
@@ -55,7 +55,7 @@ const menuOptions = () => {
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Direccion
                             - Parroquia</label>
                     </div>
-                    <div class="relative z-0 mt-12">
+                    <div class="relative z-0 mt-12 max-[700px]:mt-10">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" />
@@ -64,7 +64,7 @@ const menuOptions = () => {
                             - Parroquia</label>
                     </div>
                 </div>
-                <div class="flex-col w-80">
+                <div class="flex-col w-80 max-[700px]:mt-10">
                     <div class="relative z-0">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
@@ -98,7 +98,7 @@ const menuOptions = () => {
                             - Parroquia</label>
                     </div>
                 </div>
-                <div class="flex-col h-96">
+                <div class="flex-col h-96 max-[700px]:mt-10">
                     <div class="h-1/2">
                         <p class="mb-4 text-center">Logo Parroquia</p>
                         <img class="h-44 w-40 border-2 border-slate-900 ml-2">
