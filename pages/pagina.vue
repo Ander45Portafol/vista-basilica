@@ -79,14 +79,40 @@
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">2<span class="text-gray-500 font-normal ml-2">registros
                     encontrados!</span></p>
-            <div class="contained-data flex-col">
-                <div class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
-                    <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                        <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
-                        <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Página- Inicio</p>
-                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">Inicio del dashboard de la pagina privada</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Número de página: 1</p>
+            <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
+            <div id="sectionPage" v-for="pagina in paginas" :key="pagina.id_pagina">
+                <div class="contained-data flex-col">
+                    <div class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                        <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                            <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
+                                <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Página- {{ pagina.nombre_pagina }}</p>
+                                <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]"> {{ pagina.descripcion_pagina }}
+                                </p>
+                                <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Número de página: {{ pagina.numero_pagina }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="buttons-data flex justify-center items-center">
+                            <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn" id="btnedit"
+                                @click="leerUnaPagina(pagina.id_pagina)">
+                                <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path
+                                        d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
+                                        stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                </svg>
+                            </button>
+                            <button class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn"
+                                @click="borrarPagina(pagina.id_pagina)">
+                                <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path
+                                        d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
+                                        stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                     <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
@@ -282,7 +308,7 @@
 //Importaciones de plugins y funciones necesarias para el funcionamiento del proyecto
 
 //Importacion para usar el hook de onMounted
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 //Importación del modal de flowbite
 import { Modal } from 'flowbite'
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
@@ -343,14 +369,14 @@ onMounted(() => {
         /*Se crea un array para introducir todos los botones de editar registro (en este caso se hace por medio de una 
         clase personalizada con la que cuentan todos los botones "editbtn". Además se les añade un evento click a cada botón,
         y este evento click abre el modal, cambia su titulo y oculta el botón de agregar que se encuentra dentro del modal*/
-        Array.from(buttonUpdate).forEach(function (button) {
-            button.addEventListener('click', function () {
-                modalBtnUpdate.classList.remove('hidden');
-                modalText.textContent = "Editar";
-                modalBtnAdd.classList.add('hidden');
-                modal.show();
-            });
-        });
+        // Array.from(buttonUpdate).forEach(function (button) {
+        //     button.addEventListener('click', function () {
+        //         modalBtnUpdate.classList.remove('hidden');
+        //         modalText.textContent = "Editar";
+        //         modalBtnAdd.classList.add('hidden');
+        //         modal.show();
+        //     });
+        // });
 
         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
         closeButton.addEventListener('click', function () {
@@ -507,10 +533,35 @@ async function crearPagina() {
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnaPagina(id) {
+
     try {
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/paginas/' + id).then(res => {
-            //Se establece el valor de cada uno de los elementos de la variable form con la respuesta del axios
+            //Constante para el modal
+            const modalElement = document.getElementById('staticModal');
+            //Constante que contiene las caracteristicas del modal
+            const modalOptions = {
+                backdrop: 'static',
+                backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+            };
+            //Instanciamos el boton para cerrar el modal
+            const closeButton = document.getElementById('closeModal');
+            //Constante para el titulo del modal
+            const modalText = document.getElementById('modalText');
+            //Instanciamos el modal
+            const modal = new Modal(modalElement, modalOptions);
+            //Le modificamos el texto del header al modal
+            modalText.textContent='Editar';
+            //Abrimos el modal
+            modal.show();
+            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
+            closeButton.addEventListener('click', function () {
+                //Ocultamos el modal
+                modal.hide();
+                //Limpiamos el modal
+                limpiarForm();
+            })
+            //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
                 id_pagina: res.data.id_pagina,
                 nombre_pagina: res.data.nombre_pagina,
