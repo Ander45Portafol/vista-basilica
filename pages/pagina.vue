@@ -82,7 +82,7 @@
                     class="text-gray-500 font-normal ml-2"> registros
                     encontrados!</span></p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-            <div id="sectionPage" v-for="pagina in paginas">
+            <div id="sectionPage" v-for="pagina in paginas" :key="pagina.id_pagina">
                 <div class="contained-data flex-col">
                     <div class="data-contained flex justify-between mt-4 rounded-xl p-4">
                         <div class="flex justify-start w-3/4 items-center">
@@ -297,7 +297,7 @@
 //Importaciones de plugins y funciones necesarias para el funcionamiento del proyecto
 
 //Importacion para usar el hook de onMounted
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 //Importación del modal de flowbite
 import { Modal } from 'flowbite'
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
@@ -358,14 +358,14 @@ onMounted(() => {
         /*Se crea un array para introducir todos los botones de editar registro (en este caso se hace por medio de una 
         clase personalizada con la que cuentan todos los botones "editbtn". Además se les añade un evento click a cada botón,
         y este evento click abre el modal, cambia su titulo y oculta el botón de agregar que se encuentra dentro del modal*/
-        Array.from(buttonUpdate).forEach(function (button) {
-            button.addEventListener('click', function () {
-                modalBtnUpdate.classList.remove('hidden');
-                modalText.textContent = "Editar";
-                modalBtnAdd.classList.add('hidden');
-                modal.show();
-            });
-        });
+        // Array.from(buttonUpdate).forEach(function (button) {
+        //     button.addEventListener('click', function () {
+        //         modalBtnUpdate.classList.remove('hidden');
+        //         modalText.textContent = "Editar";
+        //         modalBtnAdd.classList.add('hidden');
+        //         modal.show();
+        //     });
+        // });
 
         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
         closeButton.addEventListener('click', function () {
@@ -521,10 +521,35 @@ async function crearPagina() {
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnaPagina(id) {
+
     try {
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/paginas/' + id).then(res => {
-            //Se establece el valor de cada uno de los elementos de la variable form con la respuesta del axios
+            //Constante para el modal
+            const modalElement = document.getElementById('staticModal');
+            //Constante que contiene las caracteristicas del modal
+            const modalOptions = {
+                backdrop: 'static',
+                backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+            };
+            //Instanciamos el boton para cerrar el modal
+            const closeButton = document.getElementById('closeModal');
+            //Constante para el titulo del modal
+            const modalText = document.getElementById('modalText');
+            //Instanciamos el modal
+            const modal = new Modal(modalElement, modalOptions);
+            //Le modificamos el texto del header al modal
+            modalText.textContent='Editar';
+            //Abrimos el modal
+            modal.show();
+            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
+            closeButton.addEventListener('click', function () {
+                //Ocultamos el modal
+                modal.hide();
+                //Limpiamos el modal
+                limpiarForm();
+            })
+            //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
                 id_pagina: res.data.id_pagina,
                 nombre_pagina: res.data.nombre_pagina,
