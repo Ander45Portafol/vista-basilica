@@ -30,8 +30,10 @@
         </div>
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
-                <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
-                    <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]" placeholder="Buscar ...">
+                <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                    <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
+                    <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
+                        placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarPaginas()">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -42,9 +44,11 @@
                             </svg>
                         </button>
                     </div>
-                </form>
-                <div class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
-                    <button class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
+                </div>
+                <div
+                    class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
+                    <button
+                        class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path
@@ -77,24 +81,31 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">2<span class="text-gray-500 font-normal ml-2">registros
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16"> {{ paginas.length }} <span
+                    class="text-gray-500 font-normal ml-2">registros
                     encontrados!</span></p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
             <div id="sectionPage" v-for="pagina in paginas" :key="pagina.id_pagina">
                 <div class="contained-data flex-col">
-                    <div class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                    <div
+                        class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                            <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                                <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Página- {{ pagina.nombre_pagina }}</p>
-                                <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]"> {{ pagina.descripcion_pagina }}
+                            <div
+                                class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
+                                <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Página- {{
+                                    pagina.nombre_pagina }}</p>
+                                <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]"> {{
+                                    pagina.descripcion_pagina }}
                                 </p>
-                                <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Número de página: {{ pagina.numero_pagina }}
+                                <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Número de página: {{
+                                    pagina.numero_pagina }}
                                 </p>
                             </div>
                         </div>
-                        <div class="buttons-data flex justify-center items-center">
-                            <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn" id="btnedit"
-                                @click="leerUnaPagina(pagina.id_pagina)">
+                        <div
+                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                            <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
+                                id="btnedit" @click="leerUnaPagina(pagina.id_pagina)">
                                 <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -103,7 +114,8 @@
                                     </path>
                                 </svg>
                             </button>
-                            <button class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn"
+                            <button
+                                class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                                 @click="borrarPagina(pagina.id_pagina)">
                                 <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -115,25 +127,13 @@
                             </button>
                         </div>
                     </div>
-                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
-                            <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path
-                                    d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
-                                    stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                        <button class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
-                            <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path
-                                    d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
-                                    stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                    </div>
                 </div>
+            </div>
+            <div class="flex justify-center mt-6">
+                <TailwindPagination
+                    :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
+                    :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                    :data="data" @pagination-change-page="pagina = $event" />
             </div>
         </div>
     </div>
@@ -163,37 +163,73 @@
                 </div>
                 <!-- Modal body -->
                 <div class="p-6 space-y-6 pb-20">
-                    <form action="" class="flex justify-evenly">
+                    <form id="modalForm" class="flex justify-evenly" @submit.prevent="submitForm()">
                         <div class="flex-col w-72">
                             <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                             <input type="hidden" name="id_pagina" id="id_pagina" v-model="form.id_pagina">
                             <div class="relative z-0 mt-6">
+                                <!-- Se le agrega un evento input para evaluar cada vez que hay un cambio en el input y así validar la información -->
                                 <input type="text" id="nombre_pagina" name="nombre_pagina" v-model="form.nombre_pagina"
+                                    @input="validarNombrePagina()" maxlength="100" required
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                    placeholder=" " autocomplete="off" /><span
+                                    class="text-xs text-gray-400 absolute bottom-0.5 right-0"> {{ form.nombre_pagina.length
+                                    }} /100</span>
+                                <label for="nombre_pagina"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Página</label>
+                                    - Página <span class="text-sm ml-1"> * </span></label>
+                                <!-- Se coloca un if que evalua si la función de validar es false, así se muestra la alerta solo cuando es false -->
+                                <div v-if="!validarNombrePagina()"
+                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        El nombre de página solo acepta <span class="font-medium"> letras y números </span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="numero_pagina" name="numero_pagina" v-model="form.numero_pagina"
+                                <!-- Se le agrega un evento input para evaluar cada vez que hay un cambio en el input y así validar la información -->
+                                <input type="number" id="numero_pagina" name="numero_pagina" v-model="form.numero_pagina"
+                                    @input="validarNumeroPagina()" min="1" max="10" required
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <label for="numero_pagina"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Número
-                                    - Página</label>
+                                    - Página <span class="text-sm ml-1"> * </span></label>
+                                <!-- Se coloca un if que evalua si la función de validar es false, así se muestra la alerta solo cuando es false -->
+                                <div v-if="!validarNumeroPagina()"
+                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        El número de página debe ser mayor a <span class="font-medium">10</span> y menor a
+                                        <span class="font-medium">0</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="descripcion_pagina" name="descripcion_pagina"
+                                <textarea type="text" id="descripcion_pagina" name="descripcion_pagina" maxlength="250"
                                     v-model="form.descripcion_pagina"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"> {{
+                                    form.descripcion_pagina.length }} /250</span>
+                                <label for="descripcion_pagina"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
                                     - Página</label>
                             </div>
                             <div class="flex-col mt-6">
-                                <label for="" class="text-gray-200">Visibilidad - Página</label>
+                                <label for="visibilidad_pagina" class="text-sm text-gray-200">Visibilidad - Página <span
+                                        class="text-sm ml-1"> * </span></label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
                                         <input type="checkbox" value="" class="sr-only peer" id="visibilidad_pagina"
@@ -223,8 +259,9 @@
                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
                                     </button>
-                                    <!-- Se le coloca la función para crear al botón -->
-                                    <button id="btnModalAdd" type="button" @click="crearPagina()"
+                                    <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
+                                    <button id="btnModalAdd" type="submit" value="crear" @click="accionForm('crear')"
+                                        :disabled="!validarNumeroPagina() || !validarNombrePagina()"
                                         class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                         <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -236,8 +273,9 @@
                                                 stroke="#23B7A0" stroke-width="2"></path>
                                         </svg>
                                     </button>
-                                    <!-- Se le coloca la función para actualizar al botón -->
-                                    <button id="btnModalUpdate" type="button" @click="actualizarPagina()"
+                                    <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
+                                    <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
+                                        :disabled="!validarNumeroPagina() || !validarNombrePagina()"
                                         class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                         <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -250,9 +288,6 @@
                                         </svg>
                                     </button>
                                 </div>
-                                <pre>
-                                    {{ form }}
-                                </pre>
                             </div>
                         </div>
                     </form>
@@ -317,6 +352,8 @@ import axios from 'axios';
 import { TailwindPagination } from 'laravel-vue-pagination';
 //Importación de sweetalert
 import Swal from 'sweetalert2';
+//Importación de archivo de validaciones
+import validaciones from '../assets/validaciones.js';
 
 /*definePageMeta es un macro compilador (Se ejecuta mientras el programa se compila) para los componentes que se 
 encuentran en /pages, este permite establecer/transformar las propiedades de los componentes de nuxt*/
@@ -365,18 +402,6 @@ onMounted(() => {
             modalBtnUpdate.classList.add('hidden');
             modal.show();
         });
-
-        /*Se crea un array para introducir todos los botones de editar registro (en este caso se hace por medio de una 
-        clase personalizada con la que cuentan todos los botones "editbtn". Además se les añade un evento click a cada botón,
-        y este evento click abre el modal, cambia su titulo y oculta el botón de agregar que se encuentra dentro del modal*/
-        // Array.from(buttonUpdate).forEach(function (button) {
-        //     button.addEventListener('click', function () {
-        //         modalBtnUpdate.classList.remove('hidden');
-        //         modalText.textContent = "Editar";
-        //         modalBtnAdd.classList.add('hidden');
-        //         modal.show();
-        //     });
-        // });
 
         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
         closeButton.addEventListener('click', function () {
@@ -469,12 +494,12 @@ async function buscarPaginas() {
 
 //Función para limpiar el buscador
 function limpiarBuscador() {
-    //Se coloca el valor del buscador a nulo
-    buscar.value.buscador = "";
     //Se coloca la constante pagina 1 para que salga la primera pagina de registros
     pagina.value = 1;
     //Se leen todos los registros
     leerPaginas();
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
 }
 
 //Funciones para manejo del modal
@@ -502,10 +527,27 @@ const Toast = Swal.mixin({
     }
 })
 
+//Variable para validar que acción se quiere hacer cuando se hace un submit al form
+var formAccion = null;
+
+//Función para evaluar que acción se va a hacer al hacer submit en el form
+function accionForm(accion) {
+    formAccion = accion;
+}
+
+//Función para crear/actualizar un registro cuando se ejecuta el submit del form
+function submitForm() {
+    if (formAccion == "crear") {
+        crearPagina();
+    } else {
+        actualizarPagina();
+    }
+}
+
 //Función para crear una página
 async function crearPagina() {
     try {
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
         const formData = {
             nombre_pagina: form.value.nombre_pagina,
             numero_pagina: form.value.numero_pagina,
@@ -533,7 +575,6 @@ async function crearPagina() {
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnaPagina(id) {
-
     try {
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/paginas/' + id).then(res => {
@@ -548,10 +589,18 @@ async function leerUnaPagina(id) {
             const closeButton = document.getElementById('closeModal');
             //Constante para el titulo del modal
             const modalText = document.getElementById('modalText');
+            //Constante para el boton de agregar dentro del modal
+            const modalBtnAdd = document.getElementById('btnModalAdd');
+            //Constante para el boton de actualizar dentro del modal
+            const modalBtnUpdate = document.getElementById('btnModalUpdate');
             //Instanciamos el modal
             const modal = new Modal(modalElement, modalOptions);
             //Le modificamos el texto del header al modal
-            modalText.textContent='Editar';
+            modalText.textContent = 'Editar';
+            //Colocamos visibilidad al botón de actualizar en el modal
+            modalBtnUpdate.classList.remove('hidden');
+            //Ocultamos el botón de agregar en el modal
+            modalBtnAdd.classList.add('hidden');
             //Abrimos el modal
             modal.show();
             //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
@@ -633,13 +682,26 @@ async function borrarPagina(id) {
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Página ocultada exitosamente'
+                    title: 'Anuncio ocultado exitosamente'
                 })
             } catch (error) {
                 console.log(error);
             }
         }
     });
+}
+
+//Validaciones
+
+//Función para validar que el número de página ingresado por el usuario este entre 1-10
+function validarNumeroPagina() {
+    var res = validaciones.validarNoNumerosNegativos(parseInt(form.value.numero_pagina), 10);
+    return res;
+}
+
+function validarNombrePagina() {
+    var res = validaciones.validarSoloLetrasYNumeros((form.value.nombre_pagina).toString());
+    return res;
 }
 
 </script>
