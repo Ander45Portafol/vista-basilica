@@ -93,10 +93,16 @@
                             </p>
                         </div>
                     </div>
+
+                    <div class="buttons-data flex justify-center items-center">
+                        <button class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"></button>
+                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4 editbtn" @click="editModal()">
+
                     <div
                         class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                         <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
                             id="btnedit" @click="leerUnAnuncio(anuncio.id_anuncio)">
+
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
