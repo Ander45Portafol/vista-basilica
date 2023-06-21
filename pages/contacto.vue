@@ -89,7 +89,7 @@
                     encontrado!</span></p>
             <div id="sectionPage" v-for="contacto in contactos" :key="contacto.id_contacto">
                 <div class="contained-data flex-col">
-                    <div
+                    <div>  
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                             <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
