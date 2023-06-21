@@ -486,7 +486,7 @@ const Toast = Swal.mixin({
 //Función para crear una página
 async function crearPagina() {
     try {
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
         const formData = {
             nombre_pagina: form.value.nombre_pagina,
             numero_pagina: form.value.numero_pagina,
@@ -614,7 +614,7 @@ async function borrarPagina(id) {
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Página ocultada exitosamente'
+                    title: 'Anuncio ocultado exitosamente'
                 })
             } catch (error) {
                 console.log(error);
