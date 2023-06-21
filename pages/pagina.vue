@@ -430,11 +430,12 @@ await leerPaginas();
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
-    id_pagina: "",
-    nombre_pagina: "",
-    numero_pagina: "",
-    descripcion_pagina: "",
-    visibilidad_pagina: false
+    id_contacto: "",
+    nombre_contacto: "",
+    correo_contacto: "",
+    tipo_contacto: "",
+    visibilidad_contacto: false,
+    id_configuracion_parroquia
 })
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
