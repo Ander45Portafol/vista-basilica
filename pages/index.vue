@@ -85,6 +85,8 @@ import axios from 'axios';
 //Importación de sweetalert
 import Swal from 'sweetalert2';
 
+import { useRouter } from 'vue-router';
+
 definePageMeta({
   layout: "default",
 });
@@ -108,6 +110,7 @@ const form = ref({
 })
 
 async function login() {
+  const router = useRouter();
   event.preventDefault();
   try {
     const formData = {
@@ -119,7 +122,9 @@ async function login() {
     const token = (await axios.post("/login", formData)).data.token;
     localStorage.setItem('token', token);
     console.log(localStorage.getItem('token'));
+    router.push('/principal');
   } catch (error) {
+    console.log(error);
     Toast.fire({
       icon: 'error',
       title: error.response.data.error
