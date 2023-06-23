@@ -134,6 +134,14 @@
                     <TailwindPagination :data="data" @pagination-change-page="contacto = $event" />
                 </div> -->
             </div>
+                        <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
+            este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
+            <div class="flex justify-center mt-6">
+                <TailwindPagination
+                    :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
+                    :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                    :data="data" @pagination-change-page="contacto = $event" />
+            </div>
         </div>
         <!-- mdprincipal final de div -->
     </div>
