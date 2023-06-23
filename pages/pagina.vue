@@ -30,7 +30,7 @@
         </div>
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
-                <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarPaginas()">
@@ -432,11 +432,11 @@ await leerPaginas();
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
-    id_pagina: "",
-    nombre_pagina: "",
-    numero_pagina: "",
-    descripcion_pagina: "",
-    visibilidad_pagina: false
+    id_contacto: "",
+    nombre_contacto: "",
+    correo_contacto: "",
+    tipo_contacto: "",
+    visibilidad_contacto: false,
 })
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
@@ -580,7 +580,7 @@ function submitForm() {
 //Función para crear una página
 async function crearPagina() {
     try {
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
         const formData = {
             nombre_pagina: form.value.nombre_pagina,
             numero_pagina: form.value.numero_pagina,
@@ -763,7 +763,7 @@ async function borrarPagina(id) {
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Página ocultada exitosamente'
+                    title: 'Anuncio ocultado exitosamente'
                 })
             } catch (error) {
                 //Se extrae el mensaje de error

@@ -28,18 +28,18 @@
         </div>
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
-                <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar ...">
+                        placeholder="Buscar ..." v-model="buscar.buscador" @keyup="buscarAnuncios()">
                     <div class="flex justify-end items-center">
-                        <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
+                        <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
                                 fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
                     </div>
-                </form>
+                </div>
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
@@ -64,7 +64,7 @@
                                 stroke="#1B1C30" stroke-width="2.5"></path>
                         </svg>
                     </button>
-                    <button id="btnadd" type="button" @click="abrirModal()"
+                    <button id="btnadd" type="button"
                         class="w-20 h-10 flex items-center justify-center mx-4 font-bold rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:ml-0">
                         <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#FFFFFF">
@@ -76,20 +76,27 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ anuncios.length }}<span class="text-gray-500 font-normal ml-2">registros
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ anuncios.length }}<span
+                    class="text-gray-500 font-normal ml-2">registros
                     encontrados!</span></p>
             <div class="contained-data flex-col" v-for="anuncio in anuncios" :key="anuncio.id_anuncio">
                 <div class="data-contained flex justify-between mt-4 rounded-xl p-4">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
-                        <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{ anuncio.titulo_anuncio }}</p>
-                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">{{ anuncio.enlace_externo }}</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{ anuncio.fecha_anuncio }}</p>
+                        <div
+                            class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
+                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{
+                                anuncio.titulo_anuncio }}</p>
+                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">{{
+                                anuncio.enlace_externo }}</p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{ anuncio.fecha_anuncio }}
+                            </p>
                         </div>
                     </div>
-                    <div class="buttons-data flex justify-center items-center">
-                        <button class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2 editbtn" @click="editModal()">
+                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2" v-if="anuncio.visibilidad_anuncio==1">
+                        <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
+                            id="btnedit" @click="leerUnAnuncio(anuncio.id_anuncio)">
+
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -98,13 +105,21 @@
                             </svg>
                         </button>
                         <button
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            @click="borrarAnuncio(anuncio.id_anuncio)">
                             <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
                                     d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
                                     stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
+                        </button>
+                    </div>
+                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2" v-else>
+                        <button
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            @click="changeVisible(anuncio.id_anuncio)">
+                            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><path d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9" stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                         </button>
                     </div>
                 </div>
@@ -129,7 +144,7 @@
                         <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
                         <p class="text-lg font-medium text-gray-400">Anuncios</p>
                     </div>
-                    <button type="button" id="closeModal" @click="cerrarModal()"
+                    <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                         data-modal-hide="staticModal">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -143,8 +158,10 @@
                 <div class="p-6 space-y-6 pb-10">
                     <form action="" class="flex justify-evenly">
                         <div class="flex-col w-64">
+                            <input type="hidden" name="id_anuncio" id="id_anuncio" v-model="form.id_anuncio">
+
                             <div class="relative z-0">
-                                <input type="text" id="title_anuncio" name="titulo_anuncio"
+                                <input type="text" id="title_anuncio" name="titulo_anuncio" v-model="form.titulo_anuncio"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
@@ -152,7 +169,8 @@
                                     - Anuncio</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="contenido_titulo" name="contenido_titulo"
+                                <input type="text" id="contenido_titulo" name="contenido_anuncio"
+                                    v-model="form.contenido_anuncio"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
@@ -160,7 +178,7 @@
                                     - Anuncio</label>
                             </div>
                             <div class="relative z-0 mt-10">
-                                <input type="date" id="fecha_anuncio" name="fecha_anuncio"
+                                <input type="date" id="fecha_anuncio" name="fecha_anuncio" v-model="form.fecha_anuncio"
                                     class="block py-2.5 px-0 w-full text-xs text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
@@ -168,7 +186,7 @@
                                     - Anuncio</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="enlace_externo" name="enlace_externo"
+                                <input type="text" id="enlace_externo" name="enlace_externo" v-model="form.enlace_externo"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
@@ -179,7 +197,8 @@
                                 <label for="" class="text-gray-200">Visibilidad - Enlace</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input type="checkbox" value="" class="sr-only peer" name="visibilidad_anuncio">
+                                        <input type="checkbox" value="" class="sr-only peer" name="visibilidad_anuncio"
+                                            v-model="form.visibilidad_anuncio">
                                         <div
                                             class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                         </div>
@@ -191,9 +210,10 @@
                             <div class="flex-col">
                                 <p class="mb-4 text-center text-gray-200">Imagen - Anuncio</p>
                                 <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
+                                <input type="file">
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" @click="crearAnuncio()">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -220,6 +240,19 @@
                                         <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">
                                         </path>
+                                    </svg>
+                                </button>
+                                <!-- Se le coloca la función para actualizar al botón -->
+                                <button id="btnModalUpdate" type="button" @click="actualizarAnuncio()"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
                                     </svg>
                                 </button>
                             </div>
@@ -259,7 +292,9 @@
 .buttons-data .deletebtn {
     border: 3px solid #872727;
 }
-
+.buttons-data .changebtn{
+    border: 3px solid #3F4280;
+}
 .modal {
     background: linear-gradient(180deg,
             rgba(63, 66, 128, 0.6241) 0%,
@@ -354,9 +389,10 @@ await leerAnuncios();
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
     id_anuncio: "",
-    titulo: "",
-    descripcion: "",
-    fecha: "",
+    titulo_anuncio: "",
+    contenido_anuncio: "",
+    fecha_anuncio: "",
+    enlace_externo: "",
     visibilidad_anuncio: false
 })
 
@@ -371,7 +407,7 @@ watch(anuncio, async () => {
     //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
     if (buscar.value.buscador != "") {
         //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        //buscarAnuncios();
+        buscarAnuncios();
     } else {
         //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
         leerAnuncios();
@@ -392,15 +428,62 @@ async function leerAnuncios() {
         console.log(error);
     }
 }
-//Funciones para manejo del modal
+
+
+//Función para buscar registros dependiendo del valor del buscador
+async function buscarAnuncios() {
+    try {
+        //Se evalua que el buscador no este vacio
+        if (buscar.value.buscador != "") {
+            // Realiza la petición axios para llamar a la ruta de búsqueda
+            const { data: res } = await axios.get(`/anuncios?page=${anuncio.value}&buscador=${buscar.value.buscador}`);
+            // Actualiza los datos en la constante data
+            data.value = res;
+            // Actualiza la URL con el parámetro de página
+            useRouter().push({ query: { anuncio: anuncio.value } });
+        } else {
+            //Se regresa a la página 1 y se cargan todos los registros
+            pagina.value = 1;
+            leerAnuncios();
+        }
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+//Función para limpiar el buscador
+function limpiarBuscador() {
+    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
+    anuncio.value = 1;
+    //Se leen todos los registros
+    leerAnuncios();
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
+}
 
 //Función para limpiar todos los campos del form
 function limpiarForm() {
     //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
     form.value.id_anuncio = "";
-    form.value.titulo = "";
-    form.value.descripcion = "";
-    form.value.fecha = "";
+    form.value.titulo_anuncio = "";
+    form.value.contenido_anuncio = "";
+    form.value.enlace_externo = "";
+    form.value.fecha_anuncio = "";
     form.value.visibilidad_anuncio = false;
 }
 //Toast del sweetalert
@@ -415,33 +498,181 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
-
 //Función para crear una página
 async function crearAnuncio() {
     try {
         //Se crea una constante para guardar el valor actual que tienen todos los campos del form
         const formData = {
-            titulo_anuncio: form.value.titulo,
-            descripcion: form.value.numero_pagina,
-            descripcion_pagina: form.value.descripcion_pagina,
-            visibilidad_pagina: form.value.visibilidad_pagina,
+            titulo_anuncio: form.value.titulo_anuncio,
+            contenido_anuncio: form.value.contenido_anuncio,
+            enlace_externo: form.value.enlace_externo,
+            fecha_anuncio: form.value.fecha_anuncio,
+            visibilidad_anuncio: form.value.visibilidad_anuncio,
         };
-
         //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/paginas", formData);
-
-        //Se cargan todas las páginas y se cierra el modal
-        leerPaginas();
-        document.getElementById('closeModal').click();
+        await axios.post("/anuncios/", formData);
 
         //Se lanza la alerta con el mensaje de éxito
         Toast.fire({
             icon: 'success',
-            title: 'Página creada exitosamente'
+            title: 'Anuncio creado exitosamente'
+        })
+        //Se cargan todas las páginas y se cierra el modal
+        leerAnuncios();
+        document.getElementById('closeModal').click();
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
+async function leerUnAnuncio(id) {
+
+    try {
+        //Se hace la petición axios y se evalua la respuesta
+        await axios.get('/anuncios/' + id).then(res => {
+            //Constante para el modal
+            const modalElement = document.getElementById('staticModal');
+            //Constante que contiene las caracteristicas del modal
+            const modalOptions = {
+                backdrop: 'static',
+                backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+            };
+            //Instanciamos el boton para cerrar el modal
+            const closeButton = document.getElementById('closeModal');
+            //Constante para el titulo del modal
+            const modalText = document.getElementById('modalText');
+            //Instanciamos el modal
+            const modal = new Modal(modalElement, modalOptions);
+            //Le modificamos el texto del header al modal
+            modalText.textContent = 'Editar';
+            //Abrimos el modal
+            modal.show();
+            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
+            closeButton.addEventListener('click', function () {
+                //Ocultamos el modal
+                modal.hide();
+                //Limpiamos el modal
+                limpiarForm();
+            })
+            //Llenamos los inputs del modal con su respectiva informacion
+            form.value = {
+                id_anuncio: res.data.id_anuncio,
+                titulo_anuncio: res.data.titulo_anuncio,
+                contenido_anuncio: res.data.contenido_anuncio,
+                fecha_anuncio: res.data.fecha_anuncio,
+                enlace_externo: res.data.enlace_externo,
+                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
+                visibilidad_anuncio: res.data.visibilidad_anuncio ? true : false
+            }
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function actualizarAnuncio() {
+    try {
+        //Se establece una variable de id con el valor que tiene guardado la variable form
+        var id = form.value.id_anuncio;
+        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        const formData = {
+            titulo_anuncio: form.value.titulo_anuncio,
+            contenido_anuncio: form.value.contenido_anuncio,
+            enlace_externo: form.value.enlace_externo,
+            fecha_anuncio: form.value.fecha_anuncio,
+            visibilidad_anuncio: form.value.visibilidad_anuncio,
+        };
+
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.put("/anuncios/" + id, formData);
+
+        //Se cargan todas las páginas y se cierra el modal
+        leerAnuncios();
+        document.getElementById('closeModal').click();
+
+        //Se lanza la alerta de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Página actualizada exitosamente'
         })
 
     } catch (error) {
         console.log(error);
     }
 }
+
+//Función para cambiar la visibilidad de una página
+async function borrarAnuncio(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea ocultar el registro?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete('/anuncios/' + id);
+
+                //Se cargan todas las páginas
+                leerAnuncios();
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Página ocultada exitosamente'
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
+}
+//Función para cambiar la visibilidad de una página
+async function changeVisible(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea hacer visible el anuncio?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete('/anuncios/' + id);
+
+                //Se cargan todas las páginas
+                leerAnuncios();
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Proceso finalizado'
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
+}
+
 </script>
