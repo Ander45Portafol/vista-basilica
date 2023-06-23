@@ -93,7 +93,7 @@
                             </p>
                         </div>
                     </div>
-                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2" v-if="anuncio.visibilidad_anuncio==1">
                         <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
                             id="btnedit" @click="leerUnAnuncio(anuncio.id_anuncio)">
 
@@ -113,6 +113,13 @@
                                     d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
                                     stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
+                        </button>
+                    </div>
+                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2" v-else>
+                        <button
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            @click="changeVisible(anuncio.id_anuncio)">
+                            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><path d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9" stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                         </button>
                     </div>
                 </div>
@@ -203,9 +210,10 @@
                             <div class="flex-col">
                                 <p class="mb-4 text-center text-gray-200">Imagen - Anuncio</p>
                                 <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
+                                <input type="file">
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" @click="crearAnuncio()">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -216,8 +224,7 @@
                                             stroke="#23B7A0" stroke-width="2"></path>
                                     </svg>
                                 </button>
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4"
-                                    @click="crearAnuncio()">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
@@ -285,7 +292,9 @@
 .buttons-data .deletebtn {
     border: 3px solid #872727;
 }
-
+.buttons-data .changebtn{
+    border: 3px solid #3F4280;
+}
 .modal {
     background: linear-gradient(180deg,
             rgba(63, 66, 128, 0.6241) 0%,
@@ -454,7 +463,7 @@ async function crearAnuncio() {
             visibilidad_anuncio: form.value.visibilidad_anuncio,
         };
         //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/anuncios_c", formData);
+        await axios.post("/anuncios/", formData);
 
         //Se lanza la alerta con el mensaje de éxito
         Toast.fire({
@@ -567,7 +576,7 @@ async function borrarAnuncio(id) {
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.put('/anuncios_v/' + id);
+                await axios.delete('/anuncios/' + id);
 
                 //Se cargan todas las páginas
                 leerAnuncios();
@@ -583,6 +592,40 @@ async function borrarAnuncio(id) {
         }
     });
 }
+//Función para cambiar la visibilidad de una página
+async function changeVisible(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea hacer visible el anuncio?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete('/anuncios/' + id);
 
+                //Se cargan todas las páginas
+                leerAnuncios();
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Proceso finalizado'
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
+}
 
 </script>
