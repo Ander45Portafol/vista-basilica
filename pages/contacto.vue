@@ -28,6 +28,7 @@
                 </button>
             </div>
         </div>
+
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
@@ -100,9 +101,8 @@
                                     contacto.correo_contacto }}</p>
                             </div>
                         </div>
-                        <div @click="leerUnContacto(contacto.id_contacto)"
-                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                            <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
+                        <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                            <button @click="leerUnContacto(contacto.id_contacto)" class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
                                 <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -124,14 +124,14 @@
                             </button>
                         </div>
                     </div>
-
                 </div> <!--contained data -->
-                <!-- div nuevo -->
-                <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
-            este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
-                <!-- <div class="flex justify-center mt-6">
-                    <TailwindPagination :data="data" @pagination-change-page="contacto = $event" />
-                </div> -->
+            </div>
+            <!-- paginacion de contactos  -->
+            <div class="flex justify-center mt-6">
+                <TailwindPagination
+                    :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
+                    :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                    :data="data" @pagination-change-page="contacto = $event" />
             </div>
         </div>
         <!-- mdprincipal final de div -->
@@ -622,7 +622,7 @@ async function borrarContacto(id) {
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.put('/contactos/' + id);
+                await axios.put('/contactos_del/' + id);
 
                 //Se cargan todas las páginas
                 leerContactos();
