@@ -28,18 +28,18 @@
         </div>
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
-                <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar ...">
+                        placeholder="Buscar ..." v-model="buscar.buscador" @keyup="buscarAnuncios()">
                     <div class="flex justify-end items-center">
-                        <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
+                        <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
                                 fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
                     </div>
-                </form>
+                </div>
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
@@ -407,7 +407,7 @@ watch(anuncio, async () => {
     //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
     if (buscar.value.buscador != "") {
         //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        //buscarAnuncios();
+        buscarAnuncios();
     } else {
         //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
         leerAnuncios();
@@ -427,6 +427,53 @@ async function leerAnuncios() {
     } catch (error) {
         console.log(error);
     }
+}
+
+
+//Función para buscar registros dependiendo del valor del buscador
+async function buscarAnuncios() {
+    try {
+        //Se evalua que el buscador no este vacio
+        if (buscar.value.buscador != "") {
+            // Realiza la petición axios para llamar a la ruta de búsqueda
+            const { data: res } = await axios.get(`/anuncios?page=${anuncio.value}&buscador=${buscar.value.buscador}`);
+            // Actualiza los datos en la constante data
+            data.value = res;
+            // Actualiza la URL con el parámetro de página
+            useRouter().push({ query: { anuncio: anuncio.value } });
+        } else {
+            //Se regresa a la página 1 y se cargan todos los registros
+            pagina.value = 1;
+            leerAnuncios();
+        }
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+//Función para limpiar el buscador
+function limpiarBuscador() {
+    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
+    anuncio.value = 1;
+    //Se leen todos los registros
+    leerAnuncios();
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
 }
 
 //Función para limpiar todos los campos del form
