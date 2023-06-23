@@ -2,7 +2,7 @@
    <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <a href="/usuario" class="active ml-4">Usuarios</a>
+                <a href="/usuario" class="ml-4">Usuarios</a>
                 <a href="/rolesusuario" class="ml-4">Roles Usuarios</a>
                 <a href="" class="active ml-4">Roles Accesos</a>
             </div>
@@ -78,10 +78,10 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">2<span
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{rolesaccesos.length}}<span
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
-            <div class="contained-data flex-col">
+            <div class="contained-data flex-col" v-for="rolacceso in rolesaccesos" :key="rolacceso.id_rol_acceso">
                 <div
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -151,7 +151,122 @@
 }
 </style>
 <script setup>
+import { Modal } from 'flowbite'
+//Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
+import axios from 'axios';
+import { TailwindPagination } from 'laravel-vue-pagination';
+import { onMounted, ref } from 'vue'
+//Importación de sweetalert
+import Swal from 'sweetalert2';
     definePageMeta({
     layout: "principal",
 })
+
+onMounted(() => {
+    //Constantes para manejar el modal
+    //Constante para el botón de agregar un registro
+    const buttonElement = document.getElementById('btnadd');
+    //Constante para el botón de eliminar un registro
+    const buttonUpdate = document.getElementsByClassName('editbtn');
+    //Constante para el modal
+    const modalElement = document.getElementById('staticModal');
+    //Constante para el botón de cerrar en el modal
+    const closeButton = document.getElementById('closeModal');
+    //Constante para el titulo del modal
+    const modalText = document.getElementById('modalText');
+    //Constante para el boton de actualizar dentro del modal
+
+    /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
+    aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+
+    //Se evalua si existe un modal y en caso de que si se ejecuta todo lo relacionado a su funcionamiento
+    if (modalElement) {
+        //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
+        const modal = new Modal(modalElement, modalOptions);
+
+        /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
+        del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
+        buttonElement.addEventListener('click', function () {
+            modalText.textContent = "Registrar";
+            fillSelect('/roles_usuarios');
+            modal.show();
+        });
+
+        /*Se crea un array para introducir todos los botones de editar registro (en este caso se hace por medio de una 
+        clase personalizada con la que cuentan todos los botones "editbtn". Además se les añade un evento click a cada botón,
+        y este evento click abre el modal, cambia su titulo y oculta el botón de agregar que se encuentra dentro del modal*/
+        Array.from(buttonUpdate).forEach(function (button) {
+            button.addEventListener('click', function () {
+                modalText.textContent = "Editar";
+                modal.show();
+            });
+        });
+
+        //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
+        closeButton.addEventListener('click', function () {
+            modal.hide();
+            limpiarForm();
+        });
+    }
+});
+
+//Operaciones SCRUD
+
+/*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
+para almacenar la información que traiga el axios*/
+const data = ref(null);
+
+//Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
+const rolacceso = ref(useRoute().query.rolacceso || 1);
+
+//Se crea una variable reactiva para el buscador
+const buscar = ref({
+    buscador: "",
+})
+//Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
+await leerRolesAccesos();
+
+//Se crea una variable reactiva para manejar la información del modal
+const form = ref({
+    id_rol_usuario:"",
+    rol_usuario:"",
+    visibbilidad_rol_usuario:false
+})
+
+/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
+y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
+let rolesaccesos = computed(() => data.value.data);
+
+/*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
+además muestra en la url la página actual*/
+watch(rolacceso, async () => {
+    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
+    if (buscar.value.buscador != "") {
+        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
+        //buscarAnuncios();
+    } else {
+        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
+        leerRolesAccesos();
+    }
+    //Se cambia la url para agregar en que pagina se encuentra el usuario
+    useRouter().push({ query: { rolacceso: rolacceso.value } })
+})
+
+/*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
+?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
+async function leerRolesAccesos() {
+    try {
+        /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
+        además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
+        const { data: res } = await axios.get(`/roles_accesos?page=${rolacceso.value}`);
+        //Se asigna el valor de la respuesta de axios a la constante data
+        data.value = res;
+    } catch (error) {
+        console.log(error);
+    }
+}
 </script>

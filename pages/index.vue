@@ -80,7 +80,6 @@
 }
 </style>
 <script setup>
-
 import axios from 'axios';
 //Importación de sweetalert
 import Swal from 'sweetalert2';
@@ -108,6 +107,8 @@ const form = ref({
   usuario: "",
   clave_usuario: "",
 })
+
+const router = useRouter();
 
 async function login() {
   const router = useRouter();
