@@ -111,7 +111,6 @@ const form = ref({
 const router = useRouter();
 
 async function login() {
-  const router = useRouter();
   event.preventDefault();
   try {
     const formData = {

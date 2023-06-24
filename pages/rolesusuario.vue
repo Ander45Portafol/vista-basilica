@@ -122,6 +122,12 @@
                     </div>
                 </div>
             </div>
+            <div class="flex justify-center mt-6">
+                <TailwindPagination
+                    :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
+                    :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                    :data="data" @pagination-change-page="rolusuario = $event" />
+            </div>
         </div>
     </div>
 </template>
