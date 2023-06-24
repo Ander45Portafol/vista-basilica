@@ -89,9 +89,8 @@
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                                Administrador</p>
-                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">hjghjgh</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">jjtyjty
+                                {{rolacceso.acceso}}</p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{rolacceso.id_rol_usuario}}
                             </p>
                         </div>
                     </div>

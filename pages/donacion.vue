@@ -1,37 +1,3 @@
-<script setup>
-import { onMounted } from 'vue'
-import { Modal } from 'flowbite'
-definePageMeta({
-    layout: "principal",
-})
-onMounted(() => {
-    const $buttonElement = document.querySelector('#btnadd');
-    const $modalElement = document.querySelector('#staticModal');
-    const $closeButton = document.querySelector('#closeModal');
-    const $modalText = document.querySelector('#modal_text');
-    const $btnEdit = document.querySelector('.editbtn');
-    const modalOptions = {
-        //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-
-    if ($modalElement) {
-        const modal = new Modal($modalElement, modalOptions);
-        $buttonElement.addEventListener('click', () => {
-            $modalText.textContent = 'Registrar';
-            modal.show();
-        });
-        $btnEdit.addEventListener('click', () => {
-            $modalText.textContent = 'Editar';
-            modal.show();
-        });
-        $closeButton.addEventListener('click', () => modal.hide());
-        // programatically show
-        // modal.show();
-    }
-});
-</script>
 <template>
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
@@ -111,21 +77,20 @@ onMounted(() => {
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">1<span
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{donaciones.length}}<span
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
-            <div class="contained-data flex-col">
+            <div class="contained-data flex-col" v-for="donacion in donaciones" :key="donacion.id_donacion">
                 <div
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Anderson Isaac Aguilar
-                                Ramos</p>
+                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{donacion.id_donante}}</p>
                             <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
-                                11/11/2004</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"><span>$</span>900.25
+                                {{donacion.fecha_donacion}}</p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"><span>$</span>{{donacion.cantidad_donada}}
                             </p>
                         </div>
                     </div>
@@ -150,6 +115,14 @@ onMounted(() => {
                         </button>
                     </div>
                 </div>
+            </div>
+                        <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
+            este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
+            <div class="flex justify-center mt-6">
+                <TailwindPagination
+                    :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
+                    :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                    :data="data" @pagination-change-page="donacion = $event" />
             </div>
         </div>
     </div>
@@ -316,3 +289,128 @@ onMounted(() => {
     background-color: #32345a;
 }
 </style>
+<script setup>
+import { Modal } from 'flowbite'
+//Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
+import axios from 'axios';
+import { TailwindPagination } from 'laravel-vue-pagination';
+import { onMounted, ref } from 'vue'
+//Importación de sweetalert
+import Swal from 'sweetalert2';
+    definePageMeta({
+    layout: "principal",
+})
+
+onMounted(() => {
+    //Constantes para manejar el modal
+    //Constante para el botón de agregar un registro
+    const buttonElement = document.getElementById('btnadd');
+    //Constante para el botón de eliminar un registro
+    const buttonUpdate = document.getElementsByClassName('editbtn');
+    //Constante para el modal
+    const modalElement = document.getElementById('staticModal');
+    //Constante para el botón de cerrar en el modal
+    const closeButton = document.getElementById('closeModal');
+    //Constante para el titulo del modal
+    const modalText = document.getElementById('modalText');
+    //Constante para el boton de actualizar dentro del modal
+
+    /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
+    aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+
+    //Se evalua si existe un modal y en caso de que si se ejecuta todo lo relacionado a su funcionamiento
+    if (modalElement) {
+        //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
+        const modal = new Modal(modalElement, modalOptions);
+
+        /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
+        del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
+        buttonElement.addEventListener('click', function () {
+            modalText.textContent = "Registrar";
+            fillSelect('/roles_usuarios');
+            modal.show();
+        });
+
+        /*Se crea un array para introducir todos los botones de editar registro (en este caso se hace por medio de una 
+        clase personalizada con la que cuentan todos los botones "editbtn". Además se les añade un evento click a cada botón,
+        y este evento click abre el modal, cambia su titulo y oculta el botón de agregar que se encuentra dentro del modal*/
+        Array.from(buttonUpdate).forEach(function (button) {
+            button.addEventListener('click', function () {
+                modalText.textContent = "Editar";
+                modal.show();
+            });
+        });
+
+        //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
+        closeButton.addEventListener('click', function () {
+            modal.hide();
+            limpiarForm();
+        });
+    }
+});
+
+//Operaciones SCRUD
+
+/*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
+para almacenar la información que traiga el axios*/
+const data = ref(null);
+
+//Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
+const donacion = ref(useRoute().query.donacion || 1);
+
+//Se crea una variable reactiva para el buscador
+const buscar = ref({
+    buscador: "",
+})
+//Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
+await leerDonaciones();
+
+//Se crea una variable reactiva para manejar la información del modal
+const form = ref({
+    id_donacion:"",
+    cantidad_donada:"",
+    fecha_donacion:"",
+    mensaje_donacion:"",
+    codigo_comprobante:"",
+    visibilidad_donacion:false,
+    id_proyecto_donacion:"",
+    id_donante:""
+})
+
+/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
+y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
+let donaciones = computed(() => data.value.data);
+
+/*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
+además muestra en la url la página actual*/
+watch(donacion, async () => {
+    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
+    if (buscar.value.buscador != "") {
+        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
+        //buscarAnuncios();
+    } else {
+        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
+        leerDonaciones();
+    }
+    //Se cambia la url para agregar en que pagina se encuentra el usuario
+    useRouter().push({ query: { donacion: donacion.value } })
+})
+
+/*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
+?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
+async function leerDonaciones() {
+    try {
+        /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
+        además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
+        const { data: res } = await axios.get(`/donaciones?page=${donacion.value}`);
+        //Se asigna el valor de la respuesta de axios a la constante data
+        data.value = res;
+    } catch (error) {
+        console.log(error);
+    }
+}
+</script>
