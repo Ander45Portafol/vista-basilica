@@ -124,10 +124,11 @@
                     </div>
                 </div>
             </div>
-            <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
-            este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
             <div class="flex justify-center mt-6">
-                <TailwindPagination :data="data" @pagination-change-page="anuncio = $event" />
+                <TailwindPagination
+                    :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
+                    :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                    :data="data" @pagination-change-page="anuncio = $event" />
             </div>
         </div>
     </div>
@@ -210,7 +211,6 @@
                             <div class="flex-col">
                                 <p class="mb-4 text-center text-gray-200">Imagen - Anuncio</p>
                                 <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
-                                <input type="file">
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center" @click="crearAnuncio()">
@@ -314,6 +314,8 @@ import { TailwindPagination } from 'laravel-vue-pagination';
 import { onMounted, ref } from 'vue'
 //Importación de sweetalert
 import Swal from 'sweetalert2';
+//Importación de archivo de validaciones
+import validaciones from '../assets/validaciones.js';
 
 definePageMeta({
     layout: "principal",
@@ -443,7 +445,7 @@ async function buscarAnuncios() {
             useRouter().push({ query: { anuncio: anuncio.value } });
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
-            pagina.value = 1;
+            anuncio.value = 1;
             leerAnuncios();
         }
     } catch (error) {
@@ -567,6 +569,7 @@ async function leerUnAnuncio(id) {
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
                 visibilidad_anuncio: res.data.visibilidad_anuncio ? true : false
             }
+            console.log(form.value);
         })
     } catch (error) {
         console.log(error);
