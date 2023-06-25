@@ -8,7 +8,7 @@ onMounted(() => {
     const $buttonElement = document.querySelector('#btnadd');
     const $modalElement = document.querySelector('#staticModal');
     const $closeButton = document.querySelector('#closeModal');
-    const $modalText = document.querySelector('#modal_text');
+    const $modalText = document.querySelector('#modalText');
     const $btnEdit = document.querySelector('.editbtn');
     const modalOptions = {
         //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
@@ -85,7 +85,8 @@ const menuOptions = () => {
                         </button>
                     </div>
                 </form>
-                <div class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
+                <div
+                    class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -120,7 +121,8 @@ const menuOptions = () => {
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">1<span class="text-gray-500 font-normal ml-2">registro
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">1<span
+                    class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
             <div class="contained-data flex-col">
                 <div
@@ -130,9 +132,10 @@ const menuOptions = () => {
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Jovenes</p>
-                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a
-                                    href="#">Juvenil</a></p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Anderson Isaac Aguilar Ramos
+                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a href="#">Juvenil</a>
+                            </p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Anderson Isaac Aguilar
+                                Ramos
                             </p>
                         </div>
                     </div>
@@ -164,15 +167,15 @@ const menuOptions = () => {
     <!-- Modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-xl max-h-full">
+        <div class="relative w-full max-w-5xl max-h-full">
             <!-- Modal content -->
             <div class="relative rounded-lg shadow modal">
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
-                        <p class="text-3xl font-bold text-gray-100" id="modal_text">
+                        <p class="text-3xl font-bold text-gray-100" id="modalText">
                         </p>
-                        <p class="text-base font-medium text-gray-400">Enlace amigos</p>
+                        <p class="text-base font-medium text-gray-400">Grupos - Parroquiales</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -193,19 +196,60 @@ const menuOptions = () => {
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Enlace
-                                    - Amigo</label>
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
+                                    - Grupo</label>
                             </div>
-                            <div class="relative z-0 mt-10">
+                            <div class="relative z-0 mt-6">
+                                <input type="text" id="username" name="username"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="username"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
+                                    - Encargado</label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="text" id="username" name="username"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="username"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
+                                    - Encargado</label>
+                            </div>
+                            <div class="pt-4 mt-4 flex-col">
+                                <label for="" class="absolute text-gray-200">Categoria - Grupo</label>
+                                <select id="underline_select"
+                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex-col w-64">
+                            <div class="relative z-0">
                                 <input type="text" id="username" name="username"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
-                                    - Enlace</label>
+                                    - Grupo</label>
                             </div>
-                            <div class="flex-col mt-6">
-                                <label for="" class="text-gray-200">Visibilidad - Enlace</label>
+                            <div class="relative z-0 mt-6">
+                                <input type="text" id="username" name="username"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="username"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
+                                    - Encargado</label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="text" id="username" name="username"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="username"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
+                                    - Encargado</label>
+                            </div>
+                            <div class="flex-col mt-10">
+                                <label for="" class="text-gray-200">Visibilidad - Grupo</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
                                         <input type="checkbox" value="" class="sr-only peer">
@@ -218,7 +262,7 @@ const menuOptions = () => {
                         </div>
                         <div class="flex-col w-64">
                             <div class="flex-col">
-                                <p class="mb-4 text-center text-gray-200">Imagen - Enlace</p>
+                                <p class="mb-4 text-center text-gray-200">Logo - Grupo</p>
                                 <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
                             </div>
                             <div class="modal-buttons mt-24 flex justify-end items-end">
