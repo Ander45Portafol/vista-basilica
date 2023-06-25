@@ -432,11 +432,11 @@ await leerPaginas();
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
-    id_contacto: "",
-    nombre_contacto: "",
-    correo_contacto: "",
-    tipo_contacto: "",
-    visibilidad_contacto: false,
+    id_pagina: "",
+    nombre_pagina: "",
+    numero_pagina: "",
+    descripcion_pagina: "",
+    visibilidad_pagina: false,
 })
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
@@ -486,6 +486,7 @@ async function leerPaginas() {
             confirmButtonColor: '#3F4280'
         });
     }
+
 }
 
 //Función para buscar registros dependiendo del valor del buscador
@@ -494,7 +495,7 @@ async function buscarPaginas() {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
             // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/paginas_r?page=${pagina.value}&buscador=${buscar.value.buscador}`);
+            const { data: res } = await axios.get(`/paginas_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
             // Actualiza los datos en la constante data
             data.value = res;
             // Actualiza la URL con el parámetro de página
