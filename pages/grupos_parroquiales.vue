@@ -44,10 +44,10 @@ const menuOptions = () => {
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <NuxtLink to="/parroquia" class="ml-4">Enlaces Amigos</NuxtLink>
-                <NuxtLink to="/misa" class="active ml-4">Misas Online</NuxtLink>
-                <NuxtLink class="ml-4" to="/grupos_parroquiales">Grupos</NuxtLink>
-                <NuxtLink to="/configuracion_parroquia" class="ml-4">Configuracion</NuxtLink>
+                <NuxtLink class="ml-4" to="/parroquia">Enlaces Amigos</NuxtLink>
+                <NuxtLink class="ml-4" to="/misa">Misas Online</NuxtLink>
+                <NuxtLink class="active ml-4">Grupos</NuxtLink>
+                <NuxtLink class="ml-4" to="/configuracion_parroquia">Configuracion</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">
                 <button>
@@ -85,8 +85,7 @@ const menuOptions = () => {
                         </button>
                     </div>
                 </form>
-                <div
-                    class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
+                <div class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -121,8 +120,7 @@ const menuOptions = () => {
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">1<span
-                    class="text-gray-500 font-normal ml-2">registro
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">1<span class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
             <div class="contained-data flex-col">
                 <div
@@ -131,47 +129,10 @@ const menuOptions = () => {
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">MISA - Accion de
-                                gracias</p>
+                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Jovenes</p>
                             <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a
-                                    href="#">https://www.youtube.com/es</a></p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">12/12/2023
-                            </p>
-                        </div>
-                    </div>
-                    <div
-                        class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
-                            <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path
-                                    d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
-                                    stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                        <button
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
-                            <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path
-                                    d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
-                                    stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div
-                    class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
-                    <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                        <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
-                        <div
-                            class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">MISA - Accion de
-                                gracias</p>
-                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a
-                                    href="#">https://www.youtube.com/es</a></p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">12/12/2023
+                                    href="#">Juvenil</a></p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Anderson Isaac Aguilar Ramos
                             </p>
                         </div>
                     </div>
@@ -203,7 +164,7 @@ const menuOptions = () => {
     <!-- Modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-md max-h-full">
+        <div class="relative w-full max-w-xl max-h-full">
             <!-- Modal content -->
             <div class="relative rounded-lg shadow modal">
                 <!-- Modal header -->
@@ -211,7 +172,7 @@ const menuOptions = () => {
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modal_text">
                         </p>
-                        <p class="text-base font-medium text-gray-400">Misas</p>
+                        <p class="text-base font-medium text-gray-400">Enlace amigos</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -224,55 +185,44 @@ const menuOptions = () => {
                     </button>
                 </div>
                 <!-- Cuerpo de  -->
-                <div class="p-6 space-y-6 pb-10">
-                    <form action="" class="flex justify-center">
+                <div class="p-6 space-y-6 pb-14">
+                    <form action="" class="flex justify-evenly">
                         <div class="flex-col w-64">
                             <div class="relative z-0">
-                                <input type="text" id="enlace-misa" name="enlace_misa"
+                                <input type="text" id="username" name="username"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="enlace-misa"
+                                <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Enlace
-                                    - Misa</label>
+                                    - Amigo</label>
                             </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="fecha-misa" name="fecha_misa"
+                            <div class="relative z-0 mt-10">
+                                <input type="text" id="username" name="username"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="fecha-misa"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
-                                    - Misa</label>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="titulo-misa" name="titulo_misa"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="titulo-misa"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Titulo
-                                    - Misa</label>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="descripcion-misa" name="descripcion_misa"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="descripcion-misa"
+                                <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
-                                    - Misa</label>
+                                    - Enlace</label>
                             </div>
                             <div class="flex-col mt-6">
-                                <label for="visibilidad-misa" class="text-gray-200">Visibilidad - Misa</label>
+                                <label for="" class="text-gray-200">Visibilidad - Enlace</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input id="visibilidad-misa" type="checkbox" value="1" name="visibilidad_misa"
-                                            class="sr-only peer">
+                                        <input type="checkbox" value="" class="sr-only peer">
                                         <div
                                             class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                         </div>
                                     </label>
                                 </div>
                             </div>
-                            <div class="modal-buttons mt-14 flex justify-end items-end">
-                                <button type="submit" class="h-10 w-10 rounded-lg flex justify-center items-center">
+                        </div>
+                        <div class="flex-col w-64">
+                            <div class="flex-col">
+                                <p class="mb-4 text-center text-gray-200">Imagen - Enlace</p>
+                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
+                            </div>
+                            <div class="modal-buttons mt-24 flex justify-end items-end">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -349,5 +299,4 @@ const menuOptions = () => {
 
 .modal-buttons button {
     background-color: #32345a;
-}
-</style>
+}</style>
