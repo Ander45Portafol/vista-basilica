@@ -46,7 +46,7 @@ const menuOptions = () => {
             <div class="options">
                 <NuxtLink class="ml-4" to="/parroquia">Enlaces Amigos</NuxtLink>
                 <NuxtLink class="ml-4" to="/misa">Misas Online</NuxtLink>
-                <NuxtLink class="active ml-4">Grupos</NuxtLink>
+                <NuxtLink class="active ml-4" to="/grupos_parroquiales">Grupos</NuxtLink>
                 <NuxtLink class="ml-4" to="/configuracion_parroquia">Configuracion</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">
@@ -84,7 +84,6 @@ const menuOptions = () => {
                             </svg>
                         </button>
                     </div>
-                    <button class="ml-10 bg-space text-white w-48 h-12 rounded-xl"> <a href="/categoria_grupos">Categorias - Grupos</a></button>
                 </form>
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
@@ -132,11 +131,8 @@ const menuOptions = () => {
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Jovenes</p>
-                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a href="#">Juvenil</a>
-                            </p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Anderson Isaac Aguilar
-                                Ramos
+                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Juvenil</p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">On
                             </p>
                         </div>
                     </div>
@@ -168,7 +164,7 @@ const menuOptions = () => {
     <!-- Modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-5xl max-h-full">
+        <div class="relative w-full max-w-md max-h-full">
             <!-- Modal content -->
             <div class="relative rounded-lg shadow modal">
                 <!-- Modal header -->
@@ -190,67 +186,18 @@ const menuOptions = () => {
                 </div>
                 <!-- Cuerpo de  -->
                 <div class="p-6 space-y-6 pb-14">
-                    <form action="" class="flex justify-evenly">
+                    <form action="" class="flex justify-center">
                         <div class="flex-col w-64">
-                            <div class="relative z-0">
-                                <input type="text" id="username" name="username"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Grupo</label>
-                            </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="username" name="username"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Encargado</label>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                    - Encargado</label>
-                            </div>
-                            <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="absolute text-gray-200">Categoria - Grupo</label>
-                                <select id="underline_select"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value=""></option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="flex-col w-64">
-                            <div class="relative z-0">
-                                <input type="text" id="username" name="username"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
-                                    - Grupo</label>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
-                                    - Encargado</label>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
-                                    - Encargado</label>
+                                    - Categoria</label>
                             </div>
                             <div class="flex-col mt-10">
-                                <label for="" class="text-gray-200">Visibilidad - Grupo</label>
+                                <label for="" class="text-gray-200">Visibilidad - Categoria</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
                                         <input type="checkbox" value="" class="sr-only peer">
@@ -260,13 +207,7 @@ const menuOptions = () => {
                                     </label>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex-col w-64">
-                            <div class="flex-col">
-                                <p class="mb-4 text-center text-gray-200">Logo - Grupo</p>
-                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
-                            </div>
-                            <div class="modal-buttons mt-24 flex justify-end items-end">
+                            <div class="modal-buttons mt-12 flex justify-end items-end">
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -344,4 +285,5 @@ const menuOptions = () => {
 
 .modal-buttons button {
     background-color: #32345a;
-}</style>
+}
+</style>
