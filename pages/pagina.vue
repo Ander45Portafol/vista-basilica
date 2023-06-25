@@ -85,8 +85,7 @@
                     class="text-gray-500 font-normal ml-2">registros
                     encontrados!</span></p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-            <div id="sectionPage" v-for="pagina in paginas" :key="pagina.id_pagina">
-                <div class="contained-data flex-col">
+                <div class="contained-data flex-col" v-for="pagina in paginas" :key="pagina.id_pagina">
                     <div
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -128,7 +127,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
             <div class="flex justify-center mt-6">
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"

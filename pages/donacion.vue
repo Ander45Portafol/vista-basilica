@@ -87,7 +87,7 @@
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{donacion.id_donante}}</p>
+                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{donacion.donante}}</p>
                             <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
                                 {{donacion.fecha_donacion}}</p>
                             <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"><span>$</span>{{donacion.cantidad_donada}}

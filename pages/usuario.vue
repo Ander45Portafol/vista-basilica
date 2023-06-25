@@ -90,8 +90,8 @@
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                                 {{ usuario.nombre_usuario }} {{ usuario.apellido_usuario }}</p>
-                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a
-                                    href="#">{{usuario.id_rol_usuario}}</a></p>
+                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a 
+                                    href="#">{{usuario.rol}}</a></p>
                             <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{usuario.correo_usuario}}
                             </p>
                         </div>
