@@ -387,8 +387,6 @@ onMounted(() => {
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
-    //Constante para el botón de eliminar un registro
-    const buttonUpdate = document.getElementsByClassName('editbtn');
     //Constante para el modal
     const modalElement = document.getElementById('staticModal');
     //Constante para el botón de cerrar en el modal
@@ -481,7 +479,7 @@ watch(pagina, async () => {
 async function leerPaginas() {
     try {
         /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
-        además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
+        además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
         const { data: res } = await axios.get(`/paginas?page=${pagina.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
@@ -492,9 +490,6 @@ async function leerPaginas() {
         const sqlState = validaciones.extraerSqlState(mensajeError);
         //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
         const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
@@ -530,9 +525,6 @@ async function buscarPaginas() {
         const sqlState = validaciones.extraerSqlState(mensajeError);
         //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
         const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
@@ -621,6 +613,7 @@ async function crearPagina() {
         })
 
     } catch (error) {
+        console.log(error);
         //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
         //Se extrae el sqlstate (identificador de acciones SQL)
