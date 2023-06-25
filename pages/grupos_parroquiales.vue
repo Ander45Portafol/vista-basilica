@@ -1,10 +1,53 @@
+<script setup>
+import { onMounted } from 'vue'
+import { Modal } from 'flowbite'
+definePageMeta({
+    layout: "principal",
+})
+onMounted(() => {
+    const $buttonElement = document.querySelector('#btnadd');
+    const $modalElement = document.querySelector('#staticModal');
+    const $closeButton = document.querySelector('#closeModal');
+    const $modalText = document.querySelector('#modalText');
+    const $btnEdit = document.querySelector('.editbtn');
+    const modalOptions = {
+        //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+
+    if ($modalElement) {
+        const modal = new Modal($modalElement, modalOptions);
+        $buttonElement.addEventListener('click', () => {
+            $modalText.textContent = 'Registrar';
+            modal.show();
+        });
+        $btnEdit.addEventListener('click', () => {
+            $modalText.textContent = 'Editar';
+            modal.show();
+        });
+        $closeButton.addEventListener('click', () => modal.hide());
+        // programatically show
+        // modal.show();
+    }
+});
+
+const menuOptions = () => {
+    const options = document.getElementsByClassName('menu');
+    if (options.length >= 3) {
+        // Se imprime un logo de 3 barras, dependiendo de la resolucion y el numero de opciones del menu
+    }
+}
+</script>
+
 <template>
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <a href="" class="active ml-4">Usuarios</a>
-                <a href="/rolesusuario" class="ml-4">Roles Usuarios</a>
-                <a href="/rolesaccion" class="ml-4">Roles Accesos</a>
+                <NuxtLink class="ml-4" to="/parroquia">Enlaces Amigos</NuxtLink>
+                <NuxtLink class="ml-4" to="/misa">Misas Online</NuxtLink>
+                <NuxtLink class="active ml-4">Grupos</NuxtLink>
+                <NuxtLink class="ml-4" to="/configuracion_parroquia">Configuracion</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">
                 <button>
@@ -41,6 +84,7 @@
                             </svg>
                         </button>
                     </div>
+                    <button class="ml-10 bg-space text-white w-48 h-12 rounded-xl"> <a href="/categoria_grupos">Categorias - Grupos</a></button>
                 </form>
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
@@ -78,26 +122,26 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ usuarios.length }}<span
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">1<span
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
-            <div class="contained-data flex-col" v-for="usuario in usuarios" :key="usuario.id_usuario">
+            <div class="contained-data flex-col">
                 <div
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                                {{ usuario.nombre_usuario }} {{ usuario.apellido_usuario }}</p>
-                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a 
-                                    href="#">{{usuario.rol}}</a></p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{usuario.correo_usuario}}
+                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Jovenes</p>
+                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a href="#">Juvenil</a>
+                            </p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Anderson Isaac Aguilar
+                                Ramos
                             </p>
                         </div>
                     </div>
-                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-                        v-if="usuario.visibilidad_usuario == 1">
+                    <div
+                        class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                         <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -116,36 +160,12 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-                        v-else>
-                        <button
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
-                            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
-                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path
-                                    d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
-                                    stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
-                                    stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                    </div>
                 </div>
-            </div>
-            <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
-            este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
-            <div class="flex justify-center mt-6">
-                <TailwindPagination
-                    :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
-                    :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="usuario = $event" />
             </div>
         </div>
     </div>
 
-    <!-- Main modal -->
+    <!-- Modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-5xl max-h-full">
@@ -154,8 +174,9 @@
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
-                        <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
-                        <p class="text-lg font-medium text-gray-400">Usuario</p>
+                        <p class="text-3xl font-bold text-gray-100" id="modalText">
+                        </p>
+                        <p class="text-base font-medium text-gray-400">Grupos - Parroquiales</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -167,25 +188,17 @@
                         </svg>
                     </button>
                 </div>
-                <!-- Modal body -->
-                <div class="p-2 space-y-6 pb-8">
+                <!-- Cuerpo de  -->
+                <div class="p-6 space-y-6 pb-14">
                     <form action="" class="flex justify-evenly">
-                        <div class="flex-col w-72">
+                        <div class="flex-col w-64">
                             <div class="relative z-0">
-                                <input type="text" id="username" name="name"
+                                <input type="text" id="username" name="username"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Persona</label>
-                            </div>
-                            <div class="pt-4 mt-2 flex-col">
-                                <label for="" class="absolute text-gray-200">Tipo - Documento</label>
-                                <select id="underline_select"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-100 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="" class="text-gray-900">Seleccionar</option>
-                                    <option value="Cedula" class="text-gray-900">Cedula</option>
-                                </select>
+                                    - Grupo</label>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="username" name="username"
@@ -193,7 +206,7 @@
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Usuario</label>
+                                    - Encargado</label>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="username" name="username"
@@ -201,49 +214,43 @@
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                    - Usuario</label>
+                                    - Encargado</label>
                             </div>
                             <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="absolute text-gray-200">Rol - Usuario</label>
+                                <label for="" class="absolute text-gray-200">Categoria - Grupo</label>
                                 <select id="underline_select"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                     <option value=""></option>
                                 </select>
                             </div>
                         </div>
-                        <div class="flex-col w-72">
+                        <div class="flex-col w-64">
                             <div class="relative z-0">
-                                <input type="text" id="username" name="lastname"
+                                <input type="text" id="username" name="username"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="username"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
+                                    - Grupo</label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="text" id="username" name="username"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
-                                    - Persona</label>
-                            </div>
-                            <div class="relative z-0 mt-10">
-                                <input type="text" id="username" name="document"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento</label>
+                                    - Encargado</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="password" id="username" name="password"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Contraseña</label>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="phone-number"
+                                <input type="text" id="username" name="username"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
-                                    - Usuario</label>
+                                    - Encargado</label>
                             </div>
-                            <div class="flex-col mt-6">
-                                <label for="" class="text-gray-200">Visibilidad - Usuario</label>
+                            <div class="flex-col mt-10">
+                                <label for="" class="text-gray-200">Visibilidad - Grupo</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
                                         <input type="checkbox" value="" class="sr-only peer">
@@ -254,12 +261,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex-col">
-                            <div class="">
-                                <p class="mb-4 text-center text-gray-200">Imagen - Usuario</p>
-                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-2 rounded-lg" />
+                        <div class="flex-col w-64">
+                            <div class="flex-col">
+                                <p class="mb-4 text-center text-gray-200">Logo - Grupo</p>
+                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
                             </div>
-                            <div class="modal-buttons mt-40 flex justify-end items-end">
+                            <div class="modal-buttons mt-24 flex justify-end items-end">
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -296,6 +303,8 @@
         </div>
     </div>
 </template>
+
+
 <style scoped>
 .topprincipal .active {
     color: #c99856;
@@ -325,9 +334,6 @@
 .buttons-data .deletebtn {
     border: 3px solid #872727;
 }
-.buttons-data .changebtn{
-    border: 3px solid #3F4280;
-}
 
 .modal {
     background: linear-gradient(180deg,
@@ -338,157 +344,4 @@
 
 .modal-buttons button {
     background-color: #32345a;
-}
-</style>
-<script setup>
-import { Modal } from 'flowbite'
-//Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
-import axios from 'axios';
-import { TailwindPagination } from 'laravel-vue-pagination';
-import { onMounted, ref } from 'vue'
-//Importación de sweetalert
-import Swal from 'sweetalert2';
-definePageMeta({
-    layout: "principal",
-})
-onMounted(() => {
-    //Constantes para manejar el modal
-    //Constante para el botón de agregar un registro
-    const buttonElement = document.getElementById('btnadd');
-    //Constante para el botón de eliminar un registro
-    const buttonUpdate = document.getElementsByClassName('editbtn');
-    //Constante para el modal
-    const modalElement = document.getElementById('staticModal');
-    //Constante para el botón de cerrar en el modal
-    const closeButton = document.getElementById('closeModal');
-    //Constante para el titulo del modal
-    const modalText = document.getElementById('modalText');
-    //Constante para el boton de actualizar dentro del modal
-
-    /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
-    aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
-    const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-
-    //Se evalua si existe un modal y en caso de que si se ejecuta todo lo relacionado a su funcionamiento
-    if (modalElement) {
-        //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
-        const modal = new Modal(modalElement, modalOptions);
-
-        /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
-        del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
-        buttonElement.addEventListener('click', function () {
-            modalText.textContent = "Registrar";
-            fillSelect('/roles_usuarios');
-            modal.show();
-        });
-
-        /*Se crea un array para introducir todos los botones de editar registro (en este caso se hace por medio de una 
-        clase personalizada con la que cuentan todos los botones "editbtn". Además se les añade un evento click a cada botón,
-        y este evento click abre el modal, cambia su titulo y oculta el botón de agregar que se encuentra dentro del modal*/
-        Array.from(buttonUpdate).forEach(function (button) {
-            button.addEventListener('click', function () {
-                modalText.textContent = "Editar";
-                modal.show();
-            });
-        });
-
-        //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
-        closeButton.addEventListener('click', function () {
-            modal.hide();
-            limpiarForm();
-        });
-    }
-});
-
-//Operaciones SCRUD
-
-/*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
-para almacenar la información que traiga el axios*/
-const data = ref(null);
-const dataRol = ref(null);
-
-//Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const usuario = ref(useRoute().query.usuario || 1);
-
-//Se crea una variable reactiva para el buscador
-const buscar = ref({
-    buscador: "",
-})
-
-//Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
-await leerUsuarios();
-
-//Se crea una variable reactiva para manejar la información del modal
-const form = ref({
-    id_usuario: "",
-    nombre_usuario: "",
-    apellido_usuario: "",
-    usuario: "",
-    clave_usuario: "",
-    numero_documento_usuario: "",
-    tipo_documento: "",
-    correo_usuario: "",
-    telefono_usaurio: "",
-    idioma: "",
-    tema: "",
-    visibilidad_usuario: false,
-    id_rol_usuario: ""
-})
-
-/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
-y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let usuarios = computed(() => data.value.data);
-let Rolusuarios = computed(() => dataRol.value.data);
-
-
-/*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
-además muestra en la url la página actual*/
-watch(usuario, async () => {
-    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
-    if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        //buscarAnuncios();
-    } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerUsuarios();
-    }
-    //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { usuario: usuario.value } })
-})
-
-/*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
-?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
-async function leerUsuarios() {
-    try {
-        /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
-        además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/usuarios?page=${usuario.value}`);
-        //Se asigna el valor de la respuesta de axios a la constante data
-        data.value = res;
-    } catch (error) {
-        console.log(error);
-    }
-}
-//Función para limpiar todos los campos del form
-function limpiarForm() {
-    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_usuario = "";
-    form.value.nombre_usuario = "";
-    form.value.apellido_usuario = "";
-    form.value.usuario = "";
-    form.value.clave_usuario = "";
-    form.value.visibilidad_usuario = false;
-}
-
-async function fillSelect(namerouts) {
-    try{
-        const { dataRol: res } = await axios.get(nameroutes);
-            dataRol.value=res;
-    }catch(error){
-
-    }
-}
-</script>
+}</style>

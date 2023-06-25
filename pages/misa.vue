@@ -46,6 +46,7 @@ const menuOptions = () => {
             <div class="options">
                 <NuxtLink to="/parroquia" class="ml-4">Enlaces Amigos</NuxtLink>
                 <NuxtLink to="/misa" class="active ml-4">Misas Online</NuxtLink>
+                <NuxtLink class="ml-4" to="/grupos_parroquiales">Grupos</NuxtLink>
                 <NuxtLink to="/configuracion_parroquia" class="ml-4">Configuracion</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">

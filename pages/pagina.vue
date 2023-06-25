@@ -85,8 +85,7 @@
                     class="text-gray-500 font-normal ml-2">registros
                     encontrados!</span></p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-            <div id="sectionPage" v-for="pagina in paginas" :key="pagina.id_pagina">
-                <div class="contained-data flex-col">
+                <div class="contained-data flex-col" v-for="pagina in paginas" :key="pagina.id_pagina">
                     <div
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -105,7 +104,7 @@
                         <div
                             class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                             <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
-                                id="btnedit" @click="leerUnaPagina(pagina.id_pagina)">
+                                id="btnedit" @click="leerUnaPagina(pagina.id_pagina)" v-if="pagina.visibilidad_pagina == 1">
                                 <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -116,7 +115,7 @@
                             </button>
                             <button
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                                @click="borrarPagina(pagina.id_pagina)">
+                                @click="borrarPagina(pagina.id_pagina)" v-if="pagina.visibilidad_pagina == 1">
                                 <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -125,10 +124,23 @@
                                     </path>
                                 </svg>
                             </button>
+                            <button  @click="recuperarPagina(pagina.id_pagina)"
+                                class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4" v-else>
+                                <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none" 
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
+                                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path
+                                        d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
+                                        stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                    <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
+                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
             <div class="flex justify-center mt-6">
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
@@ -336,6 +348,10 @@
 .modal-buttons button {
     background-color: #32345a;
 }
+
+.buttons-data .changebtn{
+    border: 3px solid #3F4280;
+}
 </style>
 <script setup>
 //El setup se usa para manejar una sintaxis mas concisa del codigo y poder usar la reactividad de vue 3
@@ -369,8 +385,6 @@ onMounted(() => {
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
-    //Constante para el botón de eliminar un registro
-    const buttonUpdate = document.getElementsByClassName('editbtn');
     //Constante para el modal
     const modalElement = document.getElementById('staticModal');
     //Constante para el botón de cerrar en el modal
@@ -432,11 +446,11 @@ await leerPaginas();
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
-    id_contacto: "",
-    nombre_contacto: "",
-    correo_contacto: "",
-    tipo_contacto: "",
-    visibilidad_contacto: false,
+    id_pagina: "",
+    nombre_pagina: "",
+    numero_pagina: "",
+    descripcion_pagina: "",
+    visibilidad_pagina: false,
 })
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
@@ -463,7 +477,7 @@ watch(pagina, async () => {
 async function leerPaginas() {
     try {
         /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
-        además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
+        además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
         const { data: res } = await axios.get(`/paginas?page=${pagina.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
@@ -475,9 +489,6 @@ async function leerPaginas() {
         //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
         const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
-
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
             icon: 'error',
@@ -486,6 +497,7 @@ async function leerPaginas() {
             confirmButtonColor: '#3F4280'
         });
     }
+
 }
 
 //Función para buscar registros dependiendo del valor del buscador
@@ -494,7 +506,7 @@ async function buscarPaginas() {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
             // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/paginas_r?page=${pagina.value}&buscador=${buscar.value.buscador}`);
+            const { data: res } = await axios.get(`/paginas_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
             // Actualiza los datos en la constante data
             data.value = res;
             // Actualiza la URL con el parámetro de página
@@ -511,9 +523,6 @@ async function buscarPaginas() {
         const sqlState = validaciones.extraerSqlState(mensajeError);
         //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
         const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
@@ -602,6 +611,7 @@ async function crearPagina() {
         })
 
     } catch (error) {
+        console.log(error);
         //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
         //Se extrae el sqlstate (identificador de acciones SQL)
@@ -736,7 +746,7 @@ async function actualizarPagina() {
     }
 }
 
-//Función para cambiar la visibilidad de una página
+//Función para cambiar la visibilidad de una página para ocultarla
 async function borrarPagina(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
@@ -755,7 +765,7 @@ async function borrarPagina(id) {
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.put('/paginas_v/' + id);
+                await axios.delete('/paginas/' + id);
 
                 //Se cargan todas las páginas
                 leerPaginas();
@@ -763,7 +773,59 @@ async function borrarPagina(id) {
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Anuncio ocultado exitosamente'
+                    title: 'Página ocultada exitosamente'
+                })
+            } catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    });
+}
+
+//Función para cambiar la visibilidad de una página para recuperarla
+async function recuperarPagina(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea recuperar el registro?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete('/paginas/' + id);
+
+                //Se cargan todas las páginas
+                leerPaginas();
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Página recuperada exitosamente'
                 })
             } catch (error) {
                 //Se extrae el mensaje de error

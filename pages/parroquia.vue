@@ -44,8 +44,9 @@ const menuOptions = () => {
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <NuxtLink class="active ml-4" to="/parroquia">Enlaces Amigos</NuxtLink>
+                <NuxtLink class="active ml-4">Enlaces Amigos</NuxtLink>
                 <NuxtLink class="ml-4" to="/misa">Misas Online</NuxtLink>
+                <NuxtLink class="ml-4" to="/grupos_parroquiales">Grupos</NuxtLink>
                 <NuxtLink class="ml-4" to="/configuracion_parroquia">Configuracion</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">
