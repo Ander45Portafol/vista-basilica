@@ -202,7 +202,7 @@
                                             clip-rule="evenodd"></path>
                                     </svg>
                                     <div>
-                                        El nombre de página solo acepta <span class="font-medium"> letras y números </span>
+                                        El nombre de la página solo permite caracteres <span class="font-medium"> alfanuméricos y algunos especiales (- / |)</span>
                                     </div>
                                 </div>
                             </div>

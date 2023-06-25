@@ -194,12 +194,27 @@
                             <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                             <input type="hidden" id="id_seccion" v-model="form.id_seccion">
                             <div class="relative z-0">
-                                <input type="text" v-model="form.titulo_seccion" id="titulo_seccion" name="titulo_seccion"
+                                <input type="text" v-model="form.titulo_seccion" @input="validarTituloSeccion()"
+                                    id="titulo_seccion" name="titulo_seccion"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" required />
                                 <label for="titulo_seccion"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Titulo
                                     - Seccion<span class="text-sm ml-1"> * </span></label>
+                                <!-- Se coloca un if que evalua si la función de validar es false, así se muestra la alerta solo cuando es false -->
+                                <div v-if="!validarTituloSeccion()"
+                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        El título de la sección solo permite caracteres <span class="font-medium">
+                                            alfanuméricos y algunos especiales (- / |)</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" v-model="form.subtitulo_seccion" id="subtitulo_descripcion"
@@ -209,6 +224,20 @@
                                 <label for="subtitulo_descripcion"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtitulo
                                     - Seccion</label>
+                                <!-- Se coloca un if que evalua si la función de validar es false, así se muestra la alerta solo cuando es false -->
+                                <div v-if="!validarSubtituloSeccion()"
+                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        El subtitulo de la sección solo permite caracteres <span class="font-medium">
+                                            alfanuméricos y algunos especiales (- / |)</span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" v-model="form.descripcion_seccion" id="descripcion_seccion"
@@ -225,7 +254,7 @@
                                 <select id="underline_select" v-model="form.id_pagina"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                     <option value="0" class="bg-gray-700"> Seleccione una opción </option>
-                                    <!-- Se usa el v-for para llenar la información del select, haciendo uso de la variable "paginas" -->
+                                    <!-- Se usa el v-for para llenar la información del select, haciendo uso de "paginas" -->
                                     <option v-for="pagina in paginas" :key="pagina.id_pagina" :value="pagina.id_pagina"
                                         class="text-left bg-gray-700">
                                         #{{ pagina.numero_pagina }} || {{ pagina.nombre_pagina }}
@@ -289,6 +318,7 @@
                                 </button>
                                 <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
                                 <button id="btnModalAdd" type="submit" value="crear" @click="accionForm('crear')"
+                                    :disabled="!validarTituloSeccion() || !validarSubtituloSeccion() || form.id_pagina == 0"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -302,6 +332,7 @@
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
                                 <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
+                                    :disabled="!validarTituloSeccion() || !validarSubtituloSeccion() || form.id_pagina == 0"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -316,9 +347,6 @@
                             </div>
                         </div>
                     </form>
-                    <pre>
-                        {{ form }}  
-                    </pre>
                 </div>
             </div>
         </div>
@@ -659,7 +687,6 @@ async function crearSeccion() {
         })
 
     } catch (error) {
-        console.log(error);
         //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
         //Se extrae el sqlstate (identificador de acciones SQL)
@@ -902,6 +929,20 @@ async function recuperarSeccion(id) {
             }
         }
     });
+}
+
+//Validaciones 
+
+//Función para validar que el titulo de la sección solo lleve letras y números
+function validarTituloSeccion() {
+    var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_seccion);
+    return res;
+}
+
+//Función para validar que el subtitulo de la sección solo lleve letras y números
+function validarSubtituloSeccion() {
+    var res = validaciones.validarSoloLetrasYNumeros(form.value.subtitulo_seccion);
+    return res;
 }
 
 </script>
