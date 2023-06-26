@@ -207,7 +207,7 @@
                                 <label for="" class="absolute text-gray-200">Rol - Usuario</label>
                                 <select id="underline_select"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value=""></option>
+                                    <option v-for="rol_usuario in roles" :key="rol_usuario.id_rol_usuario" :value="rol_usuario.id_rol_usuario">{{rol_usuario.rol_usuario}}</option>
                                 </select>
                             </div>
                         </div>
@@ -381,7 +381,6 @@ onMounted(() => {
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
             modalText.textContent = "Registrar";
-            fillSelect('/roles_usuarios');
             modal.show();
         });
 
@@ -408,7 +407,6 @@ onMounted(() => {
 /*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
 para almacenar la información que traiga el axios*/
 const data = ref(null);
-const dataRol = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
 const usuario = ref(useRoute().query.usuario || 1);
@@ -441,7 +439,6 @@ const form = ref({
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
 let usuarios = computed(() => data.value.data);
-let Rolusuarios = computed(() => dataRol.value.data);
 
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
@@ -468,6 +465,7 @@ async function leerUsuarios() {
         const { data: res } = await axios.get(`/usuarios?page=${usuario.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
+        console.log(data.value);
     } catch (error) {
         console.log(error);
     }
@@ -482,13 +480,11 @@ function limpiarForm() {
     form.value.clave_usuario = "";
     form.value.visibilidad_usuario = false;
 }
-
-async function fillSelect(namerouts) {
-    try{
-        const { dataRol: res } = await axios.get(nameroutes);
-            dataRol.value=res;
-    }catch(error){
-
-    }
+var roles=ref(null);
+async function llenarRolUsuario(){
+    const {data:res}=await axios.get('roles-select');
+    roles.value=res;
+    console.log(roles.value)
 }
+llenarRolUsuario();
 </script>
