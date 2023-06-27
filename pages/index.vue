@@ -83,6 +83,9 @@
 import axios from 'axios';
 //Importación de sweetalert
 import Swal from 'sweetalert2';
+import 'flowbite';
+//Importación de archivo de validaciones
+import validaciones from '../assets/validaciones.js';
 
 import { useRouter } from 'vue-router';
 
