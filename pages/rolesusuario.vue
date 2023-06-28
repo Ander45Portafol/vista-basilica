@@ -499,6 +499,7 @@ async function leerUnRol(id) {
         console.log(error);
     }
 }
+
 async function actualizarRolUsuario() {
     try {
         //Se establece una variable de id con el valor que tiene guardado la variable form

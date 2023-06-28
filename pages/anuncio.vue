@@ -32,8 +32,9 @@
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar ..." v-model="buscar.buscador" @keyup="buscarAnuncios()">
                     <div class="flex justify-end items-center">
-                        <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
-                                fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                        <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
+                                stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
@@ -93,7 +94,8 @@
                             </p>
                         </div>
                     </div>
-                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2" v-if="anuncio.visibilidad_anuncio==1">
+                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
+                        v-if="anuncio.visibilidad_anuncio == 1">
                         <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
                             id="btnedit" @click="leerUnAnuncio(anuncio.id_anuncio)">
 
@@ -115,11 +117,21 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2" v-else>
+                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
+                        v-else>
                         <button
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                             @click="changeVisible(anuncio.id_anuncio)">
-                            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><path d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9" stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
+                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path
+                                    d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
+                                    stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
+                                    stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -213,7 +225,8 @@
                                 <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" @click="crearAnuncio()">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center"
+                                    @click="crearAnuncio()">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -292,9 +305,11 @@
 .buttons-data .deletebtn {
     border: 3px solid #872727;
 }
-.buttons-data .changebtn{
+
+.buttons-data .changebtn {
     border: 3px solid #3F4280;
 }
+
 .modal {
     background: linear-gradient(180deg,
             rgba(63, 66, 128, 0.6241) 0%,
@@ -514,15 +529,15 @@ async function crearAnuncio() {
         //Se realiza la petición axios mandando la ruta y el formData
         await axios.post("/anuncios/", formData);
 
+        //Se cargan todas las páginas y se cierra el modal
+        document.getElementById('closeModal').click();
+
         //Se lanza la alerta con el mensaje de éxito
         Toast.fire({
             icon: 'success',
             title: 'Anuncio creado exitosamente'
         })
-        //Se cargan todas las páginas y se cierra el modal
         leerAnuncios();
-        document.getElementById('closeModal').click();
-
     } catch (error) {
         console.log(error);
     }
