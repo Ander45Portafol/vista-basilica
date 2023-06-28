@@ -90,15 +90,17 @@
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                                 {{ usuario.nombre_usuario }} {{ usuario.apellido_usuario }}</p>
-                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a
-                                    href="#">{{usuario.id_rol_usuario}}</a></p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{usuario.correo_usuario}}
+                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a href="#">{{
+                                usuario.rol }}</a></p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{ usuario.correo_usuario
+                            }}
                             </p>
                         </div>
                     </div>
                     <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
                         v-if="usuario.visibilidad_usuario == 1">
-                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
+                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4"
+                            @click="leerUnUsuario(usuario.id_usuario)">
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -107,7 +109,8 @@
                             </svg>
                         </button>
                         <button
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            @click="borrarUsuario(usuario.id_usuario)">
                             <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -119,7 +122,8 @@
                     <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
                         v-else>
                         <button
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            @click="changeVisible(usuario.id_usuario)">
                             <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
@@ -169,45 +173,51 @@
                 </div>
                 <!-- Modal body -->
                 <div class="p-2 space-y-6 pb-8">
-                    <form action="" class="flex justify-evenly">
+                    <form @submit.prevent="submitForm()" class="flex justify-evenly">
                         <div class="flex-col w-72">
+                            <input type="hidden" v-model="form.id_usuario">
                             <div class="relative z-0">
                                 <input type="text" id="username" name="name"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
+                                    placeholder=" " autocomplete="off" v-model="form.nombre_usuario" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                     - Persona</label>
                             </div>
                             <div class="pt-4 mt-2 flex-col">
                                 <label for="" class="absolute text-gray-200">Tipo - Documento</label>
-                                <select id="underline_select"
+                                <select id="underline_select" v-model="form.tipo_documento"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-100 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="" class="text-gray-900">Seleccionar</option>
-                                    <option value="Cedula" class="text-gray-900">Cedula</option>
+                                    <option value="0" class="text-gray-900">Seleccionar</option>
+                                    <option value="Cédula" class="text-gray-900">Cédula</option>
+                                    <option value="Pasaporte" class="text-gray-900">Pasaporte</option>
+                                    <option value="Otro" class="text-gray-900">Otro...</option>
                                 </select>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="username" name="username"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
+                                    placeholder=" " autocomplete="off" v-model="form.usuario" />
                                 <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Usuario</label>
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    Usuario</label>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="username" name="username"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
+                                    placeholder=" " autocomplete="off" v-model="form.correo_usuario" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
                                     - Usuario</label>
                             </div>
                             <div class="pt-4 mt-4 flex-col">
                                 <label for="" class="absolute text-gray-200">Rol - Usuario</label>
-                                <select id="underline_select"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value=""></option>
+                                <select id="underline_select" v-model="form.id_rol_usuario"
+                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                    <option value="0" class="bg-gray-700 text-white"> Seleccione una opción </option>
+                                    <option class="bg-gray-700" v-for="rol_usuario in roles"
+                                        :key="rol_usuario.id_rol_usuario" :value="rol_usuario.id_rol_usuario">
+                                        {{ rol_usuario.rol_usuario }}</option>
                                 </select>
                             </div>
                         </div>
@@ -215,7 +225,7 @@
                             <div class="relative z-0">
                                 <input type="text" id="username" name="lastname"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
+                                    placeholder=" " autocomplete="off" v-model="form.apellido_usuario" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
                                     - Persona</label>
@@ -223,21 +233,21 @@
                             <div class="relative z-0 mt-10">
                                 <input type="text" id="username" name="document"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
+                                    placeholder=" " autocomplete="off" v-model="form.numero_documento_usuario" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento</label>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="password" id="username" name="password"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
+                                    placeholder=" " autocomplete="off" v-model="form.clave_usuario" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Contraseña</label>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="username" name="phone-number"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
+                                    placeholder=" " autocomplete="off" v-model="form.telefono_usuario" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
                                     - Usuario</label>
@@ -246,7 +256,8 @@
                                 <label for="" class="text-gray-200">Visibilidad - Usuario</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input type="checkbox" value="" class="sr-only peer">
+                                        <input type="checkbox" value="" class="sr-only peer"
+                                            v-model="form.visibilidad_usuario">
                                         <div
                                             class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                         </div>
@@ -260,17 +271,6 @@
                                 <img src="" class="h-44 w-40 border-2 border-slate-900 ml-2 rounded-lg" />
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center">
-                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path
-                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                        <path
-                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                    </svg>
-                                </button>
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -286,6 +286,31 @@
                                             stroke-linejoin="round"></path>
                                         <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" value="crear"
+                                    @click="accionForm('crear')" id="btnModalAdd">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                    </svg>
+                                </button>
+                                <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
+                                <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
                                     </svg>
                                 </button>
                             </div>
@@ -325,7 +350,8 @@
 .buttons-data .deletebtn {
     border: 3px solid #872727;
 }
-.buttons-data .changebtn{
+
+.buttons-data .changebtn {
     border: 3px solid #3F4280;
 }
 
@@ -355,14 +381,16 @@ onMounted(() => {
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
-    //Constante para el botón de eliminar un registro
-    const buttonUpdate = document.getElementsByClassName('editbtn');
     //Constante para el modal
     const modalElement = document.getElementById('staticModal');
     //Constante para el botón de cerrar en el modal
     const closeButton = document.getElementById('closeModal');
     //Constante para el titulo del modal
     const modalText = document.getElementById('modalText');
+    //Constante para el boton de actualizar dentro del modal
+    const modalBtnUpdate = document.getElementById('btnModalUpdate');
+    //Constante para el boton de agregar dentro del modal
+    const modalBtnAdd = document.getElementById('btnModalAdd');
     //Constante para el boton de actualizar dentro del modal
 
     /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
@@ -380,21 +408,11 @@ onMounted(() => {
         /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
+            modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
-            fillSelect('/roles_usuarios');
+            modalBtnUpdate.classList.add('hidden');
             modal.show();
         });
-
-        /*Se crea un array para introducir todos los botones de editar registro (en este caso se hace por medio de una 
-        clase personalizada con la que cuentan todos los botones "editbtn". Además se les añade un evento click a cada botón,
-        y este evento click abre el modal, cambia su titulo y oculta el botón de agregar que se encuentra dentro del modal*/
-        Array.from(buttonUpdate).forEach(function (button) {
-            button.addEventListener('click', function () {
-                modalText.textContent = "Editar";
-                modal.show();
-            });
-        });
-
         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
         closeButton.addEventListener('click', function () {
             modal.hide();
@@ -408,7 +426,6 @@ onMounted(() => {
 /*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
 para almacenar la información que traiga el axios*/
 const data = ref(null);
-const dataRol = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
 const usuario = ref(useRoute().query.usuario || 1);
@@ -429,19 +446,18 @@ const form = ref({
     usuario: "",
     clave_usuario: "",
     numero_documento_usuario: "",
-    tipo_documento: "",
+    tipo_documento: 0,
     correo_usuario: "",
-    telefono_usaurio: "",
-    idioma: "",
-    tema: "",
+    telefono_usuario: "",
+    idioma: "Español (ES)",
+    tema: "Claro",
     visibilidad_usuario: false,
-    id_rol_usuario: ""
+    id_rol_usuario: 0,
 })
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
 let usuarios = computed(() => data.value.data);
-let Rolusuarios = computed(() => dataRol.value.data);
 
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
@@ -468,6 +484,7 @@ async function leerUsuarios() {
         const { data: res } = await axios.get(`/usuarios?page=${usuario.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
+        console.log(res);
     } catch (error) {
         console.log(error);
     }
@@ -480,15 +497,251 @@ function limpiarForm() {
     form.value.apellido_usuario = "";
     form.value.usuario = "";
     form.value.clave_usuario = "";
+    form.tipo_documento = "0";
+    form.correo_usuario = "";
+    form.telefono_usuario = "";
+    form.numero_documento_usuario = "";
     form.value.visibilidad_usuario = false;
+    form.value.id_rol_usuario = '0';
+}
+var roles = ref(null);
+async function llenarRolUsuario() {
+    const { data: res } = await axios.get('roles-select');
+    roles.value = res;
+    console.log(roles.value)
+}
+llenarRolUsuario();
+
+//Toast del sweetalert
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+})
+//Variable para validar que acción se quiere hacer cuando se hace un submit al form
+var formAccion = null;
+
+//Función para evaluar que acción se va a hacer al hacer submit en el form
+function accionForm(accion) {
+    formAccion = accion;
 }
 
-async function fillSelect(namerouts) {
-    try{
-        const { dataRol: res } = await axios.get(nameroutes);
-            dataRol.value=res;
-    }catch(error){
-
+//Función para crear/actualizar un registro cuando se ejecuta el submit del form
+function submitForm() {
+    if (formAccion == "crear") {
+        crearUsuario();
+    } else {
+        actualizarUsuarios();
     }
+}
+//Función para crear una página
+async function crearUsuario() {
+    try {
+        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        const formData = {
+            nombre_usuario: form.value.nombre_usuario,
+            apellido_usuario: form.value.apellido_usuario,
+            usuario: form.value.usuario,
+            clave_usuario: form.value.clave_usuario,
+            numero_documento_usuario: form.value.numero_documento_usuario,
+            tipo_documento: form.value.tipo_documento,
+            correo_usuario: form.value.correo_usuario,
+            telefono_usuario: form.value.telefono_usuario,
+            tema: form.value.tema,
+            idioma: form.value.idioma,
+            visibilidad_usuario: form.value.visibilidad_usuario,
+            id_rol_usuario: form.value.id_rol_usuario,
+        };
+        leerUsuarios();
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.post("/usuarios/", formData);
+
+        //Se lanza la alerta con el mensaje de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Usuario creado exitosamente'
+        })
+        //Se cargan todas las páginas y se cierra el modal
+
+        document.getElementById('closeModal').click();
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
+async function leerUnUsuario(id) {
+    try {
+        //Se hace la petición axios y se evalua la respuesta
+        await axios.get('/usuarios/' + id).then(res => {
+            console.log(res);
+            //Constante para el modal
+            const modalElement = document.getElementById('staticModal');
+            //Constante que contiene las caracteristicas del modal
+            const modalOptions = {
+                backdrop: 'static',
+                backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+            };
+            //Instanciamos el boton para cerrar el modal
+            const closeButton = document.getElementById('closeModal');
+            //Constante para el titulo del modal
+            const modalText = document.getElementById('modalText');
+            const modalBtnAdd = document.getElementById('btnModalAdd');
+            //Constante para el boton de actualizar dentro del modal
+            const modalBtnUpdate = document.getElementById('btnModalUpdate');
+            //Instanciamos el modal
+            const modal = new Modal(modalElement, modalOptions);
+            //Le modificamos el texto del header al modal
+            modalText.textContent = 'Editar';
+            //Colocamos visibilidad al botón de actualizar en el modal
+            modalBtnUpdate.classList.remove('hidden');
+            //Ocultamos el botón de agregar en el modal
+            modalBtnAdd.classList.add('hidden');
+            //Abrimos el modal
+            modal.show();
+            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
+            closeButton.addEventListener('click', function () {
+                //Ocultamos el modal
+                modal.hide();
+                //Limpiamos el modal
+                limpiarForm();
+            })
+            //Llenamos los inputs del modal con su respectiva informacion
+            form.value = {
+                id_usuario: res.data.id_usuario,
+                nombre_usuario: res.data.nombre_usuario,
+                apellido_usuario: res.data.apellido_usuario,
+                usuario: res.data.usuario,
+                clave_usuario: res.data.clave_usuario,
+                id_rol_usuario: res.data.id_rol_usuario,
+                numero_documento_usuario: res.data.numero_documento_usuario,
+                correo_usuario: res.data.correo_usuario,
+                telefono_usuario: res.data.telefono_usuario,
+                tipo_documento: res.data.tipo_documento,
+                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
+                visibilidad_usuario: res.data.visibilidad_usuario ? true : false
+            }
+            console.log(form.value);
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function actualizarUsuarios() {
+    try {
+        //Se establece una variable de id con el valor que tiene guardado la variable form
+        var id = form.value.id_usuario;
+        console.log(id);
+        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        const formData = {
+            nombre_usuario: form.value.nombre_usuario,
+            apellido_usuario: form.value.apellido_usuario,
+            usuario: form.value.usuario,
+            clave_usuario: form.value.clave_usuario,
+            numero_documento_usuario: form.value.numero_documento_usuario,
+            tipo_documento: form.value.tipo_documento,
+            correo_usuario: form.value.correo_usuario,
+            telefono_usuario: form.value.telefono_usuario,
+            tema: form.value.tema,
+            idioma: form.value.idioma,
+            visibilidad_usuario: form.value.visibilidad_usuario,
+            id_rol_usuario: form.value.id_rol_usuario,
+        };
+
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.put("/usuarios/" + id, formData);
+
+        //Se cargan todas las páginas y se cierra el modal
+        leerUsuarios();
+        document.getElementById('closeModal').click();
+
+        //Se lanza la alerta de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Página actualizada exitosamente'
+        })
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//Función para cambiar la visibilidad de una página
+async function borrarUsuario(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea ocultar el registro?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete('/usuarios/' + id);
+
+                //Se cargan todas las páginas
+                leerUsuarios();
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Usuario desactivado exitosamente'
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
+}
+//Función para cambiar la visibilidad de una página
+async function changeVisible(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea hacer activar el usuario?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete('/usuarios/' + id);
+
+                //Se cargan todas las páginas
+                leerUsuarios();
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Proceso finalizado'
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
 }
 </script>

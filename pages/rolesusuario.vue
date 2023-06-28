@@ -1,5 +1,5 @@
 <template>
-   <div class="principal mt-6">
+    <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
                 <a href="/usuario" class="ml-4">Usuarios</a>
@@ -78,7 +78,7 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{rolusuarios.length}}<span
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ rolusuarios.length }}<span
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
             <div class="contained-data flex-col" v-for="rolusuario in rolusuarios" :key="rolusuario.id_rol_usuario">
@@ -86,23 +86,25 @@
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
-                        <div
-                            class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center" v-if="rolusuario.visibilidad_rol_usuario==1">
+                        <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center"
+                            v-if="rolusuario.visibilidad_rol_usuario == 1">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                                {{rolusuario.rol_usuario}}</p>
+                                {{ rolusuario.rol_usuario }}</p>
                             <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">On
                             </p>
                         </div>
-                        <div
-                            class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center" v-else>
+                        <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center"
+                            v-else>
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                                {{rolusuario.rol_usuario}}</p>
+                                {{ rolusuario.rol_usuario }}</p>
                             <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Off
                             </p>
                         </div>
                     </div>
-                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
+                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
+                        v-if="rolusuario.visibilidad_rol_usuario == 1">
+                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4"
+                            @click="leerUnRol(rolusuario.id_rol_usuario)">
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -111,12 +113,30 @@
                             </svg>
                         </button>
                         <button
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            @click="borrarRol(rolusuario.id_rol_usuario)">
                             <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
                                     d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
                                     stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
+                        v-else>
+                        <button
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            @click="changeVisible(rolusuario.id_rol_usuario)">
+                            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
+                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path
+                                    d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
+                                    stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
+                                    stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
                     </div>
@@ -130,9 +150,105 @@
             </div>
         </div>
     </div>
+    <!-- Main modal -->
+    <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
+        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative rounded-lg shadow modal">
+                <!-- Modal header -->
+                <div class="flex items-start justify-between p-4 rounded-t">
+                    <div class="flex-col ml-4 pt-4">
+                        <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
+                        <p class="text-lg font-medium text-gray-400">Roles - Usuarios</p>
+                    </div>
+                    <button type="button" id="closeModal"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-hide="staticModal">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-6 space-y-6 pb-10">
+                    <form action="" class="mt-4 flex justify-center pb-4">
+                        <div class="flex-col w-64">
+                            <input type="hidden" v-model="form.id_rol_usuario">
+                            <div class="relative z-0">
+                                <input type="text" id="username" name="name"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" v-model="form.rol_usuario" />
+                                <label for="username"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Rol
+                                    - Usuario</label>
+                            </div>
+                            <div class="flex-col mt-10">
+                                <label for="" class="text-gray-200">Visibilidad - Rol usuario</label>
+                                <div class="flex justify-start mt-2">
+                                    <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                        <input type="checkbox" value="" class="sr-only peer"
+                                            v-model="form.visibilidad_rol_usuario">
+                                        <div
+                                            class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="modal-buttons mt-10 flex justify-end items-end">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center"
+                                    @click="crearRolUsuario()">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                    </svg>
+                                </button>
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
+                                    <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
+                                            stroke-width="2" stroke-linecap="round"></path>
+                                        <path
+                                            d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
+                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path
+                                            d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
+                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <!-- Se le coloca la función para actualizar al botón -->
+                                <button id="btnModalUpdate" type="button" @click="actualizarRolUsuario()"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 <style scoped>
-
 .topprincipal .active {
     color: #c99856;
     border-bottom: 3px solid #c99856;
@@ -161,6 +277,21 @@
 .buttons-data .deletebtn {
     border: 3px solid #872727;
 }
+
+.buttons-data .changebtn {
+    border: 3px solid #3F4280;
+}
+
+.modal {
+    background: linear-gradient(180deg,
+            rgba(63, 66, 128, 0.6241) 0%,
+            rgba(49, 50, 71, 0.5609) 100%);
+    background-color: #1e1e1e;
+}
+
+.modal-buttons button {
+    background-color: #32345a;
+}
 </style>
 <script setup>
 import { Modal } from 'flowbite'
@@ -170,7 +301,7 @@ import { TailwindPagination } from 'laravel-vue-pagination';
 import { onMounted, ref } from 'vue'
 //Importación de sweetalert
 import Swal from 'sweetalert2';
-    definePageMeta({
+definePageMeta({
     layout: "principal",
 })
 
@@ -204,7 +335,6 @@ onMounted(() => {
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
             modalText.textContent = "Registrar";
-            fillSelect('/roles_usuarios');
             modal.show();
         });
 
@@ -244,10 +374,17 @@ await leerRolesUsuarios();
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
-    id_rol_usuario:"",
-    rol_usuario:"",
-    visibbilidad_rol_usuario:false
+    id_rol_usuario: "",
+    rol_usuario: "",
+    visibilidad_rol_usuario: false
 })
+//Función para limpiar todos los campos del form
+function limpiarForm() {
+    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
+    form.value.id_rol_usuario = "";
+    form.value.rol_usuario = "";
+    form.value.visibilidad_rol_usuario = false;
+}
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
@@ -280,5 +417,184 @@ async function leerRolesUsuarios() {
     } catch (error) {
         console.log(error);
     }
+}
+//Toast del sweetalert
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+})
+
+//Función para crear una página
+async function crearRolUsuario() {
+    try {
+        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        const formData = {
+            rol_usuario: form.value.rol_usuario,
+            visibilidad_rol_usuario: form.value.visibilidad_rol_usuario,
+        };
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.post("/roles_usuarios/", formData);
+
+        //Se lanza la alerta con el mensaje de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Anuncio creado exitosamente'
+        })
+        //Se cargan todas las páginas y se cierra el modal
+        leerRolesUsuarios();
+        document.getElementById('closeModal').click();
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
+async function leerUnRol(id) {
+
+    try {
+        //Se hace la petición axios y se evalua la respuesta
+        await axios.get('/roles_usuarios/' + id).then(res => {
+            //Constante para el modal
+            const modalElement = document.getElementById('staticModal');
+            //Constante que contiene las caracteristicas del modal
+            const modalOptions = {
+                backdrop: 'static',
+                backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+            };
+            //Instanciamos el boton para cerrar el modal
+            const closeButton = document.getElementById('closeModal');
+            //Constante para el titulo del modal
+            const modalText = document.getElementById('modalText');
+            //Instanciamos el modal
+            const modal = new Modal(modalElement, modalOptions);
+            //Le modificamos el texto del header al modal
+            modalText.textContent = 'Editar';
+            //Abrimos el modal
+            modal.show();
+            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
+            closeButton.addEventListener('click', function () {
+                //Ocultamos el modal
+                modal.hide();
+                //Limpiamos el modal
+                limpiarForm();
+            })
+            //Llenamos los inputs del modal con su respectiva informacion
+            form.value = {
+                id_rol_usuario: res.data.id_rol_usuario,
+                rol_usuario: res.data.rol_usuario,
+                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
+                visibilidad_rol_usuario: res.data.visibilidad_rol_usuario ? true : false
+            }
+            console.log(form.value);
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function actualizarRolUsuario() {
+    try {
+        //Se establece una variable de id con el valor que tiene guardado la variable form
+        var id = form.value.id_rol_usuario;
+        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        const formData = {
+            rol_usuario: form.value.rol_usuario,
+            visibilidad_rol_usuario: form.value.visibilidad_rol_usuario
+        };
+
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.put("/roles_usuarios/" + id, formData);
+
+        //Se cargan todas las páginas y se cierra el modal
+        leerRolesUsuarios();
+        document.getElementById('closeModal').click();
+
+        //Se lanza la alerta de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Página actualizada exitosamente'
+        })
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+//Función para cambiar la visibilidad de una página
+async function borrarRol(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea ocultar el registro?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete('/roles_usuarios/' + id);
+
+                //Se cargan todas las páginas
+                leerRolesUsuarios();
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Rol de usuario ocultada exitosamente'
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
+}
+//Función para cambiar la visibilidad de una página
+async function changeVisible(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea hacer visible el rol?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete('/roles_usuarios/' + id);
+
+                //Se cargan todas las páginas
+                leerRolesUsuarios();
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Proceso finalizado'
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
 }
 </script>

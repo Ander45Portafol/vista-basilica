@@ -1,32 +1,22 @@
-<script setup>
-definePageMeta({
-    layout: "principal",
-})
-
-const menuOptions = () => {
-    const options = document.getElementsByClassName('menu');
-    if (options.length >= 3) {
-        // Se imprime un logo de 3 barras, dependiendo de la resolucion y el numero de opciones del menu
-    }
-}
-</script>
-
 <template>
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
                 <NuxtLink to="/parroquia" class="ml-4">Enlaces Amigos</NuxtLink>
                 <NuxtLink to="/misa" class="ml-4">Misas Online</NuxtLink>
+                <NuxtLink class="ml-4" to="/grupos_parroquiales">Grupos</NuxtLink>
                 <NuxtLink to="/configuracion_parroquia" class="active ml-4">Configuracion</NuxtLink>
             </div>
         </div>
         <div>
-            <form action="" class="flex pt-14 justify-evenly max-[700px]:flex-col max-[700px]:items-center max-[700px]:text-2xl">
+            <form action=""
+                class="flex pt-14 justify-evenly max-[700px]:flex-col max-[700px]:items-center max-[700px]:text-2xl">
                 <div class="flex-col w-80">
+                    <input type="hidden" v-model="form.id_configuracion_parroquia">
                     <div class="relative z-0">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
-                            placeholder=" " autocomplete="off" />
+                            placeholder=" " autocomplete="off" v-model="form.nombre_parroquia" />
                         <label for="floating_standard"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900  peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                             - Parroquia</label>
@@ -34,7 +24,7 @@ const menuOptions = () => {
                     <div class="relative z-0 mt-12">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
-                            placeholder=" " autocomplete="off" />
+                            placeholder=" " autocomplete="off" v-model="form.ruc_parroquia" />
                         <label for="floating_standard"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">RUC
                             - Parroquia</label>
@@ -42,60 +32,62 @@ const menuOptions = () => {
                     <div class="relative z-0 mt-8">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
-                            placeholder=" " autocomplete="off" />
+                            placeholder=" " autocomplete="off" v-model=form.direccion_parroquia />
                         <label for="floating_standard"
-                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
+                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Direccion
                             - Parroquia</label>
                     </div>
                     <div class="relative z-0 mt-12">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
-                            placeholder=" " autocomplete="off" />
+                            placeholder=" " autocomplete="off" v-model="form.nombre_representante" />
                         <label for="floating_standard"
-                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Direccion
-                            - Parroquia</label>
+                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
+                            - Rrepresentante</label>
                     </div>
-                    <div class="relative z-0 mt-12 max-[700px]:mt-10">
-                        <input type="text" id="floating_standard"
-                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
-                            placeholder=" " autocomplete="off" />
-                        <label for="floating_standard"
-                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Identificador
-                            - Parroquia</label>
+                    <div class="pt-4 mt-6 flex-col">
+                        <label for="" class="absolute text-slate-900">Tipo - Documento</label>
+                        <select id="underline_select" v-model="form.tipo_documento_representante"
+                            class="block mt-4 py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-salte-900 appearance-none focus:outline-none focus:ring-0 focus:border-slate-900 peer">
+                            <option value="0" class="bg-white text-slate-900"> Seleccione una opción </option>
+                            <option value="Cédula">Cédula</option>
+                            <option value="Pasaporte">Pasaporte</option>
+                            <option value="Otro">Otro...</option>
+                        </select>
                     </div>
                 </div>
                 <div class="flex-col w-80 max-[700px]:mt-10">
                     <div class="relative z-0">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
-                            placeholder=" " autocomplete="off" />
+                            placeholder=" " autocomplete="off" v-model="form.pagina_web" />
                         <label for="floating_standard"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Pagina
                             web - Parroquia</label>
                     </div>
                     <div class="relative z-0 mt-12">
                         <input type="text" id="floating_standard"
-                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
-                            placeholder=" " autocomplete="off" />
-                        <label for="floating_standard"
-                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Persona
-                            - Contacto</label>
-                    </div>
-                    <div class="relative z-0 mt-12">
-                        <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none dark:text-white focus:outline-none focus:ring-0 focus:border-gray-900 peer"
-                            placeholder=" " autocomplete="off" />
+                            placeholder=" " autocomplete="off" v-model="form.identificador_parroquia" />
                         <label for="floating_standard"
-                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
+                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Identificador
                             - Parroquia</label>
                     </div>
                     <div class="relative z-0 mt-12">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-900 peer"
-                            placeholder=" " autocomplete="off" />
+                            placeholder=" " autocomplete="off" v-model="form.apellido_representante" />
                         <label for="floating_standard"
-                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fax
-                            - Parroquia</label>
+                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
+                            - Rrepresentante</label>
+                    </div>
+                    <div class="relative z-0 mt-10">
+                        <input type="text" id="floating_standard"
+                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
+                            placeholder=" " autocomplete="off" v-model="form.documento_representante" />
+                        <label for="floating_standard"
+                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento
+                            - Rrepresentante</label>
                     </div>
                 </div>
                 <div class="flex-col h-96 max-[700px]:mt-10">
@@ -152,3 +144,85 @@ const menuOptions = () => {
     border-bottom: 3px solid #c99856;
 }
 </style>
+<script setup>
+//Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
+import axios from 'axios';
+import { ref } from 'vue'
+//Importación de sweetalert
+import Swal from 'sweetalert2';
+definePageMeta({
+    layout: "principal",
+})
+
+// const menuOptions = () => {
+//     const options = document.getElementsByClassName('menu');
+//     if (options.length >= 3) {
+//         // Se imprime un logo de 3 barras, dependiendo de la resolucion y el numero de opciones del menu
+//     }
+// }
+//Operaciones SCRUD
+
+/*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
+para almacenar la información que traiga el axios*/
+const data = ref(null);
+
+//Se crea una variable reactiva para manejar la información del modal
+const form = ref({
+    id_configuracion_parroquia: "",
+    nombre_parroquia: "",
+    pagina_web: "",
+    ruc_parroquia: "",
+    direccion_parroquia: "",
+    nombre_representante: "",
+    apellido_representante: "",
+    documento_representante: "",
+    tipo_documento_representante: 0,
+    telefono_parroquia: "",
+    identificador_parroquia: "",
+})
+let parroquias = computed(() => data.value.data);
+/*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
+?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
+async function leerParroquia() {
+    try {
+        /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
+        además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
+        const { data: res } = await axios.get(`/parroquia`);
+        //Se asigna el valor de la respuesta de axios a la constante data
+        data.value = res;
+        //console.log(data.value);
+        console.log(data.value);
+        //form.value={nombre_parroquia:res.data.nombre_parroquia,}
+    } catch (error) {
+        console.log(error);
+    }
+}
+leerParroquia();
+async function leerUnaParroquia(){
+    var id=1;
+    try {
+        //Se hace la petición axios y se evalua la respuesta
+        await axios.get('/parroquia/' + id).then(res => {
+            console.log(res);
+            //Llenamos los inputs del modal con su respectiva informacion
+            form.value = {
+                id_configuracion_parroquia:res.data.id_configuracion_parroquia,
+                nombre_parroquia:res.data.nombre_parroquia,
+                pagina_web:res.data.pagina_web,
+                ruc_parroquia:res.data.ruc_parroquia,
+                identificador_parroquia:res.data.identificador_parroquia,
+                direccion_parroquia:res.data.direccion_parroquia,
+                apellido_representante:res.data.apellido_representante,
+                nombre_representante:res.data.nombre_representante,
+                documento_representante:res.data.documento_representante,
+                tipo_documento_representante:res.data.tipo_documento_representante
+            }
+            console.log(form.value);
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+leerUnaParroquia();
+
+</script>

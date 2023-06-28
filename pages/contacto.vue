@@ -413,6 +413,7 @@ const form = ref({
     correo_contacto: "",
     tipo_contacto: "",
     visibilidad_contacto: false,
+    id_configuracion_parroquia: null
 })
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
@@ -515,6 +516,7 @@ async function crearContacto() {
             correo_contacto: form.value.correo_contacto,
             tipo_contacto: form.value.tipo_contacto,
             visibilidad_contacto: form.value.visibilidad_contacto,
+            id_configuracion_parroquia :1
         };
 
         //Se realiza la petición axios mandando la ruta y el formData
@@ -591,6 +593,7 @@ async function actualizarContacto() {
             correo_contacto: form.value.correo_contacto,
             tipo_contacto: form.value.tipo_contacto,
             visibilidad_contacto: form.value.visibilidad_contacto,
+            id_configuracion_parroquia :1
         };
 
         //Se realiza la petición axios mandando la ruta y el formData
