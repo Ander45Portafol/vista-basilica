@@ -43,8 +43,39 @@ const validaciones = {
         //Se retorna solo el código de error
         if (revision && revision.length > 1) {
             return revision[1];
-        }else{
+        } else {
             return null;
+        }
+    },
+    //Función para convertir números enteros a decimales (recibe el número a convertir y cuantos digitos quiere poner despues del punto)
+    convertirDecimales(numero, digitospunto) {
+        //Se evalua si la cantidad es un número o no
+        if (isNaN(numero)) {
+            return false;
+        } else {
+            //Se convierte a decimal con el número de digitos indicado
+            var numero_decimal = Number.parseFloat(numero).toFixed(digitospunto);
+            return numero_decimal;
+        }
+    },
+    //Función para validar inputs tipo date (recibe la cantidad de días y meses a agregar/restar)
+    validarFecha(dias, meses) {
+        //Fecha actual
+        var fecha_actual = new Date();
+
+        //Fechas minima y máxima, además de cambiar el formato de las fechas
+        var fecha_minima = new Date(fecha_actual.getFullYear(), fecha_actual.getMonth() - meses, fecha_actual.getDate() - dias);
+        var fecha_maxima = new Date(fecha_actual.getFullYear(), fecha_actual.getMonth() + meses, fecha_actual.getDate() + dias);
+
+        //ISO String es un método de js que devuelve las fechas en el formato YYYY-MM-DD::mm:ss (mm:ss simbolizando minutos y segundos)
+        /*Entonces se usa el ISO String para cambiar el formato de la fecha, además usando el split T se separa el tiempo de la fecha y se toma la posición [0] 
+        (sería la que esta antes del tiempo, es decir, solo la fecha) para devolver la fecha sola*/
+        var fecha_min_string = fecha_minima.toISOString().split('T')[0];
+        var fecha_max_string = fecha_maxima.toISOString().split('T')[0];
+
+        return {
+            min: fecha_min_string,
+            max: fecha_max_string
         }
     }
 
