@@ -84,6 +84,7 @@ import axios from 'axios';
 //Importación de sweetalert
 import Swal from 'sweetalert2';
 import 'flowbite';
+import { onMounted } from 'vue'
 //Importación de archivo de validaciones
 import validaciones from '../assets/validaciones.js';
 
@@ -92,6 +93,10 @@ import { useRouter } from 'vue-router';
 definePageMeta({
   layout: "default",
 });
+
+onMounted(() => {
+  localStorage.removeItem('token');
+})
 
 //Toast de sweetalert 
 const Toast = Swal.mixin({
@@ -111,8 +116,6 @@ const form = ref({
   clave_usuario: "",
 })
 
-const router = useRouter();
-
 async function login() {
   event.preventDefault();
   try {
@@ -125,7 +128,7 @@ async function login() {
     const token = (await axios.post("/login", formData)).data.token;
     localStorage.setItem('token', token);
     console.log(localStorage.getItem('token'));
-    router.push('/principal');
+    navigateTo('/principal');
   } catch (error) {
     console.log(error);
     Toast.fire({
