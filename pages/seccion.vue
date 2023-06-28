@@ -194,8 +194,8 @@
                             <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                             <input type="hidden" id="id_seccion" v-model="form.id_seccion">
                             <div class="relative z-0">
-                                <input type="text" v-model="form.titulo_seccion" @input="validarTituloSeccion()" maxlength="100"
-                                    id="titulo_seccion" name="titulo_seccion"
+                                <input type="text" v-model="form.titulo_seccion" @input="validarTituloSeccion()"
+                                    maxlength="100" id="titulo_seccion" name="titulo_seccion"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" required />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> {{
@@ -220,8 +220,8 @@
                                 </div>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" v-model="form.subtitulo_seccion" id="subtitulo_descripcion" maxlength="100"
-                                    name="subtitulo_descripcion"
+                                <input type="text" v-model="form.subtitulo_seccion" id="subtitulo_descripcion"
+                                    maxlength="100" name="subtitulo_descripcion"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> {{
@@ -429,6 +429,15 @@ definePageMeta({
 });
 
 onMounted(() => {
+    //Se valida si hay un token en el localStorage y si no te regresa al login
+    function validarToken() {
+        if (!localStorage.getItem('token')) {
+            navigateTo('/');
+        }
+    }
+
+    validarToken();
+
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
