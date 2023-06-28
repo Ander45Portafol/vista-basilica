@@ -484,7 +484,7 @@ async function leerUsuarios() {
         const { data: res } = await axios.get(`/usuarios?page=${usuario.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
-        console.log(data.value);
+        console.log(res);
     } catch (error) {
         console.log(error);
     }
@@ -578,10 +578,10 @@ async function crearUsuario() {
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnUsuario(id) {
-
     try {
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/usuarios/' + id).then(res => {
+            console.log(res);
             //Constante para el modal
             const modalElement = document.getElementById('staticModal');
             //Constante que contiene las caracteristicas del modal
