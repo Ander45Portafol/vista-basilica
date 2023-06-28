@@ -11,7 +11,6 @@
     </body>
 </template>
 <script setup>
-import 'flowbite';
 </script>
 <style scoped>
     /*Importar fuente*/
