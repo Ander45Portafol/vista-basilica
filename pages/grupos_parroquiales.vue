@@ -84,7 +84,8 @@ const menuOptions = () => {
                             </svg>
                         </button>
                     </div>
-                    <button class="ml-10 bg-space text-white w-48 h-12 rounded-xl"> <a href="/categoria_grupos">Categorias - Grupos</a></button>
+                    <a class="ml-10 bg-space text-white w-48 h-12 rounded-xl flex justify-center items-center" href="/categoria_grupos">Categorias -
+                        Grupos</a>
                 </form>
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
@@ -344,4 +345,5 @@ const menuOptions = () => {
 
 .modal-buttons button {
     background-color: #32345a;
-}</style>
+}
+</style>
