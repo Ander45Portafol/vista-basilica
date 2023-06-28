@@ -77,8 +77,20 @@ const validaciones = {
             min: fecha_min_string,
             max: fecha_max_string
         }
-    }
-
+    },
+    //Función para validar que los usuarios solo lleven caracteres alfanuméricos y guión bajo
+    validarUsuario(texto) {
+        //Se valida que el texto no sea nulo
+        if (texto != null && texto.trim() != "") {
+            //Se valida que en la cadena de texto solo existan letras, números, espacios y caracteres de separación (/ | -)
+            var re = /^[a-zA-Z0-9\s_]+$/;
+            //Retorna false o true dependiendo de si cumple o no la condición
+            return re.test(texto);
+        } else {
+            //Retorna true si el texto es nulo porque si no aparecería la alerta de error aunque no haya ningún texto en el input
+            return true;
+        }
+    },
 };
 
 export default validaciones;
