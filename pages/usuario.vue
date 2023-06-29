@@ -3,8 +3,8 @@
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
                 <a href="" class="active ml-4">Usuarios</a>
-                <a href="/roles_usuario" class="ml-4">Roles Usuarios</a>
-                <a href="/roles_accion" class="ml-4">Roles Accesos</a>
+                <a href="/rol_usuario" class="ml-4">Roles Usuarios</a>
+                <a href="/rol_acceso" class="ml-4">Roles Accesos</a>
             </div>
             <div class="endtop flex justify-between w-20">
                 <button class="" type="button">
