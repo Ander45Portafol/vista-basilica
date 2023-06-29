@@ -90,14 +90,14 @@
                             v-if="rolusuario.visibilidad_rol_usuario == 1">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                                 {{ rolusuario.rol_usuario }}</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">On
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Habilitado
                             </p>
                         </div>
                         <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center"
                             v-else>
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                                 {{ rolusuario.rol_usuario }}</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Off
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Desabilitado
                             </p>
                         </div>
                     </div>
@@ -160,7 +160,7 @@
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
-                        <p class="text-lg font-medium text-gray-400">Roles - Usuarios</p>
+                        <p class="text-lg font-medium text-gray-400">Rol - Usuario</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
