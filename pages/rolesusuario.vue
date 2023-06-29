@@ -32,7 +32,7 @@
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar ...">
+                        placeholder="Buscar ..." v-model="buscar.buscador" @keyup="buscarRolesUsuarios()">
                     <div class="flex justify-end items-center">
                         <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
                                 fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -396,7 +396,7 @@ watch(rolusuario, async () => {
     //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
     if (buscar.value.buscador != "") {
         //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        //buscarAnuncios();
+        buscarRolesUsuarios();
     } else {
         //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
         leerRolesUsuarios();
@@ -596,5 +596,39 @@ async function changeVisible(id) {
             }
         }
     });
+}
+
+//Función para buscar registros dependiendo del valor del buscador
+async function buscarRolesUsuarios() {
+    try {
+        //Se evalua que el buscador no este vacio
+        if (buscar.value.buscador != "") {
+            // Realiza la petición axios para llamar a la ruta de búsqueda
+            const { data: res } = await axios.get(`/roles_usuarios_search?page=${rolusuario.value}&buscador=${buscar.value.buscador}`);
+            // Actualiza los datos en la constante data
+            data.value = res;
+            // Actualiza la URL con el parámetro de página
+            useRouter().push({ query: { rolusuario: rolusuario.value } });
+        } else {
+            //Se regresa a la página 1 y se cargan todos los registros
+            rolusuario.value = 1;
+            leerRolesUsuarios();
+        }
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
 }
 </script>

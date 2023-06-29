@@ -15,6 +15,7 @@ module.exports = {
         purpleLogin: '#3F4280',
         lightPurpleLogin: '#5357aa',
         space:'#32345A',
+        darkSpace:'#1b1c30',
       }
     },
   },
