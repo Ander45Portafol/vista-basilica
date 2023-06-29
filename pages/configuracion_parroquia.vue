@@ -7,10 +7,31 @@
                 <NuxtLink class="ml-4" to="/grupos_parroquiales">Grupos</NuxtLink>
                 <NuxtLink to="/configuracion_parroquia" class="active ml-4">Configuracion</NuxtLink>
             </div>
+            <div class="endtop flex justify-between w-20">
+                <button>
+                    <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                        <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                        <path
+                            d="M19.622 10.395l-1.097-2.65L20 6l-2-2-1.735 1.483-2.707-1.113L12.935 2h-1.954l-.632 2.401-2.645 1.115L6 4 4 6l1.453 1.789-1.08 2.657L2 11v2l2.401.655L5.516 16.3 4 18l2 2 1.791-1.46 2.606 1.072L11 22h2l.604-2.387 2.651-1.098C16.697 18.831 18 20 18 20l2-2-1.484-1.75 1.098-2.652 2.386-.62V11l-2.378-.605z"
+                            stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+                <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
+                    data-drawer-placement="right" aria-controls="drawer-right-example">
+                    <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                        <path
+                            d="M18.134 11C18.715 16.375 21 18 21 18H3s3-2.133 3-9.6c0-1.697.632-3.325 1.757-4.525C8.883 2.675 10.41 2 12 2c.337 0 .672.03 1 .09M19 8a3 3 0 100-6 3 3 0 000 6zM13.73 21a1.999 1.999 0 01-3.46 0"
+                            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
-        <div>
+        <div class="">
             <form action=""
-                class="flex pt-14 justify-evenly max-[700px]:flex-col max-[700px]:items-center max-[700px]:text-2xl">
+                class="flex pt-20 justify-evenly max-[700px]:flex-col max-[700px]:items-center max-[700px]:text-2xl">
                 <div class="flex-col w-80">
                     <input type="hidden" v-model="form.id_configuracion_parroquia">
                     <div class="relative z-0">
@@ -29,7 +50,7 @@
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">RUC
                             - Parroquia</label>
                     </div>
-                    <div class="relative z-0 mt-8">
+                    <div class="relative z-0 mt-12">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model=form.direccion_parroquia />
@@ -43,9 +64,9 @@
                             placeholder=" " autocomplete="off" v-model="form.nombre_representante" />
                         <label for="floating_standard"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                            - Rrepresentante</label>
+                            - Representante</label>
                     </div>
-                    <div class="pt-4 mt-6 flex-col">
+                    <div class="pt-4 mt-2 flex-col">
                         <label for="" class="absolute text-slate-900">Tipo - Documento</label>
                         <select id="underline_select" v-model="form.tipo_documento_representante"
                             class="block mt-4 py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-salte-900 appearance-none focus:outline-none focus:ring-0 focus:border-slate-900 peer">
@@ -79,7 +100,15 @@
                             placeholder=" " autocomplete="off" v-model="form.apellido_representante" />
                         <label for="floating_standard"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
-                            - Rrepresentante</label>
+                            - Representante</label>
+                    </div>
+                    <div class="relative z-0 mt-12">
+                        <input type="text" id="floating_standard"
+                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-900 peer"
+                            placeholder=" " autocomplete="off" v-model="form.telefono_parroquia" />
+                        <label for="floating_standard"
+                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
+                            - Parroquia</label>
                     </div>
                     <div class="relative z-0 mt-10">
                         <input type="text" id="floating_standard"
@@ -87,7 +116,7 @@
                             placeholder=" " autocomplete="off" v-model="form.documento_representante" />
                         <label for="floating_standard"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento
-                            - Rrepresentante</label>
+                            - Representante</label>
                     </div>
                 </div>
                 <div class="flex-col h-96 max-[700px]:mt-10">
@@ -95,19 +124,9 @@
                         <p class="mb-4 text-center">Logo Parroquia</p>
                         <img class="h-44 w-40 border-2 border-slate-900 ml-2">
                     </div>
-                    <div class="flex items-end justify-between h-full mt-[-60px] w-44 ">
-                        <button class="border-2 border-space h-10 w-10 flex justify-center items-center">
-                            <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path
-                                    d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                    stroke="#23B7A0" stroke-width="2"></path>
-                                <path
-                                    d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                    stroke="#23B7A0" stroke-width="2"></path>
-                            </svg>
-                        </button>
-                        <button class="border-2 border-space w-10 h-10 flex justify-center items-center">
+                    <div class="flex items-end justify-end h-full mt-[-60px] w-44 ">
+                        <button class="border-2 border-space w-10 h-10 flex justify-center items-center"
+                            @click.prevent="actualizarParroquia()">
                             <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -115,7 +134,7 @@
                                     stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
-                        <button class="border-2 border-space w-10 h-10 flex justify-center items-center">
+                        <button class="border-2 ml-4 border-space w-10 h-10 flex justify-center items-center">
                             <svg width="24px" height="24px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#45A0B4"
@@ -190,39 +209,83 @@ async function leerParroquia() {
         const { data: res } = await axios.get(`/parroquia`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
-        //console.log(data.value);
-        console.log(data.value);
+
+        leerUnaParroquia();
         //form.value={nombre_parroquia:res.data.nombre_parroquia,}
     } catch (error) {
         console.log(error);
     }
 }
 leerParroquia();
-async function leerUnaParroquia(){
-    var id=1;
+async function leerUnaParroquia() {
+    var id = 1;
     try {
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/parroquia/' + id).then(res => {
             console.log(res);
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
-                id_configuracion_parroquia:res.data.id_configuracion_parroquia,
-                nombre_parroquia:res.data.nombre_parroquia,
-                pagina_web:res.data.pagina_web,
-                ruc_parroquia:res.data.ruc_parroquia,
-                identificador_parroquia:res.data.identificador_parroquia,
-                direccion_parroquia:res.data.direccion_parroquia,
-                apellido_representante:res.data.apellido_representante,
-                nombre_representante:res.data.nombre_representante,
-                documento_representante:res.data.documento_representante,
-                tipo_documento_representante:res.data.tipo_documento_representante
+                id_configuracion_parroquia: res.data.id_configuracion_parroquia,
+                nombre_parroquia: res.data.nombre_parroquia,
+                pagina_web: res.data.pagina_web,
+                ruc_parroquia: res.data.ruc_parroquia,
+                identificador_parroquia: res.data.identificador_parroquia,
+                direccion_parroquia: res.data.direccion_parroquia,
+                apellido_representante: res.data.apellido_representante,
+                nombre_representante: res.data.nombre_representante,
+                telefono_parroquia: res.data.telefono_parroquia,
+                documento_representante: res.data.documento_representante,
+                tipo_documento_representante: res.data.tipo_documento_representante
             }
-            console.log(form.value);
         })
     } catch (error) {
         console.log(error);
     }
 }
-leerUnaParroquia();
 
+//Toast del sweetalert
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+})
+async function actualizarParroquia() {
+
+    try {
+        //Se establece una variable de id con el valor que tiene guardado la variable form
+        var id = form.value.id_configuracion_parroquia;
+        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        const formData = {
+            nombre_parroquia: form.value.nombre_parroquia,
+            pagina_web: form.value.pagina_web,
+            ruc_parroquia: form.value.ruc_parroquia,
+            identificador_parroquia: form.value.identificador_parroquia,
+            direccion_parroquia: form.value.direccion_parroquia,
+            apellido_representante: form.value.apellido_representante,
+            nombre_representante: form.value.nombre_representante,
+            documento_representante: form.value.documento_representante,
+            tipo_documento_representante: form.value.tipo_documento_representante,
+            telefono_parroquia: form.value.telefono_parroquia
+        };
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.put("/parroquia/" + id, formData);
+        // //Se cargan todas las páginas y se cierra el modal
+        leerParroquia();
+
+        //Se lanza la alerta de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Página actualizada exitosamente'
+        })
+
+    } catch (error) {
+        console.log(error);
+    };
+}
 </script>

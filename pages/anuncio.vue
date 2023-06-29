@@ -453,7 +453,7 @@ async function buscarAnuncios() {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
             // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/anuncios?page=${anuncio.value}&buscador=${buscar.value.buscador}`);
+            const { data: res } = await axios.get(`/anuncios_search?page=${anuncio.value}&buscador=${buscar.value.buscador}`);
             // Actualiza los datos en la constante data
             data.value = res;
             // Actualiza la URL con el parámetro de página
