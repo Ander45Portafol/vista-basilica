@@ -18,7 +18,7 @@ definePageMeta({
             </div>
         </div>
         <div class="endtop flex justify-between w-20">
-            <button>
+            <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="" type="button">
                 <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                     <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
@@ -28,6 +28,28 @@ definePageMeta({
                         stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
             </button>
+            <!-- Dropdown menu -->
+            <div id="dropdown"
+                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                    <li>
+                        <a href="#"
+                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><svg
+                                width="35px" height="35px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path
+                                    d="M4.271 18.346S6.5 15.5 12 15.5s7.73 2.846 7.73 2.846M12 12a3 3 0 100-6 3 3 0 000 6z"
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg> Perfil</a>
+                    </li>
+                    <li>
+                        <a href="#"
+                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
+                    </li>
+                </ul>
+            </div>
             <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
                 data-drawer-placement="right" aria-controls="drawer-right-example">
                 <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -40,7 +62,8 @@ definePageMeta({
         </div>
     </div>
     <div class="flex flex-wrap my-8 justify-around">
-        <div class="text-white sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 min-w-[200px] max-[1400px]:max-w-[30%] max-[550px]:max-w-full" id="usuarios">
+        <div class="text-white sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 min-w-[200px] max-[1400px]:max-w-[30%] max-[550px]:max-w-full"
+            id="usuarios">
             <div class="top flex justify-between">
                 <div class="text">
                     <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Usuarios</p>
@@ -60,7 +83,8 @@ definePageMeta({
                 <p class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">122</p>
             </div>
         </div>
-        <div class="text-white sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 min-w-[200px] max-[1400px]:max-w-[30%] max-[550px]:max-w-full max-[550px]:my-2" id="citas">
+        <div class="text-white sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 min-w-[200px] max-[1400px]:max-w-[30%] max-[550px]:max-w-full max-[550px]:my-2"
+            id="citas">
             <div class="top flex justify-between">
                 <div class="text">
                     <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Citas</p>
@@ -77,7 +101,8 @@ definePageMeta({
                 <p class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">12</p>
             </div>
         </div>
-        <div class="text-white sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 min-w-[200px] max-[1400px]:max-w-[30%] max-[550px]:max-w-full" id="proyectos">
+        <div class="text-white sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 min-w-[200px] max-[1400px]:max-w-[30%] max-[550px]:max-w-full"
+            id="proyectos">
             <div class="top flex justify-between">
                 <div class="text">
                     <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Proyectos</p>
@@ -111,9 +136,10 @@ definePageMeta({
         <div class="interac_general flex-col mt-4 p-0 ml-0">
             <div class="interraccion flex justify-between w-full h-16 mb-4 rounded-2xl min-w-[150px]">
                 <div class="left flex items-center ml-6 w-3/4">
-                    <div class="icon absolute bg-slate-800 flex justify-center items-center w-10 h-10 rounded-full max-[450px]:w-8 max-[450px]:h-8">
-                        <svg class="max-[450px]:w-6" width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                    <div
+                        class="icon absolute bg-slate-800 flex justify-center items-center w-10 h-10 rounded-full max-[450px]:w-8 max-[450px]:h-8">
+                        <svg class="max-[450px]:w-6" width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24"
+                            fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path d="M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#fff"
                                 stroke-width="2.5"></path>
                             <path d="M6 8h1" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
@@ -220,10 +246,10 @@ definePageMeta({
     </div>
 </template>
 <style scoped>
-
 body {
     overflow-y: scroll;
 }
+
 .topprincipal .active {
     color: #c99856;
     border-bottom: 3px solid #c99856;
@@ -252,5 +278,4 @@ body {
 
 .interraccion {
     background: #ebeff8;
-}
-</style>
+}</style>

@@ -7,7 +7,7 @@
                 <a href="/rolesaccion" class="ml-4">Roles Accesos</a>
             </div>
             <div class="endtop flex justify-between w-20">
-                <button>
+                <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="" type="button">
                     <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
@@ -17,6 +17,36 @@
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                 </button>
+                <!-- Dropdown menu -->
+                <div id="dropdown" class="z-10 hidden bg-space text-white divide-y divide-gray-100 rounded-lg shadow w-32">
+                    <ul class="text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                        <li>
+                            <a href="#"
+                                class=" px-2 py-2 hover:bg-slate-600 text-white rounded-lg flex justify-stretch gap-4 items-center"><svg
+                                    width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"
+                                        stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                    <path
+                                        d="M4.271 18.346S6.5 15.5 12 15.5s7.73 2.846 7.73 2.846M12 12a3 3 0 100-6 3 3 0 000 6z"
+                                        stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                </svg> Perfil</a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class=" px-2 py-2 hover:bg-slate-600 text-white rounded-lg flex justify-stretch gap-4 items-center"><svg
+                                    width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path
+                                        d="M19 12h-7m0 0l3 3m-3-3l3-3M19 6V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2v-1"
+                                        stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                </svg>Cerrar sesión</a>
+                        </li>
+                    </ul>
+                </div>
                 <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
                     data-drawer-placement="right" aria-controls="drawer-right-example">
                     <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -32,7 +62,7 @@
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar ...">
+                        placeholder="Buscar ..." v-model="buscar.buscador" @keyup="buscarUsuarios()">
                     <div class="flex justify-end items-center">
                         <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
                                 fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -367,7 +397,7 @@
 }
 </style>
 <script setup>
-import { Modal } from 'flowbite'
+import { Modal, Dropdown } from 'flowbite'
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from 'axios';
 import { TailwindPagination } from 'laravel-vue-pagination';
@@ -391,6 +421,13 @@ onMounted(() => {
     const modalBtnUpdate = document.getElementById('btnModalUpdate');
     //Constante para el boton de agregar dentro del modal
     const modalBtnAdd = document.getElementById('btnModalAdd');
+    const dropdownMenu = document.getElementById('dropdown');
+    const dropdownButton = document.getElementById('dropdownDefaultButton');
+    const dropdownOptions = {
+        placement: 'bottom',
+        triggerType: 'click',
+        delay: 300
+    }
     //Constante para el boton de actualizar dentro del modal
 
     /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
@@ -419,6 +456,10 @@ onMounted(() => {
             limpiarForm();
         });
     }
+    const dropdown = new Dropdown(dropdownMenu, dropdownButton, dropdownOptions);
+    dropdownButton.addEventListener('click', function () {
+        dropdown.show();
+    });
 });
 
 //Operaciones SCRUD
@@ -466,7 +507,7 @@ watch(usuario, async () => {
     //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
     if (buscar.value.buscador != "") {
         //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        //buscarAnuncios();
+        buscarUsuarios();
     } else {
         //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
         leerUsuarios();
@@ -743,5 +784,39 @@ async function changeVisible(id) {
             }
         }
     });
+}
+
+//Función para buscar registros dependiendo del valor del buscador
+async function buscarUsuarios() {
+    try {
+        //Se evalua que el buscador no este vacio
+        if (buscar.value.buscador != "") {
+            // Realiza la petición axios para llamar a la ruta de búsqueda
+            const { data: res } = await axios.get(`/usuarios_search?page=${usuario.value}&buscador=${buscar.value.buscador}`);
+            // Actualiza los datos en la constante data
+            data.value = res;
+            // Actualiza la URL con el parámetro de página
+            useRouter().push({ query: { usuario: usuario.value } });
+        } else {
+            //Se regresa a la página 1 y se cargan todos los registros
+            usuario.value = 1;
+            leerUsuarios();
+        }
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
 }
 </script>
