@@ -684,48 +684,50 @@ function submitForm() {
 
 //Función para crear una sección
 async function crearSeccion() {
-    try {
-        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-        const formData = {
-            titulo_seccion: form.value.titulo_seccion,
-            subtitulo_seccion: form.value.subtitulo_seccion,
-            descripcion_seccion: form.value.descripcion_seccion,
-            id_pagina: form.value.id_pagina,
-            visibilidad_seccion: form.value.visibilidad_seccion,
-            editable: form.value.editable,
-        };
+    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
+        try {
+            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+            const formData = {
+                titulo_seccion: form.value.titulo_seccion,
+                subtitulo_seccion: form.value.subtitulo_seccion,
+                descripcion_seccion: form.value.descripcion_seccion,
+                id_pagina: form.value.id_pagina,
+                visibilidad_seccion: form.value.visibilidad_seccion,
+                editable: form.value.editable,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/secciones", formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/secciones", formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerSecciones();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerSecciones();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta con el mensaje de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Sección creada exitosamente'
-        })
+            //Se lanza la alerta con el mensaje de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Sección creada exitosamente'
+            })
 
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -803,50 +805,52 @@ async function leerUnaSeccion(id) {
 
 //Función para actualizar un registro
 async function actualizarSeccion() {
-    try {
-        //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_seccion;
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            titulo_seccion: form.value.titulo_seccion,
-            subtitulo_seccion: form.value.subtitulo_seccion,
-            descripcion_seccion: form.value.descripcion_seccion,
-            id_pagina: form.value.id_pagina,
-            visibilidad_seccion: form.value.visibilidad_seccion,
-            editable: form.value.editable,
-        };
+    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_seccion;
+            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+            const formData = {
+                titulo_seccion: form.value.titulo_seccion,
+                subtitulo_seccion: form.value.subtitulo_seccion,
+                descripcion_seccion: form.value.descripcion_seccion,
+                id_pagina: form.value.id_pagina,
+                visibilidad_seccion: form.value.visibilidad_seccion,
+                editable: form.value.editable,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.put("/secciones/" + id, formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.put("/secciones/" + id, formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerSecciones();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerSecciones();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Sección actualizada exitosamente'
-        })
+            //Se lanza la alerta de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Sección actualizada exitosamente'
+            })
 
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
