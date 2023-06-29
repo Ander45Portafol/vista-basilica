@@ -235,8 +235,9 @@
                                     v-model="form.descripcion_pagina"
                                     class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-if="form.descripcion_pagina"> {{
-                                    form.descripcion_pagina.length }} /250</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
+                                    v-if="form.descripcion_pagina"> {{
+                                        form.descripcion_pagina.length }} /250</span>
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /250</span>
                                 <label for="descripcion_pagina"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
@@ -275,7 +276,7 @@
                                         </svg>
                                     </button>
                                     <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                    <button id="btnModalAdd" type="submit" value="crear" @click="accionForm('crear')"
+                                    <button id="btnModalAdd" type="submit"
                                         :disabled="!validarNumeroPagina() || !validarNombrePagina()"
                                         class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                         <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -289,7 +290,7 @@
                                         </svg>
                                     </button>
                                     <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                    <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
+                                    <button id="btnModalUpdate" type="submit"
                                         :disabled="!validarNumeroPagina() || !validarNombrePagina()"
                                         class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                         <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -424,6 +425,7 @@ onMounted(() => {
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
+            accionForm('crear');
             limpiarForm();
             modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
@@ -600,53 +602,57 @@ function submitForm() {
 
 //Función para crear una página
 async function crearPagina() {
-    try {
-        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-        const formData = {
-            nombre_pagina: form.value.nombre_pagina,
-            numero_pagina: form.value.numero_pagina,
-            descripcion_pagina: form.value.descripcion_pagina,
-            visibilidad_pagina: form.value.visibilidad_pagina,
-        };
+    console.log(formAccion);
+    if (validarNumeroPagina() && validarNombrePagina()) {
+        try {
+            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+            const formData = {
+                nombre_pagina: form.value.nombre_pagina,
+                numero_pagina: form.value.numero_pagina,
+                descripcion_pagina: form.value.descripcion_pagina,
+                visibilidad_pagina: form.value.visibilidad_pagina,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/paginas", formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/paginas", formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerPaginas();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerPaginas();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta con el mensaje de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Página creada exitosamente'
-        })
+            //Se lanza la alerta con el mensaje de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Página creada exitosamente'
+            })
 
-    } catch (error) {
-        console.log(error);
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            console.log(error);
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnaPagina(id) {
     try {
+        accionForm('actualizar');
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/paginas/' + id).then(res => {
             //Constante para el modal
@@ -713,48 +719,50 @@ async function leerUnaPagina(id) {
 }
 
 async function actualizarPagina() {
-    try {
-        //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_pagina;
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            nombre_pagina: form.value.nombre_pagina,
-            numero_pagina: form.value.numero_pagina,
-            descripcion_pagina: form.value.descripcion_pagina,
-            visibilidad_pagina: form.value.visibilidad_pagina,
-        };
+    if (validarNumeroPagina() && validarNombrePagina()) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_pagina;
+            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+            const formData = {
+                nombre_pagina: form.value.nombre_pagina,
+                numero_pagina: form.value.numero_pagina,
+                descripcion_pagina: form.value.descripcion_pagina,
+                visibilidad_pagina: form.value.visibilidad_pagina,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.put("/paginas/" + id, formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.put("/paginas/" + id, formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerPaginas();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerPaginas();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Página actualizada exitosamente'
-        })
+            //Se lanza la alerta de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Página actualizada exitosamente'
+            })
 
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
