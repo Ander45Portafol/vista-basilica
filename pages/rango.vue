@@ -149,12 +149,6 @@
                     :data="data" @pagination-change-page="pagina = $event" />
             </div>
         </div>
-
-
-
-
-
-
     </div>
 
     <!-- Main modal -->
