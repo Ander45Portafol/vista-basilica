@@ -190,10 +190,10 @@
                                     - Persona</label>
                             </div>
                             <div class="pt-4 mt-2 flex-col">
-                                <label for="" class="absolute text-gray-200">Tipo - Documento</label>
+                                <label for="" class="text-sm absolute text-gray-200">Tipo - Documento</label>
                                 <select id="underline_select" v-model="form.tipo_documento"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-100 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="0" class="text-gray-900">Seleccionar</option>
+                                    <option value="0" class="text-gray-900">Seleccione una opción</option>
                                     <option value="Cédula" class="text-gray-900">Cédula</option>
                                     <option value="Pasaporte" class="text-gray-900">Pasaporte</option>
                                     <option value="Otro" class="text-gray-900">Otro...</option>
@@ -208,7 +208,7 @@
                                     Usuario</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
+                                <input type="email" id="username" name="username"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.correo_usuario" />
                                 <label for="username"
@@ -216,7 +216,7 @@
                                     - Usuario</label>
                             </div>
                             <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="absolute text-gray-200">Rol - Usuario</label>
+                                <label for="" class="text-sm absolute text-gray-200">Rol - Usuario</label>
                                 <select id="underline_select" v-model="form.id_rol_usuario"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                     <option value="0" class="bg-gray-700 text-white"> Seleccione una opción </option>
@@ -240,7 +240,7 @@
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.numero_documento_usuario" />
                                 <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento</label>
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"># Documento</label>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="password" id="username" name="password"
@@ -254,7 +254,7 @@
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.telefono_usuario" />
                                 <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Teléfono
                                     - Usuario</label>
                             </div>
                             <div class="flex-col mt-6">

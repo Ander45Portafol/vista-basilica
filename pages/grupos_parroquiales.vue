@@ -10,37 +10,39 @@
             </div>
             <div class="endtop flex justify-between w-20">
                 <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="" type="button">
-                <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                    <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
-                        stroke-linejoin="round"></path>
-                    <path
-                        d="M19.622 10.395l-1.097-2.65L20 6l-2-2-1.735 1.483-2.707-1.113L12.935 2h-1.954l-.632 2.401-2.645 1.115L6 4 4 6l1.453 1.789-1.08 2.657L2 11v2l2.401.655L5.516 16.3 4 18l2 2 1.791-1.46 2.606 1.072L11 22h2l.604-2.387 2.651-1.098C16.697 18.831 18 20 18 20l2-2-1.484-1.75 1.098-2.652 2.386-.62V11l-2.378-.605z"
-                        stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-            </button>
-            <!-- Dropdown menu -->
-            <div id="dropdown"
-                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
-                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                    <li>
-                        <a href="#"
-                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><svg
-                                width="35px" height="35px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"
-                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path
-                                    d="M4.271 18.346S6.5 15.5 12 15.5s7.73 2.846 7.73 2.846M12 12a3 3 0 100-6 3 3 0 000 6z"
-                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg> Perfil</a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
-                    </li>
-                </ul>
-            </div>
+                    <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                        <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round"></path>
+                        <path
+                            d="M19.622 10.395l-1.097-2.65L20 6l-2-2-1.735 1.483-2.707-1.113L12.935 2h-1.954l-.632 2.401-2.645 1.115L6 4 4 6l1.453 1.789-1.08 2.657L2 11v2l2.401.655L5.516 16.3 4 18l2 2 1.791-1.46 2.606 1.072L11 22h2l.604-2.387 2.651-1.098C16.697 18.831 18 20 18 20l2-2-1.484-1.75 1.098-2.652 2.386-.62V11l-2.378-.605z"
+                            stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+                <!-- Dropdown menu -->
+                <div id="dropdown"
+                    class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                        <li>
+                            <a href="#"
+                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"><svg
+                                    width="35px" height="35px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"
+                                        stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                    <path
+                                        d="M4.271 18.346S6.5 15.5 12 15.5s7.73 2.846 7.73 2.846M12 12a3 3 0 100-6 3 3 0 000 6z"
+                                        stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                </svg> Perfil</a>
+                        </li>
+                        <li>
+                            <a href="#"
+                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
+                        </li>
+                    </ul>
+                </div>
                 <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
                     data-drawer-placement="right" aria-controls="drawer-right-example">
                     <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -144,7 +146,8 @@
                         </button>
                         <button
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                            @click="borrarGrupoParroquial(grupos_parroquiale.id_grupo_parroquial)" v-if="grupos_parroquiale.visibilidad_grupo == 1">
+                            @click="borrarGrupoParroquial(grupos_parroquiale.id_grupo_parroquial)"
+                            v-if="grupos_parroquiale.visibilidad_grupo == 1">
                             <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -169,16 +172,16 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="flex justify-center mt-6">
-                        <!-- Componente para la paginación, el "limit" se usa para que la paginación no se extienda demasiado, el "keepLength" para que la paginación siempre tenga el mismo
+                </div>
+            </div>
+            <div class="flex justify-center mt-6">
+                <!-- Componente para la paginación, el "limit" se usa para que la paginación no se extienda demasiado, el "keepLength" para que la paginación siempre tenga el mismo
                         tamaño (a excepción de si no hay suficientes paginas o si la pagina actual esta muy cerca de la primera o ultima pagina), el "data" es la variable a que se enlaza
                     para leer los datos, y el "@pagination-change-page" se usa para enlazar una variable que sirve para llevar el control del número de página actual -->
-                        <TailwindPagination
-                            :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
-                            :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                            :data="data" @pagination-change-page="pagina = $event" />
-                    </div>
-                </div>
+                <TailwindPagination
+                    :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
+                    :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                    :data="data" @pagination-change-page="pagina = $event" />
             </div>
         </div>
     </div>
@@ -221,7 +224,8 @@
                                     - Grupo</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="nombre_encargado" name="nombre_encargado" v-model="form.nombre_encargado"
+                                <input type="text" id="nombre_encargado" name="nombre_encargado"
+                                    v-model="form.nombre_encargado"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
@@ -229,7 +233,8 @@
                                     - Encargado</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="correo_encargado" name="correo_encargado" v-model="form.correo_encargado"
+                                <input type="text" id="correo_encargado" name="correo_encargado"
+                                    v-model="form.correo_encargado"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
@@ -237,18 +242,20 @@
                                     - Encargado</label>
                             </div>
                             <select id="underline_select" v-model="form.id_categoria_grupo_parroquial"
-                            class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                            <option value="0" class="bg-gray-700"> Seleccione una opción </option>
-                            <!-- Se usa el v-for para llenar la información del select, haciendo uso de "paginas" -->
-                            <option v-for="categoria_grupo in categoria_grupos" :key="categoria_grupo.id_categoria_grupo_parroquial" :value="categoria_grupo.id_categoria_grupo_parroquial"
-                                class="text-left bg-gray-700">
-                                {{ categoria_grupo.nombre_categoria_grupo }}
-                            </option>
-                        </select>
+                                class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                <option value="0" class="bg-gray-700"> Seleccione una opción </option>
+                                <!-- Se usa el v-for para llenar la información del select, haciendo uso de "paginas" -->
+                                <option v-for="categoria_grupo in categoria_grupos"
+                                    :key="categoria_grupo.id_categoria_grupo_parroquial"
+                                    :value="categoria_grupo.id_categoria_grupo_parroquial" class="text-left bg-gray-700">
+                                    {{ categoria_grupo.nombre_categoria_grupo }}
+                                </option>
+                            </select>
                         </div>
                         <div class="flex-col w-64">
                             <div class="relative z-0">
-                                <input type="text" id="descripcion_grupo" name="descripcion_grupo" v-model="form.descripcion_grupo"
+                                <input type="text" id="descripcion_grupo" name="descripcion_grupo"
+                                    v-model="form.descripcion_grupo"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
@@ -256,7 +263,8 @@
                                     - Grupo</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="apellido_encargado" name="apellido_encargado" v-model="form.apellido_encargado"
+                                <input type="text" id="apellido_encargado" name="apellido_encargado"
+                                    v-model="form.apellido_encargado"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
@@ -264,7 +272,8 @@
                                     - Encargado</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="telefono_encargado" name="telefono_encargado" v-model="form.telefono_encargado"
+                                <input type="text" id="telefono_encargado" name="telefono_encargado"
+                                    v-model="form.telefono_encargado"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
@@ -276,7 +285,7 @@
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
                                         <input type="checkbox" value="" class="sr-only peer" id="visibilidad_grupo"
-                                        name="visibilidad_grupo" v-model="form.visibilidad_grupo" >
+                                            name="visibilidad_grupo" v-model="form.visibilidad_grupo">
                                         <div
                                             class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                         </div>
@@ -385,6 +394,11 @@
 .modal-buttons button {
     background-color: #32345a;
 }
+
+.buttons-data .changebtn {
+    border: 3px solid #3F4280;
+}
+
 </style>
 
 <script setup>
@@ -685,6 +699,7 @@ async function crearGrupoParroquial() {
         })
 
     } catch (error) {
+        console.log(error);
         //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
         //Se extrae el sqlstate (identificador de acciones SQL)
