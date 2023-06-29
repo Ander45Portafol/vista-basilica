@@ -4,7 +4,6 @@
             <div class="options">
                 <a href="/usuario" class="ml-4">Usuarios</a>
                 <a href="" class="active ml-4">Roles Usuarios</a>
-                <a href="/rolesaccion" class="ml-4">Roles Accesos</a>
             </div>
             <div class="endtop flex justify-between w-20">
                 <button>

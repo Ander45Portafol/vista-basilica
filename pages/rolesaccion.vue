@@ -1,9 +1,8 @@
 <template>
-   <div class="principal mt-6">
+    <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
                 <a href="/usuario" class="ml-4">Usuarios</a>
-                <a href="/rolesusuario" class="ml-4">Roles Usuarios</a>
                 <a href="" class="active ml-4">Roles Accesos</a>
             </div>
             <div class="endtop flex justify-between w-20">
@@ -78,7 +77,7 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{rolesaccesos.length}}<span
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ rolesaccesos.length }}<span
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
             <div class="contained-data flex-col" v-for="rolacceso in rolesaccesos" :key="rolacceso.id_rol_acceso">
@@ -89,12 +88,13 @@
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                                {{rolacceso.acceso}}</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{rolacceso.rol}}
+                                {{ rolacceso.acceso }}</p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{ rolacceso.rol }}
                             </p>
                         </div>
                     </div>
-                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                    <div
+                        class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                         <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -115,8 +115,8 @@
                     </div>
                 </div>
             </div>
-                                    <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
-            este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
+            <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
+             este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
             <div class="flex justify-center mt-6">
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
@@ -125,8 +125,8 @@
             </div>
         </div>
     </div>
-        <!-- Main modal -->
-        <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
+    <!-- Main modal -->
+    <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-2xl max-h-full">
             <!-- Modal content -->
@@ -247,7 +247,6 @@
     </div>
 </template>
 <style scoped>
-
 .topprincipal .active {
     color: #c99856;
     border-bottom: 3px solid #c99856;
@@ -285,7 +284,7 @@ import { TailwindPagination } from 'laravel-vue-pagination';
 import { onMounted, ref } from 'vue'
 //Importación de sweetalert
 import Swal from 'sweetalert2';
-    definePageMeta({
+definePageMeta({
     layout: "principal",
 })
 
@@ -359,9 +358,9 @@ await leerRolesAccesos();
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
-    id_rol_usuario:"",
-    rol_usuario:"",
-    visibbilidad_rol_usuario:false
+    id_rol_usuario: "",
+    rol_usuario: "",
+    visibbilidad_rol_usuario: false
 })
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva

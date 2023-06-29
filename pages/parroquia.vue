@@ -145,7 +145,7 @@
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
                     :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="usuario = $event" />
+                    :data="data" @pagination-change-page="enlace = $event" />
             </div>
         </div>
     </div>
