@@ -2,17 +2,11 @@
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <a href="" class="active ml-4">Usuarios</a>
-<<<<<<< HEAD
-                <a href="/rol_usuario" class="ml-4">Roles Usuarios</a>
-                <a href="/rol_acceso" class="ml-4">Roles Accesos</a>
-=======
-                <a href="/rolesusuario" class="ml-4">Roles Usuarios</a>
-                <a href="/rolesaccion" class="ml-4">Roles Accesos</a>
->>>>>>> parent of 737fb3f (nombre de archivos arreglados)
+                <a href="/usuario" class="ml-4">Usuarios</a>
+                <a href="" class="active ml-4">Roles Usuarios</a>
             </div>
             <div class="endtop flex justify-between w-20">
-                <button class="" type="button">
+                <button>
                     <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
@@ -37,7 +31,7 @@
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar ..." v-model="buscar.buscador" @keyup="buscarUsuarios()">
+                        placeholder="Buscar ..." v-model="buscar.buscador" @keyup="buscarRolesUsuarios()">
                     <div class="flex justify-end items-center">
                         <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
                                 fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -83,29 +77,33 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ usuarios.length }}<span
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ rolusuarios.length }}<span
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
-            <div class="contained-data flex-col" v-for="usuario in usuarios" :key="usuario.id_usuario">
+            <div class="contained-data flex-col" v-for="rolusuario in rolusuarios" :key="rolusuario.id_rol_usuario">
                 <div
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
-                        <div
-                            class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
+                        <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center"
+                            v-if="rolusuario.visibilidad_rol_usuario == 1">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                                {{ usuario.nombre_usuario }} {{ usuario.apellido_usuario }}</p>
-                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a href="#">{{
-                                usuario.rol }}</a></p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{ usuario.correo_usuario
-                            }}
+                                {{ rolusuario.rol_usuario }}</p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">On
+                            </p>
+                        </div>
+                        <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center"
+                            v-else>
+                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
+                                {{ rolusuario.rol_usuario }}</p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Off
                             </p>
                         </div>
                     </div>
                     <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-                        v-if="usuario.visibilidad_usuario == 1">
+                        v-if="rolusuario.visibilidad_rol_usuario == 1">
                         <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4"
-                            @click="leerUnUsuario(usuario.id_usuario)">
+                            @click="leerUnRol(rolusuario.id_rol_usuario)">
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -115,7 +113,7 @@
                         </button>
                         <button
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                            @click="borrarUsuario(usuario.id_usuario)">
+                            @click="borrarRol(rolusuario.id_rol_usuario)">
                             <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -128,7 +126,7 @@
                         v-else>
                         <button
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                            @click="changeVisible(usuario.id_usuario)">
+                            @click="changeVisible(rolusuario.id_rol_usuario)">
                             <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
@@ -143,28 +141,25 @@
                     </div>
                 </div>
             </div>
-            <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
-            este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
             <div class="flex justify-center mt-6">
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
                     :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="usuario = $event" />
+                    :data="data" @pagination-change-page="rolusuario = $event" />
             </div>
         </div>
     </div>
-
     <!-- Main modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-5xl max-h-full">
+        <div class="relative w-full max-w-md max-h-full">
             <!-- Modal content -->
             <div class="relative rounded-lg shadow modal">
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
-                        <p class="text-lg font-medium text-gray-400">Usuario</p>
+                        <p class="text-lg font-medium text-gray-400">Roles - Usuarios</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -177,105 +172,43 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <div class="p-2 space-y-6 pb-8">
-                    <form @submit.prevent="submitForm()" class="flex justify-evenly">
-                        <div class="flex-col w-72">
-                            <input type="hidden" v-model="form.id_usuario">
+                <div class="p-6 space-y-6 pb-10">
+                    <form action="" class="mt-4 flex justify-center pb-4">
+                        <div class="flex-col w-64">
+                            <input type="hidden" v-model="form.id_rol_usuario">
                             <div class="relative z-0">
                                 <input type="text" id="username" name="name"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" v-model="form.nombre_usuario" />
+                                    placeholder=" " autocomplete="off" v-model="form.rol_usuario" />
                                 <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Persona</label>
-                            </div>
-                            <div class="pt-4 mt-2 flex-col">
-                                <label for="" class="absolute text-gray-200">Tipo - Documento</label>
-                                <select id="underline_select" v-model="form.tipo_documento"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-100 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="0" class="text-gray-900">Seleccionar</option>
-                                    <option value="Cédula" class="text-gray-900">Cédula</option>
-                                    <option value="Pasaporte" class="text-gray-900">Pasaporte</option>
-                                    <option value="Otro" class="text-gray-900">Otro...</option>
-                                </select>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" v-model="form.usuario" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                    Usuario</label>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" v-model="form.correo_usuario" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Rol
                                     - Usuario</label>
                             </div>
-                            <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="absolute text-gray-200">Rol - Usuario</label>
-                                <select id="underline_select" v-model="form.id_rol_usuario"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="0" class="bg-gray-700 text-white"> Seleccione una opción </option>
-                                    <option class="bg-gray-700" v-for="rol_usuario in roles"
-                                        :key="rol_usuario.id_rol_usuario" :value="rol_usuario.id_rol_usuario">
-                                        {{ rol_usuario.rol_usuario }}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="flex-col w-72">
-                            <div class="relative z-0">
-                                <input type="text" id="username" name="lastname"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" v-model="form.apellido_usuario" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
-                                    - Persona</label>
-                            </div>
-                            <div class="relative z-0 mt-10">
-                                <input type="text" id="username" name="document"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" v-model="form.numero_documento_usuario" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento</label>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="password" id="username" name="password"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" v-model="form.clave_usuario" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Contraseña</label>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="phone-number"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" v-model="form.telefono_usuario" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
-                                    - Usuario</label>
-                            </div>
-                            <div class="flex-col mt-6">
-                                <label for="" class="text-gray-200">Visibilidad - Usuario</label>
+                            <div class="flex-col mt-10">
+                                <label for="" class="text-gray-200">Visibilidad - Rol usuario</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
                                         <input type="checkbox" value="" class="sr-only peer"
-                                            v-model="form.visibilidad_usuario">
+                                            v-model="form.visibilidad_rol_usuario">
                                         <div
                                             class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                         </div>
                                     </label>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex-col">
-                            <div class="">
-                                <p class="mb-4 text-center text-gray-200">Imagen - Usuario</p>
-                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-2 rounded-lg" />
-                            </div>
-                            <div class="modal-buttons mt-40 flex justify-end items-end">
+                            <div class="modal-buttons mt-10 flex justify-end items-end">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center"
+                                    @click="crearRolUsuario()">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                    </svg>
+                                </button>
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -293,20 +226,8 @@
                                             stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </button>
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" value="crear"
-                                    @click="accionForm('crear')" id="btnModalAdd">
-                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path
-                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                        <path
-                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                    </svg>
-                                </button>
-                                <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
+                                <!-- Se le coloca la función para actualizar al botón -->
+                                <button id="btnModalUpdate" type="button" @click="actualizarRolUsuario()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -372,7 +293,7 @@
 }
 </style>
 <script setup>
-import { Modal, Dropdown } from 'flowbite'
+import { Modal } from 'flowbite'
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from 'axios';
 import { TailwindPagination } from 'laravel-vue-pagination';
@@ -382,20 +303,19 @@ import Swal from 'sweetalert2';
 definePageMeta({
     layout: "principal",
 })
+
 onMounted(() => {
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
+    //Constante para el botón de eliminar un registro
+    const buttonUpdate = document.getElementsByClassName('editbtn');
     //Constante para el modal
     const modalElement = document.getElementById('staticModal');
     //Constante para el botón de cerrar en el modal
     const closeButton = document.getElementById('closeModal');
     //Constante para el titulo del modal
     const modalText = document.getElementById('modalText');
-    //Constante para el boton de actualizar dentro del modal
-    const modalBtnUpdate = document.getElementById('btnModalUpdate');
-    //Constante para el boton de agregar dentro del modal
-    const modalBtnAdd = document.getElementById('btnModalAdd');
     //Constante para el boton de actualizar dentro del modal
 
     /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
@@ -413,11 +333,20 @@ onMounted(() => {
         /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
-            modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
-            modalBtnUpdate.classList.add('hidden');
             modal.show();
         });
+
+        /*Se crea un array para introducir todos los botones de editar registro (en este caso se hace por medio de una 
+        clase personalizada con la que cuentan todos los botones "editbtn". Además se les añade un evento click a cada botón,
+        y este evento click abre el modal, cambia su titulo y oculta el botón de agregar que se encuentra dentro del modal*/
+        Array.from(buttonUpdate).forEach(function (button) {
+            button.addEventListener('click', function () {
+                modalText.textContent = "Editar";
+                modal.show();
+            });
+        });
+
         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
         closeButton.addEventListener('click', function () {
             modal.hide();
@@ -433,90 +362,61 @@ para almacenar la información que traiga el axios*/
 const data = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const usuario = ref(useRoute().query.usuario || 1);
+const rolusuario = ref(useRoute().query.rolusuario || 1);
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
     buscador: "",
 })
-
 //Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
-await leerUsuarios();
+await leerRolesUsuarios();
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
-    id_usuario: "",
-    nombre_usuario: "",
-    apellido_usuario: "",
-    usuario: "",
-    clave_usuario: "",
-    numero_documento_usuario: "",
-    tipo_documento: 0,
-    correo_usuario: "",
-    telefono_usuario: "",
-    idioma: "Español (ES)",
-    tema: "Claro",
-    visibilidad_usuario: false,
-    id_rol_usuario: 0,
+    id_rol_usuario: "",
+    rol_usuario: "",
+    visibilidad_rol_usuario: false
 })
+//Función para limpiar todos los campos del form
+function limpiarForm() {
+    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
+    form.value.id_rol_usuario = "";
+    form.value.rol_usuario = "";
+    form.value.visibilidad_rol_usuario = false;
+}
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let usuarios = computed(() => data.value.data);
-
+let rolusuarios = computed(() => data.value.data);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
-watch(usuario, async () => {
+watch(rolusuario, async () => {
     //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
     if (buscar.value.buscador != "") {
         //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarUsuarios();
+        buscarRolesUsuarios();
     } else {
         //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerUsuarios();
+        leerRolesUsuarios();
     }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { usuario: usuario.value } })
+    useRouter().push({ query: { rolusuario: rolusuario.value } })
 })
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
-async function leerUsuarios() {
+async function leerRolesUsuarios() {
     try {
         /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
         además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/usuarios?page=${usuario.value}`);
+        const { data: res } = await axios.get(`/roles_usuarios?page=${rolusuario.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
-        console.log(res);
     } catch (error) {
         console.log(error);
     }
 }
-//Función para limpiar todos los campos del form
-function limpiarForm() {
-    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_usuario = "";
-    form.value.nombre_usuario = "";
-    form.value.apellido_usuario = "";
-    form.value.usuario = "";
-    form.value.clave_usuario = "";
-    form.tipo_documento = "0";
-    form.correo_usuario = "";
-    form.telefono_usuario = "";
-    form.numero_documento_usuario = "";
-    form.value.visibilidad_usuario = false;
-    form.value.id_rol_usuario = '0';
-}
-var roles = ref(null);
-async function llenarRolUsuario() {
-    const { data: res } = await axios.get('roles-select');
-    roles.value = res;
-    console.log(roles.value)
-}
-llenarRolUsuario();
-
 //Toast del sweetalert
 const Toast = Swal.mixin({
     toast: true,
@@ -529,51 +429,25 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
-//Variable para validar que acción se quiere hacer cuando se hace un submit al form
-var formAccion = null;
 
-//Función para evaluar que acción se va a hacer al hacer submit en el form
-function accionForm(accion) {
-    formAccion = accion;
-}
-
-//Función para crear/actualizar un registro cuando se ejecuta el submit del form
-function submitForm() {
-    if (formAccion == "crear") {
-        crearUsuario();
-    } else {
-        actualizarUsuarios();
-    }
-}
 //Función para crear una página
-async function crearUsuario() {
+async function crearRolUsuario() {
     try {
         //Se crea una constante para guardar el valor actual que tienen todos los campos del form
         const formData = {
-            nombre_usuario: form.value.nombre_usuario,
-            apellido_usuario: form.value.apellido_usuario,
-            usuario: form.value.usuario,
-            clave_usuario: form.value.clave_usuario,
-            numero_documento_usuario: form.value.numero_documento_usuario,
-            tipo_documento: form.value.tipo_documento,
-            correo_usuario: form.value.correo_usuario,
-            telefono_usuario: form.value.telefono_usuario,
-            tema: form.value.tema,
-            idioma: form.value.idioma,
-            visibilidad_usuario: form.value.visibilidad_usuario,
-            id_rol_usuario: form.value.id_rol_usuario,
+            rol_usuario: form.value.rol_usuario,
+            visibilidad_rol_usuario: form.value.visibilidad_rol_usuario,
         };
-        leerUsuarios();
         //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/usuarios/", formData);
+        await axios.post("/roles_usuarios/", formData);
 
         //Se lanza la alerta con el mensaje de éxito
         Toast.fire({
             icon: 'success',
-            title: 'Usuario creado exitosamente'
+            title: 'Anuncio creado exitosamente'
         })
         //Se cargan todas las páginas y se cierra el modal
-
+        leerRolesUsuarios();
         document.getElementById('closeModal').click();
 
     } catch (error) {
@@ -582,11 +456,11 @@ async function crearUsuario() {
 }
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
-async function leerUnUsuario(id) {
+async function leerUnRol(id) {
+
     try {
         //Se hace la petición axios y se evalua la respuesta
-        await axios.get('/usuarios/' + id).then(res => {
-            console.log(res);
+        await axios.get('/roles_usuarios/' + id).then(res => {
             //Constante para el modal
             const modalElement = document.getElementById('staticModal');
             //Constante que contiene las caracteristicas del modal
@@ -598,17 +472,10 @@ async function leerUnUsuario(id) {
             const closeButton = document.getElementById('closeModal');
             //Constante para el titulo del modal
             const modalText = document.getElementById('modalText');
-            const modalBtnAdd = document.getElementById('btnModalAdd');
-            //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById('btnModalUpdate');
             //Instanciamos el modal
             const modal = new Modal(modalElement, modalOptions);
             //Le modificamos el texto del header al modal
             modalText.textContent = 'Editar';
-            //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove('hidden');
-            //Ocultamos el botón de agregar en el modal
-            modalBtnAdd.classList.add('hidden');
             //Abrimos el modal
             modal.show();
             //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
@@ -620,18 +487,10 @@ async function leerUnUsuario(id) {
             })
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
-                id_usuario: res.data.id_usuario,
-                nombre_usuario: res.data.nombre_usuario,
-                apellido_usuario: res.data.apellido_usuario,
-                usuario: res.data.usuario,
-                clave_usuario: res.data.clave_usuario,
                 id_rol_usuario: res.data.id_rol_usuario,
-                numero_documento_usuario: res.data.numero_documento_usuario,
-                correo_usuario: res.data.correo_usuario,
-                telefono_usuario: res.data.telefono_usuario,
-                tipo_documento: res.data.tipo_documento,
+                rol_usuario: res.data.rol_usuario,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_usuario: res.data.visibilidad_usuario ? true : false
+                visibilidad_rol_usuario: res.data.visibilidad_rol_usuario ? true : false
             }
             console.log(form.value);
         })
@@ -640,32 +499,21 @@ async function leerUnUsuario(id) {
     }
 }
 
-async function actualizarUsuarios() {
+async function actualizarRolUsuario() {
     try {
         //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_usuario;
-        console.log(id);
+        var id = form.value.id_rol_usuario;
         //Se crea una constante para guardar el valor actual que tienen todos los campos del form
         const formData = {
-            nombre_usuario: form.value.nombre_usuario,
-            apellido_usuario: form.value.apellido_usuario,
-            usuario: form.value.usuario,
-            clave_usuario: form.value.clave_usuario,
-            numero_documento_usuario: form.value.numero_documento_usuario,
-            tipo_documento: form.value.tipo_documento,
-            correo_usuario: form.value.correo_usuario,
-            telefono_usuario: form.value.telefono_usuario,
-            tema: form.value.tema,
-            idioma: form.value.idioma,
-            visibilidad_usuario: form.value.visibilidad_usuario,
-            id_rol_usuario: form.value.id_rol_usuario,
+            rol_usuario: form.value.rol_usuario,
+            visibilidad_rol_usuario: form.value.visibilidad_rol_usuario
         };
 
         //Se realiza la petición axios mandando la ruta y el formData
-        await axios.put("/usuarios/" + id, formData);
+        await axios.put("/roles_usuarios/" + id, formData);
 
         //Se cargan todas las páginas y se cierra el modal
-        leerUsuarios();
+        leerRolesUsuarios();
         document.getElementById('closeModal').click();
 
         //Se lanza la alerta de éxito
@@ -678,9 +526,8 @@ async function actualizarUsuarios() {
         console.log(error);
     }
 }
-
 //Función para cambiar la visibilidad de una página
-async function borrarUsuario(id) {
+async function borrarRol(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: 'Confirmación',
@@ -698,15 +545,15 @@ async function borrarUsuario(id) {
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.delete('/usuarios/' + id);
+                await axios.delete('/roles_usuarios/' + id);
 
                 //Se cargan todas las páginas
-                leerUsuarios();
+                leerRolesUsuarios();
 
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Usuario desactivado exitosamente'
+                    title: 'Rol de usuario ocultada exitosamente'
                 })
             } catch (error) {
                 console.log(error);
@@ -719,7 +566,7 @@ async function changeVisible(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: 'Confirmación',
-        text: "¿Desea hacer activar el usuario?",
+        text: "¿Desea hacer visible el rol?",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
@@ -733,10 +580,10 @@ async function changeVisible(id) {
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.delete('/usuarios/' + id);
+                await axios.delete('/roles_usuarios/' + id);
 
                 //Se cargan todas las páginas
-                leerUsuarios();
+                leerRolesUsuarios();
 
                 //Se lanza la alerta de éxito
                 Toast.fire({
@@ -751,20 +598,20 @@ async function changeVisible(id) {
 }
 
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarUsuarios() {
+async function buscarRolesUsuarios() {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
             // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/usuarios_search?page=${usuario.value}&buscador=${buscar.value.buscador}`);
+            const { data: res } = await axios.get(`/roles_usuarios_search?page=${rolusuario.value}&buscador=${buscar.value.buscador}`);
             // Actualiza los datos en la constante data
             data.value = res;
             // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { usuario: usuario.value } });
+            useRouter().push({ query: { rolusuario: rolusuario.value } });
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
-            usuario.value = 1;
-            leerUsuarios();
+            rolusuario.value = 1;
+            leerRolesUsuarios();
         }
     } catch (error) {
         //Se extrae el mensaje de error
