@@ -1,44 +1,3 @@
-<script setup>
-import { onMounted } from 'vue'
-import { Modal } from 'flowbite'
-definePageMeta({
-    layout: "principal",
-})
-onMounted(() => {
-    const $buttonElement = document.querySelector('#btnadd');
-    const $modalElement = document.querySelector('#staticModal');
-    const $closeButton = document.querySelector('#closeModal');
-    const $modalText = document.querySelector('#modalText');
-    const $btnEdit = document.querySelector('.editbtn');
-    const modalOptions = {
-        //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-
-    if ($modalElement) {
-        const modal = new Modal($modalElement, modalOptions);
-        $buttonElement.addEventListener('click', () => {
-            $modalText.textContent = 'Registrar';
-            modal.show();
-        });
-        $btnEdit.addEventListener('click', () => {
-            $modalText.textContent = 'Editar';
-            modal.show();
-        });
-        $closeButton.addEventListener('click', () => modal.hide());
-        // programatically show
-        // modal.show();
-    }
-});
-
-const menuOptions = () => {
-    const options = document.getElementsByClassName('menu');
-    if (options.length >= 3) {
-        // Se imprime un logo de 3 barras, dependiendo de la resolucion y el numero de opciones del menu
-    }
-}
-</script>
 
 <template>
     <div class="principal mt-6">
@@ -367,5 +326,557 @@ const menuOptions = () => {
 
 .modal-buttons button {
     background-color: #32345a;
+}</style>
+
+<script setup>
+//El setup se usa para manejar una sintaxis mas concisa del codigo y poder usar la reactividad de vue 3
+
+//Importaciones de plugins y funciones necesarias para el funcionamiento del proyecto
+
+//Importacion para usar el hook de onMounted
+import { onMounted, ref } from 'vue'
+//Importación del modal de flowbite
+import { Modal } from 'flowbite'
+//Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
+import axios from 'axios';
+//Importación del plugin de paginación de registros
+import { TailwindPagination } from 'laravel-vue-pagination';
+//Importación de sweetalert
+import Swal from 'sweetalert2';
+//Importación de archivo de validaciones
+import validaciones from '../assets/validaciones.js';
+
+
+definePageMeta({
+    layout: "principal",
+});
+
+onMounted(() => {
+    //Constantes para manejar el modal
+    //Constante para el botón de agregar un registro
+    const buttonElement = document.getElementById('btnadd');
+    //Constante para el modal
+    const modalElement = document.getElementById('staticModal');
+    //Constante para el botón de cerrar en el modal
+    const closeButton = document.getElementById('closeModal');
+    //Constante para el titulo del modal
+    const modalText = document.getElementById('modalText');
+    //Constante para el boton de actualizar dentro del modal
+    const modalBtnUpdate = document.getElementById('btnModalUpdate');
+    //Constante para el boton de agregar dentro del modal
+    const modalBtnAdd = document.getElementById('btnModalAdd');
+
+    /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
+    aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+
+    //Se evalua si existe un modal y en caso de que si se ejecuta todo lo relacionado a su funcionamiento
+    if (modalElement) {
+        //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
+        const modal = new Modal(modalElement, modalOptions);
+
+        /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
+        del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
+        buttonElement.addEventListener('click', function () {
+            //Se limpia el form al abrir el modal de agregar
+            limpiarForm();
+            modalBtnAdd.classList.remove('hidden');
+            modalText.textContent = "Registrar";
+            modalBtnUpdate.classList.add('hidden');
+            modal.show();
+        });
+
+        //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
+        closeButton.addEventListener('click', function () {
+            modal.hide();
+            limpiarForm();
+        });
+    }
+});
+
+//Operaciones SCRUD
+
+//Variable reactiva para llenar el select
+const categoria_grupos = ref(null);
+
+//Función para llenar el select
+async function llenarSelectCategoriaGrupoParroquial() {
+    try {
+        //Se realiza la petición axios
+        const { data: res } = await axios.get('/c_grupos-select');
+        //Lo que devuelve la petición axios se le asigna a "categoria_grupos"
+        categoria_grupos.value = res;
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
 }
-</style>
+
+llenarSelectCategoriaGrupoParroquial();
+
+/*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
+para almacenar la información que traiga el axios*/
+const data = ref(null);
+
+//Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la   default
+const categoriagrupo = ref(useRoute().query.categoriagrupo || 1);
+
+/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
+y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
+let grupos_parroquiales = computed(() => data.value.data);
+
+/*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
+además muestra en la url la página actual*/
+watch(categoriagrupo, async () => {
+    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
+    if (buscar.value.buscador != "") {
+        //Se ejecuta el buscar secciones si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
+        buscarGruposParroquiales();
+    } else {
+        //Se ejecuta el leer secciones para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
+        leerGruposParroquiales();
+    }
+    //Se cambia la url para agregar en que pagina se encuentra el usuario
+    useRouter().push({ query: { categoriagrupo: categoriagrupo.value } })
+})
+
+/*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
+?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
+async function leerGruposParroquiales() {
+    try {
+        /*Se manda la petición axios para leer las secciones (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
+        además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
+        const { data: res } = await axios.get(`/grupos_parroquia?page=${categoriagrupo.value}`);
+        //Se asigna el valor de la respuesta de axios a la constante data
+        data.value = res;
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+
+}
+
+//Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
+await leerGruposParroquiales();
+
+//Se crea una variable reactiva para el buscador
+const buscar = ref({
+    buscador: "",
+})
+
+//Función para limpiar el buscador
+function limpiarBuscador() {
+    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
+    pagina.value = 1;
+    //Se leen todos los registros
+    leerGruposParroquiales();
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
+}
+
+//Función para buscar registros dependiendo del valor del buscador
+async function buscarGruposParroquiales() {
+    try {
+        //Se evalua que el buscador no este vacio
+        if (buscar.value.buscador != "") {
+            // Realiza la petición axios para llamar a la ruta de búsqueda
+            const { data: res } = await axios.get(`/grupos_parroquia_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
+            // Actualiza los datos en la constante data
+            data.value = res;
+            // Actualiza la URL con el parámetro de página
+            useRouter().push({ query: { pagina: pagina.value } });
+        } else {
+            //Se regresa a la página 1 y se cargan todos los registros
+            pagina.value = 1;
+            leerGruposParroquiales();
+        }
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+//Funciones para manejo del modal
+
+//Toast del sweetalert
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+})
+
+//Se crea una variable reactiva para manejar la información del modal
+const form = ref({
+    id_grupo_parroquial: "",
+    nombre_grupo: "",
+    nombre_encargado: "",
+    apellido_encargado: "",
+    correo_encargado: "",
+    telefono_encargado: "",
+    descripcion_grupo: "",
+    logo_grupo: "",
+    visibilidad_grupo: false,
+    id_categoria_grupo_parroquial: 0,
+    id_categoria_grupo_parroquial:null
+})
+
+//Función para limpiar todos los campos del form
+function limpiarForm() {
+    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
+    form.value.id_grupo_parroquial = "";
+    form.value.nombre_grupo = "";
+    form.value.nombre_encargado = "";
+    form.value.apellido_encargado = "";
+    form.value.correo_encargado = "";
+    form.value.telefono_encargado = "";
+    form.value.descripcion_grupo = "";
+    form.value.logo_grupo = "";
+    form.value.visibilidad_grupo = false;
+    form.value.id_categoria_grupo_parroquial = "0";
+}
+
+
+//Variable para validar que acción se quiere hacer cuando se hace un submit al form
+var formAccion = null;
+
+//Función para evaluar que acción se va a hacer al hacer submit en el form
+function accionForm(accion) {
+    formAccion = accion;
+}
+
+//Función para crear/actualizar un registro cuando se ejecuta el submit del form
+function submitForm() {
+    if (formAccion == "crear") {
+        crearGrupoParroquial();
+    } else {
+        actualizarGrupoParroquial();
+    }
+}
+
+//Función para crear una sección
+async function crearGrupoParroquial() {
+    try {
+        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+        const formData = {
+            nombre_grupo: form.value.nombre_grupo,
+            nombre_encargado: form.value.nombre_encargado,
+            apellido_encargado: form.value.apellido_encargado,
+            correo_encargado: form.value.correo_encargado,
+            telefono_encargado: form.value.telefono_encargado,
+            descripcion_grupo: form.value.descripcion_grupo,
+            logo_grupo: form.value.logo_grupo,
+            visibilidad_grupo: form.value.visibilidad_grupo,
+            id_categoria_grupo_parroquial: form.value.id_categoria_grupo_parroquial,
+            id_configuracion_parroquia :1
+        };
+
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.post("/grupos_parroquia", formData);
+
+        //Se cargan todas las páginas y se cierra el modal
+        leerGruposParroquiales();
+        document.getElementById('closeModal').click();
+
+        //Se lanza la alerta con el mensaje de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Grupo parroquial creada exitosamente'
+        })
+
+    } catch (error) {
+        console.log(error);
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+
+//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
+async function leerUnGrupoParroquial(id) {
+    try {
+        //Se hace la petición axios y se evalua la respuesta
+        await axios.get('/grupos_parroquia/' + id).then(res => {
+            //Constante para el modal
+            const modalElement = document.getElementById('staticModal');
+            //Constante que contiene las caracteristicas del modal
+            const modalOptions = {
+                backdrop: 'static',
+                backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+            };
+            //Instanciamos el boton para cerrar el modal
+            const closeButton = document.getElementById('closeModal');
+            //Constante para el titulo del modal
+            const modalText = document.getElementById('modalText');
+            //Constante para el boton de agregar dentro del modal
+            const modalBtnAdd = document.getElementById('btnModalAdd');
+            //Constante para el boton de actualizar dentro del modal
+            const modalBtnUpdate = document.getElementById('btnModalUpdate');
+            //Instanciamos el modal
+            const modal = new Modal(modalElement, modalOptions);
+            //Le modificamos el texto del header al modal
+            modalText.textContent = 'Editar';
+            //Colocamos visibilidad al botón de actualizar en el modal
+            modalBtnUpdate.classList.remove('hidden');
+            //Ocultamos el botón de agregar en el modal
+            modalBtnAdd.classList.add('hidden');
+            //Abrimos el modal
+            modal.show();
+            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
+            closeButton.addEventListener('click', function () {
+                //Ocultamos el modal
+                modal.hide();
+                //Limpiamos el modal
+                limpiarForm();
+            })
+            //Llenamos los inputs del modal con su respectiva informacion
+            form.value = {
+                id_grupo_parroquial: res.data.id_grupo_parroquial,
+                nombre_grupo: res.data.nombre_grupo,
+                nombre_encargado: res.data.nombre_encargado,
+                apellido_encargado: res.data.apellido_encargado,
+                correo_encargado: res.data.correo_encargado,
+                descripcion_grupo: res.data.descripcion_grupo,
+                logo_grupo: res.data.logo_grupo,
+                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
+                visibilidad_grupo: res.data.visibilidad_grupo ? true : false,
+                id_categoria_grupo_parroquial: res.data.id_categoria_grupo_parroquial,
+            }
+        })
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+//Función para actualizar un registro
+async function actualizarGrupoParroquial() {
+    try {
+        //Se establece una variable de id con el valor que tiene guardado la variable form
+        var id = form.value.id_grupo_parroquial;
+        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        const formData = {
+            nombre_grupo: form.value.nombre_grupo,
+            nombre_encargado: form.value.nombre_encargado,
+            apellido_encargado: form.value.apellido_encargado,
+            correo_encargado: form.value.correo_encargado,
+            descripcion_grupo: form.value.descripcion_grupo,
+            logo_grupo: form.value.logo_grupo,
+            visibilidad_grupo: form.value.visibilidad_grupo,
+            id_categoria_grupo_parroquial: form.value.id_categoria_grupo_parroquial,
+            id_configuracion_parroquia :1
+        };
+
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.put("/grupos_parroquia/" + id, formData);
+
+        //Se cargan todas las páginas y se cierra el modal
+        leerGruposParroquiales ();
+        document.getElementById('closeModal').click();
+
+        //Se lanza la alerta de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Grupo parroquial actualizada exitosamente'
+        })
+
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+//Función para cambiar la visibilidad de un registro para ocultarlo
+async function borrarGrupoParroquial (id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea ocultar el registro?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete('/grupos_parroquia/' + id);
+
+                //Se cargan todos los registros
+                leerGruposParroquiales();
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Grupo parroquial ocultado exitosamente'
+                })
+            } catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    });
+}
+
+//Función para cambiar la visibilidad de un registro para recuperarlo
+async function recuperarGrupoParroquial(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea recuperar el registro?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete('/grupos_parroquia/' + id);
+
+                //Se cargan todos los registros
+                leerGruposParroquiales();
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Grupo parroquial recuperado exitosamente'
+                })
+            } catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    });
+}
+
+</script>

@@ -195,9 +195,12 @@
                             <input type="hidden" id="id_seccion" v-model="form.id_seccion">
                             <div class="relative z-0">
                                 <input type="text" v-model="form.titulo_seccion" @input="validarTituloSeccion()"
-                                    id="titulo_seccion" name="titulo_seccion"
+                                    maxlength="100" id="titulo_seccion" name="titulo_seccion"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" required />
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> {{
+                                    form.titulo_seccion.length
+                                }} /100</span>
                                 <label for="titulo_seccion"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Titulo
                                     - Seccion<span class="text-sm ml-1"> * </span></label>
@@ -218,9 +221,12 @@
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" v-model="form.subtitulo_seccion" id="subtitulo_descripcion"
-                                    name="subtitulo_descripcion"
+                                    maxlength="100" name="subtitulo_descripcion"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> {{
+                                    form.subtitulo_seccion.length
+                                }} /100</span>
                                 <label for="subtitulo_descripcion"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtitulo
                                     - Seccion</label>
@@ -240,10 +246,12 @@
                                 </div>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" v-model="form.descripcion_seccion" id="descripcion_seccion"
-                                    name="descripcion_seccion"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                <textarea type="text" v-model="form.descripcion_seccion" id="descripcion_seccion"
+                                    maxlength="250" name="descripcion_seccion"
+                                    class="block py-2.5 min-h-[3rem] h-[3rem] max-h-[9rem] px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"> {{
+                                    form.descripcion_seccion.length }} /250</span>
                                 <label for="descripcion_seccion"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
                                     - Seccion</label>
@@ -421,6 +429,15 @@ definePageMeta({
 });
 
 onMounted(() => {
+    //Se valida si hay un token en el localStorage y si no te regresa al login
+    function validarToken() {
+        if (!localStorage.getItem('token')) {
+            navigateTo('/');
+        }
+    }
+
+    validarToken();
+
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
