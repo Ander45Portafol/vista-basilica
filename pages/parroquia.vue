@@ -312,6 +312,11 @@
 .modal-buttons button {
     background-color: #32345a;
 }
+
+.buttons-data .changebtn {
+    border: 3px solid #3F4280;
+}
+
 </style>
 
 <script setup>
