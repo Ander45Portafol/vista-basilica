@@ -391,13 +391,6 @@ onMounted(() => {
     const modalBtnUpdate = document.getElementById('btnModalUpdate');
     //Constante para el boton de agregar dentro del modal
     const modalBtnAdd = document.getElementById('btnModalAdd');
-    const dropdownMenu = document.getElementById('dropdown');
-    const dropdownButton = document.getElementById('dropdownDefaultButton');
-    const dropdownOptions = {
-        placement: 'bottom',
-        triggerType: 'click',
-        delay: 300
-    }
     //Constante para el boton de actualizar dentro del modal
 
     /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
@@ -426,10 +419,6 @@ onMounted(() => {
             limpiarForm();
         });
     }
-    const dropdown = new Dropdown(dropdownMenu, dropdownButton, dropdownOptions);
-    dropdownButton.addEventListener('click', function () {
-        dropdown.show();
-    });
 });
 
 //Operaciones SCRUD
