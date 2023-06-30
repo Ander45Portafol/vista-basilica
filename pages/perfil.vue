@@ -64,21 +64,40 @@
             <div class=" h-4/6 w-3/5 mb-12  bg-space opacity-95 mt-40 ml-12 rounded-lg p-6 text-white flex-col">
                 <p class="font-bold text-3xl">Perfil</p>
                 <p class="text-lg font-extralight">Datos generales</p>
-                <form class="flex justify-evenly mt-14">
+                <form @submit.prevent="actualizarPerfil()" class="flex justify-evenly mt-14">
                     <div class="flex-col w-72">
                         <input type="hidden" v-model="form.id_usuario">
                         <input type="hidden" v-model="form.id_rol_usuario">
                         <input type="hidden" v-model="form.clave_usuario">
                         <div class="relative z-0">
-                            <input type="text" id="username" name="name"
+                            <input type="text" id="nombre_usuario" name="nombre_usuario" requierd maxlength="100"
+                                @input="validarNombre()"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" v-model="form.nombre_usuario" />
-                            <label for="username"
-                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                - Persona</label>
+                            <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.nombre_usuario">
+                                {{
+                                    form.nombre_usuario.length }} /100</span>
+                            <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
+                            <label for="nombre_usuario"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
+                                    - Persona<span class="text-sm ml-1"> * </span></label>
+                        </div>
+                        <div v-if="!validarNombre()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                            role="alert">
+                            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                El nombre del usuario solo permite <span class="font-medium">
+                                    letras.</span>
+                            </div>
                         </div>
                         <div class="pt-4 mt-2 flex-col">
-                            <label for="" class="absolute text-gray-200">Tipo - Documento</label>
+                            <label for="" class="text-sm absolute text-gray-200">Tipo - Documento<span class="text-sm ml-1">
+                                    * </span></label>
                             <select id="underline_select" v-model="form.tipo_documento"
                                 class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-100 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                 <option value="0" class="text-gray-900">Seleccionar</option>
@@ -86,52 +105,125 @@
                                 <option value="Pasaporte" class="text-gray-900">Pasaporte</option>
                                 <option value="Otro" class="text-gray-900">Otro...</option>
                             </select>
+                            <div v-if="form.tipo_documento == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    Seleccione <span class="font-medium">
+                                        una opción.</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="relative z-0 mt-6">
-                            <input type="text" id="username" name="name"
+                            <input type="text" id="usuario" name="usuario" required maxlength="50" @input="validarUsuario()"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" v-model="form.usuario" />
-                            <label for="username"
-                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                - Usuario</label>
+                            <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.usuario">
+                                {{
+                                    form.usuario.length }} /50</span>
+                            <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /50</span>
+                            <label for="usuario"
+                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                Usuario<span class="text-sm ml-1"> * </span></label>
+                        </div>
+                        <div v-if="!validarUsuario()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                            role="alert">
+                            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                El usuario ingresado <span class="font-medium">
+                                    no tiene un formato correcto.</span>
+                            </div>
                         </div>
                         <div class="relative z-0  mt-6">
-                            <input type="text" id="username" name="name"
+                            <input type="email" id="correo_usuario" name="correo_usuario" required
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" v-model="form.correo_usuario" />
-                            <label for="username"
+                            <label for="correo_usuario"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                - Usuario</label>
+                                - Usuario<span class="text-sm ml-1"> * </span></label>
                         </div>
                     </div>
                     <div class="flex-col w-72">
                         <div class="relative z-0">
-                            <input type="text" id="username" name="name"
+                            <input type="text" id="apellido_usuario" name="apellido_usuario" required maxlength="100"
+                                @input="validarApellido()"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" v-model="form.apellido_usuario" />
-                            <label for="username"
+                            <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.apellido_usuario">
+                                {{
+                                    form.apellido_usuario.length }} /100</span>
+                            <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
+                            <label for="apellido_usuario"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
-                                - Persona</label>
+                                - Persona<span class="text-sm ml-1"> * </span></label>
                         </div>
                         <div class="relative z-0 mt-10">
-                            <input type="text" id="username" name="name"
+                            <input type="text" id="numero_documento_usuario" name="numero_documento_usuario"
+                                @input="validarNumeroDocumento()"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" v-model="form.numero_documento_usuario" />
-                            <label for="username"
-                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento
-                            </label>
+                            <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
+                                v-if="form.numero_documento_usuario">
+                                {{
+                                    form.numero_documento_usuario.length }} /20</span>
+                            <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /20</span>
+                            <label for="numero_documento_usuario"
+                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">#
+                                Documento<span class="text-sm ml-1"> * </span></label>
+                        </div>
+                        <div v-if="!validarNumeroDocumento()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                            role="alert">
+                            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                El documento ingresado <span class="font-medium">
+                                    no tiene un formato correcto.</span>
+                            </div>
                         </div>
                         <div class="relative z-0 mt-6">
-                            <input type="text" id="username" name="name"
+                            <input type="text" id="telefono_usuario" name="telefono_usuario" required maxlength="9"
+                                @input="validarNumeroTelefono()"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" v-model="form.telefono_usuario" />
-                            <label for="username"
-                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
-                                - Usuario</label>
+                            <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.telefono_usuario">
+                                {{
+                                    form.telefono_usuario.length }} /9</span>
+                            <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /9</span>
+                            <label for="telefono_usuario"
+                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Teléfono
+                                - Usuario<span class="text-sm ml-1"> * </span></label>
+                        </div>
+                        <div v-if="!validarNumeroTelefono()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                            role="alert">
+                            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                El número de teléfono ingresado <span class="font-medium">
+                                    no tiene un formato correcto.</span>
+                            </div>
                         </div>
                         <div class="flex items-end  h-44 justify-end w-96">
-                            <button class="bg-darkSpace w-52 flex items-center h-12 rounded-xl gap-4 justify-center"
-                                @click.prevent="actualizarPerfil()">
+                            <button type="submit"
+                                class="bg-darkSpace absolute bottom-20 w-52 flex items-center h-12 rounded-xl gap-4 justify-center"
+                                :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()">
                                 <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path d="M7 12.5l3 3 7-7" stroke="#FFF" stroke-width="2" stroke-linecap="round"
@@ -159,7 +251,9 @@ import 'flowbite';
 import { onMounted } from 'vue'
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import validaciones from '../assets/validaciones.js';
 import Iconoir from 'iconoir/icons/iconoir.svg'
+import { submitForm } from '@formkit/vue';
 definePageMeta({
     layout: "perfil",
 })
@@ -196,13 +290,13 @@ onMounted(() => {
                 visibilidad_usuario: true,
                 id_rol_usuario: res.data.roles.id_rol_usuario
             }
-            var cortarnombre=res.data.nombre_usuario.split(" ");
-            var nombrecortado=cortarnombre[0];
-            var cortarapellido=res.data.apellido_usuario.split(" ");
-            var apellidocortado=cortarapellido[0];
-            var nombrecompleto=nombrecortado+" "+apellidocortado;
-            document.getElementById('nombre_usuario').textContent=nombrecompleto;
-            document.getElementById('rol_usuario').textContent=res.data.roles.rol_usuario;
+            var cortarnombre = res.data.nombre_usuario.split(" ");
+            var nombrecortado = cortarnombre[0];
+            var cortarapellido = res.data.apellido_usuario.split(" ");
+            var apellidocortado = cortarapellido[0];
+            var nombrecompleto = nombrecortado + " " + apellidocortado;
+            document.getElementById('nombre_usuario').textContent = nombrecompleto;
+            document.getElementById('rol_usuario').textContent = res.data.roles.rol_usuario;
         });
     }
 
@@ -268,6 +362,40 @@ async function actualizarPerfil() {
 
     } catch (error) {
         console.log(error);
+    }
+}
+
+
+//Validaciones
+
+function validarNombre() {
+    var res = validaciones.validarSoloLetras(form.value.nombre_usuario);
+    return res;
+}
+
+function validarApellido() {
+    var res = validaciones.validarSoloLetras(form.value.apellido_usuario);
+    return res;
+}
+
+function validarUsuario() {
+    var res = validaciones.validarUsuario(form.value.usuario);
+    return res;
+}
+
+function validarNumeroTelefono() {
+    var res = validaciones.validarNumeroTelefono(form.value.telefono_usuario);
+    return res;
+}
+
+function validarNumeroDocumento() {
+    if (form.value.tipo_documento == 0 && form.value.numero_documento_usuario.length == 0) {
+        return true;
+    } else if (form.value.tipo_documento == 0) {
+        return false;
+    } else {
+        var res = validaciones.validarNumeroDocumento(form.value.numero_documento_usuario, form.value.tipo_documento);
+        return res;
     }
 }
 </script>

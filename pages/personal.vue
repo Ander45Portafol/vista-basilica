@@ -6,7 +6,7 @@
                 <a href="/tipo_personal" class="ml-4">Tipo - Personal</a>
             </div>
             <div class="endtop flex justify-between w-20">
-                <button>
+                <NuxtLink to="/perfil">
                     <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
@@ -15,7 +15,7 @@
                             d="M19.622 10.395l-1.097-2.65L20 6l-2-2-1.735 1.483-2.707-1.113L12.935 2h-1.954l-.632 2.401-2.645 1.115L6 4 4 6l1.453 1.789-1.08 2.657L2 11v2l2.401.655L5.516 16.3 4 18l2 2 1.791-1.46 2.606 1.072L11 22h2l.604-2.387 2.651-1.098C16.697 18.831 18 20 18 20l2-2-1.484-1.75 1.098-2.652 2.386-.62V11l-2.378-.605z"
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
-                </button>
+                </NuxtLink>
                 <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
                     data-drawer-placement="right" aria-controls="drawer-right-example">
                     <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -483,14 +483,6 @@ async function leerPersonales() {
     }
 }
 
-// Para cargar la tabla cuando se haya cargado el DOM
-await leerPersonales();
-
-//Se crea una variable reactiva para el buscador
-const buscar = ref({
-    buscador: "",
-})
-
 //Funcion para limpiar el buscador
 function limpiarBuscador() {
     //Se coloca la constante pagina 1 para que salga la primera pagina de registros
@@ -499,6 +491,12 @@ function limpiarBuscador() {
     leerPersonales();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
+}
+
+async function llenarTipoPersonal() {
+    const { data: res } = await axios.get('t_personal-select');
+    tipo_personal.value = res;
+    console.log(tipo_personal.value)
 }
 
 //Toast del sweetalert
