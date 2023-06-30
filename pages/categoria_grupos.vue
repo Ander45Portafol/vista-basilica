@@ -156,7 +156,6 @@
             </div>
         </div>
     </div>
-
     <!-- Modal principal-->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -187,8 +186,8 @@
                     <!-- Se utiliza el modificador @submit.prevent para evitar la recarga de la página al enviar el formulario. En su lugar, se llama a la función submitForm() definida en Vue.js para ejecutar la lógica personalizada del envío del formulario. -->
                     <form action="" @submit.prevent="submitForm()" class="flex justify-center">
                         <div class="flex-col w-64">
-                            <!-- Campo de entrada Nombre - Parroquia -->
                             <div class="relative z-0 mt-6">
+                                <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                                 <input type="text" id="nombre_categoria_grupo" name="nombre_categoria_grupo"
                                     v-model="form.nombre_categoria_grupo"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
