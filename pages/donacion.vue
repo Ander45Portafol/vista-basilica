@@ -157,7 +157,7 @@
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modal_text">Editar</p>
-                        <p class="text-lg font-medium text-gray-400">Donaciones</p>
+                        <p class="text-lg font-medium text-gray-400">Donación</p>
                     </div>
                     <!-- Boton para cerrar el modal -->
                     <button type="button" id="closeModal"

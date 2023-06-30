@@ -231,7 +231,7 @@
                                 </div>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <textarea type="text" id="descripcion_pagina" name="descripcion_pagina" maxlength="250"
+                                <textarea id="descripcion_pagina" name="descripcion_pagina" maxlength="250"
                                     v-model="form.descripcion_pagina"
                                     class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
@@ -390,6 +390,8 @@ onMounted(() => {
     function validarToken() {
         if (!localStorage.getItem('token')) {
             navigateTo('/');
+        }else{
+            console.log(localStorage.getItem('token'))
         }
     }
 
@@ -602,7 +604,6 @@ function submitForm() {
 
 //Función para crear una página
 async function crearPagina() {
-    console.log(formAccion);
     if (validarNumeroPagina() && validarNombrePagina()) {
         try {
             //Se crea una constante para guardar el valor actual que tienen  todos los campos del form

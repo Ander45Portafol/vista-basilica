@@ -32,7 +32,7 @@
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar ..." v-model="buscar.buscador" @keyup="buscarRolesUsuarios()">
+                        placeholder="Buscar... (rol)" v-model="buscar.buscador" @keyup="buscarRolesUsuarios()">
                     <div class="flex justify-end items-center">
                         <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
                                 fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -90,14 +90,14 @@
                             v-if="rolusuario.visibilidad_rol_usuario == 1">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                                 {{ rolusuario.rol_usuario }}</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">On
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Habilitado
                             </p>
                         </div>
                         <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center"
                             v-else>
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                                 {{ rolusuario.rol_usuario }}</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Off
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Deshabilitado
                             </p>
                         </div>
                     </div>
@@ -178,10 +178,10 @@
                         <div class="flex-col w-64">
                             <input type="hidden" v-model="form.id_rol_usuario">
                             <div class="relative z-0">
-                                <input type="text" id="username" name="name"
+                                <input type="text" id="rol_usuario" name="rol_usuario"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.rol_usuario" />
-                                <label for="username"
+                                <label for="rol_usuario"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Rol
                                     - Usuario</label>
                             </div>
@@ -309,8 +309,6 @@ onMounted(() => {
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
-    //Constante para el botón de eliminar un registro
-    const buttonUpdate = document.getElementsByClassName('editbtn');
     //Constante para el modal
     const modalElement = document.getElementById('staticModal');
     //Constante para el botón de cerrar en el modal
@@ -336,16 +334,6 @@ onMounted(() => {
         buttonElement.addEventListener('click', function () {
             modalText.textContent = "Registrar";
             modal.show();
-        });
-
-        /*Se crea un array para introducir todos los botones de editar registro (en este caso se hace por medio de una 
-        clase personalizada con la que cuentan todos los botones "editbtn". Además se les añade un evento click a cada botón,
-        y este evento click abre el modal, cambia su titulo y oculta el botón de agregar que se encuentra dentro del modal*/
-        Array.from(buttonUpdate).forEach(function (button) {
-            button.addEventListener('click', function () {
-                modalText.textContent = "Editar";
-                modal.show();
-            });
         });
 
         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
@@ -402,7 +390,7 @@ watch(rolusuario, async () => {
         leerRolesUsuarios();
     }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { rolusuario: rolusuario.value } })
+    useRouter().push({ query: { pagina: rolusuario.value } })
 })
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
@@ -608,7 +596,7 @@ async function buscarRolesUsuarios() {
             // Actualiza los datos en la constante data
             data.value = res;
             // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { rolusuario: rolusuario.value } });
+            useRouter().push({ query: { pagina: rolusuario.value } });
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
             rolusuario.value = 1;
