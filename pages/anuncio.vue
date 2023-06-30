@@ -29,9 +29,11 @@
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                    <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarAnuncios en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar ..." v-model="buscar.buscador" @keyup="buscarAnuncios()">
                     <div class="flex justify-end items-center">
+                        <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
                                 stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                                 color="#000000">
@@ -77,15 +79,18 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
+            <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
             <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ anuncios.length }}<span
                     class="text-gray-500 font-normal ml-2">registros
                     encontrados!</span></p>
+            <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
             <div class="contained-data flex-col" v-for="anuncio in anuncios" :key="anuncio.id_anuncio">
                 <div class="data-contained flex justify-between mt-4 rounded-xl p-4">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
+                            <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{
                                 anuncio.titulo_anuncio }}</p>
                             <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">{{
@@ -94,6 +99,7 @@
                             </p>
                         </div>
                     </div>
+                    <!-- Al darle clic al evento leerUnAnuncio ejecuta la funcion -->
                     <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
                         v-if="anuncio.visibilidad_anuncio == 1">
                         <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
@@ -106,6 +112,7 @@
                                     stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
+                        <!-- Al darle clic al evento borrarAnuncio ejecuta la funcion -->
                         <button
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                             @click="borrarAnuncio(anuncio.id_anuncio)">
@@ -117,11 +124,12 @@
                             </svg>
                         </button>
                     </div>
+                    <!-- Al darle clic al evento recuperarUnAnuncio ejecuta la funcion -->
                     <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
                         v-else>
                         <button
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                            @click="changeVisible(anuncio.id_anuncio)">
+                            @click="recuperarUnAnuncio(anuncio.id_anuncio)">
                             <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
@@ -137,6 +145,7 @@
                 </div>
             </div>
             <div class="flex justify-center mt-6">
+                <!-- Componente de paginación utilizando Tailwind CSS -->
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
                     :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
@@ -145,18 +154,20 @@
         </div>
     </div>
 
-    <!-- Main modal -->
+    <!-- Modal principal-->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-2xl max-h-full">
-            <!-- Modal content -->
+            <!-- Contenido del modal -->
             <div class="relative rounded-lg shadow modal">
-                <!-- Modal header -->
+                <!--Encabezado del modal -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
+                        <!-- Asignamos un id al título del modal para la creación  y actualizacion de texto-->
                         <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
                         <p class="text-lg font-medium text-gray-400">Anuncios</p>
                     </div>
+                    <!-- Boton para cerrar el modal -->
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                         data-modal-hide="staticModal">
@@ -167,13 +178,14 @@
                         </svg>
                     </button>
                 </div>
-                <!-- Modal body -->
+                <!-- Cuerpo del modal -->
                 <div class="p-6 space-y-6 pb-10">
                     <form action="" class="flex justify-evenly">
                         <div class="flex-col w-64">
+                            <!-- Input invisible para reconocer el  registro   -->
                             <input type="hidden" name="id_anuncio" id="id_anuncio" v-model="form.id_anuncio">
-
                             <div class="relative z-0">
+                                <!-- Campo de entrada de texto -->
                                 <input type="text" id="title_anuncio" name="titulo_anuncio" v-model="form.titulo_anuncio"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
@@ -182,6 +194,7 @@
                                     - Anuncio</label>
                             </div>
                             <div class="relative z-0 mt-6">
+                                <!-- Campo de entrada de texto -->
                                 <input type="text" id="contenido_titulo" name="contenido_anuncio"
                                     v-model="form.contenido_anuncio"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
@@ -191,6 +204,7 @@
                                     - Anuncio</label>
                             </div>
                             <div class="relative z-0 mt-10">
+                                <!-- Campo de entrada de texto -->
                                 <input type="date" id="fecha_anuncio" name="fecha_anuncio" v-model="form.fecha_anuncio"
                                     class="block py-2.5 px-0 w-full text-xs text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
@@ -199,6 +213,7 @@
                                     - Anuncio</label>
                             </div>
                             <div class="relative z-0 mt-6">
+                                <!-- Campo de entrada de texto -->
                                 <input type="text" id="enlace_externo" name="enlace_externo" v-model="form.enlace_externo"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
@@ -206,6 +221,7 @@
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Enlace
                                     - Anuncio</label>
                             </div>
+                            <!-- Etiqueta para el checkbox para la visibilidad del regisrtro -->
                             <div class="flex-col mt-8">
                                 <label for="" class="text-gray-200">Visibilidad - Enlace</label>
                                 <div class="flex justify-start mt-2">
@@ -225,6 +241,7 @@
                                 <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
+                                <!-- Botón para crear un anuncio -->
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center"
                                     @click="crearAnuncio()">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -347,7 +364,6 @@ onMounted(() => {
     const closeButton = document.getElementById('closeModal');
     //Constante para el titulo del modal
     const modalText = document.getElementById('modalText');
-    //Constante para el boton de actualizar dentro del modal
 
     /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
     aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
@@ -393,7 +409,7 @@ para almacenar la información que traiga el axios*/
 const data = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const anuncio = ref(useRoute().query.anuncio || 1);
+const pagina = ref(useRoute().query.pagina || 1);
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
@@ -420,17 +436,17 @@ let anuncios = computed(() => data.value.data);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
-watch(anuncio, async () => {
+watch(pagina, async () => {
     //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
     if (buscar.value.buscador != "") {
         //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
         buscarAnuncios();
     } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
+        //Se ejecuta el leer anuncios para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
         leerAnuncios();
     }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { anuncio: anuncio.value } })
+    useRouter().push({ query: { pagina: pagina.value } })
 })
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
@@ -438,7 +454,7 @@ async function leerAnuncios() {
     try {
         /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
         además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/anuncios?page=${anuncio.value}`);
+        const { data: res } = await axios.get(`/anuncios?page=${pagina.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
     } catch (error) {
@@ -453,14 +469,14 @@ async function buscarAnuncios() {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
             // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/anuncios_search?page=${anuncio.value}&buscador=${buscar.value.buscador}`);
+            const { data: res } = await axios.get(`/anuncios_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
             // Actualiza los datos en la constante data
             data.value = res;
             // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { anuncio: anuncio.value } });
+            useRouter().push({ query: { pagina: pagina.value } });
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
-            anuncio.value = 1;
+            pagina.value = 1;
             leerAnuncios();
         }
     } catch (error) {
@@ -486,7 +502,7 @@ async function buscarAnuncios() {
 //Función para limpiar el buscador
 function limpiarBuscador() {
     //Se coloca la constante pagina 1 para que salga la primera pagina de registros
-    anuncio.value = 1;
+    pagina.value = 1;
     //Se leen todos los registros
     leerAnuncios();
     //Se coloca el valor del buscador a nulo
@@ -515,7 +531,7 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
-//Función para crear una página
+//Función para crear un anuncio
 async function crearAnuncio() {
     try {
         //Se crea una constante para guardar el valor actual que tienen todos los campos del form
@@ -590,7 +606,7 @@ async function leerUnAnuncio(id) {
         console.log(error);
     }
 }
-
+//Función actualizar los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function actualizarAnuncio() {
     try {
         //Se establece una variable de id con el valor que tiene guardado la variable form
@@ -607,14 +623,14 @@ async function actualizarAnuncio() {
         //Se realiza la petición axios mandando la ruta y el formData
         await axios.put("/anuncios/" + id, formData);
 
-        //Se cargan todas las páginas y se cierra el modal
+        //Se cargan todos los anuncios y se cierra el modal
         leerAnuncios();
         document.getElementById('closeModal').click();
 
         //Se lanza la alerta de éxito
         Toast.fire({
             icon: 'success',
-            title: 'Página actualizada exitosamente'
+            title: 'Anuncio actualizado exitosamente'
         })
 
     } catch (error) {
@@ -622,7 +638,7 @@ async function actualizarAnuncio() {
     }
 }
 
-//Función para cambiar la visibilidad de una página
+//Función para cambiar la visibilidad de un anuncio
 async function borrarAnuncio(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
@@ -643,13 +659,13 @@ async function borrarAnuncio(id) {
                 //Se realiza la petición axios
                 await axios.delete('/anuncios/' + id);
 
-                //Se cargan todas las páginas
+                //Se cargan todos los anuncios
                 leerAnuncios();
 
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Página ocultada exitosamente'
+                    title: 'Anuncio ocultado exitosamente'
                 })
             } catch (error) {
                 console.log(error);
@@ -657,8 +673,8 @@ async function borrarAnuncio(id) {
         }
     });
 }
-//Función para cambiar la visibilidad de una página
-async function changeVisible(id) {
+//Función para cambiar la visibilidad de un anuncio
+async function recuperarUnAnuncio(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: 'Confirmación',
@@ -678,7 +694,7 @@ async function changeVisible(id) {
                 //Se realiza la petición axios
                 await axios.delete('/anuncios/' + id);
 
-                //Se cargan todas las páginas
+                //Se cargan todos los anuncios
                 leerAnuncios();
 
                 //Se lanza la alerta de éxito
