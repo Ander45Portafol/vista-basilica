@@ -59,7 +59,7 @@
                 <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarGruposParroquiales()">
+                        placeholder="Buscar... (nombre grupo/nombre encargado)" v-model="buscar.buscador" @keyup="buscarGruposParroquiales()">
                     <div class="flex justify-end items-center">
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
                                 stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
