@@ -3,8 +3,13 @@
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
                 <a href="" class="active ml-4">Usuarios</a>
+<<<<<<< HEAD
+                <a href="/rol_usuario" class="ml-4">Roles Usuarios</a>
+                <a href="/rol_acceso" class="ml-4">Roles Accesos</a>
+=======
                 <a href="/rolesusuario" class="ml-4">Roles Usuarios</a>
                 <a href="/rolesaccion" class="ml-4">Roles Accesos</a>
+>>>>>>> parent of 737fb3f (nombre de archivos arreglados)
             </div>
             <div class="endtop flex justify-between w-20">
                 <button class="" type="button">
@@ -391,13 +396,6 @@ onMounted(() => {
     const modalBtnUpdate = document.getElementById('btnModalUpdate');
     //Constante para el boton de agregar dentro del modal
     const modalBtnAdd = document.getElementById('btnModalAdd');
-    const dropdownMenu = document.getElementById('dropdown');
-    const dropdownButton = document.getElementById('dropdownDefaultButton');
-    const dropdownOptions = {
-        placement: 'bottom',
-        triggerType: 'click',
-        delay: 300
-    }
     //Constante para el boton de actualizar dentro del modal
 
     /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
@@ -426,10 +424,6 @@ onMounted(() => {
             limpiarForm();
         });
     }
-    const dropdown = new Dropdown(dropdownMenu, dropdownButton, dropdownOptions);
-    dropdownButton.addEventListener('click', function () {
-        dropdown.show();
-    });
 });
 
 //Operaciones SCRUD
