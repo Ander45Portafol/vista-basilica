@@ -2,14 +2,9 @@
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <a href="" class="active ml-4">Usuarios</a>
-<<<<<<< HEAD
-                <a href="/rol_usuario" class="ml-4">Roles Usuarios</a>
-                <a href="/rol_acceso" class="ml-4">Roles Accesos</a>
-=======
-                <a href="/rolesusuario" class="ml-4">Roles Usuarios</a>
-                <a href="/rolesaccion" class="ml-4">Roles Accesos</a>
->>>>>>> parent of 737fb3f (nombre de archivos arreglados)
+                <NuxtLink to="" class="active ml-4">Usuarios</NuxtLink>
+                <NuxtLink to="/rol_usuario" class="ml-4">Roles Usuarios</NuxtLink>
+                <NuxtLink to="/rol_acceso" class="ml-4">Roles Accesos</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">
                 <button class="" type="button">
