@@ -2,12 +2,12 @@
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <a href="" class="active ml-4">Usuarios</a>
-                <a href="/rolesusuario" class="ml-4">Roles Usuarios</a>
-                <a href="/rolesaccion" class="ml-4">Roles Accesos</a>
+                <NuxtLink to="" class="active ml-4">Usuarios</NuxtLink>
+                <NuxtLink to="/rol_usuario" class="ml-4">Roles Usuarios</NuxtLink>
+                <NuxtLink to="/rol_acceso" class="ml-4">Roles Accesos</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">
-                <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="" type="button">
+                <button class="" type="button">
                     <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
@@ -17,36 +17,6 @@
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                 </button>
-                <!-- Dropdown menu -->
-                <div id="dropdown" class="z-10 hidden bg-space text-white divide-y divide-gray-100 rounded-lg shadow w-32">
-                    <ul class="text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                        <li>
-                            <a href="#"
-                                class=" px-2 py-2 hover:bg-slate-600 text-white rounded-lg flex justify-stretch gap-4 items-center"><svg
-                                    width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"
-                                        stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                    <path
-                                        d="M4.271 18.346S6.5 15.5 12 15.5s7.73 2.846 7.73 2.846M12 12a3 3 0 100-6 3 3 0 000 6z"
-                                        stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                </svg> Perfil</a>
-                        </li>
-                        <li>
-                            <a href="#"
-                                class=" px-2 py-2 hover:bg-slate-600 text-white rounded-lg flex justify-stretch gap-4 items-center"><svg
-                                    width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path
-                                        d="M19 12h-7m0 0l3 3m-3-3l3-3M19 6V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2v-1"
-                                        stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                </svg>Cerrar sesión</a>
-                        </li>
-                    </ul>
-                </div>
                 <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
                     data-drawer-placement="right" aria-controls="drawer-right-example">
                     <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -215,10 +185,10 @@
                                     - Persona</label>
                             </div>
                             <div class="pt-4 mt-2 flex-col">
-                                <label for="" class="absolute text-gray-200">Tipo - Documento</label>
+                                <label for="" class="text-sm absolute text-gray-200">Tipo - Documento</label>
                                 <select id="underline_select" v-model="form.tipo_documento"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-100 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="0" class="text-gray-900">Seleccionar</option>
+                                    <option value="0" class="text-gray-900">Seleccione una opción</option>
                                     <option value="Cédula" class="text-gray-900">Cédula</option>
                                     <option value="Pasaporte" class="text-gray-900">Pasaporte</option>
                                     <option value="Otro" class="text-gray-900">Otro...</option>
@@ -233,7 +203,7 @@
                                     Usuario</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
+                                <input type="email" id="username" name="username"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.correo_usuario" />
                                 <label for="username"
@@ -241,7 +211,7 @@
                                     - Usuario</label>
                             </div>
                             <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="absolute text-gray-200">Rol - Usuario</label>
+                                <label for="" class="text-sm absolute text-gray-200">Rol - Usuario</label>
                                 <select id="underline_select" v-model="form.id_rol_usuario"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                     <option value="0" class="bg-gray-700 text-white"> Seleccione una opción </option>
@@ -265,7 +235,7 @@
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.numero_documento_usuario" />
                                 <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento</label>
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"># Documento</label>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="password" id="username" name="password"
@@ -279,7 +249,7 @@
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.telefono_usuario" />
                                 <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Teléfono
                                     - Usuario</label>
                             </div>
                             <div class="flex-col mt-6">
@@ -421,13 +391,6 @@ onMounted(() => {
     const modalBtnUpdate = document.getElementById('btnModalUpdate');
     //Constante para el boton de agregar dentro del modal
     const modalBtnAdd = document.getElementById('btnModalAdd');
-    const dropdownMenu = document.getElementById('dropdown');
-    const dropdownButton = document.getElementById('dropdownDefaultButton');
-    const dropdownOptions = {
-        placement: 'bottom',
-        triggerType: 'click',
-        delay: 300
-    }
     //Constante para el boton de actualizar dentro del modal
 
     /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
@@ -456,10 +419,6 @@ onMounted(() => {
             limpiarForm();
         });
     }
-    const dropdown = new Dropdown(dropdownMenu, dropdownButton, dropdownOptions);
-    dropdownButton.addEventListener('click', function () {
-        dropdown.show();
-    });
 });
 
 //Operaciones SCRUD

@@ -3,7 +3,7 @@
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <NuxtLink class="ml-4" to="/parroquia">Enlaces Amigos</NuxtLink>
+                <NuxtLink class="ml-4" to="/enlace_amigo">Enlaces Amigos</NuxtLink>
                 <NuxtLink class="ml-4" to="/misa">Misas Online</NuxtLink>
                 <NuxtLink class="active ml-4" to="/grupos_parroquiales">Grupos</NuxtLink>
                 <NuxtLink class="ml-4" to="/configuracion_parroquia">Configuracion</NuxtLink>
@@ -288,6 +288,11 @@
 .modal-buttons button {
     background-color: #32345a;
 }
+
+.buttons-data .changebtn {
+    border: 3px solid #3F4280;
+}
+
 </style>
 
 <script setup>

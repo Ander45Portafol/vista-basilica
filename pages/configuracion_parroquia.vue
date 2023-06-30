@@ -2,7 +2,7 @@
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <NuxtLink to="/parroquia" class="ml-4">Enlaces Amigos</NuxtLink>
+                <NuxtLink to="/enlace_amigo" class="ml-4">Enlaces Amigos</NuxtLink>
                 <NuxtLink to="/misa" class="ml-4">Misas Online</NuxtLink>
                 <NuxtLink class="ml-4" to="/grupos_parroquiales">Grupos</NuxtLink>
                 <NuxtLink to="/configuracion_parroquia" class="active ml-4">Configuracion</NuxtLink>
@@ -51,11 +51,11 @@
                             - Parroquia</label>
                     </div>
                     <div class="relative z-0 mt-12">
-                        <input type="text" id="floating_standard"
-                            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
+                        <textarea id="floating_standard"
+                            class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model=form.direccion_parroquia />
                         <label for="floating_standard"
-                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Direccion
+                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Dirección
                             - Parroquia</label>
                     </div>
                     <div class="relative z-0 mt-12">
@@ -67,7 +67,7 @@
                             - Representante</label>
                     </div>
                     <div class="pt-4 mt-2 flex-col">
-                        <label for="" class="absolute text-slate-900">Tipo - Documento</label>
+                        <label for="" class="text-sm absolute text-slate-900">Tipo - Documento</label>
                         <select id="underline_select" v-model="form.tipo_documento_representante"
                             class="block mt-4 py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-salte-900 appearance-none focus:outline-none focus:ring-0 focus:border-slate-900 peer">
                             <option value="0" class="bg-white text-slate-900"> Seleccione una opción </option>
@@ -83,7 +83,7 @@
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.pagina_web" />
                         <label for="floating_standard"
-                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Pagina
+                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Página
                             web - Parroquia</label>
                     </div>
                     <div class="relative z-0 mt-12">
@@ -107,7 +107,7 @@
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.telefono_parroquia" />
                         <label for="floating_standard"
-                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
+                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Teléfono
                             - Parroquia</label>
                     </div>
                     <div class="relative z-0 mt-10">
@@ -115,7 +115,7 @@
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.documento_representante" />
                         <label for="floating_standard"
-                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento
+                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"># Documento
                             - Representante</label>
                     </div>
                 </div>

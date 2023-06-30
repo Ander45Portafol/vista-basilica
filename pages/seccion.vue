@@ -224,9 +224,11 @@
                                     maxlength="100" name="subtitulo_descripcion"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> {{
-                                    form.subtitulo_seccion.length
-                                }} /100</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
+                                    v-if="form.subtitulo_seccion"> {{
+                                        form.subtitulo_seccion.length
+                                    }} /100</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /250</span>
                                 <label for="subtitulo_descripcion"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtitulo
                                     - Seccion</label>
@@ -250,8 +252,10 @@
                                     maxlength="250" name="descripcion_seccion"
                                     class="block py-2.5 min-h-[3rem] h-[3rem] max-h-[9rem] px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"> {{
-                                    form.descripcion_seccion.length }} /250</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
+                                    v-if="form.descripcion_seccion"> {{
+                                        form.descripcion_seccion.length }} /250</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /250</span>
                                 <label for="descripcion_seccion"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
                                     - Seccion</label>
@@ -325,7 +329,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalAdd" type="submit" value="crear" @click="accionForm('crear')"
+                                <button id="btnModalAdd" type="submit"
                                     :disabled="!validarTituloSeccion() || !validarSubtituloSeccion() || form.id_pagina == 0"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -339,7 +343,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
+                                <button id="btnModalUpdate" type="submit"
                                     :disabled="!validarTituloSeccion() || !validarSubtituloSeccion() || form.id_pagina == 0"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -468,6 +472,7 @@ onMounted(() => {
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
+            accionForm('crear')
             limpiarForm();
             modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
@@ -679,48 +684,50 @@ function submitForm() {
 
 //Función para crear una sección
 async function crearSeccion() {
-    try {
-        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-        const formData = {
-            titulo_seccion: form.value.titulo_seccion,
-            subtitulo_seccion: form.value.subtitulo_seccion,
-            descripcion_seccion: form.value.descripcion_seccion,
-            id_pagina: form.value.id_pagina,
-            visibilidad_seccion: form.value.visibilidad_seccion,
-            editable: form.value.editable,
-        };
+    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
+        try {
+            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+            const formData = {
+                titulo_seccion: form.value.titulo_seccion,
+                subtitulo_seccion: form.value.subtitulo_seccion,
+                descripcion_seccion: form.value.descripcion_seccion,
+                id_pagina: form.value.id_pagina,
+                visibilidad_seccion: form.value.visibilidad_seccion,
+                editable: form.value.editable,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/secciones", formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/secciones", formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerSecciones();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerSecciones();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta con el mensaje de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Sección creada exitosamente'
-        })
+            //Se lanza la alerta con el mensaje de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Sección creada exitosamente'
+            })
 
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -728,6 +735,7 @@ async function crearSeccion() {
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnaSeccion(id) {
     try {
+        accionForm('actualizar');
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/secciones/' + id).then(res => {
             //Constante para el modal
@@ -797,50 +805,52 @@ async function leerUnaSeccion(id) {
 
 //Función para actualizar un registro
 async function actualizarSeccion() {
-    try {
-        //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_seccion;
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            titulo_seccion: form.value.titulo_seccion,
-            subtitulo_seccion: form.value.subtitulo_seccion,
-            descripcion_seccion: form.value.descripcion_seccion,
-            id_pagina: form.value.id_pagina,
-            visibilidad_seccion: form.value.visibilidad_seccion,
-            editable: form.value.editable,
-        };
+    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_seccion;
+            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+            const formData = {
+                titulo_seccion: form.value.titulo_seccion,
+                subtitulo_seccion: form.value.subtitulo_seccion,
+                descripcion_seccion: form.value.descripcion_seccion,
+                id_pagina: form.value.id_pagina,
+                visibilidad_seccion: form.value.visibilidad_seccion,
+                editable: form.value.editable,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.put("/secciones/" + id, formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.put("/secciones/" + id, formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerSecciones();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerSecciones();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Sección actualizada exitosamente'
-        })
+            //Se lanza la alerta de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Sección actualizada exitosamente'
+            })
 
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
