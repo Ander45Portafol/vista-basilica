@@ -418,10 +418,10 @@ watch(pagina, async () => {
     //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
     if (buscar.value.buscador != "") {
         //Se ejecuta el buscar secciones si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarSecciones();
+        buscarPersonal();
     } else {
         //Se ejecuta el leer secciones para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerSecciones();
+        leerPersonal();
     }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
     useRouter().push({ query: { pagina: pagina.value } })
@@ -429,11 +429,11 @@ watch(pagina, async () => {
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
-async function leerSecciones() {
+async function leerPersonal() {
     try {
         /*Se manda la petición axios para leer las secciones (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
         además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/secciones?page=${pagina.value}`);
+        const { data: res } = await axios.get(`/personal?page=${pagina.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
     } catch (error) {
@@ -456,7 +456,7 @@ async function leerSecciones() {
 }
 
 //Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
-await leerSecciones();
+await leerPersonal();
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
@@ -468,18 +468,18 @@ function limpiarBuscador() {
     //Se coloca la constante pagina 1 para que salga la primera pagina de registros
     pagina.value = 1;
     //Se leen todos los registros
-    leerSecciones();
+    leerPersonal();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
 }
 
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarSecciones() {
+async function buscarPersonal() {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
             // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/secciones_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
+            const { data: res } = await axios.get(`/personal_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
             // Actualiza los datos en la constante data
             data.value = res;
             // Actualiza la URL con el parámetro de página
@@ -487,7 +487,7 @@ async function buscarSecciones() {
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
             pagina.value = 1;
-            leerSecciones();
+            leerPersonal();
         }
     } catch (error) {
         //Se extrae el mensaje de error
@@ -524,13 +524,13 @@ const Toast = Swal.mixin({
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
-    id_seccion: "",
-    titulo_seccion: "",
-    subtitulo_seccion: "",
-    descripcion_seccion: "",
-    id_pagina: 0,
-    visibilidad_seccion: false,
-    editable: false,
+    id_personal: "",
+    nombre_personal: "",
+    apellido_personal: "",
+    telefono_personal: "",
+    correo_personal: "",
+    visibilidad_personal: false,
+    id_tipo_personal: 0,
 })
 
 //Función para limpiar todos los campos del form
@@ -539,8 +539,8 @@ function limpiarForm() {
     form.value.id_seccion = "";
     form.value.titulo_seccion = "";
     form.value.subtitulo_seccion = "";
+    form.value.subtitulo_seccion = "";
     form.value.descripcion_seccion = "";
-    form.value.id_pagina = "0";
     form.value.visibilidad_seccion = false;
     form.value.editable = false;
 }
