@@ -37,6 +37,7 @@
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarCategoriaGrupos()">
                     <div class="flex justify-end items-center">
+                        <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
                                 stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                                 color="#000000">
@@ -82,6 +83,7 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
+            <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
             <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ categoria_grupos.length }}<span
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
@@ -92,12 +94,14 @@
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+                        <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{
                                 categoria_grupo.nombre_categoria_grupo }}</p>
                         </div>
                     </div>
+                    <!-- Al darle clic al evento leerUnaCategoriaGrupo ejecuta la funcion -->
                     <div
                         class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                         <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
@@ -111,6 +115,7 @@
                                 </path>
                             </svg>
                         </button>
+                        <!-- Al darle clic al evento borrarCategoriaGrupo ejecuta la funcion -->
                         <button
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                             @click="borrarCategoriaGrupo(categoria_grupo.id_categoria_grupo_parroquial)"
@@ -123,7 +128,8 @@
                                 </path>
                             </svg>
                         </button>
-                        <button @click="recuperarUnaCategoriaGrupo(categoria_grupo.id_categoria_grupo_parroquial)"
+                        <!-- Al darle clic al evento recuperarCategoriaGrupo ejecuta la funcion -->
+                        <button @click="recuperarCategoriaGrupo(categoria_grupo.id_categoria_grupo_parroquial)"
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                             v-else>
                             <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
@@ -142,6 +148,7 @@
                 </div>
             </div>
             <div class="flex justify-center mt-6">
+                <!-- Componente de paginación utilizando Tailwind CSS -->
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
                     :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
@@ -150,19 +157,21 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal principal-->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-md max-h-full">
-            <!-- Modal content -->
+            <!-- Contenido del modal -->
             <div class="relative rounded-lg shadow modal">
-                <!-- Modal header -->
+                <!--Encabezado del modal -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
+                        <!-- Asignamos un id al título del modal para la creación  y actualizacion de texto-->
                         <p class="text-3xl font-bold text-gray-100" id="modalText">
                         </p>
                         <p class="text-base font-medium text-gray-400">Grupos - Parroquiales</p>
                     </div>
+                    <!-- Boton para cerrar el modal -->
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                         data-modal-hide="staticModal">
@@ -175,9 +184,10 @@
                 </div>
                 <!-- Cuerpo del modal  -->
                 <div class="p-6 space-y-6 pb-14">
+                    <!-- Se utiliza el modificador @submit.prevent para evitar la recarga de la página al enviar el formulario. En su lugar, se llama a la función submitForm() definida en Vue.js para ejecutar la lógica personalizada del envío del formulario. -->
                     <form action="" @submit.prevent="submitForm()" class="flex justify-center">
                         <div class="flex-col w-64">
-
+                            <!-- Campo de entrada para el nombre de la categoría -->
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="nombre_categoria_grupo" name="nombre_categoria_grupo"
                                     v-model="form.nombre_categoria_grupo"
@@ -187,6 +197,7 @@
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                     - Categoria</label>
                             </div>
+                            <!-- Campo de entrada para la visibilidad de la categoría -->
                             <div class="flex-col mt-10">
                                 <label for="" class="text-gray-200">Visibilidad - Categoria</label>
                                 <div class="flex justify-start mt-2">
@@ -199,6 +210,7 @@
                                     </label>
                                 </div>
                             </div>
+                            <!-- Botones del modal -->
                             <div class="modal-buttons mt-24 flex justify-end items-end">
                                 <!-- Se le coloca la función para limpiar el form al botón -->
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalClear"
@@ -226,6 +238,7 @@
                                             stroke="#23B7A0" stroke-width="2"></path>
                                     </svg>
                                 </button>
+                                <!-- Se le coloca la función para actualizar al botón -->
                                 <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -292,7 +305,6 @@
 .buttons-data .changebtn {
     border: 3px solid #3F4280;
 }
-
 </style>
 
 <script setup>
@@ -416,7 +428,7 @@ watch(pagina, async () => {
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerCategoriaGrupos() {
     try {
-        /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
+        /*Se manda la petición axios para leer categorias de los grupos (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
         además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
         const { data: res } = await axios.get(`/categorias_grupos?page=${pagina.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
@@ -484,8 +496,6 @@ function limpiarBuscador() {
     buscar.value.buscador = "";
 }
 
-//Funciones para manejo del modal
-
 //Función para limpiar todos los campos del form
 function limpiarForm() {
     //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
@@ -524,7 +534,7 @@ function submitForm() {
     }
 }
 
-//Función para crear una página
+//Función para crear una categoria de un grupo
 async function crearCategoriaGrupo() {
     try {
         //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
@@ -634,6 +644,7 @@ async function leerUnaCategoriaGrupo(id) {
     }
 }
 
+//Función actualizar los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function actualizarCategoriaGrupo() {
     try {
         //Se establece una variable de id con el valor que tiene guardado la variable form
@@ -731,7 +742,7 @@ async function borrarCategoriaGrupo(id) {
 }
 
 //Función para cambiar la visibilidad de una página para recuperarla
-async function recuperarUnaCategoriaGrupo(id) {
+async function recuperarCategoriaGrupo(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: 'Confirmación',
