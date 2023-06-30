@@ -180,7 +180,8 @@
                             <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                             <input type="hidden" name="id_misa" id="id_misa" v-model="form.id_misa">
                             <div class="relative z-0">
-                                <input type="text" id="enlace_misa" name="enlace_misa" v-model="form.enlace_misa"
+                                <input type="text" id="enlace_misa" name="enlace_misa" v-model="form.enlace_misa" required
+                                    maxlength="250"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="enlace-misa"
@@ -188,7 +189,7 @@
                                     - Misa</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="date" id="fecha_misa" name="fecha_misa" v-model="form.fecha_misa"
+                                <input type="date" id="fecha_misa" name="fecha_misa" v-model="form.fecha_misa" required
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="fecha-misa"
@@ -196,17 +197,27 @@
                                     - Misa</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="titulo_misa" name="titulo_misa" v-model="form.titulo_misa"
+                                <input type="text" id="titulo_misa" name="titulo_misa" v-model="form.titulo_misa" required
+                                    maxlength="150"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.titulo_misa">
+                                    {{
+                                        form.titulo_misa.length }} /150</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /150</span>
                                 <label for="titulo-misa"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
                                     - Misa</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <textarea id="descripcion_misa" name="descripcion_misa"  v-model="form.descripcion_misa"
+                                <textarea id="descripcion_misa" name="descripcion_misa" v-model="form.descripcion_misa"
+                                    maxlength="1000"
                                     class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-if="form.descripcion_misa">
+                                    {{
+                                        form.descripcion_misa.length }} /1000</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /1000</span>
                                 <label for="descripcion-misa"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
                                     - Misa</label>
@@ -215,8 +226,8 @@
                                 <label for="visibilidad-misa" class="text-gray-200">Visibilidad - Misa</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input id="visibilidad_misa" type="checkbox" value="1" name="visibilidad_misa"  v-model="form.visibilidad_misa"
-                                            class="sr-only peer">
+                                        <input id="visibilidad_misa" type="checkbox" value="1" name="visibilidad_misa"
+                                            v-model="form.visibilidad_misa" class="sr-only peer">
                                         <div
                                             class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                         </div>
@@ -239,12 +250,12 @@
                                             d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
                                             stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round"></path>
-                                        <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalAdd" type="submit" value="crear" @click="accionForm('crear')"
+                                <button id="btnModalAdd" type="submit"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -257,7 +268,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"   
+                                <button id="btnModalUpdate" type="submit"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -318,6 +329,10 @@
 
 .modal-buttons button {
     background-color: #32345a;
+}
+
+.buttons-data .changebtn {
+    border: 3px solid #3F4280;
 }
 </style>
 
@@ -381,6 +396,7 @@ onMounted(() => {
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
             limpiarForm();
+            accionForm('crear');
             modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
             modalBtnUpdate.classList.add('hidden');
@@ -607,6 +623,7 @@ async function crearMisa() {
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnaMisa(id) {
     try {
+        accionForm('actualizar');
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/misas/' + id).then(res => {
             //Constante para el modal

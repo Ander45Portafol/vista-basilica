@@ -378,7 +378,7 @@ definePageMeta({
 });
 onMounted(() => {
     function validarFechas() {
-        var res = validaciones.validarFecha(0, 1);
+        var res = validaciones.validarFecha(0, 1, 0);
         document.getElementById('fecha_anuncio').min = res.min;
         document.getElementById('fecha_anuncio').max = res.max;
     }

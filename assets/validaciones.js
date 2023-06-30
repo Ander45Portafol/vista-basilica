@@ -59,13 +59,13 @@ const validaciones = {
         }
     },
     //Función para validar inputs tipo date (recibe la cantidad de días y meses a agregar/restar)
-    validarFecha(dias, meses) {
+    validarFecha(dias, meses, anios) {
         //Fecha actual
         var fecha_actual = new Date();
 
         //Fechas minima y máxima, además de cambiar el formato de las fechas
-        var fecha_minima = new Date(fecha_actual.getFullYear(), fecha_actual.getMonth() - meses, fecha_actual.getDate() - dias);
-        var fecha_maxima = new Date(fecha_actual.getFullYear(), fecha_actual.getMonth() + meses, fecha_actual.getDate() + dias);
+        var fecha_minima = new Date(fecha_actual.getFullYear() - anios, fecha_actual.getMonth() - meses, fecha_actual.getDate() - dias);
+        var fecha_maxima = new Date(fecha_actual.getFullYear() + anios, fecha_actual.getMonth() + meses, fecha_actual.getDate() + dias);
 
         //ISO String es un método de js que devuelve las fechas en el formato YYYY-MM-DD::mm:ss (mm:ss simbolizando minutos y segundos)
         /*Entonces se usa el ISO String para cambiar el formato de la fecha, además usando el split T se separa el tiempo de la fecha y se toma la posición [0] 
