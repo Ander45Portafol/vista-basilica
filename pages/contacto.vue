@@ -201,18 +201,18 @@
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                     - Contacto<span class="text-sm ml-1"> *
                                     </span></label>
-                                <div v-if="!validarNombreContacto()"
-                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
-                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <div>
-                                        El nombre del contacto solo permite caracteres <span class="font-medium">
-                                            alfanuméricos y algunos especiales (- / |)</span>
-                                    </div>
+                            </div>
+                            <div v-if="!validarNombreContacto()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El nombre del contacto solo permite caracteres <span class="font-medium">
+                                        alfanuméricos y algunos especiales (- / |).</span>
                                 </div>
                             </div>
                             <div class="relative z-0 mt-6">
@@ -249,7 +249,7 @@
                                             clip-rule="evenodd"></path>
                                     </svg>
                                     <div>
-                                        Seleccione <span class="font-medium"> una opción </span>
+                                        Seleccione <span class="font-medium"> una opción. </span>
                                     </div>
                                 </div>
                             </div>
@@ -367,7 +367,6 @@
 .buttons-data .changebtn {
     border: 3px solid #3F4280;
 }
-
 </style>
 
 
@@ -489,7 +488,7 @@ watch(contacto, async () => {
         leerContactos();
     }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { contacto: contacto.value } })
+    useRouter().push({ query: { pagina: contacto.value } })
 })
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
@@ -530,7 +529,7 @@ async function buscarContactos() {
             // Actualiza los datos en la constante data
             data.value = res;
             // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { contacto: contacto.value } });
+            useRouter().push({ query: { pagina: contacto.value } });
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
             contacto.value = 1;
