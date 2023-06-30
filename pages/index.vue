@@ -146,11 +146,15 @@ async function login() {
       };
 
       //Se hace la petición axios y se guarda el token que retorna
-      const token = (await axios.post("/login", formData)).data.token;
+      const token = ((await axios.post("/login", formData)));
+      const captoken=token.data.token;
+      const capusuario=token.data.usuario.id_usuario;
       //Si retorno un token se redirige a la página principal
       if (token != null) {
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', captoken);
+        localStorage.setItem('usuario',capusuario);
         console.log(localStorage.getItem('token'));
+        console.log(localStorage.getItem('usuario'));
         navigateTo('/principal');
         //Si no retorno token es lanza un error
       } else {
