@@ -86,7 +86,6 @@
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
             <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ contactos.length }}<span
-
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
@@ -508,20 +507,33 @@ async function leerContactos() {
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
     } catch (error) {
-        //Se extrae el mensaje de error
+        console.log(error);
         const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 
 }
@@ -543,20 +555,33 @@ async function buscarContactos() {
             leerContactos();
         }
     } catch (error) {
-        //Se extrae el mensaje de error
+        console.log(error);
         const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -637,23 +662,32 @@ async function crearContacto() {
 
         } catch (error) {
             console.log(error);
-            //Se extrae el mensaje de error
             const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
 
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
 
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: mensajeError,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
         }
     }
 }
@@ -707,23 +741,33 @@ async function leerUnContacto(id) {
             }
         })
     } catch (error) {
-        //Se extrae el mensaje de error
+        console.log(error);
         const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -755,23 +799,33 @@ async function actualizarContacto() {
             })
 
         } catch (error) {
-            //Se extrae el mensaje de error
+            console.log(error);
             const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
 
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
 
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: mensajeError,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
         }
     }
 }
@@ -806,23 +860,33 @@ async function borrarContacto(id) {
                     title: 'Contacto ocultado exitosamente'
                 })
             } catch (error) {
-                //Se extrae el mensaje de error
+                console.log(error);
                 const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const sqlState = validaciones.extraerSqlState(mensajeError);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const res = validaciones.mensajeSqlState(sqlState);
 
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
+                    //Se cierra el modal
+                    document.getElementById('closeModal').click();
 
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensajeError,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     });
@@ -858,23 +922,33 @@ async function recuperarContacto(id) {
                     title: 'Contacto recuperado exitosamente'
                 })
             } catch (error) {
-                //Se extrae el mensaje de error
+                console.log(error);
                 const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const sqlState = validaciones.extraerSqlState(mensajeError);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const res = validaciones.mensajeSqlState(sqlState);
 
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
+                    //Se cierra el modal
+                    document.getElementById('closeModal').click();
 
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensajeError,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     });
