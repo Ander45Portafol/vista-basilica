@@ -82,7 +82,7 @@ const validaciones = {
     validarUsuario(texto) {
         //Se valida que el texto no sea nulo
         if (texto != null && texto.trim() != "") {
-            //Se valida que en la cadena de texto solo existan letras, números, espacios y caracteres de separación (/ | -)
+            //Se valida que en la cadena de texto solo existan letras, números y guión bajo
             var re = /^[a-zA-Z0-9\s_]+$/;
             //Retorna false o true dependiendo de si cumple o no la condición
             return re.test(texto);
@@ -91,6 +91,36 @@ const validaciones = {
             return true;
         }
     },
+    //Función para validar que una cadena de texto solo lleve letras
+    validarSoloLetras(texto) {
+        //Se valida que el texto no sea nulo
+        if (texto != null && texto.trim() != "") {
+            //Se valida que en la cadena de texto solo existan letras
+            var re = /^[a-zA-Z\s/]+$/;
+            //Retorna false o true dependiendo de si cumple o no la condición
+            return re.test(texto);
+        } else {
+            //Retorna true si el texto es nulo porque si no aparecería la alerta de error aunque no haya ningún texto en el input
+            return true;
+        }
+    },
+    validarNumeroTelefono(numero) {
+        if (numero != null && numero.trim() != "") {
+            // Validar el formato del número de teléfono
+            var re = /^\d{4}-\d{4}$/;
+
+            // Verificar si el número cumple con el formato
+            if (re.test(numero)) {
+                // El número tiene un formato válido
+                return true;
+            } else {
+                // El número tiene un formato inválido
+                return false;
+            }
+        }else{
+            return true;
+        }
+    }
 };
 
 export default validaciones;
