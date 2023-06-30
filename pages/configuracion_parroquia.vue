@@ -30,10 +30,13 @@
             </div>
         </div>
         <div class="">
+            <!-- Formulario -->
             <form action=""
                 class="flex pt-20 justify-evenly max-[700px]:flex-col max-[700px]:items-center max-[700px]:text-2xl">
                 <div class="flex-col w-80">
+                    <!-- Campo de entrada oculto -->
                     <input type="hidden" v-model="form.id_configuracion_parroquia">
+                    <!-- Campo de entrada Nombre - Parroquia -->
                     <div class="relative z-0">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
@@ -42,6 +45,7 @@
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900  peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                             - Parroquia</label>
                     </div>
+                    <!-- Campo de entrada  RUC - Parroquia -->
                     <div class="relative z-0 mt-12">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
@@ -50,6 +54,7 @@
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">RUC
                             - Parroquia</label>
                     </div>
+                    <!-- Campo de texto Dirección - Parroquia -->
                     <div class="relative z-0 mt-12">
                         <textarea id="floating_standard"
                             class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
@@ -58,6 +63,7 @@
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Dirección
                             - Parroquia</label>
                     </div>
+                    <!-- Campo de entrada  Nombre - Representante -->
                     <div class="relative z-0 mt-12">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
@@ -66,10 +72,14 @@
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                             - Representante</label>
                     </div>
+
                     <div class="pt-4 mt-2 flex-col">
+                        <!-- Etiqueta: Tipo - Documento -->
                         <label for="" class="text-sm absolute text-slate-900">Tipo - Documento</label>
+                        <!-- Selección desplegable -->
                         <select id="underline_select" v-model="form.tipo_documento_representante"
                             class="block mt-4 py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-salte-900 appearance-none focus:outline-none focus:ring-0 focus:border-slate-900 peer">
+                            <!-- Opción predeterminada -->
                             <option value="0" class="bg-white text-slate-900"> Seleccione una opción </option>
                             <option value="Cédula">Cédula</option>
                             <option value="Pasaporte">Pasaporte</option>
@@ -77,6 +87,7 @@
                         </select>
                     </div>
                 </div>
+                <!-- Campo de entrada  >Página web - Parroquia -->
                 <div class="flex-col w-80 max-[700px]:mt-10">
                     <div class="relative z-0">
                         <input type="text" id="floating_standard"
@@ -86,6 +97,7 @@
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Página
                             web - Parroquia</label>
                     </div>
+                    <!-- Campo de entrada  >Idetificador - Parroquia -->
                     <div class="relative z-0 mt-12">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none dark:text-white focus:outline-none focus:ring-0 focus:border-gray-900 peer"
@@ -94,6 +106,7 @@
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Identificador
                             - Parroquia</label>
                     </div>
+                    <!-- Campo de entrada  >Apellido- Representante -->
                     <div class="relative z-0 mt-12">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-900 peer"
@@ -102,6 +115,7 @@
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
                             - Representante</label>
                     </div>
+                    <!-- Campo de entrada  >Teléfono- Parroquia -->
                     <div class="relative z-0 mt-12">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-900 peer"
@@ -110,12 +124,14 @@
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Teléfono
                             - Parroquia</label>
                     </div>
+                    <!-- Campo de entrada  >Documento- Representante -->
                     <div class="relative z-0 mt-10">
                         <input type="text" id="floating_standard"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.documento_representante" />
                         <label for="floating_standard"
-                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"># Documento
+                            class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">#
+                            Documento
                             - Representante</label>
                     </div>
                 </div>
@@ -125,6 +141,7 @@
                         <img class="h-44 w-40 border-2 border-slate-900 ml-2">
                     </div>
                     <div class="flex items-end justify-end h-full mt-[-60px] w-44 ">
+                        <!-- Se le coloca la función para actualizar al botón -->
                         <button class="border-2 border-space w-10 h-10 flex justify-center items-center"
                             @click.prevent="actualizarParroquia()">
                             <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -200,6 +217,7 @@ const form = ref({
     identificador_parroquia: "",
 })
 let parroquias = computed(() => data.value.data);
+
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerParroquia() {
@@ -209,14 +227,16 @@ async function leerParroquia() {
         const { data: res } = await axios.get(`/parroquia`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
-
+        //Se ejecuta la funcion 
         leerUnaParroquia();
-        //form.value={nombre_parroquia:res.data.nombre_parroquia,}
     } catch (error) {
         console.log(error);
     }
 }
+//Se ejecuta la funcion 
 leerParroquia();
+
+//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
 async function leerUnaParroquia() {
     var id = 1;
     try {
@@ -255,6 +275,8 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
+
+//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
 async function actualizarParroquia() {
 
     try {
@@ -275,13 +297,13 @@ async function actualizarParroquia() {
         };
         //Se realiza la petición axios mandando la ruta y el formData
         await axios.put("/parroquia/" + id, formData);
-        // //Se cargan todas las páginas y se cierra el modal
+        // //Se carga la parroquia y se cierra el modal
         leerParroquia();
 
         //Se lanza la alerta de éxito
         Toast.fire({
             icon: 'success',
-            title: 'Página actualizada exitosamente'
+            title: 'Configuracion de la parroquia actualizada exitosamente'
         })
 
     } catch (error) {
