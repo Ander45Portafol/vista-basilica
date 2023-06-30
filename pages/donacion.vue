@@ -32,7 +32,7 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarSecciones en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarDonaciones()">
+                        placeholder="Buscar... (nombre donante/nombre proyecto)" v-model="buscar.buscador" @keyup="buscarDonaciones()">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -210,7 +210,7 @@
                                             clip-rule="evenodd"></path>
                                     </svg>
                                     <div>
-                                        Seleccione <span class="font-medium"> una opción </span>
+                                        Seleccione <span class="font-medium"> una opción. </span>
                                     </div>
                                 </div>
                             </div>
@@ -270,7 +270,7 @@
                                             clip-rule="evenodd"></path>
                                     </svg>
                                     <div>
-                                        Seleccione <span class="font-medium"> una opción </span>
+                                        Seleccione <span class="font-medium"> una opción. </span>
                                     </div>
                                 </div>
                             </div>

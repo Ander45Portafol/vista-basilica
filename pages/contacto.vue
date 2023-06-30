@@ -34,7 +34,7 @@
                 <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarContactos()">
+                        placeholder="Buscar... (nombre/correo)" v-model="buscar.buscador" @keyup="buscarContactos()">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -94,7 +94,6 @@
                     <div
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                            <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                             <div
                                 class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                                 <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]"> {{
@@ -126,20 +125,21 @@
                                     </path>
                                 </svg>
                             </button>
-                            <button  @click="recuperarContacto(contacto.id_contacto)"
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4" v-else>
-                            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none" 
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
-                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path
-                                    d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
-                                    stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                </path>
-                                <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
-                                    stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
+                            <button @click="recuperarContacto(contacto.id_contacto)"
+                                class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                                v-else>
+                                <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
+                                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path
+                                        d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
+                                        stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                    <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
+                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div> <!--contained data -->
@@ -168,7 +168,7 @@
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
-                        <p class="text-base font-medium text-gray-400">Contactos</p>
+                        <p class="text-base font-medium text-gray-400">Contacto</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -182,35 +182,76 @@
                 </div>
                 <!-- modal body -->
                 <div class="p-6 space-y-6 pb-20">
-                    <form action="" class="flex justify-evenly">
+                    <form id="modalForm" @submit.prevent="submitForm()" class="flex justify-evenly">
                         <div class="flex-col w-72">
                             <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                             <input type="hidden" name="id_contacto" id="id_contacto" v-model="form.id_contacto">
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="nombre_contacto" name="nombre_contacto"
-                                    v-model="form.nombre_contacto"
+                                <input type="text" id="nombre_contacto" name="nombre_contacto" required maxlength="100"
+                                    @input="validarNombreContacto()" v-model="form.nombre_contacto"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.nombre_contacto">
+                                    {{
+                                        form.nombre_contacto.length
+                                    }} /100
+                                </span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>0 /100</span>
+                                <label for="nombre_contacto"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Contacto</label>
+                                    - Contacto<span class="text-sm ml-1"> *
+                                    </span></label>
+                            </div>
+                            <div v-if="!validarNombreContacto()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El nombre del contacto solo permite caracteres <span class="font-medium">
+                                        alfanuméricos y algunos especiales (- / |).</span>
+                                </div>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="correo_contacto" name="correo_contacto"
+                                <input type="email" id="correo_contacto" name="correo_contacto" required maxlength="150"
                                     v-model="form.correo_contacto"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.correo_contacto">
+                                    {{
+                                        form.correo_contacto.length
+                                    }} /150</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>0 /150</span>
+                                <label for="correo_contacto"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                    - Contacto</label>
+                                    - Contacto<span class="text-sm ml-1"> *
+                                    </span></label>
                             </div>
                             <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="absolute text-gray-200">Tipo - Contacto</label>
+                                <label for="" class="absolute text-sm text-gray-200">Tipo - Contacto<span
+                                        class="text-sm ml-1"> *
+                                    </span></label>
                                 <select id="tipo_contacto" name="tipo_contacto" v-model="form.tipo_contacto"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="Principal">Principal</option>
-                                    <option value="Otro">Otro</option>
+                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                    <option class="bg-gray-700" value="0">Seleccione una opción</option>
+                                    <option class="bg-gray-700" value="Principal">Principal</option>
+                                    <option class="bg-gray-700" value="Otro">Otro</option>
                                 </select>
+                                <div v-if="form.tipo_contacto == 0"
+                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        Seleccione <span class="font-medium"> una opción. </span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="flex-col mt-6">
                                 <label for="" class="text-gray-200">Visibilidad - Contacto</label>
@@ -245,7 +286,8 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para crear al botón -->
-                                <button id="btnModalAdd" type="button" @click="crearContacto()"
+                                <button id="btnModalAdd" type="submit"
+                                    :disabled="form.tipo_contacto == 0 || !validarNombreContacto()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -258,28 +300,20 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón -->
-                                <button id="btnModalUpdate" type="button" @click="actualizarContacto()"
+                                <button id="btnModalUpdate" type="submit"
+                                    :disabled="form.tipo_contacto == 0 || !validarNombreContacto()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
-                                    <svg width="24px" height="24px" stroke-width="1.5" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#ffffff">
-                                        <g clip-path="url(#restart_svg__clip0_1735_6488)" stroke="#ffffff"
-                                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                            <path
-                                                d="M6.677 20.567C2.531 18.021.758 12.758 2.717 8.144 4.875 3.06 10.745.688 15.829 2.846c5.084 2.158 7.456 8.029 5.298 13.113a9.954 9.954 0 01-3.962 4.608">
-                                            </path>
-                                            <path d="M17 16v4.4a.6.6 0 00.6.6H22M12 22.01l.01-.011"></path>
-                                        </g>
-                                        <defs>
-                                            <clipPath id="restart_svg__clip0_1735_6488">
-                                                <path fill="#fff" d="M0 0h24v24H0z"></path>
-                                            </clipPath>
-                                        </defs>
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
                                     </svg>
                                 </button>
                             </div>
-                            <pre>
-                                {{ form }}
-                            </pre>
                         </div>
                     </form>
                 </div>
@@ -329,6 +363,10 @@
 .modal-buttons button {
     background-color: #32345a;
 }
+
+.buttons-data .changebtn {
+    border: 3px solid #3F4280;
+}
 </style>
 
 
@@ -348,7 +386,7 @@ import { TailwindPagination } from 'laravel-vue-pagination';
 //Importación de sweetalert
 import Swal from 'sweetalert2';
 //Importación de archivo de validaciones
-// import validaciones from '../assets/validaciones.js';
+import validaciones from '../assets/validaciones.js';
 
 /*definePageMeta es un macro compilador (Se ejecuta mientras el programa se compila) para los componentes que se 
 encuentran en /pages, este permite establecer/transformar las propiedades de los componentes de nuxt*/
@@ -392,6 +430,7 @@ onMounted(() => {
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
             limpiarForm();
+            accionForm('crear');
             modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
             modalBtnUpdate.classList.add('hidden');
@@ -430,7 +469,6 @@ const form = ref({
     correo_contacto: "",
     tipo_contacto: "",
     visibilidad_contacto: false,
-    id_configuracion_parroquia: null
 })
 
 
@@ -450,7 +488,7 @@ watch(contacto, async () => {
         leerContactos();
     }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { contacto: contacto.value } })
+    useRouter().push({ query: { pagina: contacto.value } })
 })
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
@@ -491,7 +529,7 @@ async function buscarContactos() {
             // Actualiza los datos en la constante data
             data.value = res;
             // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { contacto: contacto.value } });
+            useRouter().push({ query: { pagina: contacto.value } });
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
             contacto.value = 1;
@@ -533,7 +571,7 @@ function limpiarForm() {
     form.value.id_contacto = "";
     form.value.nombre_contacto = "";
     form.value.correo_contacto = "";
-    form.value.tipo_contacto = "";
+    form.value.tipo_contacto = 0;
     form.value.visibilidad_contacto = false;
 }
 
@@ -569,54 +607,56 @@ function submitForm() {
 
 //Función para crear una página
 async function crearContacto() {
-    try {
-        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-        const formData = {
-            nombre_contacto: form.value.nombre_contacto,
-            correo_contacto: form.value.correo_contacto,
-            tipo_contacto: form.value.tipo_contacto,
-            visibilidad_contacto: form.value.visibilidad_contacto,
-            id_configuracion_parroquia: 1
-        };
+    if (form.tipo_contacto != 0 && validarNombreContacto()) {
+        try {
+            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+            const formData = {
+                nombre_contacto: form.value.nombre_contacto,
+                correo_contacto: form.value.correo_contacto,
+                tipo_contacto: form.value.tipo_contacto,
+                visibilidad_contacto: form.value.visibilidad_contacto,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/contactos", formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/contactos", formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerContactos();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerContactos();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta con el mensaje de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Contacto creado exitosamente'
-        })
+            //Se lanza la alerta con el mensaje de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Contacto creado exitosamente'
+            })
 
-    } catch (error) {
-        console.log(error);
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            console.log(error);
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnContacto(id) {
     try {
+        accionForm('actualizar');
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/contactos/' + id).then(res => {
             //Constante para el modal
@@ -683,49 +723,50 @@ async function leerUnContacto(id) {
 }
 
 async function actualizarContacto() {
-    try {
-        //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_contacto;;
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            nombre_contacto: form.value.nombre_contacto,
-            correo_contacto: form.value.correo_contacto,
-            tipo_contacto: form.value.tipo_contacto,
-            visibilidad_contacto: form.value.visibilidad_contacto,
-            id_configuracion_parroquia: 1
-        };
+    if (form.tipo_contacto != 0 && validarNombreContacto()) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_contacto;;
+            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+            const formData = {
+                nombre_contacto: form.value.nombre_contacto,
+                correo_contacto: form.value.correo_contacto,
+                tipo_contacto: form.value.tipo_contacto,
+                visibilidad_contacto: form.value.visibilidad_contacto,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.put("/contactos/" + id, formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.put("/contactos/" + id, formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerContactos();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerContactos();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Contacto actualizado exitosamente'
-        })
+            //Se lanza la alerta de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Contacto actualizado exitosamente'
+            })
 
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -835,15 +876,9 @@ async function recuperarContacto(id) {
 
 //Validaciones
 
-//Función para validar que el número de página ingresado por el usuario este entre 1-10
-function validarNumeroPagina() {
-    var res = validaciones.validarNoNumerosNegativos(parseInt(form.value.numero_pagina), 10);
-    return res;
-}
-
-//Función para validar que el nombre de página solo lleve letras y números
-function validarNombrePagina() {
-    var res = validaciones.validarSoloLetrasYNumeros((form.value.nombre_pagina).toString());
+//Función para validar el nombre contacto
+function validarNombreContacto() {
+    var res = validaciones.validarSoloLetrasYNumeros(form.value.nombre_contacto);
     return res;
 }
 

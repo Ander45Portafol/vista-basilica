@@ -33,7 +33,7 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... " v-model="buscar.buscador" @keyup="buscarPaginas()">
+                        placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarPaginas()">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -202,7 +202,7 @@
                                     </svg>
                                     <div>
                                         El nombre de la página solo permite caracteres <span class="font-medium">
-                                            alfanuméricos y algunos especiales (- / |)</span>
+                                            alfanuméricos y algunos especiales (- / |).</span>
                                     </div>
                                 </div>
                             </div>
@@ -226,7 +226,7 @@
                                     </svg>
                                     <div>
                                         El número de página debe ser mayor a <span class="font-medium">10</span> y menor a
-                                        <span class="font-medium">0</span>
+                                        <span class="font-medium">0.</span>
                                     </div>
                                 </div>
                             </div>
