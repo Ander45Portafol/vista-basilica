@@ -389,6 +389,8 @@ onMounted(() => {
     function validarToken() {
         if (!localStorage.getItem('token')) {
             navigateTo('/');
+        }else{
+            console.log(localStorage.getItem('token'))
         }
     }
 
