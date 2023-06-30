@@ -149,6 +149,7 @@ async function login() {
       const token = ((await axios.post("/login", formData)));
       const captoken=token.data.token;
       const capusuario=token.data.usuario.id_usuario;
+      console.log(token.data.usuario.data);
       //Si retorno un token se redirige a la página principal
       if (token != null) {
         localStorage.setItem('token', captoken);
