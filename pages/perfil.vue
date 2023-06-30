@@ -164,6 +164,7 @@ definePageMeta({
     layout: "perfil",
 })
 onMounted(() => {
+    //Variable para capturar el id del usuario que se almacena en el localStorage
     var id_usuario;
     const data = ref(null);
     //Se valida si hay un token en el localStorage y si no te regresa al login
