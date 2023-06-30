@@ -6,7 +6,7 @@
                 <a href="/tipo_personal" class="ml-4">Tipo - Personal</a>
             </div>
             <div class="endtop flex justify-between w-20">
-                <button>
+                <NuxtLink to="/perfil">
                     <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
@@ -15,7 +15,7 @@
                             d="M19.622 10.395l-1.097-2.65L20 6l-2-2-1.735 1.483-2.707-1.113L12.935 2h-1.954l-.632 2.401-2.645 1.115L6 4 4 6l1.453 1.789-1.08 2.657L2 11v2l2.401.655L5.516 16.3 4 18l2 2 1.791-1.46 2.606 1.072L11 22h2l.604-2.387 2.651-1.098C16.697 18.831 18 20 18 20l2-2-1.484-1.75 1.098-2.652 2.386-.62V11l-2.378-.605z"
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
-                </button>
+                </NuxtLink>
                 <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
                     data-drawer-placement="right" aria-controls="drawer-right-example">
                     <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -77,7 +77,7 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{personales.length}}<span
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ personales.length }}<span
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
             <div class="contained-data flex-col" v-for="personal in personales" :key="personal.id_personal">
@@ -87,10 +87,12 @@
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{personal.nombre_personal}} {{personal.apellido_personal}}</p>
+                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
+                                {{ personal.nombre_personal }} {{ personal.apellido_personal }}</p>
                             <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
-                                {{personal.correo_personal}}</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{personal.telefono_personal}}
+                                {{ personal.correo_personal }}</p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
+                                {{ personal.telefono_personal }}
                             </p>
                         </div>
                     </div>
@@ -116,7 +118,7 @@
                     </div>
                 </div>
             </div>
-                        <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
+            <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
             este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
             <div class="flex justify-center mt-6">
                 <TailwindPagination
@@ -174,7 +176,8 @@
                                 <select id="underline_select"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                     <option value="">Seleccione una opcion</option>
-                                    <option v-for="tipo in tipo_personal" :key="tipo.id_tipo_personal" :value="tipo.id_tipo_personal">{{tipo.tipo_personal}}</option>
+                                    <option v-for="tipo in tipo_personal" :key="tipo.id_tipo_personal"
+                                        :value="tipo.id_tipo_personal">{{ tipo.tipo_personal }}</option>
                                 </select>
                             </div>
                         </div>
@@ -293,7 +296,7 @@ import { TailwindPagination } from 'laravel-vue-pagination';
 import { onMounted, ref } from 'vue'
 //Importación de sweetalert
 import Swal from 'sweetalert2';
-    definePageMeta({
+definePageMeta({
     layout: "principal",
 })
 
@@ -353,7 +356,7 @@ onMounted(() => {
 /*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
 para almacenar la información que traiga el axios*/
 const data = ref(null);
-var tipo_personal=ref(null);
+var tipo_personal = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
 const personal = ref(useRoute().query.personal || 1);
@@ -367,13 +370,13 @@ await leerPersonales();
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
-    id_personal:"",
-    nombre_personal:"",
-    apellido_personal:"",
-    telefono_personal:"",
-    correo_personal:"",
-    visibilidad_personal:false,
-    id_tipo_personal:""
+    id_personal: "",
+    nombre_personal: "",
+    apellido_personal: "",
+    telefono_personal: "",
+    correo_personal: "",
+    visibilidad_personal: false,
+    id_tipo_personal: ""
 })
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
@@ -408,9 +411,9 @@ async function leerPersonales() {
         console.log(error);
     }
 }
-async function llenarTipoPersonal(){
-    const {data:res}=await axios.get('t_personal-select');
-    tipo_personal.value=res;
+async function llenarTipoPersonal() {
+    const { data: res } = await axios.get('t_personal-select');
+    tipo_personal.value = res;
     console.log(tipo_personal.value)
 }
 llenarTipoPersonal();
