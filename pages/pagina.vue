@@ -602,7 +602,6 @@ function submitForm() {
 
 //Función para crear una página
 async function crearPagina() {
-    console.log(formAccion);
     if (validarNumeroPagina() && validarNombrePagina()) {
         try {
             //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
