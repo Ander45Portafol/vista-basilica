@@ -31,7 +31,7 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarAnuncios en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar ..." v-model="buscar.buscador" @keyup="buscarAnuncios()">
+                        placeholder="Buscar... (título/enlace)" v-model="buscar.buscador" @keyup="buscarAnuncios()">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -149,7 +149,7 @@
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
                     :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="anuncio = $event" />
+                    :data="data" @pagination-change-page="pagina = $event" />
             </div>
         </div>
     </div>
@@ -165,7 +165,7 @@
                     <div class="flex-col ml-4 pt-4">
                         <!-- Asignamos un id al título del modal para la creación  y actualizacion de texto-->
                         <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
-                        <p class="text-lg font-medium text-gray-400">Anuncios</p>
+                        <p class="text-lg font-medium text-gray-400">Anuncio</p>
                     </div>
                     <!-- Boton para cerrar el modal -->
                     <button type="button" id="closeModal"
@@ -180,37 +180,60 @@
                 </div>
                 <!-- Cuerpo del modal -->
                 <div class="p-6 space-y-6 pb-10">
-                    <form action="" class="flex justify-evenly">
+                    <form @submit.prevent="submitForm()" class="flex justify-evenly">
                         <div class="flex-col w-64">
                             <!-- Input invisible para reconocer el  registro   -->
                             <input type="hidden" name="id_anuncio" id="id_anuncio" v-model="form.id_anuncio">
                             <div class="relative z-0">
                                 <!-- Campo de entrada de texto -->
                                 <input type="text" id="title_anuncio" name="titulo_anuncio" v-model="form.titulo_anuncio"
+                                    @input="validarTituloAnuncio()" maxlength="100" required
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Titulo
-                                    - Anuncio</label>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.titulo_anuncio">
+                                    {{
+                                        form.titulo_anuncio.length }} /100</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
+                                <label for="title_anuncio"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
+                                    - Anuncio<span class="text-sm ml-1"> * </span></label>
+                            </div>
+                            <div v-if="!validarTituloAnuncio()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El título del anuncio solo permite caracteres <span class="font-medium">
+                                        alfanuméricos y algunos especiales (- / |).</span>
+                                </div>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <!-- Campo de entrada de texto -->
-                                <input type="text" id="contenido_titulo" name="contenido_anuncio"
-                                    v-model="form.contenido_anuncio"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                <textarea id="contenido_titulo" name="contenido_anuncio" v-model="form.contenido_anuncio"
+                                    class="block py-2.5 px-0 w-full min-h-[3rem] h-[3rem] max-h-[12rem] text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
+                                    v-if="form.contenido_anuncio">
+                                    {{
+                                        form.contenido_anuncio.length }} /1000</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /1000</span>
+                                <label for="contenido_anuncio"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Contenido
                                     - Anuncio</label>
                             </div>
                             <div class="relative z-0 mt-10">
                                 <!-- Campo de entrada de texto -->
                                 <input type="date" id="fecha_anuncio" name="fecha_anuncio" v-model="form.fecha_anuncio"
+                                    required
                                     class="block py-2.5 px-0 w-full text-xs text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
                                     class="absolute text-lg text-gray-200 duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
-                                    - Anuncio</label>
+                                    - Anuncio<span class="text-sm ml-1"> * </span></label>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <!-- Campo de entrada de texto -->
@@ -241,20 +264,8 @@
                                 <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
-                                <!-- Botón para crear un anuncio -->
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center"
-                                    @click="crearAnuncio()">
-                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path
-                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                        <path
-                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                    </svg>
-                                </button>
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center mr-4" type="button"
+                                    @click="limpiarForm()">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
@@ -272,9 +283,22 @@
                                         </path>
                                     </svg>
                                 </button>
+                                <!-- Botón para crear un anuncio -->
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
+                                    type="submit" :disabled="!validarTituloAnuncio()">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                    </svg>
+                                </button>
                                 <!-- Se le coloca la función para actualizar al botón -->
-                                <button id="btnModalUpdate" type="button" @click="actualizarAnuncio()"
-                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                <button id="btnModalUpdate" type="submit" :disabled="!validarTituloAnuncio()"
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -353,15 +377,25 @@ definePageMeta({
     layout: "principal",
 });
 onMounted(() => {
+    function validarFechas() {
+        var res = validaciones.validarFecha(0, 1, 0);
+        document.getElementById('fecha_anuncio').min = res.min;
+        document.getElementById('fecha_anuncio').max = res.max;
+    }
+
+    validarFechas();
+
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
-    //Constante para el botón de eliminar un registro
-    const buttonUpdate = document.getElementsByClassName('editbtn');
     //Constante para el modal
     const modalElement = document.getElementById('staticModal');
     //Constante para el botón de cerrar en el modal
     const closeButton = document.getElementById('closeModal');
+    //Constante para el titulo del modal
+    const modalBtnAdd = document.getElementById('btnModalAdd');
+    //Constante para el titulo del modal
+    const modalBtnUpdate = document.getElementById('btnModalUpdate');
     //Constante para el titulo del modal
     const modalText = document.getElementById('modalText');
 
@@ -380,18 +414,12 @@ onMounted(() => {
         /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
+            accionForm('crear');
+            limpiarForm();
+            modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
+            modalBtnUpdate.classList.add('hidden');
             modal.show();
-        });
-
-        /*Se crea un array para introducir todos los botones de editar registro (en este caso se hace por medio de una 
-        clase personalizada con la que cuentan todos los botones "editbtn". Además se les añade un evento click a cada botón,
-        y este evento click abre el modal, cambia su titulo y oculta el botón de agregar que se encuentra dentro del modal*/
-        Array.from(buttonUpdate).forEach(function (button) {
-            button.addEventListener('click', function () {
-                modalText.textContent = "Editar";
-                modal.show();
-            });
         });
 
         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
@@ -459,6 +487,20 @@ async function leerAnuncios() {
         data.value = res;
     } catch (error) {
         console.log(error);
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
     }
 }
 
@@ -480,6 +522,7 @@ async function buscarAnuncios() {
             leerAnuncios();
         }
     } catch (error) {
+        console.log(error);
         //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
         //Se extrae el sqlstate (identificador de acciones SQL)
@@ -531,31 +574,66 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
+
+//Variable para validar que acción se quiere hacer cuando se hace un submit al form
+var formAccion = null;
+
+//Función para evaluar que acción se va a hacer al hacer submit en el form
+function accionForm(accion) {
+    formAccion = accion;
+}
+
+//Función para crear/actualizar un registro cuando se ejecuta el submit del form
+function submitForm() {
+    if (formAccion == "crear") {
+        crearAnuncio();
+    } else {
+        actualizarAnuncio();
+    }
+}
+
 //Función para crear un anuncio
 async function crearAnuncio() {
-    try {
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            titulo_anuncio: form.value.titulo_anuncio,
-            contenido_anuncio: form.value.contenido_anuncio,
-            enlace_externo: form.value.enlace_externo,
-            fecha_anuncio: form.value.fecha_anuncio,
-            visibilidad_anuncio: form.value.visibilidad_anuncio,
-        };
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/anuncios/", formData);
+    if (validarTituloAnuncio()) {
+        try {
+            accionForm('crear');
+            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+            const formData = {
+                titulo_anuncio: form.value.titulo_anuncio,
+                contenido_anuncio: form.value.contenido_anuncio,
+                enlace_externo: form.value.enlace_externo,
+                fecha_anuncio: form.value.fecha_anuncio,
+                visibilidad_anuncio: form.value.visibilidad_anuncio,
+            };
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/anuncios/", formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta con el mensaje de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Anuncio creado exitosamente'
-        })
-        leerAnuncios();
-    } catch (error) {
-        console.log(error);
+            //Se lanza la alerta con el mensaje de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Anuncio creado exitosamente'
+            })
+            leerAnuncios();
+        } catch (error) {
+            console.log(error);
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -564,6 +642,7 @@ async function crearAnuncio() {
 async function leerUnAnuncio(id) {
 
     try {
+        accionForm('actualizar');
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/anuncios/' + id).then(res => {
             //Constante para el modal
@@ -576,11 +655,17 @@ async function leerUnAnuncio(id) {
             //Instanciamos el boton para cerrar el modal
             const closeButton = document.getElementById('closeModal');
             //Constante para el titulo del modal
+            const modalBtnAdd = document.getElementById('btnModalAdd');
+            //Constante para el titulo del modal
+            const modalBtnUpdate = document.getElementById('btnModalUpdate');
+            //Constante para el titulo del modal
             const modalText = document.getElementById('modalText');
             //Instanciamos el modal
             const modal = new Modal(modalElement, modalOptions);
             //Le modificamos el texto del header al modal
             modalText.textContent = 'Editar';
+            modalBtnAdd.classList.add('hidden');
+            modalBtnUpdate.classList.remove('hidden');
             //Abrimos el modal
             modal.show();
             //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
@@ -604,37 +689,67 @@ async function leerUnAnuncio(id) {
         })
     } catch (error) {
         console.log(error);
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
     }
 }
 //Función actualizar los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function actualizarAnuncio() {
-    try {
-        //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_anuncio;
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            titulo_anuncio: form.value.titulo_anuncio,
-            contenido_anuncio: form.value.contenido_anuncio,
-            enlace_externo: form.value.enlace_externo,
-            fecha_anuncio: form.value.fecha_anuncio,
-            visibilidad_anuncio: form.value.visibilidad_anuncio,
-        };
+    if (validarTituloAnuncio()) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_anuncio;
+            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+            const formData = {
+                titulo_anuncio: form.value.titulo_anuncio,
+                contenido_anuncio: form.value.contenido_anuncio,
+                enlace_externo: form.value.enlace_externo,
+                fecha_anuncio: form.value.fecha_anuncio,
+                visibilidad_anuncio: form.value.visibilidad_anuncio,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.put("/anuncios/" + id, formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.put("/anuncios/" + id, formData);
 
-        //Se cargan todos los anuncios y se cierra el modal
-        leerAnuncios();
-        document.getElementById('closeModal').click();
+            //Se cargan todos los anuncios y se cierra el modal
+            leerAnuncios();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Anuncio actualizado exitosamente'
-        })
+            //Se lanza la alerta de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Anuncio actualizado exitosamente'
+            })
 
-    } catch (error) {
-        console.log(error);
+        } catch (error) {
+            console.log(error);
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -669,6 +784,20 @@ async function borrarAnuncio(id) {
                 })
             } catch (error) {
                 console.log(error);
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
             }
         }
     });
@@ -700,13 +829,32 @@ async function recuperarUnAnuncio(id) {
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Proceso finalizado'
+                    title: 'Anuncio recuperado exitosamente'
                 })
             } catch (error) {
-                console.log(error);
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
             }
         }
     });
+}
+
+//Validaciones
+function validarTituloAnuncio() {
+    var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_anuncio);
+    return res;
 }
 
 </script>

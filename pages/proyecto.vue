@@ -32,7 +32,7 @@
                 <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarProyectos()">
+                        placeholder="Buscar... (nombre/estado)" v-model="buscar.buscador" @keyup="buscarProyectos()">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -81,8 +81,8 @@
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ proyectos.length }}<span
-                    class="text-gray-500 font-normal ml-2">registro
-                    encontrado!</span></p>
+                    class="text-gray-500 font-normal ml-2">registros
+                    encontrados!</span></p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
             <div class="contained-data flex-col" v-for="proyecto in proyectos" :key="proyecto.id_proyecto_donacion">
                 <div
@@ -167,7 +167,7 @@
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
-                        <p class="text-lg font-medium text-gray-400">Proyectos</p>
+                        <p class="text-lg font-medium text-gray-400">Proyecto</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -181,62 +181,97 @@
                 </div>
                 <!-- Modal body -->
                 <div class="p-6 space-y-6 pb-10">
-                    <form action="" @submit.prevent="submitForm()" class="flex justify-evenly">
+                    <form @submit.prevent="submitForm()" class="flex justify-evenly">
                         <div class="flex-col w-64">
                             <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                             <input type="hidden" v-model="form.id_proyecto_donacion">
                             <div class="relative z-0">
-                                <input type="text" id="nombre_proyecto" name="nombre_proyecto"  v-model="form.nombre_proyecto"
+                                <input type="text" id="nombre_proyecto" name="nombre_proyecto" maxlength="100" required
+                                    @input="validarNombreProyecto()" v-model="form.nombre_proyecto"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.nombre_proyecto">
+                                    {{ form.nombre_proyecto.length }} /100</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
+                                <label for="nombre_proyecto"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Proyecto</label>
+                                    - Proyecto<span class="text-sm ml-1"> *
+                                    </span></label>
                             </div>
-
+                            <div v-if="!validarNombreProyecto()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El nombre de la página solo permite caracteres <span class="font-medium">
+                                        alfanuméricos y algunos especiales (- / |).</span>
+                                </div>
+                            </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="descripcion_proyecto" name="descripcion_proyecto"  v-model="form.descripcion_proyecto"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                <textarea id="descripcion_proyecto" name="descripcion_proyecto" required maxlength="1000"
+                                    v-model="form.descripcion_proyecto"
+                                    class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
-                                    - Proyecto</label>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
+                                    v-if="form.descripcion_proyecto">
+                                    {{ form.descripcion_proyecto.length }} /1000</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /1000</span>
+                                <label for="descripcion_proyecto"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
+                                    - Proyecto<span class="text-sm ml-1"> *
+                                    </span></label>
                             </div>
                             <div class="pt-4 mt-2 flex-col">
-                                <label for="" class="absolute text-gray-200">Estado - Proyecto</label>
+                                <label for="" class="absolute text-gray-200 text-sm">Estado - Proyecto</label>
                                 <select id="underline_select" v-model="form.estado_proyecto"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-100 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="0" class="text-gray-900">Selecciona una opcion</option>
-                                    <option value="En curso" class="text-gray-900">En curso</option>
-                                    <option value="Finalizado" class="text-gray-900">Finalizado</option>
-                                    <option value="Cerrado" class="text-gray-900">Cerrado</option>
+                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                    <option value="0" class="bg-gray-700">Selecciona una opción</option>
+                                    <option value="En curso" class="bg-gray-700">En curso</option>
+                                    <option value="Finalizado" class="bg-gray-700">Finalizado</option>
+                                    <option value="Cerrado" class="bg-gray-700">Cerrado</option>
                                 </select>
+                                <!-- Se dispara una alerta si se escoge la opción default -->
+                                <div v-if="form.estado_proyecto == 0"
+                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        Seleccione <span class="font-medium"> una opción. </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="flex-col w-64">
                             <div class="relative z-0">
-                                <input type="text" id="meta_monetaria" name="meta_monetaria"  v-model="form.meta_monetaria"
+                                <input type="number" id="meta_monetaria" name="meta_monetaria" v-model="form.meta_monetaria"
+                                    @blur="convertirDecimales()" step="0.01" min="1" max="10000" required
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <label for="meta_monetaria"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Meta
-                                    - Monetaria</label>
+                                    - Monetaria<span class="text-sm ml-1"> *
+                                    </span></label>
                             </div>
 
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Icono
+                                <label for="username" class=" text-sm text-gray-200">Icono
                                     - Proyecto</label>
+                                <img src="" class="h-10 w-10 border-2 border-white rounded-lg" />
                             </div>
                             <div class="flex-col mt-6">
                                 <label for="" class="text-gray-200">Visibilidad - Proyecto</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
                                         <input type="checkbox" value="" class="sr-only peer" id="visibilidad_proyecto "
-                                            name="visibilidad_proyecto " v-model="form.visibilidad_proyecto ">
+                                            name="visibilidad_proyecto " v-model="form.visibilidad_proyecto">
                                         <div
                                             class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                         </div>
@@ -250,7 +285,8 @@
                                 <img src="" class="h-44 w-40 border-2 border-slate-900 ml-12 rounded-lg" />
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center mr-4" type="button"
+                                    @click="limpiarForm()">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
@@ -267,8 +303,8 @@
                                             stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </button>
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" value="crear"
-                                    @click="accionForm('crear')" id="btnModalAdd">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
+                                    type="submit">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -280,8 +316,9 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalUpdate" type="submit" value="crear" @click="accionForm('actualizar')"
-                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                <button id="btnModalUpdate" type="submit"
+                                    :disabled="!validarNombreProyecto() || form.estado_proyecto == 0"
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -339,6 +376,10 @@
 
 .modal-buttons button {
     background-color: #32345a;
+}
+
+.buttons-data .changebtn {
+    border: 3px solid #3F4280;
 }
 </style>
 <script setup>
@@ -401,6 +442,7 @@ onMounted(() => {
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
             limpiarForm();
+            accionForm('crear');
             modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
             modalBtnUpdate.classList.add('hidden');
@@ -542,7 +584,7 @@ function limpiarForm() {
     form.value.nombre_proyecto = "";
     form.value.descripcion_proyecto = "";
     form.value.meta_monetaria = "";
-    form.value.estado_proyecto = "";
+    form.value.estado_proyecto = 0;
     form.value.visibilidad_proyecto = false;
 }
 
@@ -579,54 +621,57 @@ function submitForm() {
 
 //Función para crear una página
 async function crearProyecto() {
-    try {
-        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-        const formData = {
-            nombre_proyecto: form.value.nombre_proyecto,
-            descripcion_proyecto: form.value.descripcion_proyecto,
-            meta_monetaria: form.value.meta_monetaria,
-            estado_proyecto: form.value.estado_proyecto,
-            visibilidad_proyecto: form.value.visibilidad_proyecto,
-        };
+    if (validarNombreProyecto() && form.estado_proyecto != 0) {
+        try {
+            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+            const formData = {
+                nombre_proyecto: form.value.nombre_proyecto,
+                descripcion_proyecto: form.value.descripcion_proyecto,
+                meta_monetaria: form.value.meta_monetaria,
+                estado_proyecto: form.value.estado_proyecto,
+                visibilidad_proyecto: form.value.visibilidad_proyecto,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/proyectos", formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/proyectos", formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerProyectos();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerProyectos();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta con el mensaje de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Proyecto creado exitosamente'
-        })
+            //Se lanza la alerta con el mensaje de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Proyecto creado exitosamente'
+            })
 
-    } catch (error) {
-        console.log(error);
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            console.log(error);
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnProyecto(id) {
     try {
+        accionForm('actualizar');
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/proyectos/' + id).then(res => {
             //Constante para el modal
@@ -694,49 +739,51 @@ async function leerUnProyecto(id) {
 }
 
 async function actualizarProyecto() {
-    try {
-        //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_proyecto_donacion;
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            nombre_proyecto: form.value.nombre_proyecto,
-            descripcion_proyecto: form.value.descripcion_proyecto,
-            meta_monetaria: form.value.meta_monetaria,
-            estado_proyecto: form.value.estado_proyecto,
-            visibilidad_proyecto: form.value.visibilidad_proyecto,
-        };
+    if (validarNombreProyecto() && form.estado_proyecto != 0) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_proyecto_donacion;
+            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+            const formData = {
+                nombre_proyecto: form.value.nombre_proyecto,
+                descripcion_proyecto: form.value.descripcion_proyecto,
+                meta_monetaria: form.value.meta_monetaria,
+                estado_proyecto: form.value.estado_proyecto,
+                visibilidad_proyecto: form.value.visibilidad_proyecto,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.put("/proyectos/" + id, formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.put("/proyectos/" + id, formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerProyectos();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerProyectos();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Proyecto actualizado exitosamente'
-        })
+            //Se lanza la alerta de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Proyecto actualizado exitosamente'
+            })
 
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -846,15 +893,18 @@ async function recuperarProyecto(id) {
 
 //Validaciones
 
-//Función para validar que el número de página ingresado por el usuario este entre 1-10
-function validarNumeroPagina() {
-    var res = validaciones.validarNoNumerosNegativos(parseInt(form.value.numero_pagina), 10);
-    return res;
+//Función para validar que la meta monetaria lleve 2 decimales
+function convertirDecimales() {
+    if (form.value.meta_monetaria != null) {
+        var res = validaciones.convertirDecimales(form.value.meta_monetaria, 2);
+        if (res != false) {
+            form.value.meta_monetaria = res;
+        }
+    }
 }
-
 //Función para validar que el nombre de página solo lleve letras y números
-function validarNombrePagina() {
-    var res = validaciones.validarSoloLetrasYNumeros((form.value.nombre_pagina).toString());
+function validarNombreProyecto() {
+    var res = validaciones.validarSoloLetrasYNumeros(form.value.nombre_proyecto);
     return res;
 }
 

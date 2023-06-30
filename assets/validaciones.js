@@ -17,7 +17,7 @@ const validaciones = {
         //Se valida que el texto no sea nulo
         if (texto != null && texto.trim() != "") {
             //Se valida que en la cadena de texto solo existan letras, números, espacios y caracteres de separación (/ | -)
-            var re = /^[a-zA-Z0-9\s/|\-]+$/;
+            var re = /^[a-zA-Z0-9\s/|\-,.]+$/;
             //Retorna false o true dependiendo de si cumple o no la condición
             return re.test(texto);
         } else {
@@ -59,13 +59,13 @@ const validaciones = {
         }
     },
     //Función para validar inputs tipo date (recibe la cantidad de días y meses a agregar/restar)
-    validarFecha(dias, meses) {
+    validarFecha(dias, meses, anios) {
         //Fecha actual
         var fecha_actual = new Date();
 
         //Fechas minima y máxima, además de cambiar el formato de las fechas
-        var fecha_minima = new Date(fecha_actual.getFullYear(), fecha_actual.getMonth() - meses, fecha_actual.getDate() - dias);
-        var fecha_maxima = new Date(fecha_actual.getFullYear(), fecha_actual.getMonth() + meses, fecha_actual.getDate() + dias);
+        var fecha_minima = new Date(fecha_actual.getFullYear() - anios, fecha_actual.getMonth() - meses, fecha_actual.getDate() - dias);
+        var fecha_maxima = new Date(fecha_actual.getFullYear() + anios, fecha_actual.getMonth() + meses, fecha_actual.getDate() + dias);
 
         //ISO String es un método de js que devuelve las fechas en el formato YYYY-MM-DD::mm:ss (mm:ss simbolizando minutos y segundos)
         /*Entonces se usa el ISO String para cambiar el formato de la fecha, además usando el split T se separa el tiempo de la fecha y se toma la posición [0] 
@@ -117,8 +117,27 @@ const validaciones = {
                 // El número tiene un formato inválido
                 return false;
             }
-        }else{
+        } else {
             return true;
+        }
+    },
+    validarNumeroDocumento(texto, tipo) {
+        if (texto != null && texto.trim() != "") {
+            switch (tipo) {
+                case "Cédula":
+                    var reCedula = /^[PENI]{1,2}[a-zA-Z0-9-]{5,}$/;
+                    return reCedula.test(texto);
+                    break;
+                case "Pasaporte":
+                    var rePasaporte = /^[A-Za-z]{2}[A-Za-z0-9\-]{7,10}$/;
+                    return rePasaporte.test(texto);
+                    break;
+                default:
+                    var reGeneral = /^[a-zA-Z0-9\-]+$/;
+                    return reGeneral.test(texto);
+            }
+        } else {
+            return true; 
         }
     }
 };

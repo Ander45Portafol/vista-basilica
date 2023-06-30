@@ -28,7 +28,7 @@
                 </button>
             </div>
         </div>
-
+        <!-- Contendor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
@@ -46,6 +46,7 @@
                         </button>
                     </div>
                 </div>
+                <!-- Botones de navegacion -->
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
@@ -80,15 +81,15 @@
                                 stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </button>
-
                 </div>
             </div>
-
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
             <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ contactos.length }}<span
+
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
+            <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
             <div id="sectionPage" v-for="contacto in contactos" :key="contacto.id_contacto">
                 <div class="contained-data flex-col">
                     <div
@@ -96,12 +97,14 @@
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                             <div
                                 class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
+                                <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                                 <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]"> {{
                                     contacto.nombre_contacto }} </p>
                                 <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> {{
                                     contacto.correo_contacto }}</p>
                             </div>
                         </div>
+                        <!-- Al darle clic al evento leerUnContacto ejecuta la funcion -->
                         <div
                             class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                             <button @click="leerUnContacto(contacto.id_contacto)" v-if="contacto.visibilidad_contacto == 1"
@@ -114,7 +117,7 @@
                                     </path>
                                 </svg>
                             </button>
-                            <!-- Boton para ocultar un registro -->
+                            <!-- Al darle clic al evento borrarContacto ejecuta la funcion -->
                             <button @click="borrarContacto(contacto.id_contacto)" v-if="contacto.visibilidad_contacto == 1"
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
                                 <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
@@ -125,6 +128,7 @@
                                     </path>
                                 </svg>
                             </button>
+                            <!-- Al darle clic al evento recuperarContacto ejecuta la funcion -->
                             <button @click="recuperarContacto(contacto.id_contacto)"
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                                 v-else>
@@ -153,23 +157,21 @@
                     :data="data" @pagination-change-page="contacto = $event" />
             </div>
         </div>
-        <!-- mdprincipal final de div -->
     </div>
-
-
-
-    <!--Main modal -->
+    <!-- Modal principal-->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-lg max-h-full">
-            <!-- Modal content -->
+            <!-- Contenido del modal -->
             <div class="relative rounded-lg shadow modal">
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
+                        <!-- Asignamos un id al título del modal para la creación  y actualizacion de texto-->
                         <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
                         <p class="text-base font-medium text-gray-400">Contacto</p>
                     </div>
+                    <!-- Boton para cerrar el modal -->
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                         data-modal-hide="staticModal">
@@ -180,12 +182,14 @@
                         </svg>
                     </button>
                 </div>
-                <!-- modal body -->
+                <!-- Cuerpo del modal -->
                 <div class="p-6 space-y-6 pb-20">
+                    <!-- Se utiliza el modificador @submit.prevent para evitar la recarga de la página al enviar el formulario. En su lugar, se llama a la función submitForm() definida en Vue.js para ejecutar la lógica personalizada del envío del formulario. -->
                     <form id="modalForm" @submit.prevent="submitForm()" class="flex justify-evenly">
                         <div class="flex-col w-72">
                             <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                             <input type="hidden" name="id_contacto" id="id_contacto" v-model="form.id_contacto">
+                            <!-- Campo de entrada Nombre - Contacto -->
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="nombre_contacto" name="nombre_contacto" required maxlength="100"
                                     @input="validarNombreContacto()" v-model="form.nombre_contacto"
@@ -215,6 +219,7 @@
                                         alfanuméricos y algunos especiales (- / |).</span>
                                 </div>
                             </div>
+                            <!-- Campo de entrada Correo - Contacto -->
                             <div class="relative z-0 mt-6">
                                 <input type="email" id="correo_contacto" name="correo_contacto" required maxlength="150"
                                     v-model="form.correo_contacto"
@@ -230,6 +235,7 @@
                                     - Contacto<span class="text-sm ml-1"> *
                                     </span></label>
                             </div>
+                            <!-- Campo de entrada Tipo - Contacto -->
                             <div class="pt-4 mt-4 flex-col">
                                 <label for="" class="absolute text-sm text-gray-200">Tipo - Contacto<span
                                         class="text-sm ml-1"> *
@@ -253,6 +259,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Campo de entrada Visibilidad - Contacto -->
                             <div class="flex-col mt-6">
                                 <label for="" class="text-gray-200">Visibilidad - Contacto</label>
                                 <div class="flex justify-start mt-2">
@@ -452,7 +459,7 @@ para almacenar la información que traiga el axios*/
 const data = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const contacto = ref(useRoute().query.contacto || 1);
+const pagina = ref(useRoute().query.pagina || 1);
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
@@ -478,17 +485,17 @@ let contactos = computed(() => data.value.data);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
-watch(contacto, async () => {
+watch(pagina, async () => {
     //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
     if (buscar.value.buscador != "") {
         //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
         buscarContactos();
     } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
+        //Se ejecuta el leer contactos cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
         leerContactos();
     }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { pagina: contacto.value } })
+    useRouter().push({ query: { pagina: pagina.value } })
 })
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
@@ -497,7 +504,7 @@ async function leerContactos() {
     try {
         /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
         además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/contactos?page=${contacto.value}`);
+        const { data: res } = await axios.get(`/contactos?page=${pagina.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
     } catch (error) {
@@ -525,14 +532,14 @@ async function buscarContactos() {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
             // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/contactos_search?page=${contacto.value}&buscador=${buscar.value.buscador}`);
+            const { data: res } = await axios.get(`/contactos_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
             // Actualiza los datos en la constante data
             data.value = res;
             // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: contacto.value } });
+            useRouter().push({ query: { pagina: pagina.value } });
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
-            contacto.value = 1;
+            pagina.value = 1;
             leerContactos();
         }
     } catch (error) {
@@ -556,14 +563,12 @@ async function buscarContactos() {
 //Función para limpiar el buscador
 function limpiarBuscador() {
     //Se coloca la constante pagina 1 para que salga la primera pagina de registros
-    contacto.value = 1;
+    pagina.value = 1;
     //Se leen todos los registros
     leerContactos();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
 }
-
-//Funciones para manejo del modal
 
 //Función para limpiar todos los campos del form
 function limpiarForm() {
@@ -620,7 +625,7 @@ async function crearContacto() {
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.post("/contactos", formData);
 
-            //Se cargan todas las páginas y se cierra el modal
+            //Se cargan todos los contactos y se cierra el modal
             leerContactos();
             document.getElementById('closeModal').click();
 
@@ -722,6 +727,7 @@ async function leerUnContacto(id) {
     }
 }
 
+//Función actualizar los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function actualizarContacto() {
     if (form.tipo_contacto != 0 && validarNombreContacto()) {
         try {
@@ -738,7 +744,7 @@ async function actualizarContacto() {
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.put("/contactos/" + id, formData);
 
-            //Se cargan todas las páginas y se cierra el modal
+            //Se cargan todops los contactos y se cierra el modal
             leerContactos();
             document.getElementById('closeModal').click();
 
@@ -791,7 +797,7 @@ async function borrarContacto(id) {
                 //Se realiza la petición axios
                 await axios.delete('/contactos/' + id);
 
-                //Se cargan todas las páginas
+                //Se cargan todos los contactos
                 leerContactos();
 
                 //Se lanza la alerta de éxito
@@ -843,7 +849,7 @@ async function recuperarContacto(id) {
                 //Se realiza la petición axios
                 await axios.delete('/contactos/' + id);
 
-                //Se cargan todas las páginas
+                //Se cargan todos los contactos
                 leerContactos();
 
                 //Se lanza la alerta de éxito

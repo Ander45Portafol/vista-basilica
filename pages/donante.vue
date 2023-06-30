@@ -29,18 +29,22 @@
         </div>
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
-                <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                    <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarDonantes en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar ...">
+                        placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarDonantes()">
                     <div class="flex justify-end items-center">
-                        <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
-                                fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                        <!-- Se le asigna la función para limpiar el buscador al botón -->
+                        <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
+                                stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
                     </div>
-                </form>
+                </div>
+                <!-- Botones -->
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
@@ -68,24 +72,29 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
+            <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
             <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ donantes.length }}<span
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
+            <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
             <div class="contained-data flex-col" v-for="donante in donantes" :key="donante.id_donante">
                 <div
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+                        <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                                 {{ donante.nombre_donante }} {{ donante.apellido_donante }}</p>
                             <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
                                 {{ donante.correo_donante }}</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{ donante.usuario_donante }}
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{ donante.usuario_donante
+                            }}
                             </p>
                         </div>
                     </div>
+                    <!-- Al darle clic al evento borrarDonante ejecuta la funcion -->
                     <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
                         v-if="donante.visibilidad_donante == 1">
                         <button
@@ -99,11 +108,12 @@
                             </svg>
                         </button>
                     </div>
+                    <!-- Al darle clic al evento recuperarDonante ejecuta la funcion -->
                     <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
                         v-else>
                         <button
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                            @click="changeVisible(donante.id_donante)">
+                            @click="recuperarDonante(donante.id_donante)">
                             <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
@@ -124,23 +134,25 @@
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
                     :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="donante = $event" />
+                    :data="data" @pagination-change-page="pagina = $event" />
             </div>
         </div>
     </div>
 
-    <!-- Main modal -->
+    <!-- Modal principal-->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-3xl max-h-full">
-            <!-- Modal content -->
+            <!-- Contenido del modal -->
             <div class="relative rounded-lg shadow modal">
-                <!-- Modal header -->
+                <!--Encabezado del modal -->
                 <div class="flex items-start justify-between p-4 rounded-t">
+                    <!-- Asignamos un id al título del modal para la creación  y actualizacion de texto-->
                     <div class="flex-col ml-4 pt-4">
-                        <p class="text-3xl font-bold text-gray-100" id="modal_text"></p>
+                        <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
                         <p class="text-lg font-medium text-gray-400">Donantes</p>
                     </div>
+                    <!-- Boton para cerrar el modal -->
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                         data-modal-hide="staticModal">
@@ -151,7 +163,7 @@
                         </svg>
                     </button>
                 </div>
-                <!-- Modal body -->
+                <!-- Cuerpo del modal  -->
                 <div class="p-6 space-y-6 pb-10">
                     <form action="" class="flex justify-evenly">
                         <div class="flex-col w-64">
@@ -329,7 +341,7 @@ para almacenar la información que traiga el axios*/
 const data = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const donante = ref(useRoute().query.donante || 1);
+const pagina = ref(useRoute().query.pagina || 1);
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
@@ -344,26 +356,26 @@ let donantes = computed(() => data.value.data);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
-watch(donante, async () => {
+watch(pagina, async () => {
     //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
     if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        //buscarAnuncios();
+        //Se ejecuta el buscar donantes si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
+        buscarDonantes();
     } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
+        //Se ejecuta el leer donantes para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
         leerDonantes();
     }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { donante: donante.value } })
+    useRouter().push({ query: { pagina: pagina.value } })
 })
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerDonantes() {
     try {
-        /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
+        /*Se manda la petición axios para leer los donantes (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
         además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/donantes?page=${donante.value}`);
+        const { data: res } = await axios.get(`/donantes?page=${pagina.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
     } catch (error) {
@@ -383,7 +395,53 @@ const Toast = Swal.mixin({
     }
 })
 
-//Función para cambiar la visibilidad de una página
+//Función para buscar registros dependiendo del valor del buscador
+async function buscarDonantes() {
+    try {
+        //Se evalua que el buscador no este vacio
+        if (buscar.value.buscador != "") {
+            // Realiza la petición axios para llamar a la ruta de búsqueda
+            const { data: res } = await axios.get(`/donantes_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
+            // Actualiza los datos en la constante data
+            data.value = res;
+            // Actualiza la URL con el parámetro de página
+            useRouter().push({ query: { pagina: pagina.value } });
+        } else {
+            //Se regresa a la página 1 y se cargan todos los registros
+            pagina.value = 1;
+            leerDonantes();
+        }
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+//Función para limpiar el buscador
+function limpiarBuscador() {
+    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
+    pagina.value = 1;
+    //Se leen todos los registros
+    leerDonantes();
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
+}
+
+
+
+//Función para cambiar la visibilidad de un donante
 async function borrarDonante(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
@@ -410,7 +468,7 @@ async function borrarDonante(id) {
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Tipo de personal ocultada exitosamente'
+                    title: 'Donante ocultada exitosamente'
                 })
             } catch (error) {
                 console.log(error);
@@ -419,11 +477,11 @@ async function borrarDonante(id) {
     });
 }
 //Función para cambiar la visibilidad de una página
-async function changeVisible(id) {
+async function recuperarDonante(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: 'Confirmación',
-        text: "¿Desea hacer visible el rol?",
+        text: "¿Desea hacer visible el donante?",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
