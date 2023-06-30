@@ -29,20 +29,25 @@
                 </button>
             </div>
         </div>
+        <!-- Contenerdor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
-                <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                    <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarCategoriaGrupos en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar ..." v-model="buscar.buscador" @keyup="buscarEnlaces()">
                     <div class="flex justify-end items-center">
-                        <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
-                                fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                        <!-- Se le asigna la función para limpiar el buscador al botón -->
+                        <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
+                                stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
                     </div>
-                </form>
+                </div>
+                <!-- Botones -->
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
@@ -79,14 +84,17 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
+            <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
             <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ enlaces.length }}<span
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
+            <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
             <div class="contained-data flex-col" v-for="enlace in enlaces" :key="enlace.id_enlace_amigo">
                 <div
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+                        <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
@@ -98,45 +106,46 @@
                             </p>
                         </div>
                     </div>
-                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-                        v-if="enlace.visibilidad_enlace == 1">
-                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4"
-                            @click="leerUnEnlace(enlace.id_enlace_amigo)">
-                            <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path
-                                    d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
-                                    stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                        <button
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                            @click="borrarEnlace(enlace.id_enlace_amigo)">
-                            <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path
-                                    d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
-                                    stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
+                    <!-- Al darle clic al evento leerUnEnlace ejecuta la funcion -->
+                    <div
+                    class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                    <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
+                        id="btnedit" @click="leerUnEnlace(enlace.id_enlace_amigo)" v-if="enlace.visibilidad_enlace == 1">
+                        <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path
+                                d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
+                                stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            </path>
+                        </svg>
+                    </button>
+                    <button
+                        class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                        @click="borrarEnlace(enlace.id_enlace_amigo)" v-if="enlace.visibilidad_enlace == 1">
+                        <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path
+                                d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
+                                stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            </path>
+                        </svg>
+                    </button>
+                    <button @click="recuperarEnlaceAmigo(enlace.id_enlace_amigo)"
+                        class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                         v-else>
-                        <button
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                            @click="changeVisible(enlace.id_enlace_amigo)">
-                            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
-                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path
-                                    d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
-                                    stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
-                                    stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                    </div>
+                        <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path
+                                d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
+                                stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            </path>
+                            <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
+                                stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                </div>
                 </div>
             </div>
             <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
@@ -145,24 +154,26 @@
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
                     :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="enlace = $event" />
+                    :data="data" @pagination-change-page="pagina = $event" />
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal principal-->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-xl max-h-full">
-            <!-- Modal content -->
+            <!-- Contenido del modal -->
             <div class="relative rounded-lg shadow modal">
-                <!-- Modal header -->
+                <!--Encabezado del modal -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
+                        <!-- Asignamos un id al título del modal para la creación  y actualizacion de texto-->
                         <p class="text-3xl font-bold text-gray-100" id="modalText">
                         </p>
                         <p class="text-base font-medium text-gray-400">Enlace amigos</p>
                     </div>
+                    <!-- Boton para cerrar el modal -->
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                         data-modal-hide="staticModal">
@@ -173,41 +184,47 @@
                         </svg>
                     </button>
                 </div>
-                <!-- Cuerpo de  -->
+                <!-- Cuerpo del modal  -->
                 <div class="p-6 space-y-6 pb-14">
+                    <!-- Se utiliza el modificador @submit.prevent para evitar la recarga de la página al enviar el formulario. En su lugar, se llama a la función submitForm() definida en Vue.js para ejecutar la lógica personalizada del envío del formulario. -->
                     <form @submit.prevent="submitForm()" class="flex justify-evenly">
                         <div class="flex-col w-64">
-                            <input type="hidden" v-model="form.id_enlace_amigo">
+                            <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
+                            <input type="hidden" id="id_enlace_amigo" v-model="form.id_enlace_amigo">
+                            <!-- Campo de entrada Titulo- Enlace-->
                             <div class="relative z-0">
-                                <input type="text" id="username" name="username"
+                                <input type="text" id="titulo_enlace" name="titulo_enlace"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.titulo_enlace" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Titulo
                                     - Enlace</label>
                             </div>
+                            <!-- Campo de entrada Enlace- Amigo-->
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
+                                <input type="text" id="enlace_amigo" name="enlace_amigo"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.enlace_amigo" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Enlace
                                     - Amigo</label>
                             </div>
+                            <!-- Campo de entrada Descripcion- Enlace-->
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
+                                <input type="text" id="username" name="descripcion_enlace"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.descripcion_enlace" />
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
                                     - Enlace</label>
                             </div>
+                            <!-- Campo de entrada Visibilidad- Enlace-->
                             <div class="flex-col mt-6">
                                 <label for="" class="text-gray-200">Visibilidad - Enlace</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input type="checkbox" value="" class="sr-only peer"
-                                            v-model="form.visibilidad_enlace">
+                                        <input type="checkbox" value="" class="sr-only peer" id="visibilidad_enlace"
+                                            name="visibilidad_enlace" v-model="form.visibilidad_enlace">
                                         <div
                                             class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                         </div>
@@ -220,8 +237,10 @@
                                 <p class="mb-4 text-center text-gray-200">Imagen - Enlace</p>
                                 <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
                             </div>
+                            <!-- Modal botones -->
                             <div class="modal-buttons mt-24 flex justify-end items-end">
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalClear"
+                                @click="limpiarForm()" >
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
@@ -238,8 +257,7 @@
                                             stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </button>
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4" id="btnModalAdd"
-                                    type="submit" @click="accionForm('crear')">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4" id="btnModalAdd" type="submit" @click="accionForm('crear')">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -375,7 +393,7 @@ para almacenar la información que traiga el axios*/
 const data = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const enlace = ref(useRoute().query.enlace || 1);
+const pagina = ref(useRoute().query.pagina || 1);
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
@@ -391,7 +409,7 @@ const form = ref({
     titulo_enlace: "",
     enlace_amigo: "",
     descripcion_enlace: "",
-    visibilidad_enlace: "false",
+    visibilidad_enlace: false,
 })
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
@@ -400,7 +418,7 @@ let enlaces = computed(() => data.value.data);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
-watch(enlace, async () => {
+watch(pagina, async () => {
     //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
     if (buscar.value.buscador != "") {
         //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
@@ -410,7 +428,7 @@ watch(enlace, async () => {
         leerEnlaces();
     }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { enlace: enlace.value } })
+    useRouter().push({ query: { pagina: pagina.value } })
 })
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
@@ -419,7 +437,7 @@ async function leerEnlaces() {
     try {
         /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
         además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/enlaces_amigos?page=${enlace.value}`);
+        const { data: res } = await axios.get(`/enlaces_amigos?page=${pagina.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
         console.log(res);
@@ -449,6 +467,49 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
+//Función para buscar registros dependiendo del valor del buscador
+async function buscarEnlaces() {
+    try {
+        //Se evalua que el buscador no este vacio
+        if (buscar.value.buscador != "") {
+            // Realiza la petición axios para llamar a la ruta de búsqueda
+            const { data: res } = await axios.get(`/enlaces_amigos_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
+            // Actualiza los datos en la constante data
+            data.value = res;
+            // Actualiza la URL con el parámetro de página
+            useRouter().push({ query: { pagina: pagina.value } });
+        } else {
+            //Se regresa a la página 1 y se cargan todos los registros
+            pagina.value = 1;
+            leerEnlaces();
+        }
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+//Función para limpiar el buscador
+function limpiarBuscador() {
+    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
+    pagina.value = 1;
+    //Se leen todos los registros
+    leerEnlaces();
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
+}
 
 //Variable para validar que acción se quiere hacer cuando se hace un submit al form
 var formAccion = null;
@@ -486,7 +547,7 @@ async function crearEnlace() {
             icon: 'success',
             title: 'Enlace creado exitosamente'
         })
-        //Se cargan todas las páginas y se cierra el modal
+        //Se cargan todas los enlaces y se cierra el modal
 
         document.getElementById('closeModal').click();
         leerEnlaces();
@@ -494,12 +555,12 @@ async function crearEnlace() {
         console.log(error);
     }
 }
+
+
 async function leerUnEnlace(id) {
-    console.log(id);
     try {
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/enlaces_amigos/' + id).then(res => {
-            console.log(res);
             //Constante para el modal   
             const modalElement = document.getElementById('staticModal');
             //Constante que contiene las caracteristicas del modal
@@ -539,7 +600,6 @@ async function leerUnEnlace(id) {
                 descripcion_enlace: res.data.descripcion_enlace,
                 visibilidad_enlace: res.data.visibilidad_enlace
             }
-            console.log(form.value);
         })
     } catch (error) {
         console.log(error);
@@ -605,7 +665,7 @@ async function borrarEnlace(id) {
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Usuario desactivado exitosamente'
+                    title: 'Enlace desactivado exitosamente'
                 })
             } catch (error) {
                 console.log(error);
@@ -614,11 +674,11 @@ async function borrarEnlace(id) {
     });
 }
 //Función para cambiar la visibilidad de una página
-async function changeVisible(id) {
+async function recuperarEnlaceAmigo(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: 'Confirmación',
-        text: "¿Desea hacer activar el usuario?",
+        text: "¿Desea hacer activar el enlace amigo?",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
@@ -649,37 +709,4 @@ async function changeVisible(id) {
     });
 }
 
-//Función para buscar registros dependiendo del valor del buscador
-async function buscarEnlaces() {
-    try {
-        //Se evalua que el buscador no este vacio
-        if (buscar.value.buscador != "") {
-            // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/enlaces_amigos_search?page=${enlace.value}&buscador=${buscar.value.buscador}`);
-            // Actualiza los datos en la constante data
-            data.value = res;
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { enlace: enlace.value } });
-        } else {
-            //Se regresa a la página 1 y se cargan todos los registros
-            enlace.value = 1;
-            leerEnlaces();
-        }
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
-    }
-}
 </script>
