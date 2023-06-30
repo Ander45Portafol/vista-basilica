@@ -150,7 +150,7 @@
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modal_text">Editar</p>
-                        <p class="text-lg font-medium text-gray-400">Donaciones</p>
+                        <p class="text-lg font-medium text-gray-400">Donación</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"

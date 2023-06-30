@@ -117,8 +117,27 @@ const validaciones = {
                 // El número tiene un formato inválido
                 return false;
             }
-        }else{
+        } else {
             return true;
+        }
+    },
+    validarNumeroDocumento(texto, tipo) {
+        if (texto != null && texto.trim() != "") {
+            switch (tipo) {
+                case "Cédula":
+                    var reCedula = /^[PENI]{1,2}[a-zA-Z0-9-]{5,}$/;
+                    return reCedula.test(texto);
+                    break;
+                case "Pasaporte":
+                    var rePasaporte = /^[A-Za-z]{2}[A-Za-z0-9\-]{7,10}$/;
+                    return rePasaporte.test(texto);
+                    break;
+                default:
+                    var reGeneral = /^[a-zA-Z0-9\-]+$/;
+                    return reGeneral.test(texto);
+            }
+        } else {
+            return true; 
         }
     }
 };
