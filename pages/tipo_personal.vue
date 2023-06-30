@@ -115,7 +115,8 @@
                             </svg>
                         </button>
                         <button
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4" @click="borrarTipoPersonal(tipo_personal.id_tipo_personal)">
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            @click="borrarTipoPersonal(tipo_personal.id_tipo_personal)">
                             <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -416,6 +417,32 @@ async function leerTiposPersonales() {
         data.value = res;
     } catch (error) {
         console.log(error);
+        const mensajeError = error.response.data.message;
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
+
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 //Toast del sweetalert
@@ -445,7 +472,7 @@ async function crearTiposPersonales() {
         //Se lanza la alerta con el mensaje de éxito
         Toast.fire({
             icon: 'success',
-            title: 'creado exitosamente'
+            title: 'Creado exitosamente'
         })
         //Se cargan todas las páginas y se cierra el modal
         leerTiposPersonales();
@@ -453,6 +480,32 @@ async function crearTiposPersonales() {
 
     } catch (error) {
         console.log(error);
+        const mensajeError = error.response.data.message;
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
+
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
@@ -496,6 +549,32 @@ async function leerUnTipoPersonal(id) {
         })
     } catch (error) {
         console.log(error);
+        const mensajeError = error.response.data.message;
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
+
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -519,11 +598,37 @@ async function actualizarTipoPersonal() {
         //Se lanza la alerta de éxito
         Toast.fire({
             icon: 'success',
-            title: 'actualizado exitosamente'
+            title: 'Actualizado exitosamente'
         })
 
     } catch (error) {
         console.log(error);
+        const mensajeError = error.response.data.message;
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
+
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 //Función para cambiar la visibilidad de una página
@@ -553,10 +658,36 @@ async function borrarTipoPersonal(id) {
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Tipo de personal ocultada exitosamente'
+                    title: 'Tipo de personal ocultado exitosamente'
                 })
             } catch (error) {
                 console.log(error);
+                const mensajeError = error.response.data.message;
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const sqlState = validaciones.extraerSqlState(mensajeError);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const res = validaciones.mensajeSqlState(sqlState);
+
+                    //Se cierra el modal
+                    document.getElementById('closeModal').click();
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensajeError,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     });
@@ -592,6 +723,32 @@ async function changeVisible(id) {
                 })
             } catch (error) {
                 console.log(error);
+                const mensajeError = error.response.data.message;
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const sqlState = validaciones.extraerSqlState(mensajeError);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const res = validaciones.mensajeSqlState(sqlState);
+
+                    //Se cierra el modal
+                    document.getElementById('closeModal').click();
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensajeError,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     });
