@@ -187,7 +187,7 @@
                     <!-- Se utiliza el modificador @submit.prevent para evitar la recarga de la página al enviar el formulario. En su lugar, se llama a la función submitForm() definida en Vue.js para ejecutar la lógica personalizada del envío del formulario. -->
                     <form action="" @submit.prevent="submitForm()" class="flex justify-center">
                         <div class="flex-col w-64">
-                            <!-- Campo de entrada para el nombre de la categoría -->
+                            <!-- Campo de entrada Nombre - Parroquia -->
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="nombre_categoria_grupo" name="nombre_categoria_grupo"
                                     v-model="form.nombre_categoria_grupo"
@@ -197,7 +197,7 @@
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                     - Categoria</label>
                             </div>
-                            <!-- Campo de entrada para la visibilidad de la categoría -->
+                            <!-- Campo de entrada Visibilidad - Categoria -->
                             <div class="flex-col mt-10">
                                 <label for="" class="text-gray-200">Visibilidad - Categoria</label>
                                 <div class="flex justify-start mt-2">
