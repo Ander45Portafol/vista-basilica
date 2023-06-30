@@ -15,7 +15,7 @@
             </NuxtLink>
           </li>
           <li class="item">
-            <NuxtLink to="/parroquia" class="flex items-center justify-center rounded-lg p-2 hover:bg-gray-700">
+            <NuxtLink to="/enlace_amigo" class="flex items-center justify-center rounded-lg p-2 hover:bg-gray-700">
               <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
               <path d="M12 6l-7.718 4.824a.6.6 0 00-.282.508V21.4a.6.6 0 00.6.6H12m0-16l7.718 4.824a.6.6 0 01.282.508V21.4a.6.6 0 01-.6.6H12m0-16V4m0-2v2m-2 0h2m0 0h2m-2 18v-5M16 17.01l.01-.011M16 13.01l.01-.011M12 13.01l.01-.011M8 13.01l.01-.011M8 17.01l.01-.011" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
@@ -75,6 +75,11 @@
                 <svg width="28px" stroke-width="2.5" height="28px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M4 19V5a2 2 0 012-2h13.4a.6.6 0 01.6.6v13.114" stroke="#fff" stroke-width="2.5" stroke-linecap="round"></path><path d="M8 3v8l2.5-1.6L13 11V3" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 17h14M6 21h14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"></path><path d="M6 21a2 2 0 110-4" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             </NuxtLink>
         </li>
+        <div class="flex justify-center items-end h-24">
+          <li id="item">
+            <NuxtLink to="/" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700"><svg width="28px" height="28px" stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M12 12h7m0 0l-3 3m3-3l-3-3M19 6V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2v-1" stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></NuxtLink>
+          </li>
+        </div>
         </ul>
       </div>
     </aside>

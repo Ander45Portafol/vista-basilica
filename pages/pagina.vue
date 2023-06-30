@@ -33,7 +33,7 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarPaginas()">
+                        placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarPaginas()">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -85,62 +85,63 @@
                     class="text-gray-500 font-normal ml-2">registros
                     encontrados!</span></p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-                <div class="contained-data flex-col" v-for="pagina in paginas" :key="pagina.id_pagina">
-                    <div
-                        class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
-                        <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                            <div
-                                class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                                <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Página- {{
-                                    pagina.nombre_pagina }}</p>
-                                <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]"> {{
-                                    pagina.descripcion_pagina }}
-                                </p>
-                                <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Número de página: {{
-                                    pagina.numero_pagina }}
-                                </p>
-                            </div>
-                        </div>
+            <div class="contained-data flex-col" v-for="pagina in paginas" :key="pagina.id_pagina">
+                <div
+                    class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                    <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                         <div
-                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                            <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
-                                id="btnedit" @click="leerUnaPagina(pagina.id_pagina)" v-if="pagina.visibilidad_pagina == 1">
-                                <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path
-                                        d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
-                                        stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                </svg>
-                            </button>
-                            <button
-                                class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                                @click="borrarPagina(pagina.id_pagina)" v-if="pagina.visibilidad_pagina == 1">
-                                <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path
-                                        d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
-                                        stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                </svg>
-                            </button>
-                            <button  @click="recuperarPagina(pagina.id_pagina)"
-                                class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4" v-else>
-                                <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none" 
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
-                                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path
-                                        d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
-                                        stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                    <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
-                                        stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </button>
+                            class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
+                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Página- {{
+                                pagina.nombre_pagina }}</p>
+                            <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]"> {{
+                                pagina.descripcion_pagina }}
+                            </p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Número de página: {{
+                                pagina.numero_pagina }}
+                            </p>
                         </div>
                     </div>
+                    <div
+                        class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                        <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
+                            id="btnedit" @click="leerUnaPagina(pagina.id_pagina)" v-if="pagina.visibilidad_pagina == 1">
+                            <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
+                                    stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
+                            </svg>
+                        </button>
+                        <button
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            @click="borrarPagina(pagina.id_pagina)" v-if="pagina.visibilidad_pagina == 1">
+                            <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
+                                    stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
+                            </svg>
+                        </button>
+                        <button @click="recuperarPagina(pagina.id_pagina)"
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            v-else>
+                            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
+                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path
+                                    d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
+                                    stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
+                                <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
+                                    stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
+            </div>
             <div class="flex justify-center mt-6">
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
@@ -200,7 +201,8 @@
                                             clip-rule="evenodd"></path>
                                     </svg>
                                     <div>
-                                        El nombre de la página solo permite caracteres <span class="font-medium"> alfanuméricos y algunos especiales (- / |)</span>
+                                        El nombre de la página solo permite caracteres <span class="font-medium">
+                                            alfanuméricos y algunos especiales (- / |).</span>
                                     </div>
                                 </div>
                             </div>
@@ -224,17 +226,19 @@
                                     </svg>
                                     <div>
                                         El número de página debe ser mayor a <span class="font-medium">10</span> y menor a
-                                        <span class="font-medium">0</span>
+                                        <span class="font-medium">0.</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <textarea type="text" id="descripcion_pagina" name="descripcion_pagina" maxlength="250"
+                                <textarea id="descripcion_pagina" name="descripcion_pagina" maxlength="250"
                                     v-model="form.descripcion_pagina"
                                     class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"> {{
-                                    form.descripcion_pagina.length }} /250</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
+                                    v-if="form.descripcion_pagina"> {{
+                                        form.descripcion_pagina.length }} /250</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /250</span>
                                 <label for="descripcion_pagina"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
                                     - Página</label>
@@ -272,7 +276,7 @@
                                         </svg>
                                     </button>
                                     <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                    <button id="btnModalAdd" type="submit" value="crear" @click="accionForm('crear')"
+                                    <button id="btnModalAdd" type="submit"
                                         :disabled="!validarNumeroPagina() || !validarNombrePagina()"
                                         class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                         <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -286,7 +290,7 @@
                                         </svg>
                                     </button>
                                     <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                    <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
+                                    <button id="btnModalUpdate" type="submit"
                                         :disabled="!validarNumeroPagina() || !validarNombrePagina()"
                                         class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                         <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -349,7 +353,7 @@
     background-color: #32345a;
 }
 
-.buttons-data .changebtn{
+.buttons-data .changebtn {
     border: 3px solid #3F4280;
 }
 </style>
@@ -382,6 +386,17 @@ definePageMeta({
 /*En este hook se crean todas las funciones relacionadas al manejo del modal, se crean en este onMounted para que se
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
+    //Se valida si hay un token en el localStorage y si no te regresa al login
+    function validarToken() {
+        if (!localStorage.getItem('token')) {
+            navigateTo('/');
+        }else{
+            console.log(localStorage.getItem('token'))
+        }
+    }
+
+    validarToken();
+
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
@@ -412,6 +427,7 @@ onMounted(() => {
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
+            accionForm('crear');
             limpiarForm();
             modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
@@ -588,53 +604,56 @@ function submitForm() {
 
 //Función para crear una página
 async function crearPagina() {
-    try {
-        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-        const formData = {
-            nombre_pagina: form.value.nombre_pagina,
-            numero_pagina: form.value.numero_pagina,
-            descripcion_pagina: form.value.descripcion_pagina,
-            visibilidad_pagina: form.value.visibilidad_pagina,
-        };
+    if (validarNumeroPagina() && validarNombrePagina()) {
+        try {
+            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+            const formData = {
+                nombre_pagina: form.value.nombre_pagina,
+                numero_pagina: form.value.numero_pagina,
+                descripcion_pagina: form.value.descripcion_pagina,
+                visibilidad_pagina: form.value.visibilidad_pagina,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/paginas", formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/paginas", formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerPaginas();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerPaginas();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta con el mensaje de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Página creada exitosamente'
-        })
+            //Se lanza la alerta con el mensaje de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Página creada exitosamente'
+            })
 
-    } catch (error) {
-        console.log(error);
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            console.log(error);
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnaPagina(id) {
     try {
+        accionForm('actualizar');
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/paginas/' + id).then(res => {
             //Constante para el modal
@@ -701,48 +720,50 @@ async function leerUnaPagina(id) {
 }
 
 async function actualizarPagina() {
-    try {
-        //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_pagina;
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            nombre_pagina: form.value.nombre_pagina,
-            numero_pagina: form.value.numero_pagina,
-            descripcion_pagina: form.value.descripcion_pagina,
-            visibilidad_pagina: form.value.visibilidad_pagina,
-        };
+    if (validarNumeroPagina() && validarNombrePagina()) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_pagina;
+            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+            const formData = {
+                nombre_pagina: form.value.nombre_pagina,
+                numero_pagina: form.value.numero_pagina,
+                descripcion_pagina: form.value.descripcion_pagina,
+                visibilidad_pagina: form.value.visibilidad_pagina,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.put("/paginas/" + id, formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.put("/paginas/" + id, formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerPaginas();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerPaginas();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Página actualizada exitosamente'
-        })
+            //Se lanza la alerta de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Página actualizada exitosamente'
+            })
 
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 

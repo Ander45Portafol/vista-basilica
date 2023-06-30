@@ -32,8 +32,9 @@
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                    <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarMensajes en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar ...">
+                        placeholder="Buscar... (asunto/correo)" v-model="buscar.buscador" @keyup="buscarMensajes()">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -59,7 +60,7 @@
                         </svg>
                     </button>
                     <button
-                        class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:mx-8">
+                        class="w-12 h-10 flex items-center justify-center ml-4 mr-5 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:mx-8">
                         <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path d="M7 6h10M7 9h10M9 17h6" stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round"
@@ -69,45 +70,36 @@
                                 stroke="#1B1C30" stroke-width="2.5"></path>
                         </svg>
                     </button>
-                    <!-- BTN ADD  -->
-                    <button id="btnadd" type="button"
-                        class="w-20 h-10 flex items-center justify-center mx-4 font-bold rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:ml-0">
-                        <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" color="#FFFFFF">
-                            <path
-                                d="M8 12h4m4 0h-4m0 0V8m0 4v4M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                                stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>
-                    </button>
                 </div>
             </div>
 
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
             <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ mensajes.length }}<span
-                    class="text-gray-500 font-normal ml-2">registro
-                    encontrado!</span></p>
+                    class="text-gray-500 font-normal ml-2">registros
+                    encontrados!</span></p>
             <div id="sectionPage" v-for="mensaje in mensajes" :key="mensaje.id_mensaje">
                 <div class="contained-data flex-col">
                     <div
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                            <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                             <div
                                 class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                                 <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{
                                     mensaje.asunto_mensaje }}
                                 </p>
                                 <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
-                                    {{mensaje.nombre_contactante }} {{mensaje.apellido_contactante }}</p>
+                                    {{ mensaje.nombre_contactante }} {{ mensaje.apellido_contactante }}</p>
                                 <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
-                                    {{mensaje.correo_contactante }}
+                                    {{ mensaje.correo_contactante }}
                                 </p>
                             </div>
                         </div>
                         <!-- Boton para leer un mensaje -->
-                        <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                            <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4" @click="leerUnMensaje(mensaje.id_mensaje)" >
+                        <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
+                            v-if="mensaje.visibilidad_mensaje == 1">
+                            <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4"
+                                @click="leerUnMensaje(mensaje.id_mensaje)">
                                 <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -116,15 +108,33 @@
                                     </path>
                                 </svg>
                             </button>
-                            <!-- Boton para ocultar un registro -->
-                            <button @click="borrarMensaje(mensaje.id_mensaje)" 
-                                class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
+                            <button
+                                class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                                @click="borrarMensaje(mensaje.id_mensaje)">
                                 <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
                                         d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
                                         stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     </path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
+                            v-else>
+                            <button
+                                class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                                @click="recuperarMensaje(mensaje.id_contacto)">
+                                <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
+                                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path
+                                        d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
+                                        stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                    <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
+                                        stroke-linecap="round" stroke-linejoin="round"></path>
                                 </svg>
                             </button>
                         </div>
@@ -135,7 +145,7 @@
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
                     :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="mensaje = $event" />
+                    :data="data" @pagination-change-page="pagina = $event" />
             </div>
         </div>
     </div>
@@ -152,7 +162,7 @@
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
-                        <p class="text-base font-medium text-gray-400">Mensajes</p>
+                        <p class="text-base font-medium text-gray-400">Mensaje</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -166,50 +176,106 @@
                 </div>
                 <!-- Modal body -->
                 <div class="p-6 space-y-6 pb-10">
-                    <form action="" class="flex justify-evenly" @submit.prevent="submitForm()">
+                    <form action="" class="flex justify-evenly" id="formModal" @submit.prevent="submitForm()">
                         <div class="flex-col w-64">
                             <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
-                            <input type="hidden" name="id_mensaje" id="id_mensaje" v-model="form.id_mensaje" >
+                            <input type="hidden" id="id_mensaje" v-model="form.id_mensaje">
                             <div class="relative z-0">
-                                <input type="text" id="nombre_contactante" name="nombre_contactante" v-model="form.nombre_contactante"
+                                <input type="text" id="nombre_contactante" name="nombre_contactante"
+                                    @input="validarNombre()" v-model="form.nombre_contactante" maxlength="100" required
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
+                                    v-if="form.nombre_contactante">
+                                    {{
+                                        form.nombre_contactante.length
+                                    }} /100
+                                </span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>0 /100</span>
+                                <label for="nombre_contactante"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Persona</label>
+                                    - Persona<span class="text-sm ml-1"> *
+                                    </span></label>
                             </div>
-
+                            <div v-if="!validarNombre()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El nombre del contactante solo permite <span class="font-medium">
+                                        letras.</span>
+                                </div>
+                            </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="mensaje" name="mensaje" v-model="form.mensaje"
+                                <textarea id="mensaje" name="mensaje" v-model="form.mensaje" maxlength="500" required
+                                    class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-if="form.mensaje"> {{
+                                    form.mensaje.length }} /500</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /500</span>
+                                <label for="mensaje"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Mensaje<span
+                                        class="text-sm ml-1"> *
+                                    </span></label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="email" id="correo_contactante" name="correo_contactante" maxlength="150"
+                                    required v-model="form.correo_contactante"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Mensaje</label>
-                            </div>
-
-                            <div class="relative z-0 mt-6">
-                                <input type="email" id="correo_contactante" name="correo_contactante"  v-model="form.correo_contactante"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
+                                    v-if="form.correo_contactante">
+                                    {{
+                                        form.correo_contactante.length
+                                    }} /150
+                                </span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>0 /150</span>
+                                <label for="correo_contactante"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                    - Persona</label>
+                                    electrónico
+                                    - Persona<span class="text-sm ml-1"> *
+                                    </span></label>
                             </div>
-                            
                             <div class="relative z-0 mt-10">
-                                <input type="text" id="telefono_contactante" name="telefono_contactante"  v-model="form.telefono_contactante"
+                                <input type="text" id="telefono_contactante" name="telefono_contactante" maxlength="9"
+                                    @input="validarTelefono()" required v-model="form.telefono_contactante"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
-                                    - Persona</label>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
+                                    v-if="form.telefono_contactante">
+                                    {{
+                                        form.telefono_contactante.length
+                                    }} /9
+                                </span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>0 /9</span>
+                                <label for="telefono_contactante"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Teléfono
+                                    - Persona<span class="text-sm ml-1"> *
+                                    </span></label>
                             </div>
-                            
+                            <div v-if="!validarTelefono()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El número de teléfono ingresado no tiene un <span class="font-medium">
+                                        formato correcto.</span>
+                                </div>
+                            </div>
                             <div class="flex-col mt-6">
                                 <label for="" class="text-gray-200">Visibilidad - Pagina</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input type="checkbox" value="" class="sr-only peer" id="visibilidad_mensaje" name="visibilidad_mensaje" v-model="form.visibilidad_mensaje">
+                                        <input type="checkbox" value="" class="sr-only peer" id="visibilidad_mensaje"
+                                            name="visibilidad_mensaje" v-model="form.visibilidad_mensaje">
                                         <div
                                             class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                         </div>
@@ -220,61 +286,113 @@
                         </div>
                         <div class="flex-col w-64">
                             <div class="relative z-0">
-                                <input type="text" id="apellido_contactante" name="apellido_contactante"  v-model="form.apellido_contactante"
+                                <input type="text" id="apellido_contactante" name="apellido_contactante" maxlength="100"
+                                    @input="validarApellido()" required v-model="form.apellido_contactante"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
+                                    v-if="form.apellido_contactante">
+                                    {{
+                                        form.apellido_contactante.length
+                                    }} /100
+                                </span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>0 /100</span>
+                                <label for="apellido_contactante"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
-                                    - Persona</label>
+                                    - Persona<span class="text-sm ml-1"> *
+                                    </span></label>
                             </div>
-
+                            <div v-if="!validarApellido()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El apellido del contactante solo permite <span class="font-medium">
+                                        letras.</span>
+                                </div>
+                            </div>
                             <div class="relative z-0 mt-6">
                                 <input type="date" id="fecha_mensaje" name="fecha_mensaje" v-model="form.fecha_mensaje"
+                                    required
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" aaaaa" autocomplete="off" />
-                                <label for="username"
+                                <label for="fecha_mensaje"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
-                                    - Mensaje</label>
+                                    - Mensaje<span class="text-sm ml-1"> *
+                                    </span></label>
                             </div>
 
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="asunto_mensaje" name="asunto_mensaje" v-model="form.asunto_mensaje"
+                                    maxlength="150" required
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.asunto_mensaje">
+                                    {{
+                                        form.asunto_mensaje.length
+                                    }} /150
+                                </span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>0 /150</span>
+                                <label for="asunto_mensaje"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Asunto
-                                    - Mensaje</label>
+                                    - Mensaje<span class="text-sm ml-1"> *
+                                    </span></label>
                             </div>
 
                             <div class="pt-4 mt-2 flex-col">
-                                <label for="" class="absolute text-gray-200">Estado - Mensaje</label>
+                                <label for="" class="absolute text-gray-200 text-sm">Estado - Mensaje<span
+                                        class="text-sm ml-1"> *
+                                    </span></label>
                                 <select id="estado_mensaje" name="estado_mensaje" v-model="form.estado_mensaje"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="Atendido">Atendido</option>
-                                    <option value="En seguimiento">En seguimiento</option>
-                                    <option value="Pendiente">Pendiente</option>
+                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                    <option class="bg-gray-700" value="0">Seleccione una opción</option>
+                                    <option class="bg-gray-700" value="Atendido">Atendido</option>
+                                    <option class="bg-gray-700" value="En seguimiento">En seguimiento</option>
+                                    <option class="bg-gray-700" value="Pendiente">Pendiente</option>
                                 </select>
+                                <div v-if="form.estado_mensaje == 0"
+                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        Seleccione <span class="font-medium"> una opción. </span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="pt-4 mt-2 flex-col">
-                                <label for="" class="absolute text-gray-200">Contacto</label>
-                                <select id="id_contacto" name="id_contacto" v-model="form.id_contacto"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="1">1</option>
+                            <div class="pt-4 mt-4 flex-col">
+                                <label for="" class="absolute text-gray-200 text-sm">Contactos<span class="text-sm ml-1"> *
+                                    </span></label>
+                                <select id="underline_select" v-model="form.id_contacto"
+                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                    <option value="0" class="bg-gray-700 text-white"> Seleccione una opción </option>
+                                    <option class="bg-gray-700" v-for="contacto in contactos" :key="contacto.id_contacto"
+                                        :value="contacto.id_contacto">
+                                        {{ contacto.correo_contacto }}</option>
                                 </select>
+                                <div v-if="form.id_contacto == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                    role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        Seleccione <span class="font-medium"> una opción. </span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-buttons mt-24 flex justify-end items-end">
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" value="actualizar"  id="btnModalUpdate" type="submit" @click="accionForm('actualizar')">
-                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path
-                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                        <path
-                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                    </svg>
-                                </button>
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4" id="btnModalClear" @click="limpiarForm()"  > 
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4"
+                                    id="btnModalClear" @click="limpiarForm()" type="button">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
@@ -291,10 +409,20 @@
                                             stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </button>
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4"
+                                    value="actualizar" id="btnModalUpdate" type="submit"
+                                    :disabled="!validarNombre() || !validarApellido() || !validarTelefono() || form.estado_mensaje == 0 || form.id_contacto == 0">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                    </svg>
+                                </button>
                             </div>
-                            <pre>
-                                {{ form }}
-                            </pre>
                         </div>
                     </form>
                 </div>
@@ -344,6 +472,10 @@
 .modal-buttons button {
     background-color: #32345a;
 }
+
+.buttons-data .changebtn {
+    border: 3px solid #3F4280;
+}
 </style>
 
 
@@ -353,7 +485,7 @@
 //Importaciones de plugins y funciones necesarias para el funcionamiento del proyecto
 
 //Importacion para usar el hook de onMounted
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 //Importación del modal de flowbite
 import { Modal } from 'flowbite'
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
@@ -362,30 +494,27 @@ import axios from 'axios';
 import { TailwindPagination } from 'laravel-vue-pagination';
 //Importación de sweetalert
 import Swal from 'sweetalert2';
+//Importación de archivo de validaciones
+import validaciones from '../assets/validaciones.js';
 
-/*definePageMeta es un macro compilador (Se ejecuta mientras el programa se compila) para los componentes que se 
-encuentran en /pages, este permite establecer/transformar las propiedades de los componentes de nuxt*/
+
 definePageMeta({
-    //En este caso se establece que este componente pertenece al layout "principal" haciendo uso del definePageMeta
     layout: "principal",
-})
+});
 
 onMounted(() => {
-    //Constantes para manejar el modal
-    //Constante para el botón de agregar un registro
-    const buttonElement = document.getElementById('btnadd');
-    //Constante para el botón de eliminar un registro
-    const buttonUpdate = document.getElementsByClassName('editbtn');
+    function validarFechas() {
+        var res = validaciones.validarFecha(0, 1, 0);
+        document.getElementById('fecha_mensaje').min = res.min;
+        document.getElementById('fecha_mensaje').max = res.max;
+    }
+
+    validarFechas();
+
     //Constante para el modal
     const modalElement = document.getElementById('staticModal');
     //Constante para el botón de cerrar en el modal
     const closeButton = document.getElementById('closeModal');
-    //Constante para el titulo del modal
-    const modalText = document.getElementById('modalText');
-    //Constante para el boton de actualizar dentro del modal
-    const modalBtnUpdate = document.getElementById('btnModalUpdate');
-    //Constante para el boton de agregar dentro del modal
-    const modalBtnAdd = document.getElementById('btnModalAdd');
 
     /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
     aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
@@ -399,38 +528,166 @@ onMounted(() => {
         //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
         const modal = new Modal(modalElement, modalOptions);
 
-        /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
-        del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
-        buttonElement.addEventListener('click', function () {;
-            modalText.textContent = "Registrar";
-            // modalBtnUpdate.classList.add('hidden');
-            modal.show();
-        });
-
         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
         closeButton.addEventListener('click', function () {
             modal.hide();
             limpiarForm();
         });
     }
-})
+});
 
 //Operaciones SCRUD
+
+//Variable reactiva para llenar el select
+var contactos = ref(null);
+
+//Función para llenar el select
+async function llenarSelectContactos() {
+    try {
+        //Se realiza la petición axios
+        const { data: res } = await axios.get('contactos-select');
+        //Lo que devuelve la petición axios se le asigna a "contactos"
+        contactos.value = res;
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+llenarSelectContactos();
 
 /*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
 para almacenar la información que traiga el axios*/
 const data = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const mensaje = ref(useRoute().query.mensaje || 1);
+const pagina = ref(useRoute().query.pagina || 1);
+
+/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
+y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
+let mensajes = computed(() => data.value.data);
+
+/*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
+además muestra en la url la página actual*/
+watch(pagina, async () => {
+    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
+    if (buscar.value.buscador != "") {
+        //Se ejecuta el buscar secciones si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
+        buscarMensajes();
+    } else {
+        //Se ejecuta el leer secciones para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
+        leerMensajes();
+    }
+    //Se cambia la url para agregar en que pagina se encuentra el usuario
+    useRouter().push({ query: { pagina: pagina.value } })
+})
+
+/*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
+?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
+async function leerMensajes() {
+    try {
+        /*Se manda la petición axios para leer las secciones (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
+        además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
+        const { data: res } = await axios.get(`/mensajes?page=${pagina.value}`);
+        //Se asigna el valor de la respuesta de axios a la constante data
+        data.value = res;
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+
+}
+
+//Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
+await leerMensajes();
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
     buscador: "",
 })
 
-//Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
-await leerMensajes();
+//Función para limpiar el buscador
+function limpiarBuscador() {
+    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
+    pagina.value = 1;
+    //Se leen todos los registros
+    leerMensajes();
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
+}
+
+//Función para buscar registros dependiendo del valor del buscador
+async function buscarMensajes() {
+    try {
+        //Se evalua que el buscador no este vacio
+        if (buscar.value.buscador != "") {
+            // Realiza la petición axios para llamar a la ruta de búsqueda
+            const { data: res } = await axios.get(`/mensajes_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
+            // Actualiza los datos en la constante data
+            data.value = res;
+            // Actualiza la URL con el parámetro de página
+            useRouter().push({ query: { pagina: pagina.value } });
+        } else {
+            //Se regresa a la página 1 y se cargan todos los registros
+            pagina.value = 1;
+            leerMensajes();
+        }
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+//Funciones para manejo del modal
+
+//Toast del sweetalert
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+})
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
@@ -447,71 +704,6 @@ const form = ref({
     id_contacto: "",
 })
 
-/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
-y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let mensajes = computed(() => data.value.data);
-
-/*Se crea un watch (detecta cada que "contacto" cambia) y ejecuta un select a los registros de esa página,
-además muestra en la url la página actual*/
-watch(mensaje, async () => {
-    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
-    if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarMensajes();
-    } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerMensajes();
-    }
-    //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { mensaje: mensaje.value } })
-})
-
-/*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
-?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "contacto" se manda a llamar los registros especificos*/
-async function leerMensajes() {
-    try {
-        /*Se manda la petición axios para leer los contactos (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
-        además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/mensajes/?page=${mensaje.value}`);
-        //Se asigna el valor de la respuesta de axios a la constante data
-        data.value = res;
-        console.log(data.value)
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-//Función para buscar registros dependiendo del valor del buscador  este le fanta el /
-async function buscarMensajes() {
-    try {
-        //Se evalua que el buscador no este vacio
-        if (buscar.value.buscador != "") {
-            // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/mensajes/search?mensaje=${mensajes.value}&buscador=${buscar.value.buscador}`);
-            // Actualiza los datos en la constante data
-            data.value = res;
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { mensaje: mensaje.value } });
-        } else {
-            //Se regresa a la página 1 y se cargan todos los registros
-            contacto.value = 1;
-            leerMensajes();
-        }
-    } catch (error) {
-        console.error(error);
-    }
-}
-//Función para limpiar el buscador
-function limpiarBuscador() {
-    //Se coloca el valor del buscador a nulo
-    buscar.value.buscador = "";
-    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
-    contacto.value = 1;
-    //Se leen todos los registros
-    leerMensajes();
-}
-
-//Funciones para manejo del modal
 
 //Función para limpiar todos los campos del form
 function limpiarForm() {
@@ -524,25 +716,10 @@ function limpiarForm() {
     form.value.asunto_mensaje = "";
     form.value.mensaje = "";
     form.value.fecha_mensaje = "";
-    form.value.estado_mensaje = "";
+    form.value.estado_mensaje = 0;
     form.value.visibilidad_mensaje = false;
-    form.value.id_contacto = "";
+    form.value.id_contacto = 0;
 }
-
-
-
-//Toast del sweetalert
-const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
-})
 
 //Variable para validar que acción se quiere hacer cuando se hace un submit al form
 var formAccion = null;
@@ -552,19 +729,18 @@ function accionForm(accion) {
     formAccion = accion;
 }
 
-
 //Función para crear/actualizar un registro cuando se ejecuta el submit del form
 function submitForm() {
     if (formAccion == "actualizar") {
         actualizarMensaje();
-    } 
+    }
 }
 
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnMensaje(id) {
-
     try {
+        accionForm('actualizar');
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/mensajes/' + id).then(res => {
             //Constante para el modal
@@ -574,15 +750,18 @@ async function leerUnMensaje(id) {
                 backdrop: 'static',
                 backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
             };
-               //Instanciamos el boton para cerrar el modal
+            //Instanciamos el boton para cerrar el modal
             const closeButton = document.getElementById('closeModal');
             //Constante para el titulo del modal
             const modalText = document.getElementById('modalText');
             //Constante para el boton de actualizar dentro del modal
             const modalBtnUpdate = document.getElementById('btnModalUpdate');
+            //Instanciamos el modal
             const modal = new Modal(modalElement, modalOptions);
             //Le modificamos el texto del header al modal
             modalText.textContent = 'Editar';
+            //Colocamos visibilidad al botón de actualizar en el modal
+            modalBtnUpdate.classList.remove('hidden');
             //Abrimos el modal
             modal.show();
             //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
@@ -605,52 +784,86 @@ async function leerUnMensaje(id) {
                 estado_mensaje: res.data.estado_mensaje,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
                 visibilidad_mensaje: res.data.visibilidad_mensaje ? true : false,
-                id_contacto: res.data.id_contacto
+                id_contacto: res.data.id_contacto,
             }
         })
     } catch (error) {
-        console.log(error);
-    }
-}
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
 
-
-async function actualizarMensaje() {
-    try {
-        //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_mensaje;
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            nombre_contactante: form.value.nombre_contactante,
-            apellido_contactante: form.value.apellido_contactante,
-            telefono_contactante: form.value.telefono_contactante,
-            correo_contactante: form.value.correo_contactante,
-            asunto_mensaje: form.value.asunto_mensaje,
-            mensaje: form.value.mensaje,
-            fecha_mensaje: form.value.fecha_mensaje,
-            estado_mensaje: form.value.estado_mensaje,
-            visibilidad_mensaje: form.value.visibilidad_mensaje,
-            id_contacto: form.value.id_contacto,
-        };
-
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.put("/mensajes/" + id, formData);
-
-        //Se cargan todas las páginas y se cierra el modal
-        leerMensajes();
+        //Se cierra el modal
         document.getElementById('closeModal').click();
 
-        //Se lanza la alerta de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Mensaje actualizada exitosamente'
-        })
-
-    } catch (error) {
-        console.log(error);
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
     }
 }
 
-//Función para cambiar la visibilidad de una página
+//Función para actualizar un registro
+async function actualizarMensaje() {
+    if (validarNombre() && validarApellido() && validarTelefono() && form.estado_mensaje != 0 && form.id_contacto != 0) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_mensaje;
+            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+            const formData = {
+                nombre_contactante: form.value.nombre_contactante,
+                apellido_contactante: form.value.apellido_contactante,
+                telefono_contactante: form.value.telefono_contactante,
+                correo_contactante: form.value.correo_contactante,
+                asunto_mensaje: form.value.asunto_mensaje,
+                mensaje: form.value.mensaje,
+                fecha_mensaje: form.value.fecha_mensaje,
+                estado_mensaje: form.value.estado_mensaje,
+                visibilidad_mensaje: form.value.visibilidad_mensaje,
+                id_contacto: form.value.id_contacto,
+            };
+
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.put("/mensajes/" + id, formData);
+
+            //Se cargan todas las páginas y se cierra el modal
+            leerMensajes();
+            document.getElementById('closeModal').click();
+
+            //Se lanza la alerta de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Mensaje actualizado exitosamente'
+            })
+
+        } catch (error) {
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
+
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
+    }
+}
+
+//Función para cambiar la visibilidad de un registro para ocultarlo
 async function borrarMensaje(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
@@ -669,9 +882,9 @@ async function borrarMensaje(id) {
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.put('/mensajes_del/' + id);
+                await axios.delete('/mensajes/' + id);
 
-                //Se cargan todas las páginas
+                //Se cargan todos los registros
                 leerMensajes();
 
                 //Se lanza la alerta de éxito
@@ -680,13 +893,95 @@ async function borrarMensaje(id) {
                     title: 'Mensaje ocultado exitosamente'
                 })
             } catch (error) {
-                console.log(error);
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
             }
         }
     });
 }
 
-;
+//Función para cambiar la visibilidad de un registro para recuperarlo
+async function recuperarMensaje(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea recuperar el registro?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete('/mensajes/' + id);
 
+                //Se cargan todos los registros
+                leerMensajes();
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Mensajes recuperado exitosamente'
+                })
+            } catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    });
+}
+
+//Validaciones
+
+function validarNombre() {
+    var res = validaciones.validarSoloLetras(form.value.nombre_contactante);
+    return res;
+}
+
+function validarTelefono() {
+    var res = validaciones.validarNumeroTelefono(form.value.telefono_contactante);
+    return res;
+}
+
+function validarApellido() {
+    var res = validaciones.validarSoloLetras(form.value.apellido_contactante);
+    return res;
+}
 
 </script>

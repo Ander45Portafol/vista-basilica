@@ -4,13 +4,19 @@ definePageMeta({
 });
 </script>
 <template>
+    <!-- Componente principal -->
     <div class="principal mt-6">
+        <!-- Encabezado principal -->
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
+                <!-- Enlace a la página "Páginas" -->
                 <nuxtLink to="/pagina" class="ml-4">Páginas</nuxtLink>
+                <!-- Enlace a la página "Secciones" -->
                 <NuxtLink to="/seccion" class="ml-4">Secciones</NuxtLink>
+                <!-- Enlace a la página actual "Componentes" (activo) -->
                 <NuxtLink to="" class="active ml-4">Componentes</NuxtLink>
             </div>
+            <!-- Botones de acción -->
             <div class="endtop flex justify-between w-20">
                 <button>
                     <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -35,6 +41,7 @@ definePageMeta({
         </div>
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
+                <!-- Search Form -->
                 <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar ...">
@@ -47,6 +54,7 @@ definePageMeta({
                         </button>
                     </div>
                 </form>
+                <!-- Buttons -->
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
@@ -83,14 +91,17 @@ definePageMeta({
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
+            <!-- Haciendo uso de la variable se puede mostrar el total de registros -->
             <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">1<span
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
             <div class="contained-data flex-col">
+                <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
                 <div
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                         <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+                        <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">Slider</p>
@@ -99,6 +110,7 @@ definePageMeta({
                             </p>
                         </div>
                     </div>
+                    <!-- Buttons -->
                     <div
                         class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                         <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
