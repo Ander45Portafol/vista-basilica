@@ -83,8 +83,8 @@
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ misas.length }}<span
-                    class="text-gray-500 font-normal ml-2">registro
-                    encontrado!</span></p>
+                    class="text-gray-500 font-normal ml-2">registros
+                    encontrados!</span></p>
             <div class="contained-data flex-col" v-for="misa in misas" :key="misa.id_misa">
                 <div
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
@@ -186,7 +186,7 @@
                                     placeholder=" " autocomplete="off" />
                                 <label for="enlace-misa"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Enlace
-                                    - Misa</label>
+                                    - Misa<span class="text-sm ml-1"> * </span></label>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="date" id="fecha_misa" name="fecha_misa" v-model="form.fecha_misa" required
@@ -194,11 +194,11 @@
                                     placeholder=" " autocomplete="off" />
                                 <label for="fecha-misa"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
-                                    - Misa</label>
+                                    - Misa<span class="text-sm ml-1"> * </span></label>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="titulo_misa" name="titulo_misa" v-model="form.titulo_misa" required
-                                    maxlength="150"
+                                    @input="validarTituloMisa()" maxlength="150"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.titulo_misa">
@@ -207,7 +207,20 @@
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /150</span>
                                 <label for="titulo-misa"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
-                                    - Misa</label>
+                                    - Misa<span class="text-sm ml-1"> * </span></label>
+                            </div>
+                            <div v-if="!validarTituloMisa()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El titulo de la misa solo permite caracteres <span class="font-medium">
+                                        alfanuméricos y algunos especiales (- / |).</span>
+                                </div>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <textarea id="descripcion_misa" name="descripcion_misa" v-model="form.descripcion_misa"
@@ -256,7 +269,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalAdd" type="submit"
+                                <button id="btnModalAdd" type="submit" :disabled="!validarTituloMisa()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -269,7 +282,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalUpdate" type="submit"
+                                <button id="btnModalUpdate" type="submit" :disabled="!validarTituloMisa()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -353,7 +366,7 @@ import { TailwindPagination } from 'laravel-vue-pagination';
 //Importación de sweetalert
 import Swal from 'sweetalert2';
 //Importación de archivo de validaciones
-// import validaciones from '../assets/validaciones.js';
+import validaciones from '../assets/validaciones.js';
 
 /*definePageMeta es un macro compilador (Se ejecuta mientras el programa se compila) para los componentes que se 
 encuentran en /pages, este permite establecer/transformar las propiedades de los componentes de nuxt*/
@@ -366,6 +379,14 @@ definePageMeta({
 /*En este hook se crean todas las funciones relacionadas al manejo del modal, se crean en este onMounted para que se
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
+    function validarFechas() {
+        var res = validaciones.validarFecha(0, 0, 5);
+        document.getElementById('fecha_misa').min = res.min;
+        document.getElementById('fecha_misa').max = res.max;
+    }
+
+    validarFechas();
+
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
@@ -469,20 +490,33 @@ async function leerMisas() {
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
     } catch (error) {
-        //Se extrae el mensaje de error
+        console.log(error);
         const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 
 }
@@ -504,20 +538,33 @@ async function buscarMisas() {
             leerMisas();
         }
     } catch (error) {
-        //Se extrae el mensaje de error
+        console.log(error);
         const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -576,48 +623,59 @@ function submitForm() {
 
 //Función para crear una página
 async function crearMisa() {
-    try {
-        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-        const formData = {
-            enlace_misa: form.value.enlace_misa,
-            fecha_misa: form.value.fecha_misa,
-            titulo_misa: form.value.titulo_misa,
-            descripcion_misa: form.value.descripcion_misa,
-            visibilidad_misa: form.value.visibilidad_misa,
-        };
+    if (validarTituloMisa()) {
+        try {
+            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+            const formData = {
+                enlace_misa: form.value.enlace_misa,
+                fecha_misa: form.value.fecha_misa,
+                titulo_misa: form.value.titulo_misa,
+                descripcion_misa: form.value.descripcion_misa,
+                visibilidad_misa: form.value.visibilidad_misa,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/misas", formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/misas", formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerMisas();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerMisas();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta con el mensaje de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Misa creada exitosamente'
-        })
+            //Se lanza la alerta con el mensaje de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Misa creada exitosamente'
+            })
 
-    } catch (error) {
-        console.log(error);
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            console.log(error);
+            const mensajeError = error.response.data.message;
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: mensajeError,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
 
@@ -671,70 +729,92 @@ async function leerUnaMisa(id) {
             }
         })
     } catch (error) {
-        //Se extrae el mensaje de error
+        console.log(error);
         const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
 async function actualizarMisa() {
-    try {
-        //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_misa;
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            enlace_misa: form.value.enlace_misa,
-            fecha_misa: form.value.fecha_misa,
-            titulo_misa: form.value.titulo_misa,
-            descripcion_misa: form.value.descripcion_misa,
-            visibilidad_misa: form.value.visibilidad_misa,
-        };
+    if (validarTituloMisa()) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_misa;
+            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+            const formData = {
+                enlace_misa: form.value.enlace_misa,
+                fecha_misa: form.value.fecha_misa,
+                titulo_misa: form.value.titulo_misa,
+                descripcion_misa: form.value.descripcion_misa,
+                visibilidad_misa: form.value.visibilidad_misa,
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.put("/misas/" + id, formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.put("/misas/" + id, formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerMisas();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerMisas();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Misa actualizada exitosamente'
-        })
+            //Se lanza la alerta de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Misa actualizada exitosamente'
+            })
 
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            console.log(error);
+            const mensajeError = error.response.data.message;
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: mensajeError,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
 
@@ -768,23 +848,33 @@ async function borrarMisa(id) {
                     title: 'Misa ocultada exitosamente'
                 })
             } catch (error) {
-                //Se extrae el mensaje de error
+                console.log(error);
                 const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const sqlState = validaciones.extraerSqlState(mensajeError);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const res = validaciones.mensajeSqlState(sqlState);
 
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
+                    //Se cierra el modal
+                    document.getElementById('closeModal').click();
 
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensajeError,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     });
@@ -820,28 +910,43 @@ async function recuperarMisa(id) {
                     title: 'Misa recuperada exitosamente'
                 })
             } catch (error) {
-                //Se extrae el mensaje de error
+                console.log(error);
                 const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const sqlState = validaciones.extraerSqlState(mensajeError);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const res = validaciones.mensajeSqlState(sqlState);
 
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
+                    //Se cierra el modal
+                    document.getElementById('closeModal').click();
 
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensajeError,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     });
 }
 
 //Validaciones
+
+function validarTituloMisa() {
+    var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_misa);
+    return res;
+}
 
 </script>

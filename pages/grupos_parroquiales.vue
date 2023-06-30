@@ -35,7 +35,8 @@
                 <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarGruposParroquiales()">
+                        placeholder="Buscar... (nombre grupo/nombre encargado)" v-model="buscar.buscador"
+                        @keyup="buscarGruposParroquiales()">
                     <div class="flex justify-end items-center">
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
                                 stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -87,8 +88,8 @@
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ grupos_parroquiales.length }}<span
-                    class="text-gray-500 font-normal ml-2">registro
-                    encontrado!</span></p>
+                    class="text-gray-500 font-normal ml-2">registros
+                    encontrados!</span></p>
             <div class="contained-data flex-col" v-for="grupos_parroquiale in grupos_parroquiales"
                 :key="grupos_parroquiale.id_grupo_parroquial">
                 <div
@@ -173,7 +174,7 @@
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modalText">
                         </p>
-                        <p class="text-base font-medium text-gray-400">Grupos - Parroquiales</p>
+                        <p class="text-base font-medium text-gray-400">Grupo - Parroquial</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -193,71 +194,165 @@
                             <input type="hidden" id="id_grupo_parroquial" v-model="form.id_grupo_parroquial">
                             <div class="relative z-0">
                                 <input type="text" id="nombre_grupo" name="nombre_grupo" v-model="form.nombre_grupo"
+                                    @input="validarNombreGrupo()" required maxlength="100"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.nombre_grupo">
+                                    {{ form.nombre_grupo.length }} /100</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
+                                <label for="nombre_grupo"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Grupo</label>
+                                    - Grupo<span class="text-sm ml-1"> * </span></label>
+                            </div>
+                            <div v-if="!validarNombreGrupo()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El nombre del grupo solo permite caracteres <span class="font-medium">
+                                        alfanuméricos y algunos especiales (- / |).</span>
+                                </div>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="nombre_encargado" name="nombre_encargado"
-                                    v-model="form.nombre_encargado"
+                                <input type="text" id="nombre_encargado" name="nombre_encargado" maxlength="100"
+                                    @input="validarNombreEncargado()" v-model="form.nombre_encargado"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
+                                    v-if="form.nombre_encargado">
+                                    {{ form.nombre_encargado.length }} /100</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                     - Encargado</label>
                             </div>
+                            <div v-if="!validarNombreEncargado()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El nombre del encargado solo permite <span class="font-medium">
+                                        letras.</span>
+                                </div>
+                            </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="correo_encargado" name="correo_encargado"
+                                <input type="email" id="correo_encargado" name="correo_encargado" required maxlength="100"
                                     v-model="form.correo_encargado"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
+                                    v-if="form.correo_encargado">
+                                    {{ form.correo_encargado.length }} /100</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                    - Encargado</label>
+                                    - Encargado<span class="text-sm ml-1"> * </span></label>
                             </div>
-                            <select id="underline_select" v-model="form.id_categoria_grupo_parroquial"
-                                class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                <option value="0" class="bg-gray-700"> Seleccione una opción </option>
-                                <!-- Se usa el v-for para llenar la información del select, haciendo uso de "paginas" -->
-                                <option v-for="categoria_grupo in categoria_grupos"
-                                    :key="categoria_grupo.id_categoria_grupo_parroquial"
-                                    :value="categoria_grupo.id_categoria_grupo_parroquial" class="text-left bg-gray-700">
-                                    {{ categoria_grupo.nombre_categoria_grupo }}
-                                </option>
-                            </select>
+                            <div class="pt-4 mt-2 flex-col">
+                                <label for="" class="text-sm absolute text-gray-200">Categoría - Grupo<span
+                                        class="text-sm ml-1"> * </span></label>
+                                <select id="underline_select" v-model="form.id_categoria_grupo_parroquial"
+                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                    <option value="0" class="bg-gray-700"> Seleccione una opción </option>
+                                    <!-- Se usa el v-for para llenar la información del select, haciendo uso de "paginas" -->
+                                    <option v-for="categoria_grupo in categoria_grupos"
+                                        :key="categoria_grupo.id_categoria_grupo_parroquial"
+                                        :value="categoria_grupo.id_categoria_grupo_parroquial"
+                                        class="text-left bg-gray-700">
+                                        {{ categoria_grupo.nombre_categoria_grupo }}
+                                    </option>
+                                </select>
+                                <div v-if="form.id_categoria_grupo_parroquial == 0"
+                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        Seleccionar una <span class="font-medium">
+                                            opción.</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="flex-col w-64">
                             <div class="relative z-0">
-                                <input type="text" id="descripcion_grupo" name="descripcion_grupo"
+                                <textarea id="descripcion_grupo" name="descripcion_grupo" required maxlength="1000"
                                     v-model="form.descripcion_grupo"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
-                                    - Grupo</label>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
+                                    v-if="form.descripcion_grupo">
+                                    {{ form.descripcion_grupo.length }} /1000</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /1000</span>
+                                <label for="descripcion_grupo"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
+                                    - Grupo<span class="text-sm ml-1"> * </span></label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="apellido_encargado" name="apellido_encargado"
-                                    v-model="form.apellido_encargado"
+                                <input type="text" id="apellido_encargado" name="apellido_encargado" maxlength="100"
+                                    @input="validarApellidoEncargado()" v-model="form.apellido_encargado"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
+                                    v-if="form.apellido_encargado">
+                                    {{ form.apellido_encargado.length }} /100</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
+                                <label for="apellido_encargado"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
                                     - Encargado</label>
                             </div>
+                            <div v-if="!validarApellidoEncargado()"
+                                class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El apellido del encargado solo permite <span class="font-medium">
+                                        letras.</span>
+                                </div>
+                            </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="telefono_encargado" name="telefono_encargado"
-                                    v-model="form.telefono_encargado"
+                                <input type="text" id="telefono_encargado" name="telefono_encargado" required maxlength="9"
+                                    @input="validarTelefono()" v-model="form.telefono_encargado"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
+                                    v-if="form.telefono_encargado">
+                                    {{ form.telefono_encargado.length }} /9</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /9</span>
+                                <label for="telefono_encargado"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
-                                    - Encargado</label>
+                                    - Encargado<span class="text-sm ml-1"> * </span></label>
                             </div>
-                            <div class="flex-col mt-10">
-                                <label for="" class="text-gray-200">Visibilidad - Grupo</label>
+                            <div v-if="!validarTelefono()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El número de telefono ingresado <span class="font-medium">
+                                        no tiene un formato correcto.</span>
+                                </div>
+                            </div>
+                            <div class="flex-col mt-6">
+                                <label for="" class="text-sm text-gray-200">Visibilidad - Grupo</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
                                         <input type="checkbox" value="" class="sr-only peer" id="visibilidad_grupo"
@@ -295,7 +390,8 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalAdd" type="submit" value="crear" @click="accionForm('crear')"
+                                <button id="btnModalAdd" type="submit"
+                                    :disabled="!validarNombreGrupo() || !validarNombreEncargado() || !validarApellidoEncargado() || form.id_categoria_grupo_parroquial == 0 || !validarTelefono()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -308,7 +404,8 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
+                                <button id="btnModalUpdate" type="submit"
+                                    :disabled="!validarNombreGrupo() || !validarNombreEncargado() || !validarApellidoEncargado() || form.id_categoria_grupo_parroquial == 0 || !validarTelefono()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -431,6 +528,7 @@ onMounted(() => {
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
             limpiarForm();
+            accionForm('crear');
             modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
             modalBtnUpdate.classList.add('hidden');
@@ -458,20 +556,33 @@ async function llenarSelectCategoriaGrupos() {
         //Lo que devuelve la petición axios se le asigna a "paginas"
         categoria_grupos.value = res;
     } catch (error) {
-        //Se extrae el mensaje de error
+        console.log(error);
         const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -513,20 +624,33 @@ async function leerGruposParroquiales() {
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
     } catch (error) {
-        //Se extrae el mensaje de error
+        console.log(error);
         const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 
 }
@@ -566,20 +690,33 @@ async function buscarGruposParroquiales() {
             leerSecciones();
         }
     } catch (error) {
-        //Se extrae el mensaje de error
+        console.log(error);
         const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -646,52 +783,63 @@ function submitForm() {
 
 //Función para crear una sección
 async function crearGrupoParroquial() {
-    try {
-        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-        const formData = {
-            nombre_grupo: form.value.nombre_grupo,
-            nombre_encargado: form.value.nombre_encargado,
-            apellido_encargado: form.value.apellido_encargado,
-            correo_encargado: form.value.correo_encargado,
-            telefono_encargado: form.value.telefono_encargado,
-            descripcion_grupo: form.value.descripcion_grupo,
-            visibilidad_grupo: form.value.visibilidad_grupo,
-            id_categoria_grupo_parroquial: form.value.id_categoria_grupo_parroquial,
-            id_categoria_grupo_parroquia: 1
-        };
+    if (validarNombreGrupo() && validarNombreEncargado() && validarApellidoEncargado() && form.id_categoria_grupo_parroquial != 0 && validarTelefono()) {
+        try {
+            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+            const formData = {
+                nombre_grupo: form.value.nombre_grupo,
+                nombre_encargado: form.value.nombre_encargado,
+                apellido_encargado: form.value.apellido_encargado,
+                correo_encargado: form.value.correo_encargado,
+                telefono_encargado: form.value.telefono_encargado,
+                descripcion_grupo: form.value.descripcion_grupo,
+                visibilidad_grupo: form.value.visibilidad_grupo,
+                id_categoria_grupo_parroquial: form.value.id_categoria_grupo_parroquial,
+                id_categoria_grupo_parroquia: 1
+            };
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/grupos_parroquia", formData);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/grupos_parroquia", formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerGruposParroquiales();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerGruposParroquiales();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta con el mensaje de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Grupo Parroquial creado exitosamente'
-        })
+            //Se lanza la alerta con el mensaje de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Grupo Parroquial creado exitosamente'
+            })
 
-    } catch (error) {
-        console.log(error);
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            console.log(error);
+            const mensajeError = error.response.data.message;
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: mensajeError,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
 
@@ -699,6 +847,7 @@ async function crearGrupoParroquial() {
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnGrupoParroquial(id) {
     try {
+        accionForm('actualizar');
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/grupos_parroquia/' + id).then(res => {
             //Constante para el modal
@@ -748,74 +897,96 @@ async function leerUnGrupoParroquial(id) {
             }
         })
     } catch (error) {
-        //Se extrae el mensaje de error
+        console.log(error);
         const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
 //Función para actualizar un registro
 async function actualizarGrupoParroquial() {
-    try {
-        //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_grupo_parroquial;
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            nombre_grupo: form.value.nombre_grupo,
-            nombre_encargado: form.value.nombre_encargado,
-            apellido_encargado: form.value.apellido_encargado,
-            correo_encargado: form.value.correo_encargado,
-            telefono_encargado: form.value.telefono_encargado,
-            descripcion_grupo: form.value.descripcion_grupo,
-            visibilidad_grupo: form.value.visibilidad_grupo,
-            id_categoria_grupo_parroquial: form.value.id_categoria_grupo_parroquial,
-            id_configuracion_parroquia: 1
-        };
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.put("/grupos_parroquia/" + id, formData);
+    if (validarNombreGrupo() && validarNombreEncargado() && validarApellidoEncargado() && form.id_categoria_grupo_parroquial != 0 && validarTelefono()) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_grupo_parroquial;
+            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+            const formData = {
+                nombre_grupo: form.value.nombre_grupo,
+                nombre_encargado: form.value.nombre_encargado,
+                apellido_encargado: form.value.apellido_encargado,
+                correo_encargado: form.value.correo_encargado,
+                telefono_encargado: form.value.telefono_encargado,
+                descripcion_grupo: form.value.descripcion_grupo,
+                visibilidad_grupo: form.value.visibilidad_grupo,
+                id_categoria_grupo_parroquial: form.value.id_categoria_grupo_parroquial,
+                id_configuracion_parroquia: 1
+            };
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.put("/grupos_parroquia/" + id, formData);
 
-        //Se cargan todas las páginas y se cierra el modal
-        leerGruposParroquiales();
-        document.getElementById('closeModal').click();
+            //Se cargan todas las páginas y se cierra el modal
+            leerGruposParroquiales();
+            document.getElementById('closeModal').click();
 
-        //Se lanza la alerta de éxito
-        Toast.fire({
-            icon: 'success',
-            title: 'Grupo parroquial actualizado exitosamente'
-        })
+            //Se lanza la alerta de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Grupo parroquial actualizado exitosamente'
+            })
 
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        } catch (error) {
+            console.log(error);
+            const mensajeError = error.response.data.message;
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: mensajeError,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
 
@@ -849,23 +1020,33 @@ async function borrarGrupoParroquial(id) {
                     title: 'Grupo parroquial ocultado exitosamente'
                 })
             } catch (error) {
-                //Se extrae el mensaje de error
+                console.log(error);
                 const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const sqlState = validaciones.extraerSqlState(mensajeError);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const res = validaciones.mensajeSqlState(sqlState);
 
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
+                    //Se cierra el modal
+                    document.getElementById('closeModal').click();
 
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensajeError,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     });
@@ -901,23 +1082,33 @@ async function recuperarUnGrupoParroquial(id) {
                     title: 'Grupo Parroquial recuperada exitosamente'
                 })
             } catch (error) {
-                //Se extrae el mensaje de error
+                console.log(error);
                 const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const sqlState = validaciones.extraerSqlState(mensajeError);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const res = validaciones.mensajeSqlState(sqlState);
 
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
+                    //Se cierra el modal
+                    document.getElementById('closeModal').click();
 
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensajeError,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     });
@@ -925,5 +1116,24 @@ async function recuperarUnGrupoParroquial(id) {
 
 //Validaciones 
 
+function validarNombreGrupo() {
+    var res = validaciones.validarSoloLetras(form.value.nombre_grupo);
+    return res;
+}
+
+function validarNombreEncargado() {
+    var res = validaciones.validarSoloLetras(form.value.nombre_encargado);
+    return res;
+}
+
+function validarApellidoEncargado() {
+    var res = validaciones.validarSoloLetras(form.value.apellido_encargado);
+    return res;
+}
+
+function validarTelefono() {
+    var res = validaciones.validarNumeroTelefono(form.value.telefono_encargado);
+    return res;
+}
 
 </script>
