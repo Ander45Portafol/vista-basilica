@@ -617,8 +617,8 @@ async function crearPagina() {
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.post("/paginas", formData);
 
-            //Se cargan todas las páginas y se cierra el modal
-            leerPaginas();
+            buscarPaginas();
+
             document.getElementById('closeModal').click();
 
             //Se lanza la alerta con el mensaje de éxito
@@ -735,8 +735,8 @@ async function actualizarPagina() {
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.put("/paginas/" + id, formData);
 
-            //Se cargan todas las páginas y se cierra el modal
-            leerPaginas();
+            buscarPaginas();
+
             document.getElementById('closeModal').click();
 
             //Se lanza la alerta de éxito
@@ -788,14 +788,13 @@ async function borrarPagina(id) {
                 //Se realiza la petición axios
                 await axios.delete('/paginas/' + id);
 
-                //Se cargan todas las páginas
-                leerPaginas();
-
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
                     title: 'Página ocultada exitosamente'
                 })
+
+                buscarPaginas();
             } catch (error) {
                 //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
@@ -840,14 +839,13 @@ async function recuperarPagina(id) {
                 //Se realiza la petición axios
                 await axios.delete('/paginas/' + id);
 
-                //Se cargan todas las páginas
-                leerPaginas();
-
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
                     title: 'Página recuperada exitosamente'
                 })
+
+                buscarPaginas();
             } catch (error) {
                 //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
