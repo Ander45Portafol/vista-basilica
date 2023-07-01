@@ -617,6 +617,8 @@ async function crearPagina() {
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.post("/paginas", formData);
 
+            buscarPaginas();
+
             document.getElementById('closeModal').click();
 
             //Se lanza la alerta con el mensaje de éxito
@@ -732,6 +734,8 @@ async function actualizarPagina() {
 
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.put("/paginas/" + id, formData);
+
+            buscarPaginas();
 
             document.getElementById('closeModal').click();
 
