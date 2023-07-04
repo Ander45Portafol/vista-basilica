@@ -147,12 +147,12 @@ async function login() {
 
       //Se hace la petición axios y se guarda el token que retorna
       const token = ((await axios.post("/login", formData)));
-      const captoken = token.data.token;
-      const capusuario = token.data.usuario.id_usuario;
+      const captoken=token.data.token;
+      const capusuario=token.data.usuario.id_usuario;
       //Si retorno un token se redirige a la página principal
       if (token != null) {
         localStorage.setItem('token', captoken);
-        localStorage.setItem('usuario', capusuario);
+        localStorage.setItem('usuario',capusuario);
         console.log(localStorage.getItem('token'));
         console.log(localStorage.getItem('usuario'));
         navigateTo('/principal');
@@ -164,41 +164,12 @@ async function login() {
         });
       }
     } catch (error) {
-      console.log(error);
       //Se muestra un sweetalert con el error
-      if (error.response.data.error == 'Credenciales inválidas') {
-        Toast.fire({
-          icon: 'error',
-          title: error.response.data.error
-        });
-      } else {
-        const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-          //Se extrae el sqlstate (identificador de acciones SQL)
-          const sqlState = validaciones.extraerSqlState(mensajeError);
-          //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-          const res = validaciones.mensajeSqlState(sqlState);
-
-          //Se cierra el modal
-          document.getElementById('closeModal').click();
-
-          //Se muestra un sweetalert con el mensaje
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-          });
-        } else {
-          //Se muestra un sweetalert con el mensaje
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: mensajeError,
-            confirmButtonColor: '#3F4280'
-          });
-        }
-      }
+      console.log(error);
+      Toast.fire({
+        icon: 'error',
+        title: error.response.data.error
+      });
     }
   }
 }

@@ -447,32 +447,6 @@ async function leerDonaciones() {
         data.value = res;
     } catch (error) {
         console.log(error);
-        const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        } else {
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: mensajeError,
-                confirmButtonColor: '#3F4280'
-            });
-        }
     }
 }
 
@@ -511,33 +485,20 @@ async function buscarDonaciones() {
             leerDonaciones();
         }
     } catch (error) {
-        console.log(error);
+        //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
 
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        } else {
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: mensajeError,
-                confirmButtonColor: '#3F4280'
-            });
-        }
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
     }
 }
 
@@ -592,33 +553,20 @@ async function llenarSelectDonantes() {
         //Lo que devuelve la petición axios se le asigna a "paginas"
         donantes.value = res;
     } catch (error) {
-        console.log(error);
+        //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
 
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        } else {
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: mensajeError,
-                confirmButtonColor: '#3F4280'
-            });
-        }
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
     }
 }
 
@@ -635,33 +583,20 @@ async function llenarSelectProyectos() {
         //Lo que devuelve la petición axios se le asigna a "paginas"
         proyectos.value = res;
     } catch (error) {
-        console.log(error);
+        //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
 
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        } else {
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: mensajeError,
-                confirmButtonColor: '#3F4280'
-            });
-        }
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
     }
 }
 
@@ -706,33 +641,23 @@ async function leerUnaDonacion(id) {
             }
         })
     } catch (error) {
-        console.log(error);
+        //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
 
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
 
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        } else {
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: mensajeError,
-                confirmButtonColor: '#3F4280'
-            });
-        }
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
     }
 }
 
@@ -768,33 +693,23 @@ async function actualizarDonacion() {
             })
 
         } catch (error) {
-            console.log(error);
+            //Se extrae el mensaje de error
             const mensajeError = error.response.data.message;
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
 
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
 
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: mensajeError,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
         }
     }
 }
@@ -829,33 +744,23 @@ async function borrarDonacion(id) {
                     title: 'Donación ocultada exitosamente'
                 })
             } catch (error) {
-                console.log(error);
+                //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
-                if (!error.response.data.errors) {
-                    //Se extrae el sqlstate (identificador de acciones SQL)
-                    const sqlState = validaciones.extraerSqlState(mensajeError);
-                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                    const res = validaciones.mensajeSqlState(sqlState);
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
 
-                    //Se cierra el modal
-                    document.getElementById('closeModal').click();
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
 
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: res,
-                        confirmButtonColor: '#3F4280'
-                    });
-                } else {
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: mensajeError,
-                        confirmButtonColor: '#3F4280'
-                    });
-                }
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
             }
         }
     });
@@ -891,33 +796,23 @@ async function recuperarDonacion(id) {
                     title: 'Donación recuperada exitosamente'
                 })
             } catch (error) {
-                console.log(error);
+                //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
-                if (!error.response.data.errors) {
-                    //Se extrae el sqlstate (identificador de acciones SQL)
-                    const sqlState = validaciones.extraerSqlState(mensajeError);
-                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                    const res = validaciones.mensajeSqlState(sqlState);
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
 
-                    //Se cierra el modal
-                    document.getElementById('closeModal').click();
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
 
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: res,
-                        confirmButtonColor: '#3F4280'
-                    });
-                } else {
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: mensajeError,
-                        confirmButtonColor: '#3F4280'
-                    });
-                }
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
             }
         }
     });

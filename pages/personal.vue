@@ -327,40 +327,19 @@
     background-color: #32345a;
 }
 </style>
-
 <script setup>
-//El setup se usa para manejar una sintaxis mas concisa del codigo y poder usar la reactividad de vue 3
-
-//Importaciones de plugins y funciones necesarias para el funcionamiento del proyecto
-
-//Importacion para usar el hook de onMounted
-import { onMounted, ref } from 'vue'
-//Importación del modal de flowbite
 import { Modal } from 'flowbite'
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from 'axios';
-//Importación del plugin de paginación de registros
 import { TailwindPagination } from 'laravel-vue-pagination';
+import { onMounted, ref } from 'vue'
 //Importación de sweetalert
 import Swal from 'sweetalert2';
-//Importación de archivo de validaciones
-import validaciones from '../assets/validaciones.js';
-
-
 definePageMeta({
     layout: "principal",
-});
+})
 
 onMounted(() => {
-    //Se valida si hay un token en el localStorage y si no te regresa al login
-    function validarToken() {
-        if (!localStorage.getItem('token')) {
-            navigateTo('/');
-        }
-    }
-
-    validarToken();
-
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
@@ -391,7 +370,6 @@ onMounted(() => {
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
-            accionForm('crear')
             limpiarForm();
             modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
@@ -431,71 +409,60 @@ async function llenarSelectTipo_Personal() {
         Swal.fire({
             icon: 'error',
             title: "Error",
-
-//Variable reactiva para llenar el select
-const tipopersonal = ref(null);
-
-//Función para llenar el select
-
-async function llenarSelectTipoPersonal() {
-    try {
-        //Se realiza la petición axios
-        const { data: res } = await axios.get('/t_personal-select');
-        //Lo que devuelve la petición axios se le asigna a "paginas"
-        tipopersonal.value = res;
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
             text: res,
             confirmButtonColor: '#3F4280'
         });
     }
 }
 
-llenarSelectTipoPersonal();
+// Llamamos la funcion para llenar el select automaticamente
+llenarSelectTipo_Personal();
 
 /*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
 para almacenar la información que traiga el axios*/
 const data = ref(null);
+var tipo_personal = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const pagina = ref(useRoute().query.pagina || 1);
+const personal = ref(useRoute().query.personal || 1);
+
+//Se crea una variable reactiva para manejar la información del modal
+const form = ref({
+    id_personal: "",
+    nombre_personal: "",
+    apellido_personal: "",
+    telefono_personal: "",
+    correo_personal: "",
+    visibilidad_personal: false,
+    id_tipo_personal: ""
+})
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let personal = computed(() => data.value.data);
+let personales = computed(() => data.value.data);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
-watch(pagina, async () => {
+watch(personal, async () => {
     //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
     if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar secciones si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarPersonal();
+        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
+        //buscarAnuncios();
     } else {
-        //Se ejecuta el leer secciones para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerPersonal();
+        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
+        leerPersonales();
     }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { pagina: pagina.value } })
+    useRouter().push({ query: { personal: personal.value } })
 })
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
-async function leerPersonal() {
+async function leerPersonales() {
     try {
-        /*Se manda la petición axios para leer las secciones (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
-        además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/personal?page=${pagina.value}`);
+        /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
+        además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
+        const { data: res } = await axios.get(`/personal?page=${personal.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
     } catch (error) {
@@ -506,235 +473,6 @@ async function leerPersonal() {
         //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
         const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
-    }
-
-}
-
-//Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
-await leerPersonal();
-
-//Se crea una variable reactiva para el buscador
-const buscar = ref({
-    buscador: "",
-})
-
-//Función para limpiar el buscador
-function limpiarBuscador() {
-    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
-    pagina.value = 1;
-    //Se leen todos los registros
-    leerPersonal();
-    //Se coloca el valor del buscador a nulo
-    buscar.value.buscador = "";
-}
-
-//Función para buscar registros dependiendo del valor del buscador
-async function buscarPersonal() {
-    try {
-        //Se evalua que el buscador no este vacio
-        if (buscar.value.buscador != "") {
-            // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/personal_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
-            // Actualiza los datos en la constante data
-            data.value = res;
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: pagina.value } });
-        } else {
-            //Se regresa a la página 1 y se cargan todos los registros
-            pagina.value = 1;
-            leerPersonal();
-        }
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
-    }
-}
-
-//Funciones para manejo del modal
-
-//Toast del sweetalert
-const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
-})
-
-//Se crea una variable reactiva para manejar la información del modal
-const form = ref({
-    id_personal: "",
-    nombre_personal: "",
-    apellido_personal: "",
-    telefono_personal: "",
-    correo_personal: "",
-    visibilidad_personal: false,
-    id_tipo_personal: 0,
-})
-
-//Función para limpiar todos los campos del form
-function limpiarForm() {
-    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_seccion = "";
-    form.value.titulo_seccion = "";
-    form.value.subtitulo_seccion = "";
-    form.value.subtitulo_seccion = "";
-    form.value.descripcion_seccion = "";
-    form.value.visibilidad_seccion = false;
-    form.value.editable = false;
-}
-
-
-//Variable para validar que acción se quiere hacer cuando se hace un submit al form
-var formAccion = null;
-
-//Función para evaluar que acción se va a hacer al hacer submit en el form
-function accionForm(accion) {
-    formAccion = accion;
-}
-
-//Función para crear/actualizar un registro cuando se ejecuta el submit del form
-function submitForm() {
-    if (formAccion == "crear") {
-        crearSeccion();
-    } else {
-        actualizarSeccion();
-    }
-}
-
-//Función para crear una sección
-async function crearSeccion() {
-    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
-        try {
-            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-            const formData = {
-                titulo_seccion: form.value.titulo_seccion,
-                subtitulo_seccion: form.value.subtitulo_seccion,
-                descripcion_seccion: form.value.descripcion_seccion,
-                id_pagina: form.value.id_pagina,
-                visibilidad_seccion: form.value.visibilidad_seccion,
-                editable: form.value.editable,
-            };
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/secciones", formData);
-
-            //Se cargan todas las páginas y se cierra el modal
-            leerSecciones();
-            document.getElementById('closeModal').click();
-
-            //Se lanza la alerta con el mensaje de éxito
-            Toast.fire({
-                icon: 'success',
-                title: 'Sección creada exitosamente'
-            })
-
-        } catch (error) {
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        }
-    }
-}
-
-
-//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
-async function leerUnaSeccion(id) {
-    try {
-        accionForm('actualizar');
-        //Se hace la petición axios y se evalua la respuesta
-        await axios.get('/secciones/' + id).then(res => {
-            //Constante para el modal
-            const modalElement = document.getElementById('staticModal');
-            //Constante que contiene las caracteristicas del modal
-            const modalOptions = {
-                backdrop: 'static',
-                backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-            };
-            //Instanciamos el boton para cerrar el modal
-            const closeButton = document.getElementById('closeModal');
-            //Constante para el titulo del modal
-            const modalText = document.getElementById('modalText');
-            //Constante para el boton de agregar dentro del modal
-            const modalBtnAdd = document.getElementById('btnModalAdd');
-            //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById('btnModalUpdate');
-            //Instanciamos el modal
-            const modal = new Modal(modalElement, modalOptions);
-            //Le modificamos el texto del header al modal
-            modalText.textContent = 'Editar';
-            //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove('hidden');
-            //Ocultamos el botón de agregar en el modal
-            modalBtnAdd.classList.add('hidden');
-            //Abrimos el modal
-            modal.show();
-            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-            closeButton.addEventListener('click', function () {
-                //Ocultamos el modal
-                modal.hide();
-                //Limpiamos el modal
-                limpiarForm();
-            })
-            //Llenamos los inputs del modal con su respectiva informacion
-            form.value = {
-                id_seccion: res.data.id_seccion,
-                titulo_seccion: res.data.titulo_seccion,
-                subtitulo_seccion: res.data.subtitulo_seccion,
-                descripcion_seccion: res.data.descripcion_seccion,
-                id_pagina: res.data.id_pagina,
-                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                editable: res.data.editable ? true : false,
-                visibilidad_seccion: res.data.visibilidad_seccion ? true : false
-            }
-        })
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
             icon: 'error',
@@ -960,59 +698,6 @@ const actualizarSeccion = async () => {
 }
 
 const borrarPersonal = async (id) => {
-//Función para actualizar un registro
-async function actualizarSeccion() {
-    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
-        try {
-            //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_seccion;
-            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-            const formData = {
-                titulo_seccion: form.value.titulo_seccion,
-                subtitulo_seccion: form.value.subtitulo_seccion,
-                descripcion_seccion: form.value.descripcion_seccion,
-                id_pagina: form.value.id_pagina,
-                visibilidad_seccion: form.value.visibilidad_seccion,
-                editable: form.value.editable,
-            };
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.put("/secciones/" + id, formData);
-
-            //Se cargan todas las páginas y se cierra el modal
-            leerSecciones();
-            document.getElementById('closeModal').click();
-
-            //Se lanza la alerta de éxito
-            Toast.fire({
-                icon: 'success',
-                title: 'Sección actualizada exitosamente'
-            })
-
-        } catch (error) {
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        }
-    }
-}
-
-//Función para cambiar la visibilidad de un registro para ocultarlo
-async function borrarSeccion(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: 'Confirmación',
@@ -1065,47 +750,6 @@ async function borrarSeccion(id) {
 
 //Funcion para cambiar el estado de visibilidad de un registro para recuperarlo
 const recuperarPersonal = async (id) => {
-
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete('/secciones/' + id);
-
-                //Se cargan todos los registros
-                leerSecciones();
-
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Sección ocultada exitosamente'
-                })
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
-    });
-}
-
-//Función para cambiar la visibilidad de un registro para recuperarlo
-async function recuperarSeccion(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: 'Confirmación',
@@ -1157,57 +801,4 @@ async function recuperarSeccion(id) {
 }
 
 // Validaciones
-
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete('/secciones/' + id);
-
-                //Se cargan todos los registros
-                leerSecciones();
-
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Página recuperada exitosamente'
-                })
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
-    });
-}
-
-//Validaciones 
-
-//Función para validar que el titulo de la sección solo lleve letras y números
-function validarTituloSeccion() {
-    var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_seccion);
-    return res;
-}
-
-//Función para validar que el subtitulo de la sección solo lleve letras y números
-function validarSubtituloSeccion() {
-    var res = validaciones.validarSoloLetrasYNumeros(form.value.subtitulo_seccion);
-    return res;
-}
-
 </script>
