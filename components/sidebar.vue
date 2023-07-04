@@ -1,7 +1,7 @@
 <template>
     <aside class="flex justify-center items-center fixed top-0 left-0 z-40 w-16 h-screen">
-      <div class="flex-col">
-        <ul class="space-y-2 font-medium">
+      <div class="flex-col items-center">
+        <ul class="space-y-2 mr-6">
           <li>
             <NuxtLink class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700" to="/principal">
               <svg width="28px" height="28px" viewBox="0 0 24 24"
@@ -66,7 +66,11 @@
             </NuxtLink>
         </li>
         <li class="item">
+<<<<<<< Updated upstream
             <NuxtLink to="/evento" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
+=======
+            <NuxtLink to="/calendario" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
+>>>>>>> Stashed changes
                 <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M15 4V2m0 2v2m0-2h-4.5M3 10v9a2 2 0 002 2h14a2 2 0 002-2v-9H3zM3 10V6a2 2 0 012-2h2M7 2v4M21 10V6a2 2 0 00-2-2h-.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             </NuxtLink>
         </li>
