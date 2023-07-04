@@ -153,22 +153,34 @@
                 </div>
                 <!-- Cuerpo de  -->
                 <div class="p-6 space-y-6 pb-10">
-                    <form action="" class="flex justify-evenly">
+                    <form action="" id="formModal" @submit.prevent="submitForm()" class="flex justify-evenly">
                         <div class="flex-col w-64">
+                            <input type="hidden" id="id_personal" v-model="form.id_personal">
                             <div class="relative z-0">
-                                <input type="text" id="username" name="username"
+                                <input type="text" v-model="form.nombre_personal" id="nombre_personal"
+                                    name="nombre_personal"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <label for="nombre_personal"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                     - Personal</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
+                                <input type="number" v-model="form.telefono_personal" id="telefono_personal"
+                                    name="telefono_personal"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <label for="telefono_personal"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
+                                    - Personal</label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="text" v-model="form.correo_personal" id="correo_personal"
+                                    name="correo_personal"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="correo_personal"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
                                     - Personal</label>
                             </div>
                             <div class="pt-4 mt-2 flex-col">
@@ -183,63 +195,90 @@
                         </div>
                         <div class="flex-col w-64">
                             <div class="relative z-0">
-                                <input type="text" id="username" name="username"
+                                <input type="text" v-model="form.apellido_personal" id="apellido_personal"
+                                    name="apellido_personal"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <label for="apellido_personal"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
                                     - Personal</label>
                             </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                    - Personal</label>
+                        </div>
+                        <div class="pt-4 mt-2 flex-col">
+                            <label for="" class="absolute text-gray-200">Tipo - Personal</label>
+                            <select id="underline_select"
+                                class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                <option value="">Seleccione una opcion</option>
+                                <!-- Se usa v-for para manejar la variable tipo_personal y llenar el select -->
+                                <option v-for="tipo_personal in tipos_personales" :key="tipo_personal.id_tipo_personal"
+                                    :value="tipo_personal.id_tipo_personal" class="text-left bg-gray-700">
+                                    {{ tipo_personal.tipo_personal }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="relative z-0 mt-6">
+                            <input type="text" id="username" name="username"
+                                class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                placeholder=" " autocomplete="off" />
+                            <label for="username"
+                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
+                                - Personal</label>
+                        </div>
+                        <div class="flex-col mt-8">
+                            <label for="" class="text-gray-200">Visibilidad - Personal</label>
+                            <div class="flex justify-start mt-2">
+                                <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                    <input type="checkbox" value="" class="sr-only peer"
+                                        v-model="form.visibilidad_tipo_personal">
+                                    <div
+                                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                    </div>
+                                </label>
                             </div>
-                            <div class="flex-col mt-8">
-                                <label for="" class="text-gray-200">Visibilidad - Personal</label>
-                                <div class="flex justify-start mt-2">
-                                    <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input type="checkbox" value="" class="sr-only peer"
-                                            v-model="form.visibilidad_tipo_personal">
-                                        <div
-                                            class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                        </div>
-                                    </label>
-                                </div>
+                        </div>
+                        <div class="flex-col mt-6">
+                            <label for="" class="text-gray-200">Visibilidad - Personal</label>
+                            <div class="flex justify-start mt-2">
+                                <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                    <input type="checkbox" value="false" v-model="form.visibilidad_personal"
+                                        class="sr-only peer" />
+                                    <div
+                                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                    </div>
+                                </label>
                             </div>
-                            <div class="modal-buttons mt-24 flex justify-end items-end">
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center">
-                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path
-                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                        <path
-                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                    </svg>
-                                </button>
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
-                                    <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
-                                            stroke-width="2" stroke-linecap="round"></path>
-                                        <path
-                                            d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
-                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path
-                                            d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
-                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                </button>
-                            </div>
+                        </div>
+                        <div class="modal-buttons mt-24 flex justify-end items-end">
+                            <button id="btnModalAdd" type="sumbit" value="crear" @click="accionForm('crear')"
+                                class="h-10 w-10 rounded-lg flex justify-center items-center">
+                                <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path
+                                        d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                        stroke="#23B7A0" stroke-width="2"></path>
+                                    <path
+                                        d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                        stroke="#23B7A0" stroke-width="2"></path>
+                                </svg>
+                            </button>
+                            <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
+                                class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
+                                <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
+                                        stroke-width="2" stroke-linecap="round"></path>
+                                    <path
+                                        d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
+                                        stroke="#23B7A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                    <path
+                                        d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
+                                        stroke="#23B7A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                    <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -369,6 +408,29 @@ onMounted(() => {
 });
 
 //Operaciones SCRUD
+
+// Variable reactiva para llenar el select
+const tipos_personales = ref(null);
+
+//Funcion para llenar el select de tipos_personal
+async function llenarSelectTipo_Personal() {
+    try {
+        // Se hacen las peticiones con axios
+        const { data: res } = await axios.get('/t_personal-select');
+        // Se asignan los valores devueltos a tipo_personal
+        tipos_personales.value = res;
+    } catch (error) {
+        // Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        // Se extrae el sqlstate (Identificador de acciones sql)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        // Se llama la funcion de mensajeSqlState para mostrar un mensaje de error relacionado a sqlState
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        // Se muestra un sweetalert con el mensaje correspondiente
+        Swal.fire({
+            icon: 'error',
+            title: "Error",
 
 //Variable reactiva para llenar el select
 const tipopersonal = ref(null);
@@ -673,6 +735,171 @@ async function leerUnaSeccion(id) {
 
         //Se cierra el modal
         document.getElementById('closeModal').click();
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+//Funcion para limpiar el buscador
+function limpiarBuscador() {
+    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
+    personal.value = 1;
+    //Se leen todos los registros
+    leerPersonales();
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
+}
+
+async function llenarTipoPersonal() {
+    const { data: res } = await axios.get('t_personal-select');
+    tipo_personal.value = res;
+    console.log(tipo_personal.value)
+}
+
+//Toast del sweetalert
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+})
+
+//Función para evaluar que acción se va a hacer al hacer submit en el form
+function accionForm(accion) {
+    formAccion = accion;
+}
+
+//Variable para validar que acción se quiere hacer cuando se hace un submit al form
+var formAccion = null;
+
+//Función para crear/actualizar un registro cuando se ejecuta el submit del form
+function submitForm() {
+    if (formAccion == 'crear') {
+        crearPersonal();
+    } else {
+        actualizarPersonal();
+    }
+}
+
+//Función para limpiar todos los campos del form
+function limpiarForm() {
+    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
+
+}
+
+//Funcion para crear un Personal
+async function crearPersonal() {
+    try {
+        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        const formData = {
+            nombre_personal: form.value.nombre_personal,
+            apellido_personal: form.value.apellido_personal,
+            telefono_personal: form.value.telefono_personal,
+            correo_personal: form.value.correo_personal,
+            visibilidad_personal: form.value.visibilidad_personal,
+            id_tipo_personal: form.value.id_tipo_personal,
+        }
+
+        //Se realiza la peticion de axios hacia la base
+        await axios.post('/personal/', formData);
+        //Cargamos todos los personales para recargar la tabla
+        leerPersonales();
+        document.getElementById('closemodal').click();
+        //Llamamos el mensaje de exito
+        Toast.fire({
+            icon: 'success',
+            title: 'Personal ha sido creado correctamente'
+        })
+
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Cerramos el modal
+        document.getElementById('closemodal').click();
+
+        //Se muestra un sweetalert con el mensaje sin exito
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+async function leerUnPersonal(id) {
+    try {
+        //Se hace la peticion axios y se evalua la respuesta
+        await axios.get('/personal/' + id)
+            .then(res => {
+                //constante para el modal
+                const modalElement = document.getElementById('staticModal');
+                //Constante que contiene las caracteristicas del modal
+                const modalOptions = {
+                    backdrop: 'static',
+                    backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+                };
+                //Instanciamos el boton para cerrar el modal
+                const closeButton = document.getElementById('closeModal');
+                //Constante para el titulo del modal
+                const modalText = document.getElementById('modalText');
+                //Constante para el boton de agregar dentro del modal
+                const modalBtnAdd = document.getElementById('btnModalAdd');
+                //Constante para el boton de actualizar dentro del modal
+                const modalBtnUpdate = document.getElementById('btnModalUpdate');
+                //Instanciamos el modal
+                const modal = new Modal(modalElement, modalOptions);
+                //Le modificamos el texto del header al modal
+                modalText.textContent = 'Editar';
+                //Colocamos visibilidad al botón de actualizar en el modal
+                modalBtnUpdate.classList.remove('hidden');
+                //Ocultamos el botón de agregar en el modal
+                modalBtnAdd.classList.add('hidden');
+                //Abrimos el modal
+                modal.show();
+                //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
+                closeButton.addEventListener('click', function () {
+                    //Ocultamos el modal
+                    modal.hide();
+                    //Limpiamos el modal
+                    limpiarForm();
+                })
+                //Llenamos los inputs del modal con su respectiv info
+                form.value = {
+                    id_personal: res.data.id_personal,
+                    nombre_personal: res.data.nombre_personal,
+                    apellido_personal: res.data.apellido_personal,
+                    telefono_personal: res.data.telefono_personal,
+                    correo_personal: res.data.correo_personal,
+                    visibilidad_personal: res.data.visibilidad_personal ? true : false,
+                    id_tipo_personal: res.data.id_tipo_personal,
+                }
+            });
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
@@ -684,6 +911,55 @@ async function leerUnaSeccion(id) {
     }
 }
 
+//Funcion para actualizar el personal
+const actualizarSeccion = async () => {
+    try {
+        //Se establece una variable de id con el valor que tiene guardado la variable form
+        var id = form.value.id_personal;
+        //Se crea otra variable para guardar el valor de los campos de contiene el form
+        const formData = {
+            nombre_personal: form.value.nombre_personal,
+            apellido_personal: form.value.apellido_personal,
+            telefono_personal: form.value.telefono_personal,
+            correo_personal: form.value.correo_personal,
+            visibilidad_personal: form.value.visibilidad_personal,
+            id_tipo_personal: form.value.id_tipo_personal,
+        }
+
+        //Se hace la peticion axios con la ruta y el id respectivo
+        await axios.put(`/personal/${id}`, formData);
+
+        //Se cargan nuevamente las paginas para mostrar las actualizaciones y cerramos el modal
+        leerPersonales();
+        document.getElementById('closeModal').click();
+
+        //Se lanza la alerta de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Sección actualizada exitosamente'
+        })
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+const borrarPersonal = async (id) => {
 //Función para actualizar un registro
 async function actualizarSeccion() {
     if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
@@ -749,6 +1025,47 @@ async function borrarSeccion(id) {
         confirmButtonText: 'Confirmar',
         cancelButtonText: 'Cancelar'
         //Se evalua la respuesta de la alerta
+    })
+        .then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    //Se hace la peticion axios
+                    await apiAxios.delete(`/personal/${id}`);
+
+                    //Se cargan los registros
+                    leerPersonales();
+
+                    //Se lanza la alerta de éxito
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Personal ocultado exitosamente'
+                    })
+                } catch (error) {
+                    //Se extrae el mensaje de error
+                    const mensajeError = error.response.data.message;
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const sqlState = validaciones.extraerSqlState(mensajeError);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const res = validaciones.mensajeSqlState(sqlState);
+
+                    //Se cierra el modal
+                    document.getElementById('closeModal').click();
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        })
+}
+
+//Funcion para cambiar el estado de visibilidad de un registro para recuperarlo
+const recuperarPersonal = async (id) => {
+
     }).then(async (result) => {
         //Si el usuario selecciono "Confirmar"
         if (result.isConfirmed) {
@@ -801,6 +1118,46 @@ async function recuperarSeccion(id) {
         confirmButtonText: 'Confirmar',
         cancelButtonText: 'Cancelar'
         //Se evalua la respuesta de la alerta
+    })
+        .then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    //Se hace la peticion axios
+                    await apiAxios.delete(`/personal/${id}`);
+
+                    //Se cargan los registros
+                    leerPersonales();
+
+                    //Se lanza la alerta de éxito
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Personal recuperado exitosamente'
+                    })
+                } catch (error) {
+                    //Se extrae el mensaje de error
+                    const mensajeError = error.response.data.message;
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const sqlState = validaciones.extraerSqlState(mensajeError);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const res = validaciones.mensajeSqlState(sqlState);
+
+                    //Se cierra el modal
+                    document.getElementById('closeModal').click();
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        })
+}
+
+// Validaciones
+
     }).then(async (result) => {
         //Si el usuario selecciono "Confirmar"
         if (result.isConfirmed) {
