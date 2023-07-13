@@ -2,12 +2,12 @@
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <nuxtLink to="/pagina" class="ml-4">Páginas</nuxtLink>
-                <NuxtLink to="" class="active ml-4">Secciones</NuxtLink>
-                <NuxtLink to="/componente" class="ml-4">Componentes</NuxtLink>
+                <nuxtLink to="/calendario" class="ml-4">Calendario</nuxtLink>
+                <NuxtLink to="/zona" class="ml-4">Zonas</NuxtLink>
+                <NuxtLink to="/evento" class=" active ml-4">Eventos</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">
-                <NuxtLink to="/perfil">
+                <button>
                     <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
@@ -16,7 +16,7 @@
                             d="M19.622 10.395l-1.097-2.65L20 6l-2-2-1.735 1.483-2.707-1.113L12.935 2h-1.954l-.632 2.401-2.645 1.115L6 4 4 6l1.453 1.789-1.08 2.657L2 11v2l2.401.655L5.516 16.3 4 18l2 2 1.791-1.46 2.606 1.072L11 22h2l.604-2.387 2.651-1.098C16.697 18.831 18 20 18 20l2-2-1.484-1.75 1.098-2.652 2.386-.62V11l-2.378-.605z"
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
-                </NuxtLink>
+                </button>
                 <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
                     data-drawer-placement="right" aria-controls="drawer-right-example">
                     <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -33,7 +33,7 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarSecciones en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (título/subtítulo)" v-model="buscar.buscador" @keyup="buscarSecciones()">
+                        placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarSecciones()">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -82,37 +82,37 @@
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Según la longitud de "secciones" se coloca el número de registros -->
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ secciones.length }}<span
+            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ eventos.length }}<span
                     class="text-gray-500 font-normal ml-2">registros
                     encontrados!</span></p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-            <div class="contained-data flex-col" v-for="seccione in secciones" :key="seccione.id_seccion">
+            <div class="contained-data flex-col" v-for="evento in eventos" :key="evento.id_evento">
                 <div
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{
-                                seccione.titulo_seccion }}
+                                evento.nombre_evento }}
                             </p>
-                            <p v-if="seccione.subtitulo_seccion"
+                            <p v-if="evento.fecha_evento"
                                 class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">{{
-                                    seccione.subtitulo_seccion }}</p>
-                            <p v-else class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">Esta sección no
-                                tiene un subtitulo</p>
-                            <p v-if="seccione.descripcion_seccion"
+                                    evento.fecha_evento }}</p>
+                            <p v-else class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">Este evento no
+                                tiene fecha</p>
+                            <p v-if="evento.nombre_consultor"
                                 class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{
-                                    seccione.descripcion_seccion }}
+                                    `${evento.nombre_consultor} ${evento.apellido_consultor}` }}
                             </p>
-                            <p v-else class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Esta sección no
-                                tiene una descripción</p>
+                            <p v-else class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Este evento no
+                                tiene un consultor</p>
                         </div>
                     </div>
                     <div
                         class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                         <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
-                            id="btnedit" @click="leerUnaSeccion(seccione.id_seccion)"
-                            v-if="seccione.visibilidad_seccion == 1">
+                            id="btnedit" @click="leerUnEvento(evento.id_evento)"
+                            v-if="evento.visiblidad_evento == 1">
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -123,7 +123,7 @@
                         </button>
                         <button
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                            @click="borrarSeccion(seccione.id_seccion)" v-if="seccione.visibilidad_seccion == 1">
+                            @click="borrarEvento(evento.id_evento)" v-if="evento.visiblidad_evento == 1">
                             <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -132,7 +132,7 @@
                                 </path>
                             </svg>
                         </button>
-                        <button @click="recuperarSeccion(seccione.id_seccion)"
+                        <button @click="recuperarEvento(evento.id_evento)"
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                             v-else>
                             <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
@@ -173,7 +173,7 @@
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
                         <p class="text-base font-medium text-gray-400">
-                            Sección
+                            Evento
                         </p>
                     </div>
                     <button type="button" id="closeModal"
@@ -192,19 +192,16 @@
                     <form id="formModal" @submit.prevent="submitForm()" class="flex justify-evenly">
                         <div class="flex-col w-64">
                             <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
-                            <input type="hidden" id="id_seccion" v-model="form.id_seccion">
+                            <input type="hidden" id="id_evento" v-model="form.id_evento">
                             <div class="relative z-0">
-                                <input type="text" v-model="form.titulo_seccion" @input="validarTituloSeccion()"
-                                    maxlength="100" id="titulo_seccion" name="titulo_seccion"
+                                <input type="text" v-model="form.nombre_evento"
+                                    id="nombre_evento" name="nombre_evento"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" required />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> {{
-                                    form.titulo_seccion.length
-                                }} /100</span>
-                                <label for="titulo_seccion"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Titulo
-                                    - Seccion<span class="text-sm ml-1"> * </span></label>
-                                <!-- Se coloca un if que evalua si la función de validar es false, así se muestra la alerta solo cuando es false -->
+                                <label for="nombre_evento"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
+                                    - Evento<span class="text-sm ml-1"> * </span></label>
+                                <!-- Se coloca un if que evalua si la función de validar es false, así se muestra la alerta solo cuando es false
                                 <div v-if="!validarTituloSeccion()"
                                     class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
                                     <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
@@ -215,24 +212,19 @@
                                     </svg>
                                     <div>
                                         El título de la sección solo permite caracteres <span class="font-medium">
-                                            alfanuméricos y algunos especiales (- / |).</span>
+                                            alfanuméricos y algunos especiales (- / |)</span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" v-model="form.subtitulo_seccion" id="subtitulo_descripcion"
-                                    maxlength="100" name="subtitulo_descripcion"
+                                <input type="text" v-model="form.descripcion_evento" id="descripcion_evento"
+                                    name="descripcion_evento"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
-                                    v-if="form.subtitulo_seccion"> {{
-                                        form.subtitulo_seccion.length
-                                    }} /100</span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /250</span>
-                                <label for="subtitulo_descripcion"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtitulo
-                                    - Seccion</label>
-                                <!-- Se coloca un if que evalua si la función de validar es false, así se muestra la alerta solo cuando es false -->
+                                <label for="descripcion_evento"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
+                                    - Evento</label>
+                                <!-- Se coloca un if que evalua si la función de validar es false, así se muestra la alerta solo cuando es false
                                 <div v-if="!validarSubtituloSeccion()"
                                     class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
                                     <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
@@ -243,35 +235,95 @@
                                     </svg>
                                     <div>
                                         El subtitulo de la sección solo permite caracteres <span class="font-medium">
-                                            alfanuméricos y algunos especiales (- / |).</span>
+                                            alfanuméricos y algunos especiales (- / |)</span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="relative z-0 mt-6">
-                                <textarea type="text" v-model="form.descripcion_seccion" id="descripcion_seccion"
-                                    maxlength="250" name="descripcion_seccion"
-                                    class="block py-2.5 min-h-[3rem] h-[3rem] max-h-[9rem] px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                <input type="date" v-model="form.fecha_evento" id="fecha_evento"
+                                    name="fecha_evento"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
-                                    v-if="form.descripcion_seccion"> {{
-                                        form.descripcion_seccion.length }} /250</span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /250</span>
-                                <label for="descripcion_seccion"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
-                                    - Seccion</label>
+                                <label for="fecha_evento"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
+                                    - Evento</label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="time" v-model="form.hora_inicial_evento" id="hora_inicial_evento"
+                                    name="hora_inicial_evento"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="hora_inicial_evento"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Hora
+                                    - Inicial</label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="time" v-model="form.hora_final_evento" id="hora_final_evento"
+                                    name="hora_final_evento"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="hora_final_evento"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Hora
+                                    - Final</label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="text" v-model="form.nombre_consultor" id="nombre_consultor"
+                                    name="nombre_consultor"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="nombre_consultor"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
+                                    - Consultor</label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="text" v-model="form.apellido_consultor" id="apellido_consultor"
+                                    name="apellido_consultor"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="apellido_consultor"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
+                                    - Consultor</label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="number" v-model="form.telefono_consultor" id="telefono_consultor"
+                                    name="telefono_consultor"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="telefono_consultor"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
+                                    - Consultor</label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="text" v-model="form.modalidad_evento" id="modalidad_evento"
+                                    name="modalidad_evento"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="modalidad_evento"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Modalidad - Evento
+                                    </label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="text" v-model="form.estado_evento" id="estado_evento"
+                                    name="estado_evento"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="estado_evento"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Estado
+                                    - Evento</label>
                             </div>
                             <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="absolute text-gray-200">Pagina - Asignada<span class="text-sm ml-1"> *
+                                <label for="" class="absolute text-gray-200">Personal<span class="text-sm ml-1"> *
                                     </span></label>
-                                <select id="underline_select" v-model="form.id_pagina"
+                                <select id="underline_select" v-model="form.id_personal"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                     <option value="0" class="bg-gray-700"> Seleccione una opción </option>
-                                    <!-- Se usa el v-for para llenar la información del select, haciendo uso de "paginas" -->
-                                    <option v-for="pagina in paginas" :key="pagina.id_pagina" :value="pagina.id_pagina"
+                                    <!-- Se usa el v-for para llenar la información del select, haciendo uso de "eventos" -->
+                                    <option v-for="personal in personales" :key="personal.id_personal" :value="personal.id_personal"
                                         class="text-left bg-gray-700">
-                                        #{{ pagina.numero_pagina }} || {{ pagina.nombre_pagina }}
+                                        {{ `${personal.nombre_personal} ${personal.apellido_personal}` }}
                                     </option>
                                 </select>
+                                <!-- Validacion para el select
                                 <div v-if="form.id_pagina == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
                                     role="alert">
                                     <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
@@ -281,32 +333,35 @@
                                             clip-rule="evenodd"></path>
                                     </svg>
                                     <div>
-                                        Seleccione <span class="font-medium"> una opción. </span>
+                                        Seleccione <span class="font-medium"> una opción </span>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
-                            <div class="flex-col mt-6">
-                                <label for="" class="text-gray-200">Visibilidad - Seccion</label>
-                                <div class="flex justify-start mt-2">
-                                    <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input type="checkbox" value="false" v-model="form.visibilidad_seccion"
-                                            class="sr-only peer" />
-                                        <div
-                                            class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="flex-col mt-2">
-                                <label for="" class="text-gray-200">Seccion - Editable</label>
-                                <div class="flex justify-start mt-2">
-                                    <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input type="checkbox" value="false" v-model="form.editable" class="sr-only peer" />
-                                        <div
-                                            class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                        </div>
-                                    </label>
-                                </div>
+                            <div class="pt-4 mt-4 flex-col">
+                                <label for="" class="absolute text-gray-200">Zonas<span class="text-sm ml-1"> *
+                                    </span></label>
+                                <select id="underline_select" v-model="form.id_personal"
+                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                    <option value="0" class="bg-gray-700"> Seleccione una opción </option>
+                                    <!-- Se usa el v-for para llenar la información del select, haciendo uso de "eventos" -->
+                                    <option v-for="zona in zonas" :key="zona.id_zona" :value="zona.id_zona"
+                                        class="text-left bg-gray-700">
+                                        {{ `${zona.nombre_zona}` }}
+                                    </option>
+                                </select>
+                                <!-- Validacion para el select
+                                <div v-if="form.id_pagina == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                    role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        Seleccione <span class="font-medium"> una opción </span>
+                                    </div>
+                                </div> -->
                             </div>
                             <div class="modal-buttons mt-6 flex justify-end items-end">
                                 <!-- Se le coloca la función para limpiar el form al botón -->
@@ -329,7 +384,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalAdd" type="submit"
+                                <button id="btnModalAdd" type="submit" value="crear" @click="accionForm('crear')"
                                     :disabled="!validarTituloSeccion() || !validarSubtituloSeccion() || form.id_pagina == 0"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -343,7 +398,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalUpdate" type="submit"
+                                <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
                                     :disabled="!validarTituloSeccion() || !validarSubtituloSeccion() || form.id_pagina == 0"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -433,15 +488,6 @@ definePageMeta({
 });
 
 onMounted(() => {
-    //Se valida si hay un token en el localStorage y si no te regresa al login
-    function validarToken() {
-        if (!localStorage.getItem('token')) {
-            navigateTo('/');
-        }
-    }
-
-    validarToken();
-
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
@@ -472,7 +518,6 @@ onMounted(() => {
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
-            accionForm('crear')
             limpiarForm();
             modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
@@ -490,16 +535,17 @@ onMounted(() => {
 
 //Operaciones SCRUD
 
-//Variable reactiva para llenar el select
-const paginas = ref(null);
+//Variables reactivas para llenar los select
+const personales = ref(null);
+const zonas = ref(null);
 
-//Función para llenar el select
-async function llenarSelectPaginas() {
+//Funciones para llenar los select
+async function llenarSelectPersonal() {
     try {
         //Se realiza la petición axios
-        const { data: res } = await axios.get('/paginas-select');
-        //Lo que devuelve la petición axios se le asigna a "paginas"
-        paginas.value = res;
+        const { data: res } = await axios.get('/personal-select');
+        //Lo que devuelve la petición axios se le asigna a "personal"
+        personales.value = res;
     } catch (error) {
         //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
@@ -518,7 +564,33 @@ async function llenarSelectPaginas() {
     }
 }
 
-llenarSelectPaginas();
+async function llenarSelectZonas() {
+    try {
+        //Se realiza la petición axios
+        const { data: res } = await axios.get('/zonas-select');
+        //Lo que devuelve la petición axios se le asigna a "paginas"
+        zonas.value = res;
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+//Llamamos las funciones para cargar los select
+llenarSelectPersonal();
+llenarSelectZonas();
 
 /*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
 para almacenar la información que traiga el axios*/
@@ -529,7 +601,7 @@ const pagina = ref(useRoute().query.pagina || 1);
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let secciones = computed(() => data.value.data);
+let eventos = computed(() => data.value.data);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
@@ -548,11 +620,11 @@ watch(pagina, async () => {
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
-async function leerSecciones() {
+async function leerEventos() {
     try {
         /*Se manda la petición axios para leer las secciones (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
         además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/secciones?page=${pagina.value}`);
+        const { data: res } = await axios.get(`/eventos?page=${pagina.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
     } catch (error) {
@@ -575,7 +647,7 @@ async function leerSecciones() {
 }
 
 //Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
-await leerSecciones();
+await leerEventos();
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
@@ -587,18 +659,18 @@ function limpiarBuscador() {
     //Se coloca la constante pagina 1 para que salga la primera pagina de registros
     pagina.value = 1;
     //Se leen todos los registros
-    leerSecciones();
+    leerEventos();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
 }
 
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarSecciones() {
+async function buscarEventos() {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
             // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/secciones_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
+            const { data: res } = await axios.get(`/eventos_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
             // Actualiza los datos en la constante data
             data.value = res;
             // Actualiza la URL con el parámetro de página
@@ -606,7 +678,7 @@ async function buscarSecciones() {
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
             pagina.value = 1;
-            leerSecciones();
+            leerEventos();
         }
     } catch (error) {
         //Se extrae el mensaje de error
@@ -643,25 +715,40 @@ const Toast = Swal.mixin({
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
-    id_seccion: "",
-    titulo_seccion: "",
-    subtitulo_seccion: "",
-    descripcion_seccion: "",
-    id_pagina: 0,
-    visibilidad_seccion: false,
-    editable: false,
+    id_evento: "",
+    nombre_evento: "",
+    descripcion_evento: "",
+    fecha_evento: "",
+    hora_inicial_evento: "",
+    hora_final_evento: "",
+    nombre_consultor: "",
+    apellido_consultor: "",
+    telefono_consultor: "",
+    visiblidad_evento: false,
+    modalidad_evento: "",
+    estado_evento: "",
+    id_personal: "",
+    id_zona: "",
+    id_configuracion_parroquia: 1,
 })
 
 //Función para limpiar todos los campos del form
 function limpiarForm() {
     //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_seccion = "";
-    form.value.titulo_seccion = "";
-    form.value.subtitulo_seccion = "";
-    form.value.descripcion_seccion = "";
-    form.value.id_pagina = "0";
-    form.value.visibilidad_seccion = false;
-    form.value.editable = false;
+    form.value.id_evento = "";
+    form.value.nombre_evento = "";
+    form.value.descripcion_evento = "";
+    form.value.fecha_evento = "";
+    form.value.hora_inicial_evento = "";
+    form.value.hora_final_evento = "";
+    form.value.nombre_consultor = "";
+    form.value.apellido_consultor = "";
+    form.value.telefono_consultor = "";
+    form.value.visiblidad_evento = false;
+    form.value.modalidad_evento = "";
+    form.value.estado_evento = "";
+    form.value.id_personal = "0";
+    form.value.id_zona = "0";
 }
 
 
@@ -676,68 +763,73 @@ function accionForm(accion) {
 //Función para crear/actualizar un registro cuando se ejecuta el submit del form
 function submitForm() {
     if (formAccion == "crear") {
-        crearSeccion();
+        crearEvento();
     } else {
-        actualizarSeccion();
+        actualizarEvento();
     }
 }
 
 //Función para crear una sección
-async function crearSeccion() {
-    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
-        try {
-            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-            const formData = {
-                titulo_seccion: form.value.titulo_seccion,
-                subtitulo_seccion: form.value.subtitulo_seccion,
-                descripcion_seccion: form.value.descripcion_seccion,
-                id_pagina: form.value.id_pagina,
-                visibilidad_seccion: form.value.visibilidad_seccion,
-                editable: form.value.editable,
-            };
+async function crearEvento() {
+    try {
+        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+        const formData = {
+            nombre_evento: form.value.nombre_evento,
+            descripcion_evento: form.value.descripcion_evento,
+            fecha_evento: form.value.fecha_evento,
+            hora_inicial_evento: form.value.hora_inicial_evento,
+            hora_final_evento: form.value.hora_final_evento,
+            nombre_consultor: form.value.nombre_consultor,
+            apellido_consultor: form.value.apellido_consultor,
+            telefono_consultor: form.value.telefono_consultor,
+            visiblidad_evento: form.value.visiblidad_evento,
+            modalidad_evento: form.value.modalidad_evento,
+            estado_evento: form.value.estado_evento,
+            id_personal: form.value.id_personal,
+            id_zona: form.value.id_zona,
+            id_configuracion_parroquia: form.value.id_configuracion_parroquia,
+        };
 
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/secciones", formData);
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.post("/eventos", formData);
 
-            //Se cargan todas las páginas y se cierra el modal
-            leerSecciones();
-            document.getElementById('closeModal').click();
+        //Se cargan todas las páginas y se cierra el modal
+        leerEventos();
+        document.getElementById('closeModal').click();
 
-            //Se lanza la alerta con el mensaje de éxito
-            Toast.fire({
-                icon: 'success',
-                title: 'Sección creada exitosamente'
-            })
+        //Se lanza la alerta con el mensaje de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Evento creado exitosamente'
+        })
 
-        } catch (error) {
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
 
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
 
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        }
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
     }
 }
 
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
-async function leerUnaSeccion(id) {
+async function leerUnEvento(id) {
     try {
-        accionForm('actualizar');
         //Se hace la petición axios y se evalua la respuesta
-        await axios.get('/secciones/' + id).then(res => {
+        await axios.get('/eventos/' + id).then(res => {
             //Constante para el modal
             const modalElement = document.getElementById('staticModal');
             //Constante que contiene las caracteristicas del modal
@@ -772,14 +864,21 @@ async function leerUnaSeccion(id) {
             })
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
-                id_seccion: res.data.id_seccion,
-                titulo_seccion: res.data.titulo_seccion,
-                subtitulo_seccion: res.data.subtitulo_seccion,
-                descripcion_seccion: res.data.descripcion_seccion,
-                id_pagina: res.data.id_pagina,
-                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                editable: res.data.editable ? true : false,
-                visibilidad_seccion: res.data.visibilidad_seccion ? true : false
+                id_evento: form.data.id_evento,
+                nombre_evento: form.data.nombre_evento,
+                descripcion_evento: form.data.descripcion_evento,
+                fecha_evento: form.data.fecha_evento,
+                hora_inicial_evento: form.data.hora_inicial_evento,
+                hora_final_evento: form.data.hora_final_evento,
+                nombre_consultor: form.data.nombre_consultor,
+                apellido_consultor: form.data.apellido_consultor,
+                telefono_consultor: form.data.telefono_consultor,
+                visiblidad_evento: form.data.visiblidad_evento ? true : false,
+                modalidad_evento: form.data.modalidad_evento,
+                estado_evento: form.data.estado_evento,
+                id_personal: form.data.id_personal,
+                id_zona: form.data.id_zona,
+                id_configuracion_parroquia: form.data.id_configuracion_parroquia,
             }
         })
     } catch (error) {
@@ -804,58 +903,64 @@ async function leerUnaSeccion(id) {
 }
 
 //Función para actualizar un registro
-async function actualizarSeccion() {
-    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
-        try {
-            //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_seccion;
-            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-            const formData = {
-                titulo_seccion: form.value.titulo_seccion,
-                subtitulo_seccion: form.value.subtitulo_seccion,
-                descripcion_seccion: form.value.descripcion_seccion,
-                id_pagina: form.value.id_pagina,
-                visibilidad_seccion: form.value.visibilidad_seccion,
-                editable: form.value.editable,
-            };
+async function actualizarEvento() {
+    try {
+        //Se establece una variable de id con el valor que tiene guardado la variable form
+        var id = form.value.id_evento;
+        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        const formData = {
+            nombre_evento: form.value.nombre_evento,
+            descripcion_evento: form.value.descripcion_evento,
+            fecha_evento: form.value.fecha_evento,
+            hora_inicial_evento: form.value.hora_inicial_evento,
+            hora_final_evento: form.value.hora_final_evento,
+            nombre_consultor: form.value.nombre_consultor,
+            apellido_consultor: form.value.apellido_consultor,
+            telefono_consultor: form.value.telefono_consultor,
+            visiblidad_evento: form.value.visiblidad_evento,
+            modalidad_evento: form.value.modalidad_evento,
+            estado_evento: form.value.estado_evento,
+            id_personal: form.value.id_personal,
+            id_zona: form.value.id_zona,
+            id_configuracion_parroquia: form.value.id_configuracion_parroquia,
+        };
 
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.put("/secciones/" + id, formData);
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.put(`/eventos/${id}`, formData);
 
-            //Se cargan todas las páginas y se cierra el modal
-            leerSecciones();
-            document.getElementById('closeModal').click();
+        //Se cargan todas las páginas y se cierra el modal
+        leerSecciones();
+        document.getElementById('closeModal').click();
 
-            //Se lanza la alerta de éxito
-            Toast.fire({
-                icon: 'success',
-                title: 'Sección actualizada exitosamente'
-            })
+        //Se lanza la alerta de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Evento actualizado exitosamente'
+        })
 
-        } catch (error) {
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
 
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
 
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        }
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
     }
 }
 
 //Función para cambiar la visibilidad de un registro para ocultarlo
-async function borrarSeccion(id) {
+async function borrarEvento(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: 'Confirmación',
@@ -873,15 +978,15 @@ async function borrarSeccion(id) {
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.delete('/secciones/' + id);
+                await axios.delete(`/eventos/${id}`);
 
                 //Se cargan todos los registros
-                leerSecciones();
+                leerEventos();
 
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Sección ocultada exitosamente'
+                    title: 'Evento ocultado exitosamente'
                 })
             } catch (error) {
                 //Se extrae el mensaje de error
@@ -907,7 +1012,7 @@ async function borrarSeccion(id) {
 }
 
 //Función para cambiar la visibilidad de un registro para recuperarlo
-async function recuperarSeccion(id) {
+async function recuperarEvento(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: 'Confirmación',
@@ -925,15 +1030,15 @@ async function recuperarSeccion(id) {
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.delete('/secciones/' + id);
+                await axios.delete(`/eventos/${id}`);
 
                 //Se cargan todos los registros
-                leerSecciones();
+                leerEventos();
 
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Página recuperada exitosamente'
+                    title: 'Evento recuperado exitosamente'
                 })
             } catch (error) {
                 //Se extrae el mensaje de error

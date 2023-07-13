@@ -176,22 +176,34 @@
                 </div>
                 <!-- Cuerpo de  -->
                 <div class="p-6 space-y-6 pb-10">
-                    <form action="" class="flex justify-evenly">
+                    <form action="" id="formModal" @submit.prevent="submitForm()" class="flex justify-evenly">
                         <div class="flex-col w-64">
+                            <input type="hidden" id="id_personal" v-model="form.id_personal">
                             <div class="relative z-0">
-                                <input type="text" id="username" name="username"
+                                <input type="text" v-model="form.nombre_personal" id="nombre_personal"
+                                    name="nombre_personal"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <label for="nombre_personal"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                     - Personal</label>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
+                                <input type="number" v-model="form.telefono_personal" id="telefono_personal"
+                                    name="telefono_personal"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <label for="telefono_personal"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
+                                    - Personal</label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="text" v-model="form.correo_personal" id="correo_personal"
+                                    name="correo_personal"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="correo_personal"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
                                     - Personal</label>
                             </div>
                             <div class="pt-4 mt-2 flex-col">
@@ -206,63 +218,90 @@
                         </div>
                         <div class="flex-col w-64">
                             <div class="relative z-0">
-                                <input type="text" id="username" name="username"
+                                <input type="text" v-model="form.apellido_personal" id="apellido_personal"
+                                    name="apellido_personal"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="username"
+                                <label for="apellido_personal"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
                                     - Personal</label>
                             </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="username" name="username"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="username"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                    - Personal</label>
+                        </div>
+                        <div class="pt-4 mt-2 flex-col">
+                            <label for="" class="absolute text-gray-200">Tipo - Personal</label>
+                            <select id="underline_select"
+                                class="block mt-4 py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                <option value="">Seleccione una opcion</option>
+                                <!-- Se usa v-for para manejar la variable tipo_personal y llenar el select -->
+                                <option v-for="tipo_personal in tipos_personales" :key="tipo_personal.id_tipo_personal"
+                                    :value="tipo_personal.id_tipo_personal" class="text-left bg-gray-700">
+                                    {{ tipo_personal.tipo_personal }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="relative z-0 mt-6">
+                            <input type="text" id="username" name="username"
+                                class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                placeholder=" " autocomplete="off" />
+                            <label for="username"
+                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
+                                - Personal</label>
+                        </div>
+                        <div class="flex-col mt-8">
+                            <label for="" class="text-gray-200">Visibilidad - Personal</label>
+                            <div class="flex justify-start mt-2">
+                                <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                    <input type="checkbox" value="" class="sr-only peer"
+                                        v-model="form.visibilidad_tipo_personal">
+                                    <div
+                                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                    </div>
+                                </label>
                             </div>
-                            <div class="flex-col mt-8">
-                                <label for="" class="text-gray-200">Visibilidad - Personal</label>
-                                <div class="flex justify-start mt-2">
-                                    <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input type="checkbox" value="" class="sr-only peer"
-                                            v-model="form.visibilidad_tipo_personal">
-                                        <div
-                                            class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                        </div>
-                                    </label>
-                                </div>
+                        </div>
+                        <div class="flex-col mt-6">
+                            <label for="" class="text-gray-200">Visibilidad - Personal</label>
+                            <div class="flex justify-start mt-2">
+                                <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                    <input type="checkbox" value="false" v-model="form.visibilidad_personal"
+                                        class="sr-only peer" />
+                                    <div
+                                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                    </div>
+                                </label>
                             </div>
-                            <div class="modal-buttons mt-24 flex justify-end items-end">
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center">
-                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path
-                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                        <path
-                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                    </svg>
-                                </button>
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
-                                    <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
-                                            stroke-width="2" stroke-linecap="round"></path>
-                                        <path
-                                            d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
-                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path
-                                            d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
-                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                </button>
-                            </div>
+                        </div>
+                        <div class="modal-buttons mt-24 flex justify-end items-end">
+                            <button id="btnModalAdd" type="sumbit" value="crear" @click="accionForm('crear')"
+                                class="h-10 w-10 rounded-lg flex justify-center items-center">
+                                <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path
+                                        d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                        stroke="#23B7A0" stroke-width="2"></path>
+                                    <path
+                                        d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                        stroke="#23B7A0" stroke-width="2"></path>
+                                </svg>
+                            </button>
+                            <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
+                                class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
+                                <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
+                                        stroke-width="2" stroke-linecap="round"></path>
+                                    <path
+                                        d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
+                                        stroke="#23B7A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                    <path
+                                        d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
+                                        stroke="#23B7A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                    <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -311,40 +350,19 @@
     background-color: #32345a;
 }
 </style>
-
 <script setup>
-//El setup se usa para manejar una sintaxis mas concisa del codigo y poder usar la reactividad de vue 3
-
-//Importaciones de plugins y funciones necesarias para el funcionamiento del proyecto
-
-//Importacion para usar el hook de onMounted
-import { onMounted, ref } from 'vue'
-//Importación del modal de flowbite
 import { Modal } from 'flowbite'
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from 'axios';
-//Importación del plugin de paginación de registros
 import { TailwindPagination } from 'laravel-vue-pagination';
+import { onMounted, ref } from 'vue'
 //Importación de sweetalert
 import Swal from 'sweetalert2';
-//Importación de archivo de validaciones
-import validaciones from '../assets/validaciones.js';
-
-
 definePageMeta({
     layout: "principal",
-});
+})
 
 onMounted(() => {
-    //Se valida si hay un token en el localStorage y si no te regresa al login
-    function validarToken() {
-        if (!localStorage.getItem('token')) {
-            navigateTo('/');
-        }
-    }
-
-    validarToken();
-
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
@@ -375,7 +393,6 @@ onMounted(() => {
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
-            accionForm('crear')
             limpiarForm();
             modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
@@ -393,43 +410,55 @@ onMounted(() => {
 
 //Operaciones SCRUD
 
-//Variable reactiva para llenar el select
-const tipopersonal = ref(null);
+// Variable reactiva para llenar el select
+const tipos_personales = ref(null);
 
-//Función para llenar el select
-
-async function llenarSelectTipoPersonal() {
+//Funcion para llenar el select de tipos_personal
+async function llenarSelectTipo_Personal() {
     try {
-        //Se realiza la petición axios
+        // Se hacen las peticiones con axios
         const { data: res } = await axios.get('/t_personal-select');
-        //Lo que devuelve la petición axios se le asigna a "paginas"
-        tipopersonal.value = res;
+        // Se asignan los valores devueltos a tipo_personal
+        tipos_personales.value = res;
     } catch (error) {
-        //Se extrae el mensaje de error
+        // Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
+        // Se extrae el sqlstate (Identificador de acciones sql)
         const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        // Se llama la funcion de mensajeSqlState para mostrar un mensaje de error relacionado a sqlState
         const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se muestra un sweetalert con el mensaje
+        // Se muestra un sweetalert con el mensaje correspondiente
         Swal.fire({
             icon: 'error',
-            title: 'Error',
+            title: "Error",
             text: res,
             confirmButtonColor: '#3F4280'
         });
     }
 }
 
-llenarSelectTipoPersonal();
+// Llamamos la funcion para llenar el select automaticamente
+llenarSelectTipo_Personal();
 
 /*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
 para almacenar la información que traiga el axios*/
 const data = ref(null);
+var tipo_personal = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const pagina = ref(useRoute().query.pagina || 1);
+const personal = ref(useRoute().query.personal || 1);
+
+//Se crea una variable reactiva para manejar la información del modal
+const form = ref({
+    id_personal: "",
+    nombre_personal: "",
+    apellido_personal: "",
+    telefono_personal: "",
+    correo_personal: "",
+    visibilidad_personal: false,
+    id_tipo_personal: ""
+})
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
@@ -437,26 +466,26 @@ let personales = computed(() => data.value.data);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
-watch(pagina, async () => {
+watch(personal, async () => {
     //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
     if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar secciones si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarPersonal();
+        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
+        //buscarAnuncios();
     } else {
-        //Se ejecuta el leer secciones para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerPersonal();
+        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
+        leerPersonales();
     }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { pagina: pagina.value } })
+    useRouter().push({ query: { personal: personal.value } })
 })
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
-async function leerPersonal() {
+async function leerPersonales() {
     try {
-        /*Se manda la petición axios para leer las secciones (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
-        además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/personal?page=${pagina.value}`);
+        /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
+        además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
+        const { data: res } = await axios.get(`/personal?page=${personal.value}`);
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
     } catch (error) {
@@ -475,62 +504,23 @@ async function leerPersonal() {
             confirmButtonColor: '#3F4280'
         });
     }
-
 }
 
-//Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
-await leerPersonal();
-
-//Se crea una variable reactiva para el buscador
-const buscar = ref({
-    buscador: "",
-})
-
-//Función para limpiar el buscador
+//Funcion para limpiar el buscador
 function limpiarBuscador() {
     //Se coloca la constante pagina 1 para que salga la primera pagina de registros
-    pagina.value = 1;
+    personal.value = 1;
     //Se leen todos los registros
-    leerPersonal();
+    leerPersonales();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
 }
 
-//Función para buscar registros dependiendo del valor del buscador
-async function buscarPersonal() {
-    try {
-        //Se evalua que el buscador no este vacio
-        if (buscar.value.buscador != "") {
-            // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/personal_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
-            // Actualiza los datos en la constante data
-            data.value = res;
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: pagina.value } });
-        } else {
-            //Se regresa a la página 1 y se cargan todos los registros
-            pagina.value = 1;
-            leerPersonal();
-        }
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
-    }
+async function llenarTipoPersonal() {
+    const { data: res } = await axios.get('t_personal-select');
+    tipo_personal.value = res;
+    console.log(tipo_personal.value)
 }
-
-//Funciones para manejo del modal
 
 //Toast del sweetalert
 const Toast = Swal.mixin({
@@ -545,31 +535,6 @@ const Toast = Swal.mixin({
     }
 })
 
-//Se crea una variable reactiva para manejar la información del modal
-const form = ref({
-    id_personal: "",
-    nombre_personal: "",
-    apellido_personal: "",
-    telefono_personal: "",
-    correo_personal: "",
-    visibilidad_personal: false,
-    id_tipo_personal: 0,
-})
-
-//Función para limpiar todos los campos del form
-function limpiarForm() {
-    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_personal = "";
-    form.value.nombre_personal = "";
-    form.value.apellido_personal = "";
-    form.value.telefono_personal = "";
-    form.value.correo_personal = "";
-    form.value.visibilidad_personal = false;
-    form.value.id_tipo_personal = "0";
-
-}
-
-
 //Variable para validar que acción se quiere hacer cuando se hace un submit al form
 var formAccion = null;
 
@@ -578,19 +543,28 @@ function accionForm(accion) {
     formAccion = accion;
 }
 
+//Variable para validar que acción se quiere hacer cuando se hace un submit al form
+var formAccion = null;
+
 //Función para crear/actualizar un registro cuando se ejecuta el submit del form
 function submitForm() {
-    if (formAccion == "crear") {
+    if (formAccion == 'crear') {
         crearPersonal();
     } else {
         actualizarPersonal();
     }
 }
 
-//Función para crear una sección
+//Función para limpiar todos los campos del form
+function limpiarForm() {
+    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
+
+}
+
+//Funcion para crear un Personal
 async function crearPersonal() {
     try {
-        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
         const formData = {
             nombre_personal: form.value.nombre_personal,
             apellido_personal: form.value.apellido_personal,
@@ -598,19 +572,17 @@ async function crearPersonal() {
             correo_personal: form.value.correo_personal,
             visibilidad_personal: form.value.visibilidad_personal,
             id_tipo_personal: form.value.id_tipo_personal,
-        };
+        }
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/personal", formData);
-
-        //Se cargan todas las páginas y se cierra el modal
-        leerPersonal();
-        document.getElementById('closeModal').click();
-
-        //Se lanza la alerta con el mensaje de éxito
+        //Se realiza la peticion de axios hacia la base
+        await axios.post('/personal/', formData);
+        //Cargamos todos los personales para recargar la tabla
+        leerPersonales();
+        document.getElementById('closemodal').click();
+        //Llamamos el mensaje de exito
         Toast.fire({
             icon: 'success',
-            title: 'Personal creado exitosamente'
+            title: 'Personal ha sido creado correctamente'
         })
 
     } catch (error) {
@@ -621,10 +593,10 @@ async function crearPersonal() {
         //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
         const res = validaciones.mensajeSqlState(sqlState);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
+        //Cerramos el modal
+        document.getElementById('closemodal').click();
 
-        //Se muestra un sweetalert con el mensaje
+        //Se muestra un sweetalert con el mensaje sin exito
         Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -634,57 +606,101 @@ async function crearPersonal() {
     }
 }
 
-
-//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnPersonal(id) {
     try {
-        accionForm('actualizar');
-        //Se hace la petición axios y se evalua la respuesta
-        await axios.get('/personal/' + id).then(res => {
-            //Constante para el modal
-            const modalElement = document.getElementById('staticModal');
-            //Constante que contiene las caracteristicas del modal
-            const modalOptions = {
-                backdrop: 'static',
-                backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-            };
-            //Instanciamos el boton para cerrar el modal
-            const closeButton = document.getElementById('closeModal');
-            //Constante para el titulo del modal
-            const modalText = document.getElementById('modalText');
-            //Constante para el boton de agregar dentro del modal
-            const modalBtnAdd = document.getElementById('btnModalAdd');
-            //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById('btnModalUpdate');
-            //Instanciamos el modal
-            const modal = new Modal(modalElement, modalOptions);
-            //Le modificamos el texto del header al modal
-            modalText.textContent = 'Editar';
-            //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove('hidden');
-            //Ocultamos el botón de agregar en el modal
-            modalBtnAdd.classList.add('hidden');
-            //Abrimos el modal
-            modal.show();
-            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-            closeButton.addEventListener('click', function () {
-                //Ocultamos el modal
-                modal.hide();
-                //Limpiamos el modal
-                limpiarForm();
-            })
-            //Llenamos los inputs del modal con su respectiva informacion
-            form.value = {
-                id_personal: res.data.id_personal,
-                nombre_personal: res.data.nombre_personal,
-                apellido_personal: res.data.apellido_personal,
-                telefono_personal: res.data.telefono_personal,
-                correo_personal: res.data.correo_personal,
-                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_personal: res.data.visibilidad_personal ? true : false,
-                id_tipo_personal: res.data.id_tipo_personal,
-            }
+        //Se hace la peticion axios y se evalua la respuesta
+        await axios.get('/personal/' + id)
+            .then(res => {
+                //constante para el modal
+                const modalElement = document.getElementById('staticModal');
+                //Constante que contiene las caracteristicas del modal
+                const modalOptions = {
+                    backdrop: 'static',
+                    backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+                };
+                //Instanciamos el boton para cerrar el modal
+                const closeButton = document.getElementById('closeModal');
+                //Constante para el titulo del modal
+                const modalText = document.getElementById('modalText');
+                //Constante para el boton de agregar dentro del modal
+                const modalBtnAdd = document.getElementById('btnModalAdd');
+                //Constante para el boton de actualizar dentro del modal
+                const modalBtnUpdate = document.getElementById('btnModalUpdate');
+                //Instanciamos el modal
+                const modal = new Modal(modalElement, modalOptions);
+                //Le modificamos el texto del header al modal
+                modalText.textContent = 'Editar';
+                //Colocamos visibilidad al botón de actualizar en el modal
+                modalBtnUpdate.classList.remove('hidden');
+                //Ocultamos el botón de agregar en el modal
+                modalBtnAdd.classList.add('hidden');
+                //Abrimos el modal
+                modal.show();
+                //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
+                closeButton.addEventListener('click', function () {
+                    //Ocultamos el modal
+                    modal.hide();
+                    //Limpiamos el modal
+                    limpiarForm();
+                })
+                //Llenamos los inputs del modal con su respectiv info
+                form.value = {
+                    id_personal: res.data.id_personal,
+                    nombre_personal: res.data.nombre_personal,
+                    apellido_personal: res.data.apellido_personal,
+                    telefono_personal: res.data.telefono_personal,
+                    correo_personal: res.data.correo_personal,
+                    visibilidad_personal: res.data.visibilidad_personal ? true : false,
+                    id_tipo_personal: res.data.id_tipo_personal,
+                }
+            });
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
 
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+//Funcion para actualizar el personal
+const actualizarSeccion = async () => {
+    try {
+        //Se establece una variable de id con el valor que tiene guardado la variable form
+        var id = form.value.id_personal;
+        //Se crea otra variable para guardar el valor de los campos de contiene el form
+        const formData = {
+            nombre_personal: form.value.nombre_personal,
+            apellido_personal: form.value.apellido_personal,
+            telefono_personal: form.value.telefono_personal,
+            correo_personal: form.value.correo_personal,
+            visibilidad_personal: form.value.visibilidad_personal,
+            id_tipo_personal: form.value.id_tipo_personal,
+        }
+
+        //Se hace la peticion axios con la ruta y el id respectivo
+        await axios.put(`/personal/${id}`, formData);
+
+        //Se cargan nuevamente las paginas para mostrar las actualizaciones y cerramos el modal
+        leerPersonales();
+        document.getElementById('closeModal').click();
+
+        //Se lanza la alerta de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Sección actualizada exitosamente'
         })
     } catch (error) {
         //Se extrae el mensaje de error
@@ -707,167 +723,115 @@ async function leerUnPersonal(id) {
     }
 }
 
-form.value.id_personal = "";
-    form.value.nombre_personal = "";
-    form.value.apellido_personal = "";
-    form.value.telefono_personal = "";
-    form.value.correo_personal = "";
-    form.value.visibilidad_personal = false;
-    form.value.id_tipo_personal = "0";
-//Función para actualizar un registro
-async function actualizarPersonal() {
-        try {
-            //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_personal;
-            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-            const formData = {
-                nombre_personal: form.value.nombre_personal,
-                apellido_personal: form.value.apellido_personal,
-                telefono_personal: form.value.telefono_personal,
-                correo_personal: form.value.correo_personal,
-                visibilidad_personal: form.value.visibilidad_personal,
-                id_tipo_personal: form.value.id_tipo_personal,
-            };
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.put("/personal/" + id, formData);
-
-            //Se cargan todas las páginas y se cierra el modal
-            leerPersonal();
-            document.getElementById('closeModal').click();
-
-            //Se lanza la alerta de éxito
-            Toast.fire({
-                icon: 'success',
-                title: 'Personal actualizado exitosamente'
-            })
-
-        } catch (error) {
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        }
-}
 
 //Función para cambiar la visibilidad de un registro para ocultarlo
 async function borrarPersonal(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: 'Confirmación',
-        text: "¿Desea ocultar el registro?",
-        icon: 'warning',
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: '#3F4280',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete('/personal/' + id);
+    const borrarPersonal = async (id) => {
+        //Se lanza una alerta de confirmación
+        Swal.fire({
+            title: 'Confirmación',
+            text: "¿Desea ocultar el registro?",
+            icon: 'warning',
+            reverseButtons: true,
+            showCancelButton: true,
+            confirmButtonColor: '#3F4280',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+            //Se evalua la respuesta de la alerta
+        })
+            .then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        //Se hace la peticion axios
+                        await apiAxios.delete(`/personal/${id}`);
 
-                //Se cargan todos los registros
-                leerPersonal();
+                        //Se cargan los registros
+                        leerPersonales();
 
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Personal ocultado exitosamente'
-                })
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
+                        //Se lanza la alerta de éxito
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Personal ocultado exitosamente'
+                        })
+                    } catch (error) {
+                        //Se extrae el mensaje de error
+                        const mensajeError = error.response.data.message;
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const sqlState = validaciones.extraerSqlState(mensajeError);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const res = validaciones.mensajeSqlState(sqlState);
 
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
+                        //Se cierra el modal
+                        document.getElementById('closeModal').click();
 
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
-    });
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: res,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
+                }
+            })
+    }
+
+    //Función para cambiar la visibilidad de un registro para recuperarlo
+    async function recuperarUnPersonal(id) {
+        //Se lanza una alerta de confirmación
+        Swal.fire({
+            title: 'Confirmación',
+            text: "¿Desea recuperar el registro?",
+            icon: 'warning',
+            reverseButtons: true,
+            showCancelButton: true,
+            confirmButtonColor: '#3F4280',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+            //Se evalua la respuesta de la alerta
+        })
+            .then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        //Se hace la peticion axios
+                        await apiAxios.delete(`/personal/${id}`);
+
+                        //Se cargan los registros
+                        leerPersonales();
+
+                        //Se lanza la alerta de éxito
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Personal recuperado exitosamente'
+                        })
+                    } catch (error) {
+                        //Se extrae el mensaje de error
+                        const mensajeError = error.response.data.message;
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const sqlState = validaciones.extraerSqlState(mensajeError);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const res = validaciones.mensajeSqlState(sqlState);
+
+                        //Se cierra el modal
+                        document.getElementById('closeModal').click();
+
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: res,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
+                }
+
+                //Validaciones 
+
+            })
+    }
 }
 
-//Función para cambiar la visibilidad de un registro para recuperarlo
-async function recuperarUnPersonal(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: 'Confirmación',
-        text: "¿Desea recuperar el registro?",
-        icon: 'warning',
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: '#3F4280',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete('/personal/' + id);
-
-                //Se cargan todos los registros
-                leerPersonal();
-
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Personal recuperado exitosamente'
-                })
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
-    });
-}
-
-//Validaciones 
-
-
+// Validaciones
 </script>

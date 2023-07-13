@@ -2,12 +2,12 @@
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
-                <nuxtLink to="/pagina" class="ml-4">Páginas</nuxtLink>
-                <NuxtLink to="" class="active ml-4">Secciones</NuxtLink>
-                <NuxtLink to="/componente" class="ml-4">Componentes</NuxtLink>
+                <nuxtLink to="/calendario" class="ml-4">Calendario</nuxtLink>
+                <NuxtLink to="/zona" class="active ml-4">Zonas</NuxtLink>
+                <NuxtLink to="/evento" class="ml-4">Eventos</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">
-                <NuxtLink to="/perfil">
+                <button>
                     <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
@@ -16,7 +16,7 @@
                             d="M19.622 10.395l-1.097-2.65L20 6l-2-2-1.735 1.483-2.707-1.113L12.935 2h-1.954l-.632 2.401-2.645 1.115L6 4 4 6l1.453 1.789-1.08 2.657L2 11v2l2.401.655L5.516 16.3 4 18l2 2 1.791-1.46 2.606 1.072L11 22h2l.604-2.387 2.651-1.098C16.697 18.831 18 20 18 20l2-2-1.484-1.75 1.098-2.652 2.386-.62V11l-2.378-.605z"
                             stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
-                </NuxtLink>
+                </button>
                 <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
                     data-drawer-placement="right" aria-controls="drawer-right-example">
                     <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -33,7 +33,7 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarSecciones en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (título/subtítulo)" v-model="buscar.buscador" @keyup="buscarSecciones()">
+                        placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarSecciones()">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -195,12 +195,9 @@
                             <input type="hidden" id="id_seccion" v-model="form.id_seccion">
                             <div class="relative z-0">
                                 <input type="text" v-model="form.titulo_seccion" @input="validarTituloSeccion()"
-                                    maxlength="100" id="titulo_seccion" name="titulo_seccion"
+                                    id="titulo_seccion" name="titulo_seccion"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" required />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> {{
-                                    form.titulo_seccion.length
-                                }} /100</span>
                                 <label for="titulo_seccion"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Titulo
                                     - Seccion<span class="text-sm ml-1"> * </span></label>
@@ -215,20 +212,15 @@
                                     </svg>
                                     <div>
                                         El título de la sección solo permite caracteres <span class="font-medium">
-                                            alfanuméricos y algunos especiales (- / |).</span>
+                                            alfanuméricos y algunos especiales (- / |)</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" v-model="form.subtitulo_seccion" id="subtitulo_descripcion"
-                                    maxlength="100" name="subtitulo_descripcion"
+                                    name="subtitulo_descripcion"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
-                                    v-if="form.subtitulo_seccion"> {{
-                                        form.subtitulo_seccion.length
-                                    }} /100</span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /250</span>
                                 <label for="subtitulo_descripcion"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtitulo
                                     - Seccion</label>
@@ -243,19 +235,15 @@
                                     </svg>
                                     <div>
                                         El subtitulo de la sección solo permite caracteres <span class="font-medium">
-                                            alfanuméricos y algunos especiales (- / |).</span>
+                                            alfanuméricos y algunos especiales (- / |)</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <textarea type="text" v-model="form.descripcion_seccion" id="descripcion_seccion"
-                                    maxlength="250" name="descripcion_seccion"
-                                    class="block py-2.5 min-h-[3rem] h-[3rem] max-h-[9rem] px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                <input type="text" v-model="form.descripcion_seccion" id="descripcion_seccion"
+                                    name="descripcion_seccion"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
-                                    v-if="form.descripcion_seccion"> {{
-                                        form.descripcion_seccion.length }} /250</span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /250</span>
                                 <label for="descripcion_seccion"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
                                     - Seccion</label>
@@ -281,7 +269,7 @@
                                             clip-rule="evenodd"></path>
                                     </svg>
                                     <div>
-                                        Seleccione <span class="font-medium"> una opción. </span>
+                                        Seleccione <span class="font-medium"> una opción </span>
                                     </div>
                                 </div>
                             </div>
@@ -329,7 +317,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalAdd" type="submit"
+                                <button id="btnModalAdd" type="submit" value="crear" @click="accionForm('crear')"
                                     :disabled="!validarTituloSeccion() || !validarSubtituloSeccion() || form.id_pagina == 0"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -343,7 +331,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalUpdate" type="submit"
+                                <button id="btnModalUpdate" type="submit" @click="accionForm('actualizar')"
                                     :disabled="!validarTituloSeccion() || !validarSubtituloSeccion() || form.id_pagina == 0"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -433,15 +421,6 @@ definePageMeta({
 });
 
 onMounted(() => {
-    //Se valida si hay un token en el localStorage y si no te regresa al login
-    function validarToken() {
-        if (!localStorage.getItem('token')) {
-            navigateTo('/');
-        }
-    }
-
-    validarToken();
-
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
@@ -472,7 +451,6 @@ onMounted(() => {
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
-            accionForm('crear')
             limpiarForm();
             modalBtnAdd.classList.remove('hidden');
             modalText.textContent = "Registrar";
@@ -684,50 +662,48 @@ function submitForm() {
 
 //Función para crear una sección
 async function crearSeccion() {
-    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
-        try {
-            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-            const formData = {
-                titulo_seccion: form.value.titulo_seccion,
-                subtitulo_seccion: form.value.subtitulo_seccion,
-                descripcion_seccion: form.value.descripcion_seccion,
-                id_pagina: form.value.id_pagina,
-                visibilidad_seccion: form.value.visibilidad_seccion,
-                editable: form.value.editable,
-            };
+    try {
+        //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+        const formData = {
+            titulo_seccion: form.value.titulo_seccion,
+            subtitulo_seccion: form.value.subtitulo_seccion,
+            descripcion_seccion: form.value.descripcion_seccion,
+            id_pagina: form.value.id_pagina,
+            visibilidad_seccion: form.value.visibilidad_seccion,
+            editable: form.value.editable,
+        };
 
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/secciones", formData);
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.post("/secciones", formData);
 
-            //Se cargan todas las páginas y se cierra el modal
-            leerSecciones();
-            document.getElementById('closeModal').click();
+        //Se cargan todas las páginas y se cierra el modal
+        leerSecciones();
+        document.getElementById('closeModal').click();
 
-            //Se lanza la alerta con el mensaje de éxito
-            Toast.fire({
-                icon: 'success',
-                title: 'Sección creada exitosamente'
-            })
+        //Se lanza la alerta con el mensaje de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Sección creada exitosamente'
+        })
 
-        } catch (error) {
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
 
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
 
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        }
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
     }
 }
 
@@ -735,7 +711,6 @@ async function crearSeccion() {
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function leerUnaSeccion(id) {
     try {
-        accionForm('actualizar');
         //Se hace la petición axios y se evalua la respuesta
         await axios.get('/secciones/' + id).then(res => {
             //Constante para el modal
@@ -805,52 +780,50 @@ async function leerUnaSeccion(id) {
 
 //Función para actualizar un registro
 async function actualizarSeccion() {
-    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
-        try {
-            //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_seccion;
-            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-            const formData = {
-                titulo_seccion: form.value.titulo_seccion,
-                subtitulo_seccion: form.value.subtitulo_seccion,
-                descripcion_seccion: form.value.descripcion_seccion,
-                id_pagina: form.value.id_pagina,
-                visibilidad_seccion: form.value.visibilidad_seccion,
-                editable: form.value.editable,
-            };
+    try {
+        //Se establece una variable de id con el valor que tiene guardado la variable form
+        var id = form.value.id_seccion;
+        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        const formData = {
+            titulo_seccion: form.value.titulo_seccion,
+            subtitulo_seccion: form.value.subtitulo_seccion,
+            descripcion_seccion: form.value.descripcion_seccion,
+            id_pagina: form.value.id_pagina,
+            visibilidad_seccion: form.value.visibilidad_seccion,
+            editable: form.value.editable,
+        };
 
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.put("/secciones/" + id, formData);
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.put("/secciones/" + id, formData);
 
-            //Se cargan todas las páginas y se cierra el modal
-            leerSecciones();
-            document.getElementById('closeModal').click();
+        //Se cargan todas las páginas y se cierra el modal
+        leerSecciones();
+        document.getElementById('closeModal').click();
 
-            //Se lanza la alerta de éxito
-            Toast.fire({
-                icon: 'success',
-                title: 'Sección actualizada exitosamente'
-            })
+        //Se lanza la alerta de éxito
+        Toast.fire({
+            icon: 'success',
+            title: 'Sección actualizada exitosamente'
+        })
 
-        } catch (error) {
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
 
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
 
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        }
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
     }
 }
 
