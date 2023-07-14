@@ -31,12 +31,12 @@
             </div>
         </div>
         <div class="mdprincipal flex-col mt-6 px-8 overflow-hidden py-10">
-            <div class="h-96 w-full bg-slate-200 rounded-2xl">
+            <div class="h-2/3 w-full bg-slate-200 rounded-2xl pl-4">
                 <div class="flex-col text-center pt-4">
-                    <p class="text-2xl font-extrabold ">Donaciones registradas en el mes actual</p>
-                    <p class="text-xl font-normal">Total donado: $12134614</p>
-                    <div class="grafic">
-                        <!-- Aqui vas a hacer que se cargue la grafica -->
+                    <p class="text-2xl font-extrabold ">Donaciones registradas en la semana actual</p>
+                    <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal">${{ totalSuma }}</span></p>
+                    <div class="grafic h-80 w-full flex justify-center">
+                        <Line v-if="dataDonaciones" :data="chartDonaciones" :options="opcionesDonaciones" />
                     </div>
                 </div>
             </div>
@@ -67,16 +67,80 @@
     </div>
 </template>
 <script setup>
+import axios from 'axios';
+import { Line } from "vue-chartjs";
+
 definePageMeta({
     layout: "principal",
 })
+
+const dataDonaciones = ref();
+
+var totalSuma = null;
+
+async function leerDonaciones() {
+    try {
+        const { data: res } = await axios.get('/donaciones-graf');
+        dataDonaciones.value = res;
+        totalSuma = dataDonaciones.value.totalSuma;
+        console.log(dataDonaciones.value);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+leerDonaciones();
+
+const chartDonaciones = computed(() => {
+    return {
+        labels: dataDonaciones.value.results.map(item => item.fecha_donacion),
+        datasets: [
+            {
+                label: "Cantidad donada",
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                borderColor: '#1B1C30',
+                backgroundColor: (ctx) => {
+                    const canvas = ctx.chart.ctx;
+                    const gradient = canvas.createLinearGradient(0, 0, 0, 300); // Ajustar las coordenadas para que el gradiente vaya de arriba hacia abajo
+
+                    gradient.addColorStop(0, 'rgba(28,37,219,1)');
+                    gradient.addColorStop(1, 'rgba(251,148,123,1)');
+                    return gradient;
+                },
+
+                pointBackgroundColor: '#1B1C30',
+                fill: true,
+                tension: 0.5,
+                data: dataDonaciones.value.results.map(item => item.cantidad_donada),
+            },
+        ],
+    };
+});
+
+const opcionesDonaciones = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        y: {
+            beginAtZero: true
+        }
+    },
+    plugins: {
+        legend: {
+            display: false
+        }
+    }
+}
+
 </script>
 <style scoped>
 .topprincipal .active {
     color: #c99856;
     border-bottom: 3px solid #c99856;
 }
-.container-grafics{
-    width: 730px;
+
+.container-grafics {
+    width: 680px;
 }
 </style>
