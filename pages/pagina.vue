@@ -1,6 +1,6 @@
 <template>
     <div class="principal mt-6">
-        <div class="topprincipal flex justify-between font-semibold text-base ml-4">
+        <!-- <div class="topprincipal flex justify-between font-semibold text-base ml-4">
             <div class="options">
                 <NuxtLink to="" class="active ml-4">Páginas</NuxtLink>
                 <NuxtLink to="/seccion" class="ml-4">Secciones</NuxtLink>
@@ -27,7 +27,8 @@
                     </svg>
                 </button>
             </div>
-        </div>
+        </div> -->
+        <MenuPaginaDashboard/>
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
@@ -617,8 +618,8 @@ async function crearPagina() {
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.post("/paginas", formData);
 
-            buscarPaginas();
-
+            //Se cargan todas las páginas y se cierra el modal
+            leerPaginas();
             document.getElementById('closeModal').click();
 
             //Se lanza la alerta con el mensaje de éxito
@@ -735,8 +736,8 @@ async function actualizarPagina() {
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.put("/paginas/" + id, formData);
 
-            buscarPaginas();
-
+            //Se cargan todas las páginas y se cierra el modal
+            leerPaginas();
             document.getElementById('closeModal').click();
 
             //Se lanza la alerta de éxito
@@ -788,13 +789,14 @@ async function borrarPagina(id) {
                 //Se realiza la petición axios
                 await axios.delete('/paginas/' + id);
 
+                //Se cargan todas las páginas
+                leerPaginas();
+
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
                     title: 'Página ocultada exitosamente'
                 })
-
-                buscarPaginas();
             } catch (error) {
                 //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
@@ -839,13 +841,14 @@ async function recuperarPagina(id) {
                 //Se realiza la petición axios
                 await axios.delete('/paginas/' + id);
 
+                //Se cargan todas las páginas
+                leerPaginas();
+
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
                     title: 'Página recuperada exitosamente'
                 })
-
-                buscarPaginas();
             } catch (error) {
                 //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
