@@ -14,9 +14,9 @@ definePageMeta({
     <div class="principal flex justify-between items-center mt-6 ml-2">
         <div class="topprincipal flex justify-between font-semibold text-base">
             <div class="options">
-                <a href="" class="active ml-4">Inicio</a>
-                <a href="" class="ml-4 ">Graficas</a>
-                <a href="" class="ml-4 ">Reportes</a>
+                <NuxtLink to="" class="active ml-4">Inicio</NuxtLink>
+                <NuxtLink to="/graficas" class="ml-4 ">Graficas</NuxtLink>
+                <NuxtLink to="" class="ml-4 ">Reportes</NuxtLink>
             </div>
         </div>
         <div class="endtop flex justify-between w-20">
