@@ -1,5 +1,5 @@
 <template>
-    <div class="mr-8">
+    <div class="h-screen overflow-y-scroll pr-4">
         <div class="principal flex justify-between items-center mt-6 ml-2">
             <div class="topprincipal flex justify-between font-semibold text-base">
                 <div class="options">
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="flex w-full justify-between mt-10">
-                <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
+                <div class="h-96 w-5/12 bg-slate-200 rounded-2xl">
                     <div class="text-left p-4">
                         <p class="text-2xl font-bold">Eventos - Semana</p>
                         <p class="text-xl font-normal">Agendados</p>
@@ -50,7 +50,7 @@
                         <!-- Aqui vas a hacer que se cargue la grafica -->
                     </div>
                 </div>
-                <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
+                <div class="h- w-5/12 bg-slate-200 rounded-2xl">
                     <div class="text-left p-4">
                         <p class="text-2xl font-bold">Usuarios - Registrados</p>
                     </div>
@@ -79,4 +79,7 @@ definePageMeta({
 .container-grafics{
     width: 730px;
 }
+/* #scroll_pages{
+    overflow-y: scroll;
+} */
 </style>
