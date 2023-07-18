@@ -81,7 +81,7 @@
                                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                                 <button
                                     class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
-                                    id="btnedit" @click="leerUnEnlace(enlace.id_enlace_amigo)"
+                                    id="btnedit" @click="cambiandoEstado(usuario.id_usuario)"
                                     v-if="usuario.visibilidad_usuario == 1">
                                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -134,36 +134,8 @@
             </div>
         </div>
     </div>
+    <ModalUsuarios :estado_modal="estado_modal" :id_usuario="id" />
 </template>
-<style scoped>
-.content-buttons input {
-    border: 3px solid #1b1c30;
-}
-
-.buttons button {
-    border: 3px solid #1b1c30;
-}
-
-#btnadd {
-    background-color: #1b1c30;
-}
-
-.data-contained {
-    border: 3px solid #1b1c30;
-}
-
-x .buttons-data .editbtn {
-    border: 3px solid #c99856;
-    background-color: #1b1c30;
-}
-
-.buttons-data .deletebtn {
-    border: 3px solid #872727;
-}
-
-.buttons-data .changebtn {
-    border: 3px solid #3F4280;
-}</style>
 <script setup>
 //Seccion para importar librerias o extensiones
 import { Modal } from 'flowbite'
@@ -197,10 +169,12 @@ onMounted(() => {
         });
     }
 });
-//Seccion para establecer variables constantes
+//Seccion para establecer variables
 const data = ref(null);
 const pagina = ref(useRoute().query.pagina || 1);
 let usuarios = computed(() => data.value.data);
+let estado_modal = false;
+let id;
 const buscar = ref({
     buscador: "",
 })
@@ -215,5 +189,53 @@ async function leerUsuarios() {
     }
 }
 await leerUsuarios();
+function cambiandoEstado(id_usuario) {
+    estado_modal = true;
+    id = id_usuario;
+    const modalElement = document.getElementById('staticModal');
+    const closeButton = document.getElementById('closeModal');
+    const modalText = document.getElementById('modalText');
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+    const modal = new Modal(modalElement, modalOptions);
+    modalText.textContent = 'Editar';
+    modal.show();
+    closeButton.addEventListener('click', function () {
+        //Ocultamos el modal
+        modal.hide();
+        //Limpiamos el modal
+        limpiarForm();
+    });
+}
 </script>
+<style scoped>
+.content-buttons input {
+    border: 3px solid #1b1c30;
+}
 
+.buttons button {
+    border: 3px solid #1b1c30;
+}
+
+#btnadd {
+    background-color: #1b1c30;
+}
+
+.data-contained {
+    border: 3px solid #1b1c30;
+}
+
+.buttons-data .editbtn {
+    border: 3px solid #c99856;
+}
+
+.buttons-data .deletebtn {
+    border: 3px solid #872727;
+}
+
+.buttons-data .changebtn {
+    border: 3px solid #3F4280;
+}
+</style>
