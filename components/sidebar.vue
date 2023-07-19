@@ -1,7 +1,7 @@
 <template>
     <aside class="flex justify-center items-center fixed top-0 left-0 z-40 w-16 h-screen">
       <div class="flex-col items-center">
-        <ul class="space-y-2 mr-6 m-4">
+        <ul class="space-y-2 mr-6">
           <li>
             <NuxtLink class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700" to="/principal">
               <svg width="28px" height="28px" viewBox="0 0 24 24"
