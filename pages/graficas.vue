@@ -34,9 +34,10 @@
             <div class="h-2/3 w-full bg-slate-200 rounded-2xl pl-4">
                 <div class="flex-col text-center pt-4">
                     <p class="text-2xl font-extrabold ">Donaciones registradas en la semana actual</p>
-                    <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal">${{ totalSuma }}</span></p>
-                    <div class="grafic h-80 w-full flex justify-center">
-                        <Line v-if="dataDonaciones" :data="chartDonaciones" :options="opcionesDonaciones" />
+                    <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal" v-if="totalSumaDonaciones">${{ totalSumaDonaciones }}</span><span class="text-xl font-normal" v-else>$0.00</span></p>
+                    <div class="grafic h-80 w-full flex justify-center items-center">
+                        <Line v-if="dataDonaciones && dataDonaciones.results?.length > 0 && dataListaDonaciones" :data="chartDonaciones" :options="opcionesDonaciones" />
+                        <p v-else-if="dataListaDonaciones">No hay donaciones registradas en esta semana.</p>
                     </div>
                 </div>
             </div>
@@ -74,22 +75,28 @@ definePageMeta({
     layout: "principal",
 })
 
-const dataDonaciones = ref();
+onMounted(() => {
+    leerDonaciones();
+});
 
-var totalSuma = null;
+const dataDonaciones = ref(null);
+
+var totalSumaDonaciones = null;
+
+const dataListaDonaciones = ref(false);
 
 async function leerDonaciones() {
     try {
         const { data: res } = await axios.get('/donaciones-graf');
         dataDonaciones.value = res;
-        totalSuma = dataDonaciones.value.totalSuma;
+        totalSumaDonaciones = dataDonaciones.value.totalSuma;
+        dataListaDonaciones.value = true;
         console.log(dataDonaciones.value);
+        console.log(totalSumaDonaciones);
     } catch (error) {
         console.log(error);
     }
 }
-
-leerDonaciones();
 
 const chartDonaciones = computed(() => {
     return {
@@ -97,21 +104,21 @@ const chartDonaciones = computed(() => {
         datasets: [
             {
                 label: "Cantidad donada",
-                pointRadius: 6,
-                pointHoverRadius: 8,
-                borderColor: '#1B1C30',
+                pointRadius: 8,
+                pointHoverRadius: 15,
+                borderColor: 'rgba(255,255,255,0)',
                 backgroundColor: (ctx) => {
                     const canvas = ctx.chart.ctx;
-                    const gradient = canvas.createLinearGradient(0, 0, 0, 300); // Ajustar las coordenadas para que el gradiente vaya de arriba hacia abajo
+                    const gradient = canvas.createLinearGradient(0, 0, 0, 500);
 
-                    gradient.addColorStop(0, 'rgba(28,37,219,1)');
-                    gradient.addColorStop(1, 'rgba(251,148,123,1)');
+                    gradient.addColorStop(1, 'rgba(28,37,219,0.7)');
+                    gradient.addColorStop(0, 'rgba(251,148,123,0.7)');
                     return gradient;
                 },
 
                 pointBackgroundColor: '#1B1C30',
                 fill: true,
-                tension: 0.5,
+                tension: 0,
                 data: dataDonaciones.value.results.map(item => item.cantidad_donada),
             },
         ],
