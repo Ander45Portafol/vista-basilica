@@ -1,5 +1,5 @@
 <template>
-    <div class="h-screen overflow-y-scroll pr-4">
+    <div class="mr-8">
         <div class="principal flex justify-between items-center mt-6 ml-2">
             <div class="topprincipal flex justify-between font-semibold text-base">
                 <div class="options">
@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="flex w-full justify-between mt-10">
-                <div class="h-96 w-5/12 bg-slate-200 rounded-2xl">
+                <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
                     <div class="text-left p-4">
                         <p class="text-2xl font-bold">Página - Secciones</p>
                         <p class="text-xl font-normal">Existentes</p>
@@ -54,7 +54,7 @@
                         <PolarArea v-if="dataNSecciones" :data="chartNSecciones" :options="opcionesNSecciones" />
                     </div>
                 </div>
-                <div class="h- w-5/12 bg-slate-200 rounded-2xl">
+                <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
                     <div class="text-left p-4">
                         <p class="text-2xl font-bold">Usuarios - Registrados</p>
                         <p class="text-2xl font-bold">Usuarios totales: <span> {{ totalUsuarios }} </span></p>
@@ -315,8 +315,4 @@ const opcionesAnuncios = {
 
 .container-grafics {
     width: 680px;
-}
-/* #scroll_pages{
-    overflow-y: scroll;
-} */
-</style>
+}</style>
