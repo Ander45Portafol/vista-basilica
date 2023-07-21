@@ -94,7 +94,7 @@
                                 </button>
                                 <button
                                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                                    @click="borrarPagina(usuario.id_usuario)" v-if="usuario.visibilidad_usuario == 1">
+                                    @click="borrarUsuario(usuario.id_usuario)" v-if="usuario.visibilidad_usuario == 1">
                                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -104,7 +104,7 @@
                                         </path>
                                     </svg>
                                 </button>
-                                <button @click="recuperarPagina(usuario.id_usuario)"
+                                <button @click="recuperarUsuario(usuario.id_usuario, usuario.nombre_usuario+' '+usuario.apellido_usuario)"
                                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                                     v-else>
                                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
@@ -134,7 +134,7 @@
             </div>
         </div>
     </div>
-    <ModalUsuarios :estado_modal="estado_modal" :id_usuario="id" />
+    <ModalUsuarios :estado_modal="estado_modal" :id_usuario="id"/>
 </template>
 <script setup>
 //Seccion para importar librerias o extensiones
@@ -142,6 +142,7 @@ import { Modal } from 'flowbite'
 import { TailwindPagination } from 'laravel-vue-pagination';
 import { onMounted } from 'vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 definePageMeta({
     layout: "principal",
 })
@@ -173,8 +174,8 @@ onMounted(() => {
 const data = ref(null);
 const pagina = ref(useRoute().query.pagina || 1);
 let usuarios = computed(() => data.value.data);
-let estado_modal = false;
-let id;
+const estado_modal = ref(false);
+const id=ref(null);
 const buscar = ref({
     buscador: "",
 })
@@ -189,9 +190,22 @@ async function leerUsuarios() {
     }
 }
 await leerUsuarios();
+watch(pagina, async () => {
+    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
+    if (buscar.value.buscador != "") {
+        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
+        //buscarEnlaces();
+    } else {
+        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
+        leerUsuarios();
+    }
+    //Se cambia la url para agregar en que pagina se encuentra el usuario
+    useRouter().push({ query: { pagina: pagina.value } })
+})
+
 function cambiandoEstado(id_usuario) {
-    estado_modal = true;
-    id = id_usuario;
+    estado_modal.value = true;
+    id.value = id_usuario;
     const modalElement = document.getElementById('staticModal');
     const closeButton = document.getElementById('closeModal');
     const modalText = document.getElementById('modalText');
@@ -203,10 +217,63 @@ function cambiandoEstado(id_usuario) {
     modalText.textContent = 'Editar';
     modal.show();
     closeButton.addEventListener('click', function () {
-        //Ocultamos el modal
+        estado_modal.value=false;
         modal.hide();
-        //Limpiamos el modal
-        limpiarForm();
+    });
+}
+//Codigo para cambiar el estado del usuarios a inactivo
+async function borrarUsuario(id) {
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea ocultar el registro?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                await axios.delete('/usuarios/' + id);
+                leerUsuarios();
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Usuario desactivado exitosamente'
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
+}
+//Función para cambiar un usuario a activo
+async function recuperarUsuario(id, nombre_completo) {
+
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea hacer activar a "+nombre_completo+"?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                await axios.delete('/usuarios/' + id);
+                leerUsuarios();
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Usuario activo'
+                })
+            } catch (error) {
+                console.log(error);
+            }
+        }
     });
 }
 </script>
