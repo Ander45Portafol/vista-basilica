@@ -4,11 +4,13 @@ import {
     Tooltip,
     Legend,
     BarElement,
+    RadialLinearScale,
     CategoryScale,
     LinearScale,
     PointElement,
     LineElement,
-    Filler
+    Filler,
+    ArcElement
 } from "chart.js";
 export default defineNuxtPlugin((nuxtApp) => {
     ChartJS.register(
@@ -20,6 +22,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         LinearScale,
         PointElement,
         LineElement,
-        Filler
+        Filler,
+        ArcElement,
+        RadialLinearScale
     );
 });
