@@ -641,6 +641,7 @@ async function leerUnEnlace(id) {
                 descripcion_enlace: res.data.descripcion_enlace,
                 visibilidad_enlace: res.data.visibilidad_enlace ? true : false
             }
+            console.log(res.data);
         })
     } catch (error) {
         console.log(error);

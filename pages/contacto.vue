@@ -704,6 +704,7 @@ async function leerUnContacto(id) {
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
                 visibilidad_contacto: res.data.visibilidad_contacto ? true : false
             }
+            console.log(res.data);
         })
     } catch (error) {
         //Se extrae el mensaje de error
