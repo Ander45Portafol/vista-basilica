@@ -19,7 +19,7 @@ onMounted(() => {
    <div class="body w-screen overflow-hidden">
       <div class="contained-flex h-screen w-full">
          <sidebar />
-         <main class=" h-screen ml-20 overflow-y-scroll">
+         <main class=" h-screen ml-20 overflow-hidden">
             <section class="">
                <slot></slot>
             </section>

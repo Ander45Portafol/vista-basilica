@@ -289,10 +289,74 @@
 </template>
 <script setup>
 const props = defineProps({
+    estado_modal: Boolean,
     id_usuario: Number,
-    datoUser: Object,
 });
-console.log(props.id_usuario);
+if (props.estado_modal) {
+    console.log('actualizar');
+} else {
+    async function crearUsuario() {
+        if (validarNombre() && form.tipo_documento != 0 && validarUsuario() && form.id_rol_usuario != 0 && validarApellido() && validarNumeroDocumento() && validarNumeroTelefono()) {
+            try {
+                //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+                const formData = {
+                    nombre_usuario: form.value.nombre_usuario,
+                    apellido_usuario: form.value.apellido_usuario,
+                    usuario: form.value.usuario,
+                    numero_documento_usuario: form.value.numero_documento_usuario,
+                    tipo_documento: form.value.tipo_documento,
+                    correo_usuario: form.value.correo_usuario,
+                    telefono_usuario: form.value.telefono_usuario,
+                    tema: form.value.tema,
+                    idioma: form.value.idioma,
+                    visibilidad_usuario: form.value.visibilidad_usuario,
+                    id_rol_usuario: form.value.id_rol_usuario,
+                };
+                leerUsuarios();
+                //Se realiza la petición axios mandando la ruta y el formData
+                await axios.post("/usuarios/", formData);
+
+                //Se lanza la alerta con el mensaje de éxito
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Usuario creado exitosamente'
+                })
+                //Se cargan todas las páginas y se cierra el modal
+
+                document.getElementById('closeModal').click();
+
+            } catch (error) {
+                console.log(error);
+                const mensajeError = error.response.data.message;
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const sqlState = validaciones.extraerSqlState(mensajeError);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const res = validaciones.mensajeSqlState(sqlState);
+
+                    //Se cierra el modal
+                    document.getElementById('closeModal').click();
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: res,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensajeError,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        }
+    }
+}
 import axios from 'axios';
 import validaciones from '../../assets/validaciones.js';
 import Swal from 'sweetalert2';
@@ -310,7 +374,8 @@ const form = ref({
     visibilidad_usuario: false,
     id_rol_usuario: 0,
 })
-function llenarDatos() {;
+function llenarDatos() {
+    ;
     // form.value = {
     //     id_usuario: props.datoUser.id_usuario,
     //     nombre_usuario: props.datoUser.nombre_usuario,
@@ -347,67 +412,6 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
-async function crearUsuario() {
-    if (validarNombre() && form.tipo_documento != 0 && validarUsuario() && form.id_rol_usuario != 0 && validarApellido() && validarNumeroDocumento() && validarNumeroTelefono()) {
-        try {
-            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-            const formData = {
-                nombre_usuario: form.value.nombre_usuario,
-                apellido_usuario: form.value.apellido_usuario,
-                usuario: form.value.usuario,
-                numero_documento_usuario: form.value.numero_documento_usuario,
-                tipo_documento: form.value.tipo_documento,
-                correo_usuario: form.value.correo_usuario,
-                telefono_usuario: form.value.telefono_usuario,
-                tema: form.value.tema,
-                idioma: form.value.idioma,
-                visibilidad_usuario: form.value.visibilidad_usuario,
-                id_rol_usuario: form.value.id_rol_usuario,
-            };
-            leerUsuarios();
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/usuarios/", formData);
-
-            //Se lanza la alerta con el mensaje de éxito
-            Toast.fire({
-                icon: 'success',
-                title: 'Usuario creado exitosamente'
-            })
-            //Se cargan todas las páginas y se cierra el modal
-
-            document.getElementById('closeModal').click();
-
-        } catch (error) {
-            console.log(error);
-            const mensajeError = error.response.data.message;
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: mensajeError,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
-    }
-}
 function validarApellido() {
     var res = validaciones.validarSoloLetras(form.value.apellido_usuario);
     return res;
