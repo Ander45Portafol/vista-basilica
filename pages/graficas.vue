@@ -34,42 +34,60 @@
             <div class="h-2/3 w-full bg-slate-200 rounded-2xl pl-4">
                 <div class="flex-col text-center pt-4">
                     <p class="text-2xl font-extrabold ">Donaciones registradas en la semana actual</p>
-                    <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal" v-if="totalSumaDonaciones">${{ totalSumaDonaciones }}</span><span class="text-xl font-normal" v-else>$0.00</span></p>
+                    <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal"
+                            v-if="totalSumaDonaciones">${{ totalSumaDonaciones }}</span><span class="text-xl font-normal"
+                            v-else>$0.00</span></p>
                     <div class="grafic h-80 w-full flex justify-center items-center">
-                        <Line v-if="dataDonaciones && dataDonaciones.results?.length > 0 && dataListaDonaciones" :data="chartDonaciones" :options="opcionesDonaciones" />
+                        <Line v-if="dataDonaciones && dataDonaciones.results?.length > 0 && dataListaDonaciones"
+                            :data="chartDonaciones" :options="opcionesDonaciones" />
                         <p v-else-if="dataListaDonaciones">No hay donaciones registradas en esta semana.</p>
                     </div>
                 </div>
             </div>
             <div class="flex w-full justify-between mt-10">
-                <div class="h-96 w-5/12 bg-slate-200 rounded-2xl">
+                <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Eventos - Semana</p>
-                        <p class="text-xl font-normal">Agendados</p>
+                        <p class="text-2xl font-bold">Página - Secciones</p>
+                        <p class="text-xl font-normal">Existentes</p>
                     </div>
                     <div class="grafic">
-                        <!-- Aqui vas a hacer que se cargue la grafica -->
+                        <PolarArea v-if="dataNSecciones" :data="chartNSecciones" :options="opcionesNSecciones" />
                     </div>
                 </div>
-                <div class="h- w-5/12 bg-slate-200 rounded-2xl">
+                <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
                     <div class="text-left p-4">
                         <p class="text-2xl font-bold">Usuarios - Registrados</p>
+                        <p class="text-2xl font-bold">Usuarios totales: <span> {{ totalUsuarios }} </span></p>
                     </div>
-                    <div class="grafic">
-                        <!-- Aqui vas a hacer que se cargue la grafica -->
+                    <div class="grafic h-2/3">
+                        <Pie v-if="dataNUsuarios" :data="chartNUsuarios" :options="opcionesNUsuarios" />
                     </div>
                 </div>
             </div>
             <div class="flex w-full justify-between mt-10">
-                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl"></div>
-                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl"></div>
+                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl">
+                    <div class="text-left p-4">
+                        <p class="text-2xl font-bold">Eventos - Semanales</p>
+                    </div>
+                    <div class="grafic h-2/3">
+                        <Bar v-if="dataEventos" :data="chartEventos" :options="opcionesEventos" />
+                    </div>
+                </div>
+                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl">
+                    <div class="text-left p-4">
+                        <p class="text-2xl font-bold">Anuncios - Mensuales</p>
+                    </div>
+                    <div class="grafic h-2/3">
+                        <Bar v-if="dataAnuncios" :data="chartAnuncios" :options="opcionesAnuncios" />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 <script setup>
 import axios from 'axios';
-import { Line } from "vue-chartjs";
+import { Line, Pie, PolarArea, Bar } from "vue-chartjs";
 
 definePageMeta({
     layout: "principal",
@@ -77,6 +95,10 @@ definePageMeta({
 
 onMounted(() => {
     leerDonaciones();
+    leerNUsuarios();
+    leerNSecciones();
+    leerEventos();
+    leerAnuncios();
 });
 
 const dataDonaciones = ref(null);
@@ -91,8 +113,6 @@ async function leerDonaciones() {
         dataDonaciones.value = res;
         totalSumaDonaciones = dataDonaciones.value.totalSuma;
         dataListaDonaciones.value = true;
-        console.log(dataDonaciones.value);
-        console.log(totalSumaDonaciones);
     } catch (error) {
         console.log(error);
     }
@@ -140,6 +160,152 @@ const opcionesDonaciones = {
     }
 }
 
+const dataNUsuarios = ref(null);
+
+const dataListaNUsuarios = ref(false);
+
+var totalUsuarios = null;
+
+async function leerNUsuarios() {
+    try {
+        const { data: res } = await axios.get('/usuarios-graf');
+        dataNUsuarios.value = res;
+        totalUsuarios = dataNUsuarios.value.totalUsuarios;
+        dataListaNUsuarios.value = true;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const chartNUsuarios = computed(() => {
+    return {
+        labels: dataNUsuarios.value.results.map(item => item.rol_usuario),
+        datasets: [
+            {
+                label: "N° de usuarios: ",
+                data: dataNUsuarios.value.results.map(item => item.n_usuarios),
+                backgroundColor: ["#7A78B4", "#565587"],
+            },
+        ],
+    };
+});
+
+const opcionesNUsuarios = {
+    responsive: true,
+    maintainAspectRatio: false,
+}
+
+
+const dataNSecciones = ref(null);
+
+const dataListaNSecciones = ref(false);
+
+async function leerNSecciones() {
+    try {
+        const { data: res } = await axios.get('/secciones-graf');
+        dataNSecciones.value = res;
+        dataListaNSecciones.value = true;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const chartNSecciones = computed(() => {
+    return {
+        labels: dataNSecciones.value.map(item => item.nombre_pagina),
+        datasets: [
+            {
+                label: "N° de secciones: ",
+                data: dataNSecciones.value.map(item => item.n_secciones),
+                backgroundColor: ["rgba(255, 202, 81, 0.5)", "rgba(192, 161, 255, 0.5)"],
+                borderColor: ["rgba(255, 202, 81, 1)", "rgba(138, 80, 255, 1)"]
+            },
+        ],
+    };
+});
+
+const opcionesNSecciones = {
+    responsive: true,
+    maintainAspectRatio: false,
+}
+
+const dataEventos = ref(null);
+
+const dataListaEventos = ref(false);
+
+async function leerEventos() {
+    try {
+        const { data: res } = await axios.get('/eventos-graf');
+        dataEventos.value = res;
+        dataListaEventos.value = true;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const chartEventos = computed(() => {
+    return {
+        labels: dataEventos.value.map(item => item.fecha_evento),
+        datasets: [
+            {
+                label: "N° de eventos:",
+                data: dataEventos.value.map(item => item.cantidad_eventos),
+                barPercentage: 0.5,
+                backgroundColor: ["#9497DF", "#565587", "#47497A", "#6C6BA9", "#565587"],
+            },
+        ],
+    };
+});
+
+const opcionesEventos = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: false
+        }
+    }
+}
+
+const dataAnuncios = ref(null);
+
+const dataListaAnuncios = ref(false);
+
+async function leerAnuncios() {
+    try {
+        const { data: res } = await axios.get('/anuncios-graf');
+        dataAnuncios.value = res;
+        dataListaAnuncios.value = true;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const chartAnuncios = computed(() => {
+    return {
+        labels: dataAnuncios.value.map(item => item.fecha),
+        datasets: [
+            {
+                label: "N° de anuncios:",
+                data: dataAnuncios.value.map(item => item.cantidad_anuncios),
+                barPercentage: 0.5,
+                backgroundColor: ["rgba(255, 202, 81, 1)", "rgba(192, 161, 255, 1)"],
+            },
+        ],
+    };
+});
+
+const opcionesAnuncios = {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: false
+        }
+    }
+}
+
 </script>
 <style scoped>
 .topprincipal .active {
@@ -150,7 +316,4 @@ const opcionesDonaciones = {
 .container-grafics {
     width: 680px;
 }
-/* #scroll_pages{
-    overflow-y: scroll;
-} */
 </style>
