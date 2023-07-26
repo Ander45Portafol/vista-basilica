@@ -1,9 +1,12 @@
 <script setup>
 import 'flowbite';
 import Iconoir from 'iconoir/icons/iconoir.svg'
+import { initFlowbite } from 'flowbite'
 import { onMounted } from 'vue';
 
 onMounted(() => {
+
+   initFlowbite();
 
    function validarToken() {
       if (!localStorage.getItem('token')) {
