@@ -16,6 +16,9 @@ module.exports = {
         lightPurpleLogin: '#5357aa',
         space:'#32345A',
         darkSpace:'#1b1c30',
+        purpleToolTip: '#9B70F0',
+        golden: '#C99856',
+        hola: '#F7886D',
       }
     },
   },
