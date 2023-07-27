@@ -12,6 +12,7 @@
     "@nuxt/devtools": "latest",
     "@nuxtjs/tailwindcss": "^6.7.2",
     "@types/node": "^18",
+    "http-proxy-middleware": "^2.0.6",
     "nuxt": "^3.5.2"
   },
   "dependencies": {
@@ -27,8 +28,8 @@
     "iconoir": "^6.8.0",
     "install": "^0.13.0",
     "laravel-vue-pagination": "^4.1.0",
+    "npm": "^9.8.0",
     "sweetalert2": "^11.7.12",
-    "vue-chartjs": "^5.2.0",
-    "npm": "^9.8.0"
+    "vue-chartjs": "^5.2.0"
   }
 }
