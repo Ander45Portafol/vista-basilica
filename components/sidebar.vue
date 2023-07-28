@@ -200,7 +200,19 @@
         </div>
       </ul>
   </div>
-</aside></template>
-<style>aside {
+</aside>
+</template>
+<style>
+
+aside {
   background-color: #1b1c30;
-}</style>
+}
+</style>
+
+<script setup>
+  import { onMounted } from 'vue';
+
+  onMounted(() => {
+    initFlowbite();
+  });
+</script>

@@ -35,7 +35,8 @@
                 <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre grupo/nombre encargado)" v-model="buscar.buscador" @keyup="buscarGruposParroquiales()">
+                        placeholder="Buscar... (nombre grupo/nombre encargado)" v-model="buscar.buscador"
+                        @keyup="buscarGruposParroquiales()">
                     <div class="flex justify-end items-center">
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
                                 stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -94,13 +95,14 @@
                 <div
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                        <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+                        <img :src="api_url + grupos_parroquiale.logo_grupo" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{
                                 grupos_parroquiale.nombre_grupo }}</p>
-                            <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a href="#">{{
-                                grupos_parroquiale.nombre_encargado }}</a>
+                            <p v-if="grupos_parroquiale.nombre_encargado != null"
+                                class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a href="#">{{
+                                    grupos_parroquiale.nombre_encargado }}</a>
                             </p>
                             <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{
                                 grupos_parroquiale.descripcion_grupo }}
@@ -367,6 +369,7 @@
                             <div class="flex-col">
                                 <p class="mb-4 text-center text-gray-200">Logo - Grupo</p>
                                 <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
+                                <input type="file" @change="cambiarImagen">
                             </div>
                             <div class="modal-buttons mt-6 flex justify-end items-end">
                                 <!-- Se le coloca la función para limpiar el form al botón -->
@@ -419,6 +422,9 @@
                             </div>
                         </div>
                     </form>
+                    <pre>
+                        {{ form }}
+                    </pre>
                 </div>
             </div>
         </div>
@@ -542,6 +548,7 @@ onMounted(() => {
     }
 });
 
+var api_url = 'http://localhost:8000/storage/images/';
 //Operaciones SCRUD
 
 //Variable reactiva para llenar el select
@@ -720,6 +727,7 @@ function limpiarForm() {
     form.value.telefono_encargado = "";
     form.value.descripcion_grupo = "";
     form.value.visibilidad_grupo = false;
+    form.value.logo_grupo = "";
     form.value.id_categoria_grupo_parroquial = "0";
 }
 
@@ -739,6 +747,10 @@ function submitForm() {
     } else {
         actualizarGrupoParroquial();
     }
+}
+
+const cambiarImagen = (e) => {
+    form.value.logo_grupo = e.target.files[0];
 }
 
 //Función para crear una sección
@@ -875,19 +887,25 @@ async function actualizarGrupoParroquial() {
             //Se establece una variable de id con el valor que tiene guardado la variable form
             var id = form.value.id_grupo_parroquial;
             //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-            const formData = {
-                nombre_grupo: form.value.nombre_grupo,
-                nombre_encargado: form.value.nombre_encargado,
-                apellido_encargado: form.value.apellido_encargado,
-                correo_encargado: form.value.correo_encargado,
-                telefono_encargado: form.value.telefono_encargado,
-                descripcion_grupo: form.value.descripcion_grupo,
-                visibilidad_grupo: form.value.visibilidad_grupo,
-                id_categoria_grupo_parroquial: form.value.id_categoria_grupo_parroquial,
-                id_configuracion_parroquia: 1
-            };
+            const formData = new FormData();
+            formData.append('nombre_grupo', form.value.nombre_grupo);
+            formData.append('nombre_encargado', form.value.nombre_encargado);
+            formData.append('apellido_encargado', form.value.apellido_encargado);
+            formData.append('correo_encargado', form.value.correo_encargado);
+            formData.append('telefono_encargado', form.value.telefono_encargado);
+            formData.append('descripcion_grupo', form.value.descripcion_grupo);
+            formData.append('visibilidad_grupo', form.value.visibilidad_grupo ? 1 : 0);
+            formData.append('id_categoria_grupo_parroquial', form.value.id_categoria_grupo_parroquial);
+            formData.append('logo_grupo', form.value.logo_grupo);
+
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.put("/grupos_parroquia/" + id, formData);
+            var res = await axios.post("/grupos_parroquia_update/" + id, formData,{
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            console.log(res);
 
             //Se cargan todas las páginas y se cierra el modal
             leerGruposParroquiales();
@@ -900,6 +918,7 @@ async function actualizarGrupoParroquial() {
             })
 
         } catch (error) {
+            console.log(error);
             //Se extrae el mensaje de error
             const mensajeError = error.response.data.message;
             //Se extrae el sqlstate (identificador de acciones SQL)
