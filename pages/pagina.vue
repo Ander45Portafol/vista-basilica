@@ -28,7 +28,7 @@
                 </button>
             </div>
         </div> -->
-        <MenuPaginaDashboard/>
+        <MenuPaginaDashboard />
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
@@ -726,15 +726,20 @@ async function actualizarPagina() {
             //Se establece una variable de id con el valor que tiene guardado la variable form
             var id = form.value.id_pagina;
             //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-            const formData = {
-                nombre_pagina: form.value.nombre_pagina,
-                numero_pagina: form.value.numero_pagina,
-                descripcion_pagina: form.value.descripcion_pagina,
-                visibilidad_pagina: form.value.visibilidad_pagina,
-            };
+            const formData = new FormData();
+            formData.append('nombre_pagina', form.value.nombre_pagina);
+            formData.append('numero_pagina', form.value.numero_pagina);
+            formData.append('descripcion_pagina', form.value.descripcion_pagina);
+            formData.append('visibilidad_pagina', form.value.visibilidad_pagina ? true : false);
+
+            console.log(formData.get('nombre_pagina'));
 
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.put("/paginas/" + id, formData);
+            await axios.put('/paginas/' + id, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
 
             //Se cargan todas las páginas y se cierra el modal
             leerPaginas();
@@ -747,6 +752,7 @@ async function actualizarPagina() {
             })
 
         } catch (error) {
+            console.log(error);
             //Se extrae el mensaje de error
             const mensajeError = error.response.data.message;
             //Se extrae el sqlstate (identificador de acciones SQL)
