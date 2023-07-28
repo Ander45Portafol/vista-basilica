@@ -1,9 +1,12 @@
 <script setup>
 import 'flowbite';
 import Iconoir from 'iconoir/icons/iconoir.svg'
+import { initFlowbite } from 'flowbite'
 import { onMounted } from 'vue';
 
 onMounted(() => {
+
+   initFlowbite();
 
    function validarToken() {
       if (!localStorage.getItem('token')) {
@@ -19,7 +22,7 @@ onMounted(() => {
    <div class="body w-screen overflow-hidden">
       <div class="contained-flex h-screen w-full">
          <sidebar />
-         <main class=" h-screen mr-8 ml-20 overflow-hidden">
+         <main class=" h-screen ml-20 overflow-hidden">
             <section class="">
                <slot></slot>
             </section>

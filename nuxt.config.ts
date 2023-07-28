@@ -1,9 +1,7 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
-export default defineNuxtConfig({
-    modules: [
-        '@nuxtjs/tailwindcss'
-    ],
+module.exports = {
+    modules: ['@nuxtjs/tailwindcss'],
     tailwindcss: {
-        cssPath: '~/assets/css/input.css'
-    }
-})
+      cssPath: '~/assets/css/input.css',
+    },
+    serverMiddleware: ['~/proxy.js'],
+  };
