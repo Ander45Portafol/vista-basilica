@@ -6,7 +6,6 @@ import { onMounted } from 'vue';
 
 onMounted(() => {
 
-   initFlowbite();
 
    function validarToken() {
       if (!localStorage.getItem('token')) {

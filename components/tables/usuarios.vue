@@ -231,11 +231,10 @@
 <script setup>
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Modal } from 'flowbite'
+import { Modal } from 'flowbite';
 const props = defineProps({
     dataUsers: Array,
 });
-
 function estadoActualizar(id) {
     const modalElement = document.getElementById('staticModal');
     const closeButton = document.getElementById('closeModal');
@@ -323,6 +322,10 @@ async function borrarUsuario(id) {
                     Toast.fire({
                         icon: 'success',
                         title: 'Usuario desactivado exitosamente'
+                    }).then((result) => {
+                        if (result.dismiss === Toast.DismissReason.timer) {
+                            location.reload();
+                        }
                     }));
             } catch (error) {
                 console.log(error);
@@ -350,7 +353,11 @@ async function recuperarUsuario(id, nombre_completo) {
                 Toast.fire({
                     icon: 'success',
                     title: 'Usuario activo'
-                })
+                }).then((result) => {
+                    if (result.dismiss === Toast.DismissReason.timer) {
+                        location.reload();
+                    }
+                });
             } catch (error) {
                 console.log(error);
             }
@@ -380,10 +387,11 @@ async function crearUsuario() {
         Toast.fire({
             icon: 'success',
             title: 'Usuario creado exitosamente'
-        })
-        //Se cargan todas las páginas y se cierra el modal
-
-
+        }).then((result) => {
+            if (result.dismiss === Toast.DismissReason.timer) {
+                location.reload();
+            }
+        });
     } catch (error) {
         console.log(error);
         const mensajeError = error.response.data.message;
@@ -428,12 +436,16 @@ async function actualizarUsuario() {
             visibilidad_usuario: form.value.visibilidad_usuario,
             id_rol_usuario: form.value.id_rol_usuario,
         };
-        await axios.put("/usuarios/"+ id, formData);
+        await axios.put("/usuarios/" + id, formData);
         document.getElementById('closeModal').click();
         Toast.fire({
             icon: 'success',
             title: 'Enlace actualizado exitosamente'
-        })
+        }).then((result) => {
+            if (result.dismiss === Toast.DismissReason.timer) {
+                location.reload();
+            }
+        });
     }
     catch (error) {
         console.log(error);

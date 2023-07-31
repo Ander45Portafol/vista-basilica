@@ -125,8 +125,7 @@ const Toast = Swal.mixin({
 async function leerUsuarios() {
     try {
         const { data: res } = await axios.get(`/usuarios?page=${pagina.value}`);
-        data.value = res;
-        console.log(res);
+        return data.value = res;
     } catch (error) {
         console.log(error);
     }
@@ -176,7 +175,6 @@ async function buscarUsuarios() {
         });
     }
 }
-
 </script>
 <style scoped>
 .content-buttons input {
