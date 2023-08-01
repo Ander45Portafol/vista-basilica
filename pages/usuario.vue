@@ -58,12 +58,18 @@
                 </div>
                 <p class="text-black text-lg"></p>
                 <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-                <TablesUsuarios :dataUsers="usuarios" />
-                <div class="flex justify-center mt-6">
-                    <TailwindPagination
-                        :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
-                        :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                        :data="data" @pagination-change-page="pagina = $event" />
+                <div class="h-screen">
+                    <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ usuarios.length }}<span
+                            class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
+                    <div class="tables overflow-y-scroll h-4/6">
+                        <TablesUsuarios :dataUsers="usuarios" />
+                        <div class="flex justify-center mt-6">
+                            <TailwindPagination
+                                :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
+                                :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1"
+                                :keepLength="true" :data="data" @pagination-change-page="pagina = $event" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -188,20 +194,7 @@ async function buscarUsuarios() {
 #btnadd {
     background-color: #1b1c30;
 }
-
-.data-contained {
-    border: 3px solid #1b1c30;
-}
-
-.buttons-data .editbtn {
-    border: 3px solid #c99856;
-}
-
-.buttons-data .deletebtn {
-    border: 3px solid #872727;
-}
-
-.buttons-data .changebtn {
-    border: 3px solid #3F4280;
+.tables::-webkit-scrollbar{
+    width:5px;
 }
 </style>

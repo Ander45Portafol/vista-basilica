@@ -1,7 +1,4 @@
 <template>
-    <div>
-        <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ dataUsers.length }}<span
-                class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
         <div class="contained-data flex-col" v-for="usuario in dataUsers" :key="usuario.id_usuario">
             <div
                 class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
@@ -57,9 +54,7 @@
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- Main modal -->
+        </div>    <!-- Main modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-5xl max-h-full">
