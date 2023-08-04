@@ -86,7 +86,7 @@
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.nombre_usuario" />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.nombre_usuario">
-                                    {{ 
+                                    {{
                                         form.nombre_usuario.length }} /100</span>
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
                                 <label for="nombre_usuario"
@@ -287,7 +287,27 @@
                         <div class="flex-col">
                             <div class="">
                                 <p class="mb-4 text-center text-gray-200">Imagen - Usuario</p>
-                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-2 rounded-lg" />
+                                <div class="flex-col">
+                                    <div class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative"
+                                        @click="seleccionarArchivo" @mouseover="iconoBorrarTrue"
+                                        @mouseleave="iconoBorrarFalse">
+                                        <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
+                                        <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
+                                        <div v-if="mostrarIconoBorrar"
+                                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
+                                                viewBox="0 0 24 24"
+                                                style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                                                <path
+                                                    d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <button type="button"
+                                        class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300"
+                                        @click="seleccionarArchivo">Seleccionar Imagen</button>
+                                </div>
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center mr-4" type="button"
@@ -309,7 +329,8 @@
                                     </svg>
                                 </button>
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
-                                    :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()" @click="accionForm('crear')">
+                                    :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()"
+                                    @click="accionForm('crear')">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -323,7 +344,8 @@
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
                                 <button id="btnModalUpdate" type="submit"
                                     :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()"
-                                    class="h-10 w-10 rounded-lg flex justify-center items-center" @click="accionForm('actualizar')">
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center"
+                                    @click="accionForm('actualizar')">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -350,6 +372,46 @@ import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
     dataUsers: Array,
 });
+
+const mostrarIconoBorrar = ref(false);
+
+function iconoBorrarTrue(){
+    if(imagenPreview.value){
+        mostrarIconoBorrar.value = true;
+    }
+}
+
+function iconoBorrarFalse(){
+    if(imagenPreview.value){
+        mostrarIconoBorrar.value = false;
+    }
+}
+
+const imagenPreview = ref(null);
+const seleccionarArchivo = () => {
+    if (mostrarIconoBorrar.value == false) {
+        inputImagen.value.click();
+    }else{
+        limpiarImagen();
+    }
+};
+const inputImagen = ref(null);
+
+const cambiarImagen = () => {
+    const input = inputImagen.value;
+    const file = input.files;
+    if (file && file[0]) {
+        form.value.logo_grupo = file[0];
+        console.log(form.value.logo_grupo);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagenPreview.value = e.target.result;
+        };
+        reader.readAsDataURL(file[0]);
+        return file[0];
+    }
+};
+
 //Variable para validar que acción se quiere hacer cuando se hace un submit al form
 var formAccion = null;
 
@@ -418,6 +480,12 @@ async function leerUnUsuario(id_usuario) {
                 tema: "Claro",
                 visibilidad_usuario: res.data.visibilidad_usuario ? true : false,
                 id_rol_usuario: res.data.id_rol_usuario,
+            };
+            if(res.data.logo_grupo != null){
+                form.value.logo_grupo = res.data.logo_grupo;
+                imagenPreview.value = api_url + form.value.logo_grupo;
+            }else{
+                form.value.logo_grupo = "";
             }
         });
     } catch (error) {
@@ -644,5 +712,4 @@ function validarNumeroTelefono() {
 
 .modal-buttons button {
     background-color: #32345a;
-}
-</style>
+}</style>
