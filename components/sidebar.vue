@@ -184,13 +184,13 @@
         </li>
         <div class="flex justify-center items-end h-24">
           <li class="item">
-            <NuxtLink to="/" data-tooltip-target="tooltip-logout" data-tooltip-placement="right" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700"><svg width="28px"
+            <button @click="deshabilitarToken" type="button" data-tooltip-target="tooltip-logout" data-tooltip-placement="right" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700"><svg width="28px"
                 height="28px" stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                 color="#000000">
                 <path d="M12 12h7m0 0l-3 3m3-3l-3-3M19 6V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2v-1"
                   stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
-            </NuxtLink>
+            </button>
             <div id="tooltip-logout" role="tooltip"
             class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-red-500 transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip">
             Cerrar Sesión
@@ -200,7 +200,38 @@
         </div>
       </ul>
   </div>
-</aside></template>
-<style>aside {
+</aside>
+</template>
+<style>
+
+aside {
   background-color: #1b1c30;
-}</style>
+}
+</style>
+
+<script setup>
+  import { onMounted, ref } from 'vue';
+  import { initTooltips } from 'flowbite'
+  import axios from "axios";
+
+  onMounted(() => {
+    initTooltips();
+    token.value = localStorage.getItem('token');
+  });
+
+  const token = ref(null);
+
+  async function deshabilitarToken() {
+    try {
+        await axios.post("/logout", token.value, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+        localStorage.removeItem('token');
+        navigateTo('/');
+    }catch(error){
+        console.log(error);
+    }
+}
+</script>

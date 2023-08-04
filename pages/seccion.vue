@@ -433,15 +433,6 @@ definePageMeta({
 });
 
 onMounted(() => {
-    //Se valida si hay un token en el localStorage y si no te regresa al login
-    function validarToken() {
-        if (!localStorage.getItem('token')) {
-            navigateTo('/');
-        }
-    }
-
-    validarToken();
-
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById('btnadd');
