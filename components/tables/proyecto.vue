@@ -18,7 +18,8 @@
             </div>
             <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
                 v-if="proyecto.visibilidad_proyecto == 1">
-                <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 imagenbtn" @click="modalImages()">
+                <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 imagenbtn max-[750px]:mr-0"
+                    @click="modalImages()">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M21 7.6v12.8a.6.6 0 01-.6.6H7.6a.6.6 0 01-.6-.6V7.6a.6.6 0 01.6-.6h12.8a.6.6 0 01.6.6z"
@@ -28,8 +29,9 @@
                             stroke="#3F4280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                 </button>
-                <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4"
-                    @click="leerUnProyecto(proyecto.id_proyecto_donacion)" v-if="proyecto.visibilidad_proyecto == 1">
+                <button
+                    class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4 max-[750px]:mt-2"
+                    @click="estadoActualizar(proyecto.id_proyecto_donacion)" v-if="proyecto.visibilidad_proyecto == 1">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -39,7 +41,8 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="borrarProyecto(proyecto.id_proyecto_donacion)" v-if="proyecto.visibilidad_proyecto == 1">
+                    @click="borrarProyecto(proyecto.id_proyecto_donacion, proyecto.nombre_proyecto)"
+                    v-if="proyecto.visibilidad_proyecto == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -52,7 +55,7 @@
                 v-else>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="recuperarProyecto(proyecto.id_proyecto_donacion)">
+                    @click="recuperarProyecto(proyecto.id_proyecto_donacion, proyecto.nombre_proyecto)">
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
@@ -213,7 +216,7 @@
                                     </svg>
                                 </button>
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
-                                    type="submit">
+                                    type="submit" @click="accionForm('crear')">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -227,7 +230,8 @@
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
                                 <button id="btnModalUpdate" type="submit"
                                     :disabled="!validarNombreProyecto() || form.estado_proyecto == 0"
-                                    class="h-10 w-10 rounded-lg flex justify-center items-center">
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center"
+                                    @click="accionForm('actualizar')">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -285,7 +289,7 @@
                     </div>
                     <div class="h-72 w-full image-container"></div>
                     <div class="flex justify-between items-center mt-6">
-                        <div class="relative z-0 w-64" >
+                        <div class="relative z-0 w-64">
                             <input type="text" id="proyecto" name="proyecto" required maxlength="100"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
@@ -302,10 +306,24 @@
     </div>
 </template>
 <script setup>
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import { Modal } from 'flowbite'
 import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
     dataProyectos: Array,
+});
+//Toast del sweetalert
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
 });
 const form = ref({
     id_proyecto_donacion: "",
@@ -314,7 +332,15 @@ const form = ref({
     meta_monetaria: "",
     estado_proyecto: "",
     visibilidad_proyecto: false,
-})
+});
+function limpiarForm() {
+    form.value.id_proyecto_donacion = "";
+    form.value.nombre_proyecto = "";
+    form.value.descripcion_proyecto = "";
+    form.value.meta_monetaria = "";
+    form.value.estado_proyecto = 0;
+    form.value.visibilidad_proyecto = false;
+}
 function modalImages() {
     const modalElement = document.getElementById('imagemodal');
     const modalOptions = {
@@ -328,8 +354,209 @@ function modalImages() {
         modal.hide();
     });
 }
-//Validaciones
+//Procesos del CRUD
+var formAccion = null;
 
+function accionForm(accion) {
+    formAccion = accion;
+}
+
+function submitForm() {
+    if (formAccion == "crear") {
+        crearProyecto();
+    } else {
+        actualizarProyecto();
+    }
+}
+//Funcion para crear un proyecto
+async function crearProyecto() {
+    if (validarNombreProyecto() && form.estado_proyecto != 0) {
+        try {
+            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
+            const formData = {
+                nombre_proyecto: form.value.nombre_proyecto,
+                descripcion_proyecto: form.value.descripcion_proyecto,
+                meta_monetaria: form.value.meta_monetaria,
+                estado_proyecto: form.value.estado_proyecto,
+                visibilidad_proyecto: form.value.visibilidad_proyecto,
+            };
+
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/proyectos", formData);
+
+            //Se cargan todas las páginas y se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se lanza la alerta con el mensaje de éxito
+            Toast.fire({
+                icon: 'success',
+                title: 'Proyecto creado exitosamente'
+            }).then((result) => {
+                if (result.dismiss === Toast.DismissReason.timer) {
+                    location.reload();
+                }
+            });
+
+        } catch (error) {
+            console.log(error);
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
+
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        }
+    }
+}
+function estadoActualizar(id) {
+    const modalElement = document.getElementById('staticModal');
+    const closeButton = document.getElementById('closeModal');
+    const modalText = document.getElementById('modalText');
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+    const modal = new Modal(modalElement, modalOptions);
+    modalText.textContent = "Editar";
+    modal.show();
+    document.getElementById('btnModalAdd').classList.add('hidden');
+    document.getElementById('btnModalUpdate').classList.remove('hidden');
+    closeButton.addEventListener('click', function () {
+        modal.hide();
+    });
+    leerUnProyecto(id);
+}
+async function leerUnProyecto(id_proyecto) {
+    try {
+        await axios.get('/proyectos/' + id_proyecto).then(res => {
+            console.log(res.data);
+            form.value = {
+                id_proyecto_donacion: res.data.id_proyecto_donacion,
+                nombre_proyecto: res.data.nombre_proyecto,
+                descripcion_proyecto: res.data.descripcion_proyecto,
+                meta_monetaria: res.data.meta_monetaria,
+                estado_proyecto: res.data.estado_proyecto,
+                visibilidad_proyecto: res.data.visibilidad_proyecto,
+            }
+        });
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+async function actualizarProyecto() {
+    var id = form.value.id_proyecto_donacion;
+    try {
+        const formData = {
+            nombre_proyecto: form.value.nombre_proyecto,
+            descripcion_proyecto: form.value.descripcion_proyecto,
+            meta_monetaria: form.value.meta_monetaria,
+            estado_proyecto: form.value.estado_proyecto,
+            visibilidad_proyecto: form.value.visibilidad_proyecto,
+        };
+        await axios.post("/proyectos_update/" + id, formData);
+        document.getElementById('closeModal').click();
+        Toast.fire({
+            icon: 'success',
+            title: 'Proyecto actualizado exitosamente'
+        }).then((result) => {
+            if (result.dismiss === Toast.DismissReason.timer) {
+                location.reload();
+            }
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+//Codigo para cambiar el estado del proyecto a inactivo
+async function borrarProyecto(id, nombre_proyecto) {
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea ocultar el proyecto " + nombre_proyecto + "?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                await axios.delete('/proyectos/' + id).then(
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Proyecto desactivado exitosamente'
+                    }).then((result) => {
+                        if (result.dismiss === Toast.DismissReason.timer) {
+                            location.reload();
+                        }
+                    }));
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
+}
+//Función para cambiar un proyecto a activo
+async function recuperarProyecto(id, nombre_proyecto) {
+
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea hacer activar el proyecto " + nombre_proyecto + "?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                await axios.delete('/proyectos/' + id);
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Proyecto activo'
+                }).then((result) => {
+                    if (result.dismiss === Toast.DismissReason.timer) {
+                        location.reload();
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
+}
+//Validaciones
 //Función para validar que la meta monetaria lleve 2 decimales
 function convertirDecimales() {
     if (form.value.meta_monetaria != null) {
@@ -343,8 +570,7 @@ function convertirDecimales() {
 function validarNombreProyecto() {
     var res = validaciones.validarSoloLetrasYNumeros(form.value.nombre_proyecto);
     return res;
-}
-
+} 
 </script>
 <style scoped>
 .data-contained {
