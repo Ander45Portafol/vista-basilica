@@ -124,11 +124,8 @@ import validaciones from '../assets/validaciones.js';
 
 definePageMeta({
   layout: "default",
+  middleware: "middleware-login"
 });
-
-onMounted(() => {
-  localStorage.removeItem('token');
-})
 
 //Toast de sweetalert 
 const Toast = Swal.mixin({
@@ -169,10 +166,9 @@ async function login() {
       console.log(token.data.usuario.data);
       //Si retorno un token se redirige a la página principal
       if (token != null) {
-        localStorage.setItem('token', captoken);
-        localStorage.setItem('usuario', capusuario);
+        localStorage.setItem('token', captoken)
         console.log(localStorage.getItem('token'));
-        console.log(localStorage.getItem('usuario'));
+        localStorage.setItem('usuario', capusuario);
         navigateTo('/principal');
         //Si no retorno token es lanza un error
       } else {
@@ -195,7 +191,6 @@ async function login() {
 //Validaciones
 function validarUsuario() {
   var res = validaciones.validarUsuario(form.value.usuario);
-  console.log(res);
   return res;
 }
 
