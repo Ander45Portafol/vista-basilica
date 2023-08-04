@@ -1,7 +1,8 @@
 <template>
     <div class="topprincipal flex justify-between font-semibold text-base ml-4">
         <div class="options">
-            <a href="" class="active ml-4">Anuncios</a>
+            <NuxtLink to="/donacion" class="ml-4">Donaciones</NuxtLink>
+            <a href="" class="active ml-4">Proyectos</a>
         </div>
         <div class="endtop flex justify-between w-20">
             <NuxtLink to="/perfil">

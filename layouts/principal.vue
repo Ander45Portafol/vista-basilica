@@ -1,8 +1,6 @@
 <script setup>
 import 'flowbite';
 import Iconoir from 'iconoir/icons/iconoir.svg'
-import { onMounted } from 'vue';
-
 </script>
 <template>
    <div class="body w-screen overflow-hidden">

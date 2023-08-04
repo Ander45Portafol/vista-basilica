@@ -1,6 +1,6 @@
 <template>
-    <div class="pr-4">
-        <div class="principal flex justify-between items-center mt-6 ml-2">
+    <div class="">
+        <div class="principal flex justify-between items-center mt-6 ml-2 pr-8">
             <div class="topprincipal flex justify-between font-semibold text-base">
                 <div class="options">
                     <NuxtLink to="/principal" class="ml-4">Inicio</NuxtLink>
@@ -334,5 +334,8 @@ const opcionesAnuncios = {
 
 .container-grafics {
     width: 680px;
+}
+.mdprincipal::-webkit-scrollbar{
+    width: 5px;
 }
 </style>
