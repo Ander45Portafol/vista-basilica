@@ -394,8 +394,7 @@
                             <p class="mb-4 text-center text-gray-200">Logo - Grupo</p>
                             <div class="flex-col">
                                 <div class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative"
-                                    @click="seleccionarArchivo" @mouseover="iconoBorrarTrue"
-                                    @mouseleave="iconoBorrarFalse">
+                                    @click="seleccionarArchivo" @mouseover="iconoBorrarTrue" @mouseleave="iconoBorrarFalse">
                                     <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
                                     <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
                                     <div v-if="mostrarIconoBorrar"
@@ -806,14 +805,14 @@ function submitForm() {
 
 const mostrarIconoBorrar = ref(false);
 
-function iconoBorrarTrue(){
-    if(imagenPreview.value){
+function iconoBorrarTrue() {
+    if (imagenPreview.value) {
         mostrarIconoBorrar.value = true;
     }
 }
 
-function iconoBorrarFalse(){
-    if(imagenPreview.value){
+function iconoBorrarFalse() {
+    if (imagenPreview.value) {
         mostrarIconoBorrar.value = false;
     }
 }
@@ -823,7 +822,7 @@ const imagenPreview = ref(null);
 const seleccionarArchivo = () => {
     if (mostrarIconoBorrar.value == false) {
         inputImagen.value.click();
-    }else{
+    } else {
         limpiarImagen();
     }
 };
@@ -856,20 +855,29 @@ async function crearGrupoParroquial() {
     ) {
         try {
             //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-            const formData = {
-                nombre_grupo: form.value.nombre_grupo,
-                nombre_encargado: form.value.nombre_encargado,
-                apellido_encargado: form.value.apellido_encargado,
-                correo_encargado: form.value.correo_encargado,
-                telefono_encargado: form.value.telefono_encargado,
-                descripcion_grupo: form.value.descripcion_grupo,
-                visibilidad_grupo: form.value.visibilidad_grupo,
-                id_categoria_grupo_parroquial: form.value.id_categoria_grupo_parroquial,
-                id_categoria_grupo_parroquia: 1,
-            };
+            const formData = new FormData();
+            formData.append("nombre_grupo", form.value.nombre_grupo);
+            formData.append("nombre_encargado", form.value.nombre_encargado);
+            formData.append("apellido_encargado", form.value.apellido_encargado);
+            formData.append("correo_encargado", form.value.correo_encargado);
+            formData.append("telefono_encargado", form.value.telefono_encargado);
+            formData.append("descripcion_grupo", form.value.descripcion_grupo);
+            formData.append(
+                "visibilidad_grupo",
+                form.value.visibilidad_grupo ? 1 : 0
+            );
+            formData.append(
+                "id_categoria_grupo_parroquial",
+                form.value.id_categoria_grupo_parroquial
+            );
+            formData.append("logo_grupo", form.value.logo_grupo);
 
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/grupos_parroquia", formData);
+            await axios.post("/grupos_parroquia", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
 
             //Se cargan todas las páginas y se cierra el modal
             leerGruposParroquiales();
@@ -955,10 +963,10 @@ async function leerUnGrupoParroquial(id) {
                 visibilidad_grupo: res.data.visibilidad_grupo ? true : false,
                 id_categoria_grupo_parroquial: res.data.id_categoria_grupo_parroquial,
             };
-            if(res.data.logo_grupo != null){
+            if (res.data.logo_grupo != null) {
                 form.value.logo_grupo = res.data.logo_grupo;
                 imagenPreview.value = api_url + form.value.logo_grupo;
-            }else{
+            } else {
                 form.value.logo_grupo = "";
             }
         });
@@ -1012,7 +1020,6 @@ async function actualizarGrupoParroquial() {
                 form.value.id_categoria_grupo_parroquial
             );
             formData.append("logo_grupo", form.value.logo_grupo);
-            console.log(formData.get('logo_grupo'));
 
             //Se realiza la petición axios mandando la ruta y el formData
             var res = await axios.post("/grupos_parroquia_update/" + id, formData, {
