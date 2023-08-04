@@ -390,15 +390,6 @@ definePageMeta({
 
 //Se usa el onMounted para añadir el max y min del input de fecha al crear el componente
 onMounted(() => {
-    //Se valida si hay un token en el localStorage y si no te regresa al login
-    function validarToken() {
-        if (!localStorage.getItem('token')) {
-            navigateTo('/');
-        }
-    }
-
-    validarToken();
-
     function validarFechas() {
         var res = validaciones.validarFecha(0, 1, 0);
         document.getElementById('fecha_donacion').min = res.min;

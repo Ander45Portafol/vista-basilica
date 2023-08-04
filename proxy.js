@@ -7,7 +7,7 @@ module.exports = function (app) {
             target: 'http://localhost:8000',
             changeOrigin: true,
             pathRewrite: {
-                '^/api': '/api', // Cambia '/api' en la URL a '/api' en la solicitud al servidor backend
+                '^/api': '/api',
             },
         })
     );

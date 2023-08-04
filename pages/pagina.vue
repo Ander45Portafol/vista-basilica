@@ -80,12 +80,12 @@
         </div>
       </div>
       <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-      <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+      <p v-if="paginas" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
         {{ paginas.length }}
         <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
       </p>
       <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-      <div class="contained-data flex-col" v-for="pagina in paginas" :key="pagina.id_pagina">
+      <div class="contained-data flex-col" v-if="paginas" v-for="pagina in paginas" :key="pagina.id_pagina">
         <div
           class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
           <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -140,7 +140,7 @@
         </div>
       </div>
       <div class="flex justify-center mt-6">
-        <TailwindPagination :item-classes="[
+        <TailwindPagination v-if="data" :item-classes="[
           'text-gray-500',
           'rounded-full',
           'border-none',
@@ -178,7 +178,7 @@
         </div>
         <!-- Modal body -->
         <div class="p-6 space-y-6 pb-20">
-          <form enctype="multipart/form-data" id="modalForm" class="flex justify-evenly" @submit.prevent="submitForm()">
+          <form id="modalForm" class="flex justify-evenly" @submit.prevent="submitForm()">
             <div class="flex-col w-72">
               <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
               <input type="hidden" name="id_pagina" id="id_pagina" v-model="form.id_pagina" />
@@ -385,17 +385,7 @@ definePageMeta({
 /*En este hook se crean todas las funciones relacionadas al manejo del modal, se crean en este onMounted para que se
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
-  //Se valida si hay un token en el localStorage y si no te regresa al login
-  function validarToken() {
-    if (!localStorage.getItem("token")) {
-      navigateTo("/");
-    } else {
-      console.log(localStorage.getItem("token"));
-    }
-  }
-
-  validarToken();
-
+  token.value = localStorage.getItem('token');
   //Constantes para manejar el modal
   //Constante para el botón de agregar un registro
   const buttonElement = document.getElementById("btnadd");
@@ -441,7 +431,11 @@ onMounted(() => {
       limpiarForm();
     });
   }
+
+  leerPaginas();
 });
+
+const token = ref(null);
 
 //Operaciones SCRUD
 
@@ -457,9 +451,6 @@ const buscar = ref({
   buscador: "",
 });
 
-//Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
-await leerPaginas();
-
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
   id_pagina: "",
@@ -471,7 +462,7 @@ const form = ref({
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let paginas = computed(() => data.value.data);
+let paginas = computed(() => data.value?.data);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
@@ -494,7 +485,11 @@ async function leerPaginas() {
   try {
     /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
         además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
-    const { data: res } = await axios.get(`/paginas?page=${pagina.value}`);
+    const { data: res } = await axios.get(`/paginas?page=${pagina.value}`, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
     //Se asigna el valor de la respuesta de axios a la constante data
     data.value = res;
   } catch (error) {
@@ -522,7 +517,11 @@ async function buscarPaginas() {
     if (buscar.value.buscador != "") {
       // Realiza la petición axios para llamar a la ruta de búsqueda
       const { data: res } = await axios.get(
-        `/paginas_search?page=${pagina.value}&buscador=${buscar.value.buscador}`
+        `/paginas_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+        },
+      }
       );
       // Actualiza los datos en la constante data
       data.value = res;
@@ -616,7 +615,11 @@ async function crearPagina() {
       };
 
       //Se realiza la petición axios mandando la ruta y el formData
-      await axios.post("/paginas", formData);
+      await axios.post("/paginas", formData, {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+        },
+      });
 
       //Se cargan todas las páginas y se cierra el modal
       leerPaginas();
@@ -655,7 +658,11 @@ async function leerUnaPagina(id) {
   try {
     accionForm("actualizar");
     //Se hace la petición axios y se evalua la respuesta
-    await axios.get("/paginas/" + id).then((res) => {
+    await axios.get("/paginas/" + id, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    }).then((res) => {
       //Constante para el modal
       const modalElement = document.getElementById("staticModal");
       //Constante que contiene las caracteristicas del modal
@@ -735,10 +742,12 @@ async function actualizarPagina() {
         form.value.visibilidad_pagina ? 1 : 0
       );
 
-      console.log(formData.get("nombre_pagina"));
-
       //Se realiza la petición axios mandando la ruta y el formData
-      await axios.post("/paginas_update/" + id, formData);
+      await axios.post("/paginas_update/" + id, formData, {
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+        },
+      });
 
       //Se cargan todas las páginas y se cierra el modal
       leerPaginas();
@@ -751,23 +760,32 @@ async function actualizarPagina() {
       });
     } catch (error) {
       console.log(error);
-      //Se extrae el mensaje de error
       const mensajeError = error.response.data.message;
-      //Se extrae el sqlstate (identificador de acciones SQL)
-      const sqlState = validaciones.extraerSqlState(mensajeError);
-      //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-      const res = validaciones.mensajeSqlState(sqlState);
+      if (!error.response.data.errors) {
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
 
-      //Se cierra el modal
-      document.getElementById("closeModal").click();
+        //Se cierra el modal
+        document.getElementById('closeModal').click();
 
-      //Se muestra un sweetalert con el mensaje
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: res,
-        confirmButtonColor: "#3F4280",
-      });
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: res,
+          confirmButtonColor: '#3F4280'
+        });
+      } else {
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: mensajeError,
+          confirmButtonColor: '#3F4280'
+        });
+      }
     }
   }
 }
@@ -791,7 +809,11 @@ async function borrarPagina(id) {
     if (result.isConfirmed) {
       try {
         //Se realiza la petición axios
-        await axios.delete("/paginas/" + id);
+        await axios.delete("/paginas/" + id, {
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+          },
+        });
 
         //Se cargan todas las páginas
         leerPaginas();
@@ -843,7 +865,11 @@ async function recuperarPagina(id) {
     if (result.isConfirmed) {
       try {
         //Se realiza la petición axios
-        await axios.delete("/paginas/" + id);
+        await axios.delete("/paginas/" + id, {
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+          },
+        });
 
         //Se cargan todas las páginas
         leerPaginas();

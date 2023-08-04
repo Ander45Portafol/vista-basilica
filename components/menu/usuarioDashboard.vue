@@ -16,8 +16,7 @@
                         stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
             </NuxtLink>
-            <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
-                data-drawer-placement="right" aria-controls="drawer-right-example">
+            <button type="button">
                 <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                     <path

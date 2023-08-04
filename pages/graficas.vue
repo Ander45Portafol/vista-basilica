@@ -72,7 +72,7 @@
                         <p class="text-2xl font-bold">Usuarios - Registrados</p>
                         <p class="text-2xl font-bold">Usuarios totales: <span> {{ totalUsuarios }} </span></p>
                     </div>
-                    <div class="grafic h-3/4 w-full flex justify-center items-center">
+                    <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <Pie v-if="dataNUsuarios && dataNUsuarios.results.length > 0 && dataListaNUsuarios"
                             :data="chartNUsuarios" :options="opcionesNUsuarios" />
                         <p v-else-if="dataListaNUsuarios">No se encontro información.</p>
