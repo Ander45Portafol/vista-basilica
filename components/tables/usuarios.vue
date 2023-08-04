@@ -86,7 +86,7 @@
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.nombre_usuario" />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.nombre_usuario">
-                                    {{
+                                    {{ 
                                         form.nombre_usuario.length }} /100</span>
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
                                 <label for="nombre_usuario"
@@ -568,7 +568,7 @@ async function actualizarUsuario() {
             visibilidad_usuario: form.value.visibilidad_usuario,
             id_rol_usuario: form.value.id_rol_usuario,
         };
-        await axios.put("/usuarios/" + id, formData);
+        await axios.post("/usuarios_update/" + id, formData);
         document.getElementById('closeModal').click();
         Toast.fire({
             icon: 'success',

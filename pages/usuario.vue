@@ -58,7 +58,7 @@
             <div class="h-screen">
                 <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ usuarios.length }}<span
                         class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
-                <div class="tables overflow-y-scroll h-4/6">
+                <div class="tables overflow-y-scroll h-4/6 pr-4">
                     <TablesUsuarios :dataUsers="usuarios" />
                     <div class="flex justify-center mt-6">
                         <TailwindPagination
@@ -192,6 +192,9 @@ async function buscarUsuarios() {
 }
 
 .tables::-webkit-scrollbar {
-    width: 5px;
+    width: 7px;
+}
+.tables::-webkit-scrollbar-thumb {
+    background: #32345A;
 }
 </style>
