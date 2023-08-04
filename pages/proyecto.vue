@@ -57,7 +57,7 @@
             <div class="h-screen">
                 <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ proyectos.length }}<span
                         class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
-                <div class="tables overflow-y-scroll h-4/6">
+                <div class="tables overflow-y-scroll h-4/6 pr-4">
                     <TablesProyecto :dataProyectos="proyectos" />
                     <div class="flex justify-center mt-6">
                         <TailwindPagination
@@ -85,7 +85,10 @@
 }
 
 .tables::-webkit-scrollbar {
-    width: 5px;
+    width: 7px;
+}
+.tables::-webkit-scrollbar-thumb {
+    background: #32345A;
 }
 </style>
 <script setup>
@@ -125,7 +128,6 @@ onMounted(() => {
     //Constante para el botón de cerrar en el modal
     const closeButton = document.getElementById('closeModal');
     //Constante para el titulo del modal
-    const modalText = document.getElementById('modalText');
     //Constante para el boton de actualizar dentro del modal
     const modalBtnUpdate = document.getElementById('btnModalUpdate');
     //Constante para el boton de agregar dentro del modal
@@ -147,10 +149,7 @@ onMounted(() => {
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
-            limpiarForm();
-            accionForm('crear');
             modalBtnAdd.classList.remove('hidden');
-            modalText.textContent = "Registrar";
             modalBtnUpdate.classList.add('hidden');
             modal.show();
         });
@@ -158,7 +157,6 @@ onMounted(() => {
         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
         closeButton.addEventListener('click', function () {
             modal.hide();
-            limpiarForm();
         });
     }
 })
@@ -180,15 +178,6 @@ const buscar = ref({
 //Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
 await leerProyectos();
 
-//Se crea una variable reactiva para manejar la información del modal
-const form = ref({
-    id_proyecto_donacion: "",
-    nombre_proyecto: "",
-    descripcion_proyecto: "",
-    meta_monetaria: "",
-    estado_proyecto: "",
-    visibilidad_proyecto: false,
-})
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
@@ -293,325 +282,4 @@ function limpiarForm() {
     form.value.estado_proyecto = 0;
     form.value.visibilidad_proyecto = false;
 }
-
-//Toast del sweetalert
-const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
-})
-
-//Variable para validar que acción se quiere hacer cuando se hace un submit al form
-var formAccion = null;
-
-//Función para evaluar que acción se va a hacer al hacer submit en el form
-function accionForm(accion) {
-    formAccion = accion;
-}
-
-//Función para crear/actualizar un registro cuando se ejecuta el submit del form
-function submitForm() {
-    if (formAccion == "crear") {
-        crearProyecto();
-    } else {
-        actualizarProyecto();
-    }
-}
-
-
-//Función para crear una página
-async function crearProyecto() {
-    if (validarNombreProyecto() && form.estado_proyecto != 0) {
-        try {
-            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-            const formData = {
-                nombre_proyecto: form.value.nombre_proyecto,
-                descripcion_proyecto: form.value.descripcion_proyecto,
-                meta_monetaria: form.value.meta_monetaria,
-                estado_proyecto: form.value.estado_proyecto,
-                visibilidad_proyecto: form.value.visibilidad_proyecto,
-            };
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/proyectos", formData);
-
-            //Se cargan todas las páginas y se cierra el modal
-            leerProyectos();
-            document.getElementById('closeModal').click();
-
-            //Se lanza la alerta con el mensaje de éxito
-            Toast.fire({
-                icon: 'success',
-                title: 'Proyecto creado exitosamente'
-            })
-
-        } catch (error) {
-            console.log(error);
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        }
-    }
-}
-
-//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
-async function leerUnProyecto(id) {
-    try {
-        accionForm('actualizar');
-        //Se hace la petición axios y se evalua la respuesta
-        await axios.get('/proyectos/' + id).then(res => {
-            //Constante para el modal
-            const modalElement = document.getElementById('staticModal');
-            //Constante que contiene las caracteristicas del modal
-            const modalOptions = {
-                backdrop: 'static',
-                backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-            };
-            //Instanciamos el boton para cerrar el modal
-            const closeButton = document.getElementById('closeModal');
-            //Constante para el titulo del modal
-            const modalText = document.getElementById('modalText');
-            //Constante para el boton de agregar dentro del modal
-            const modalBtnAdd = document.getElementById('btnModalAdd');
-            //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById('btnModalUpdate');
-            //Instanciamos el modal
-            const modal = new Modal(modalElement, modalOptions);
-            //Le modificamos el texto del header al modal
-            modalText.textContent = 'Editar';
-            //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove('hidden');
-            //Ocultamos el botón de agregar en el modal
-            modalBtnAdd.classList.add('hidden');
-            //Abrimos el modal
-            modal.show();
-            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-            closeButton.addEventListener('click', function () {
-                //Ocultamos el modal
-                modal.hide();
-                //Limpiamos el modal
-                limpiarForm();
-            })
-            //Llenamos los inputs del modal con su respectiva informacion
-            form.value = {
-                id_proyecto_donacion: res.data.id_proyecto_donacion,
-                nombre_proyecto: res.data.nombre_proyecto,
-                descripcion_proyecto: res.data.descripcion_proyecto,
-                meta_monetaria: res.data.meta_monetaria,
-                estado_proyecto: res.data.estado_proyecto,
-                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_proyecto: res.data.visibilidad_proyecto ? true : false
-            }
-        })
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
-    }
-}
-
-async function actualizarProyecto() {
-    if (validarNombreProyecto() && form.estado_proyecto != 0) {
-        try {
-            //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_proyecto_donacion;
-            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-            const formData = {
-                nombre_proyecto: form.value.nombre_proyecto,
-                descripcion_proyecto: form.value.descripcion_proyecto,
-                meta_monetaria: form.value.meta_monetaria,
-                estado_proyecto: form.value.estado_proyecto,
-                visibilidad_proyecto: form.value.visibilidad_proyecto,
-            };
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.put("/proyectos/" + id, formData);
-
-            //Se cargan todas las páginas y se cierra el modal
-            leerProyectos();
-            document.getElementById('closeModal').click();
-
-            //Se lanza la alerta de éxito
-            Toast.fire({
-                icon: 'success',
-                title: 'Proyecto actualizado exitosamente'
-            })
-
-        } catch (error) {
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        }
-    }
-}
-
-//Función para cambiar la visibilidad de una página para ocultarla
-async function borrarProyecto(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: 'Confirmación',
-        text: "¿Desea ocultar el registro?",
-        icon: 'warning',
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: '#3F4280',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete('/proyectos/' + id);
-
-                //Se cargan todas las páginas
-                leerProyectos();
-
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Proyecto ocultado exitosamente'
-                })
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
-    });
-}
-
-//Función para cambiar la visibilidad de una página para recuperarla
-async function recuperarProyecto(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: 'Confirmación',
-        text: "¿Desea recuperar el registro?",
-        icon: 'warning',
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: '#3F4280',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete('/proyectos/' + id);
-
-                //Se cargan todas las páginas
-                leerProyectos();
-
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Proyecto recuperado exitosamente'
-                })
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
-    });
-}
-
-//Validaciones
-
-//Función para validar que la meta monetaria lleve 2 decimales
-function convertirDecimales() {
-    if (form.value.meta_monetaria != null) {
-        var res = validaciones.convertirDecimales(form.value.meta_monetaria, 2);
-        if (res != false) {
-            form.value.meta_monetaria = res;
-        }
-    }
-}
-//Función para validar que el nombre de página solo lleve letras y números
-function validarNombreProyecto() {
-    var res = validaciones.validarSoloLetrasYNumeros(form.value.nombre_proyecto);
-    return res;
-}
-
 </script>
