@@ -9,3 +9,5 @@ npm install @fullcalendar/core
 npm install @fullcalendar/vue3
 
 5- Chart js: npm i vue-chartjs chart.js
+
+6- Proxy: npm i http-proxy-middleware

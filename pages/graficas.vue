@@ -1,6 +1,6 @@
 <template>
-    <div class="pr-4">
-        <div class="principal flex justify-between items-center mt-6 ml-2">
+    <div class="">
+        <div class="principal flex justify-between items-center mt-6 ml-2 pr-8">
             <div class="topprincipal flex justify-between font-semibold text-base">
                 <div class="options">
                     <NuxtLink to="/principal" class="ml-4">Inicio</NuxtLink>
@@ -72,7 +72,7 @@
                         <p class="text-2xl font-bold">Usuarios - Registrados</p>
                         <p class="text-2xl font-bold">Usuarios totales: <span> {{ totalUsuarios }} </span></p>
                     </div>
-                    <div class="grafic h-3/4 w-full flex justify-center items-center">
+                    <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <Pie v-if="dataNUsuarios && dataNUsuarios.results.length > 0 && dataListaNUsuarios"
                             :data="chartNUsuarios" :options="opcionesNUsuarios" />
                         <p v-else-if="dataListaNUsuarios">No se encontro información.</p>
@@ -334,5 +334,8 @@ const opcionesAnuncios = {
 
 .container-grafics {
     width: 680px;
+}
+.mdprincipal::-webkit-scrollbar{
+    width: 5px;
 }
 </style>

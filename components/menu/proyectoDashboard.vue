@@ -1,9 +1,8 @@
 <template>
     <div class="topprincipal flex justify-between font-semibold text-base ml-4">
         <div class="options">
-            <NuxtLink to="" class="active ml-4">Usuarios</NuxtLink>
-            <NuxtLink to="/rol_usuario" class="ml-4">Roles Usuarios</NuxtLink>
-            <NuxtLink to="/rol_acceso" class="ml-4">Roles Accesos</NuxtLink>
+            <NuxtLink to="/donacion" class="ml-4">Donaciones</NuxtLink>
+            <a href="" class="active ml-4">Proyectos</a>
         </div>
         <div class="endtop flex justify-between w-20">
             <NuxtLink to="/perfil">
@@ -16,7 +15,8 @@
                         stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
             </NuxtLink>
-            <button type="button">
+            <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
+                data-drawer-placement="right" aria-controls="drawer-right-example">
                 <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                     <path
