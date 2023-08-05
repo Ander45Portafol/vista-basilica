@@ -3,6 +3,8 @@
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                <img :src="api_url + usuario.imagen_usuario"
+                    class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{ usuario.nombre_usuario
@@ -373,16 +375,18 @@ const props = defineProps({
     dataUsers: Array,
 });
 
+var api_url = "http://localhost:8000/storage/usuarios/images/";
+
 const mostrarIconoBorrar = ref(false);
 
-function iconoBorrarTrue(){
-    if(imagenPreview.value){
+function iconoBorrarTrue() {
+    if (imagenPreview.value) {
         mostrarIconoBorrar.value = true;
     }
 }
 
-function iconoBorrarFalse(){
-    if(imagenPreview.value){
+function iconoBorrarFalse() {
+    if (imagenPreview.value) {
         mostrarIconoBorrar.value = false;
     }
 }
@@ -391,7 +395,7 @@ const imagenPreview = ref(null);
 const seleccionarArchivo = () => {
     if (mostrarIconoBorrar.value == false) {
         inputImagen.value.click();
-    }else{
+    } else {
         limpiarImagen();
     }
 };
@@ -401,8 +405,8 @@ const cambiarImagen = () => {
     const input = inputImagen.value;
     const file = input.files;
     if (file && file[0]) {
-        form.value.logo_grupo = file[0];
-        console.log(form.value.logo_grupo);
+        form.value.imagen_usuario = file[0];
+        console.log(form.value.imagen_usuario);
         const reader = new FileReader();
         reader.onload = (e) => {
             imagenPreview.value = e.target.result;
@@ -444,8 +448,32 @@ function estadoActualizar(id) {
     document.getElementById('btnModalUpdate').classList.remove('hidden');
     closeButton.addEventListener('click', function () {
         modal.hide();
+        limpiarForm();
     });
     leerUnUsuario(id);
+}
+
+function limpiarForm() {
+    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
+    form.value.id_usuario = "";
+    form.value.nombre_usuario = "";
+    form.value.apellido_usuario = "";
+    form.value.usuario = "";
+    form.value.numero_documento_usuario = "";
+    form.value.tipo_documento = "";
+    form.value.correo_usuario = "";
+    form.value.telefono_usuario="";
+    form.value.id_rol_usuario=0;
+    form.value.visibilidad_usuario = false;
+    form.value.id_categoria_grupo_parroquial = "0";
+    limpiarImagen();
+}
+function limpiarImagen() {
+    //Limpiar imagen
+    inputImagen.value.value = '';
+    imagenPreview.value = null;
+    form.value.imagen_usuario = "";
+    mostrarIconoBorrar.value = false;
 }
 
 const form = ref({
@@ -456,6 +484,7 @@ const form = ref({
     numero_documento_usuario: "",
     tipo_documento: 0,
     correo_usuario: "",
+    imagen_usuario: "",
     telefono_usuario: "",
     idioma: "Español (ES)",
     tema: "Claro",
@@ -481,11 +510,11 @@ async function leerUnUsuario(id_usuario) {
                 visibilidad_usuario: res.data.visibilidad_usuario ? true : false,
                 id_rol_usuario: res.data.id_rol_usuario,
             };
-            if(res.data.logo_grupo != null){
-                form.value.logo_grupo = res.data.logo_grupo;
-                imagenPreview.value = api_url + form.value.logo_grupo;
-            }else{
-                form.value.logo_grupo = "";
+            if (res.data.imagen_usuario != null) {
+                form.value.imagen_usuario = res.data.imagen_usuario;
+                imagenPreview.value = api_url + form.value.imagen_usuario;
+            } else {
+                form.value.imagen_usuario = "";
             }
         });
     } catch (error) {
@@ -566,22 +595,28 @@ async function recuperarUsuario(id, nombre_completo) {
 }
 async function crearUsuario() {
     try {
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            nombre_usuario: form.value.nombre_usuario,
-            apellido_usuario: form.value.apellido_usuario,
-            usuario: form.value.usuario,
-            numero_documento_usuario: form.value.numero_documento_usuario,
-            tipo_documento: form.value.tipo_documento,
-            correo_usuario: form.value.correo_usuario,
-            telefono_usuario: form.value.telefono_usuario,
-            tema: form.value.tema,
-            idioma: form.value.idioma,
-            visibilidad_usuario: form.value.visibilidad_usuario,
-            id_rol_usuario: form.value.id_rol_usuario,
-        };
+        const formData = new FormData();
+        formData.append("nombre_usuario", form.value.nombre_usuario);
+        formData.append("apellido_usuario", form.value.apellido_usuario);
+        formData.append("usuario", form.value.usuario);
+        formData.append("numero_documento_usuario", form.value.numero_documento_usuario);
+        formData.append("tipo_documento", form.value.tipo_documento);
+        formData.append("correo_usuario", form.value.correo_usuario);
+        formData.append("telefono_usuario", form.value.telefono_usuario);
+        formData.append("tema", form.value.tema);
+        formData.append("idioma", form.value.idioma);
+        formData.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
+        formData.append(
+            "id_rol_usuario",
+            form.value.id_rol_usuario
+        );
+        formData.append("imagen_usuario", form.value.imagen_usuario);
         //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/usuarios/", formData);
+        await axios.post("/usuarios/", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
         document.getElementById('closeModal').click();
         //Se lanza la alerta con el mensaje de éxito
         Toast.fire({
@@ -621,22 +656,29 @@ async function crearUsuario() {
     }
 }
 async function actualizarUsuario() {
-    var id = form.value.id_usuario;
     try {
-        const formData = {
-            nombre_usuario: form.value.nombre_usuario,
-            apellido_usuario: form.value.apellido_usuario,
-            usuario: form.value.usuario,
-            numero_documento_usuario: form.value.numero_documento_usuario,
-            tipo_documento: form.value.tipo_documento,
-            correo_usuario: form.value.correo_usuario,
-            telefono_usuario: form.value.telefono_usuario,
-            tema: form.value.tema,
-            idioma: form.value.idioma,
-            visibilidad_usuario: form.value.visibilidad_usuario,
-            id_rol_usuario: form.value.id_rol_usuario,
-        };
-        await axios.post("/usuarios_update/" + id, formData);
+        var id = form.value.id_usuario;
+        const formData = new FormData();
+        formData.append("nombre_usuario", form.value.nombre_usuario);
+        formData.append("apellido_usuario", form.value.apellido_usuario);
+        formData.append("usuario", form.value.usuario);
+        formData.append("numero_documento_usuario", form.value.numero_documento_usuario);
+        formData.append("tipo_documento", form.value.tipo_documento);
+        formData.append("correo_usuario", form.value.correo_usuario);
+        formData.append("telefono_usuario", form.value.telefono_usuario);
+        formData.append("tema", form.value.tema);
+        formData.append("idioma", form.value.idioma);
+        formData.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
+        formData.append(
+            "id_rol_usuario",
+            form.value.id_rol_usuario
+        );
+        formData.append("imagen_usuario", form.value.imagen_usuario);
+        await axios.post("/usuarios_update/" + id, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
         document.getElementById('closeModal').click();
         Toast.fire({
             icon: 'success',
@@ -712,4 +754,5 @@ function validarNumeroTelefono() {
 
 .modal-buttons button {
     background-color: #32345a;
-}</style>
+}
+</style>
