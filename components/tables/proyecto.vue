@@ -19,7 +19,7 @@
             <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
                 v-if="proyecto.visibilidad_proyecto == 1">
                 <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 imagenbtn max-[750px]:mr-0"
-                    @click="modalImages()">
+                    @click="modalImagenes(proyecto.id_proyecto_donacion)">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M21 7.6v12.8a.6.6 0 01-.6.6H7.6a.6.6 0 01-.6-.6V7.6a.6.6 0 01.6-.6h12.8a.6.6 0 01.6.6z"
@@ -277,7 +277,8 @@
                 <div class="p-8 space-y-6 flex-col">
                     <div class="flex justify-between items-center">
                         <p class="text-gray-100">Ingrese las imagenes que desee mostrar para sus proyectos publicos</p>
-                        <button class="bg-space h-10 w-14 flex justify-center items-center rounded-lg">
+                        <button class="bg-space h-10 w-14 flex justify-center items-center rounded-lg"
+                            @click="seleccionarArchivos">
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M13 21H3.6a.6.6 0 01-.6-.6V3.6a.6.6 0 01.6-.6h16.8a.6.6 0 01.6.6V13"
@@ -287,7 +288,15 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="h-72 w-full image-container"></div>
+                    <div class="h-80 w-full image-container grid grid-cols-5 gap-5 py-5 px-5">
+                        <div v-if="data_imagenes" v-for="item in data_imagenes" :key="item.id_imagen_proyecto" class="relative">
+                            <img :src="api_url + item.archivo_imagen" class="h-32 w-32 rounded-lg" />
+                        </div>
+                        <div v-for="(imagen, id) in imagenesPreviewArray" :key="id" class="relative">
+                            <img :src="imagen" class="h-32 w-32 rounded-lg" />
+                        </div>
+                        <input type="file" ref="inputImagenes" class="hidden" @change="cambiarImagenes" multiple />
+                    </div>
                     <div class="flex justify-between items-center mt-6">
                         <div class="relative z-0 w-64">
                             <input type="text" id="proyecto" name="proyecto" required maxlength="100"
@@ -296,7 +305,7 @@
                             <label for="proyecto"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Proyecto</label>
                         </div>
-                        <button class="w-32 h-10 bg-space text-white mt-4 rounded-lg">
+                        <button class="w-32 h-10 bg-space text-white mt-4 rounded-lg" @click="agregarImagenes">
                             Guardar
                         </button>
                     </div>
@@ -305,6 +314,42 @@
         </div>
     </div>
 </template>
+<style scoped>
+.data-contained {
+    border: 3px solid #1b1c30;
+}
+
+.modal-buttons button {
+    background-color: #32345a;
+}
+
+.buttons-data .editbtn {
+    border: 3px solid #c99856;
+}
+
+.buttons-data .deletebtn {
+    border: 3px solid #872727;
+}
+
+.buttons-data .changebtn {
+    border: 3px solid #3F4280;
+}
+
+.buttons-data .imagenbtn {
+    border: 3px solid #3F4280;
+}
+
+.modal {
+    background: linear-gradient(180deg,
+            rgba(63, 66, 128, 0.6241) 0%,
+            rgba(49, 50, 71, 0.5609) 100%);
+    background-color: #1e1e1e;
+}
+
+.image-container {
+    border: 3px solid #FFF;
+}
+</style>
 <script setup>
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -340,19 +385,6 @@ function limpiarForm() {
     form.value.meta_monetaria = "";
     form.value.estado_proyecto = 0;
     form.value.visibilidad_proyecto = false;
-}
-function modalImages() {
-    const modalElement = document.getElementById('imagemodal');
-    const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-    const modal = new Modal(modalElement, modalOptions);
-    modal.show();
-    const closeImagesButton = document.getElementById('imageclose');
-    closeImagesButton.addEventListener('click', function () {
-        modal.hide();
-    });
 }
 //Procesos del CRUD
 var formAccion = null;
@@ -419,7 +451,8 @@ async function crearProyecto() {
         }
     }
 }
-function estadoActualizar(id) {
+async function estadoActualizar(id) {
+    await leerUnProyecto(id);
     const modalElement = document.getElementById('staticModal');
     const closeButton = document.getElementById('closeModal');
     const modalText = document.getElementById('modalText');
@@ -434,9 +467,10 @@ function estadoActualizar(id) {
     document.getElementById('btnModalUpdate').classList.remove('hidden');
     closeButton.addEventListener('click', function () {
         modal.hide();
+        limpiarForm();
     });
-    leerUnProyecto(id);
 }
+
 async function leerUnProyecto(id_proyecto) {
     try {
         await axios.get('/proyectos/' + id_proyecto).then(res => {
@@ -570,41 +604,114 @@ function convertirDecimales() {
 function validarNombreProyecto() {
     var res = validaciones.validarSoloLetrasYNumeros(form.value.nombre_proyecto);
     return res;
-} 
+}
+
+//Imagenes proyectos
+
+var api_url = "http://localhost:8000/storage/proyectosDonaciones/images/";
+
+async function modalImagenes(id_proyecto) {
+    await leerImagenesProyectos(id_proyecto);
+    const modalElement = document.getElementById('imagemodal');
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+    const modal = new Modal(modalElement, modalOptions);
+    const closeImagesButton = document.getElementById('imageclose');
+    closeImagesButton.addEventListener('click', function () {
+        modal.hide();
+        id_proyectoref.value = "";
+        vaciarImagenes();
+    });
+    modal.show();
+}
+
+const data_imagenes = ref(null);
+
+const id_proyectoref = ref(null);
+
+function vaciarImagenes(){
+    data_imagenes.value = null;
+    imagenesPreviewArray.value = null;
+    inputImagenes.value = null;
+}
+
+async function leerImagenesProyectos(id_proyecto) {
+    id_proyectoref.value = id_proyecto;
+    try {
+        //Se realiza la petición axios para traer los datos
+        const { data: res } = await axios.get('/imagenes_proyectos/' + id_proyecto);
+        //Se asigna el valor de la respuesta de axios a la variable data_imagenes
+        data_imagenes.value = res;
+    } catch (error) {
+        console.log(error);
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+const imagenesPreviewArray = ref([]);
+
+const inputImagenes = ref(null);
+
+const seleccionarArchivos = () => {
+    inputImagenes.value.click();
+};
+
+const cambiarImagenes = () => {
+    const input = inputImagenes.value;
+    const archivos = input.files;
+    if (archivos && archivos.length > 0) {
+        for (const archivo of archivos) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagenesPreviewArray.value.push(e.target.result);
+            };
+            reader.readAsDataURL(archivo);
+        }
+    }
+};
+
+async function agregarImagenes() {
+    console.log(id_proyectoref.value)
+    const archivos = inputImagenes.value.files;
+
+    try {
+        for (const archivo of archivos) {
+            const formData = new FormData();
+            formData.append('archivo_imagen', archivo);
+            formData.append('id_proyecto_donacion', id_proyectoref.value);
+
+            await axios.post('/imagenes_proyectos', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+        }
+        Toast.fire({
+            icon: 'success',
+            title: 'Imagenes agregadas exitosamente'
+        }).then((result) => {
+            if (result.dismiss === Toast.DismissReason.timer) {
+                location.reload();
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 </script>
-<style scoped>
-.data-contained {
-    border: 3px solid #1b1c30;
-}
-
-.modal-buttons button {
-    background-color: #32345a;
-}
-
-.buttons-data .editbtn {
-    border: 3px solid #c99856;
-}
-
-.buttons-data .deletebtn {
-    border: 3px solid #872727;
-}
-
-.buttons-data .changebtn {
-    border: 3px solid #3F4280;
-}
-
-.buttons-data .imagenbtn {
-    border: 3px solid #3F4280;
-}
-
-.modal {
-    background: linear-gradient(180deg,
-            rgba(63, 66, 128, 0.6241) 0%,
-            rgba(49, 50, 71, 0.5609) 100%);
-    background-color: #1e1e1e;
-}
-
-.image-container {
-    border: 3px solid #FFF;
-}
-</style>
