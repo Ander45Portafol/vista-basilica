@@ -19,7 +19,7 @@
                 </form>
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
-                    <button
+                    <button @click="generarReporte"
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -105,6 +105,25 @@ onMounted(() => {
         });
     }
 });
+async function generarReporte() {
+    try {
+        const response = await axios.get('/usuario_reporte',{
+            responseType: 'arraybuffer', // Configurar el tipo de respuesta como arraybuffer
+        });
+        // Crear un Blob a partir del arraybuffer recibido
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+
+        // Crear un enlace para mostrar el archivo PDF en el navegador
+        const pdfUrl = URL.createObjectURL(blob);
+        window.open(pdfUrl, '_blank');
+
+        // Liberar el recurso URL
+        URL.revokeObjectURL(pdfUrl);
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
 //Seccion para establecer variables
 const data = ref(null);
 const pagina = ref(useRoute().query.pagina || 1);
@@ -194,6 +213,7 @@ async function buscarUsuarios() {
 .tables::-webkit-scrollbar {
     width: 7px;
 }
+
 .tables::-webkit-scrollbar-thumb {
     background: #32345A;
 }
