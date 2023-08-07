@@ -397,7 +397,7 @@
                                     @click="seleccionarArchivo" @mouseover="iconoBorrarTrue" @mouseleave="iconoBorrarFalse">
                                     <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
                                     <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
-                                    <div v-if="mostrarIconoBorrar"
+                                    <div v-if="mostrarIconoBorrar && imagenPreview"
                                         class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
                                             viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
