@@ -5,8 +5,8 @@
         <MenuContactoDashboard />
         <!-- Contendor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
-              <!-- Sección del buscador -->
-              <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
+            <!-- Sección del buscador -->
+            <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <!-- Sección del buscador -->
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
@@ -23,8 +23,8 @@
                         </button>
                     </div>
                 </div>
-              <!-- Sección de botones a la derecha del buscador -->
-              <div
+                <!-- Sección de botones a la derecha del buscador -->
+                <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
@@ -75,7 +75,7 @@
                 <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
             </p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-            <div id="sectionPage"  v-if="contactos" v-for="contacto in contactos" :key="contacto.id_contacto">
+            <div id="sectionPage" v-if="contactos" v-for="contacto in contactos" :key="contacto.id_contacto">
                 <div class="contained-data flex-col">
                     <div
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
@@ -135,17 +135,17 @@
             </div>
             <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
             este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
-           <!-- Paginación -->
-           <div class="flex justify-center mt-6">
-                    <TailwindPagination v-if="data" :item-classes="[
-                        'text-gray-500',
-                        'rounded-full',
-                        'border-none',
-                        'ml-1',
-                        'hover:bg-gray-200',
-                    ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                        :data="data" @pagination-change-page="pagina = $event" />
-                </div>
+            <!-- Paginación -->
+            <div class="flex justify-center mt-6">
+                <TailwindPagination v-if="data" :item-classes="[
+                    'text-gray-500',
+                    'rounded-full',
+                    'border-none',
+                    'ml-1',
+                    'hover:bg-gray-200',
+                ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                    :data="data" @pagination-change-page="pagina = $event" />
+            </div>
         </div>
     </div>
     <!-- Modal principal-->
@@ -315,6 +315,9 @@
                     </form>
                 </div>
             </div>
+            <pre>
+                {{ form }}
+        </pre>
         </div>
     </div>
 </template>
