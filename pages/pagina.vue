@@ -1,7 +1,7 @@
 <template>
     <div class="principal mt-6">
         <!-- Menu de navegación superior -->
-        <MenuPaginaDashboard />
+        <MenuPaginaDashboard class="mr-8" />
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <!-- Sección del buscador -->
