@@ -148,7 +148,7 @@
                                 <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-2/3 mb-2.5"></div>
                                 <span class="sr-only">Cargando...</span>
                             </div>
-                            <div class="h-12 w-16 md:w-12 bg-slate-300 mr-5 rounded-lg"></div>
+                            <div class="h-10 w-14 md:w-10 bg-slate-300 mr-5 rounded-lg"></div>
                         </div>
                     </div>
                 </div>
