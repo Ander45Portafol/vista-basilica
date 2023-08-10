@@ -10,7 +10,7 @@
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarPaginas()" />
                     <div class="flex justify-end items-center">
-                        <!-- Se le asigna la función para limpiar el buscador al botón -->
+                       <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
                             <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
