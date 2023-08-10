@@ -373,6 +373,7 @@ import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
     dataUsers: Array,
+    actualizarData:Function,
 });
 
 var api_url = "http://localhost:8000/storage/usuarios/images/";
@@ -553,7 +554,7 @@ async function borrarUsuario(id) {
                         title: 'Usuario desactivado exitosamente'
                     }).then((result) => {
                         if (result.dismiss === Toast.DismissReason.timer) {
-                            location.reload();
+                            props.actualizarData();
                         }
                     }));
             } catch (error) {
@@ -584,7 +585,7 @@ async function recuperarUsuario(id, nombre_completo) {
                     title: 'Usuario activo'
                 }).then((result) => {
                     if (result.dismiss === Toast.DismissReason.timer) {
-                        location.reload();
+                        props.actualizarData();
                     }
                 });
             } catch (error) {
@@ -674,6 +675,7 @@ async function actualizarUsuario() {
             form.value.id_rol_usuario
         );
         formData.append("imagen_usuario", form.value.imagen_usuario);
+        console.log(formData);
         await axios.post("/usuarios_update/" + id, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
@@ -685,7 +687,7 @@ async function actualizarUsuario() {
             title: 'Usuario actualizado exitosamente'
         }).then((result) => {
             if (result.dismiss === Toast.DismissReason.timer) {
-                location.reload();
+                props.actualizarData();
             }
         });
     }

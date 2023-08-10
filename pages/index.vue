@@ -163,12 +163,14 @@ async function login() {
       const token = ((await axios.post("/login", formData)));
       const captoken = token.data.token;
       const capusuario = token.data.usuario.id_usuario;
+      const capImagen=token.data.usuario.imagen_usuario;
       console.log(token.data.usuario.data);
       //Si retorno un token se redirige a la página principal
       if (token != null) {
         localStorage.setItem('token', captoken)
         console.log(localStorage.getItem('token'));
         localStorage.setItem('usuario', capusuario);
+        localStorage.setItem('imagen_usuario',capImagen);
         navigateTo('/principal');
         //Si no retorno token es lanza un error
       } else {
