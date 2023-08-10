@@ -836,13 +836,9 @@ async function actualizarImagenes() {
 
             //Si el usuario escogió la opción de confirmar se eliminan los registros
             if (eleccion.isConfirmed) {
-                const formData = new FormData();
-                //Se hace un for para evaluar cada posición del array y se envia la petición axios
-                for (let i = 0; i < imagenesBorradas.value.length; i++) {
-                    formData.append('id_imagen_proyecto[]', imagenesBorradas.value[i]);
-                }
-
-                await axios.delete('imagenes_proyectos', formData);
+                await axios.delete('imagenes_proyectos', {
+                    data: { id_imagen_proyecto: imagenesBorradas.value }
+                });
             }
         }
 
