@@ -68,7 +68,7 @@
                 <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ usuarios.length }}<span
                         class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
                 <div class="tables overflow-y-scroll h-4/6 pr-4">
-                    <TablesUsuarios :dataUsers="usuarios" />
+                    <TablesUsuarios :dataUsers="usuarios" :actualizarData="leerUsuarios" />
                     <div class="flex justify-center mt-6">
                         <TailwindPagination
                             :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
