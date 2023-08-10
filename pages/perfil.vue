@@ -79,8 +79,8 @@
                                     form.nombre_usuario.length }} /100</span>
                             <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
                             <label for="nombre_usuario"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Persona<span class="text-sm ml-1"> * </span></label>
+                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
+                                - Persona<span class="text-sm ml-1"> * </span></label>
                         </div>
                         <div v-if="!validarNombre()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
                             role="alert">
@@ -264,17 +264,18 @@ onMounted(() => {
     //Se valida si hay un token en el localStorage y si no te regresa al login
     function validarToken() {
         if (!localStorage.getItem('token')) {
-            navigateTo('/');
+
         } else {
             console.log(localStorage.getItem('token'));
             id_usuario = localStorage.getItem('usuario');
+            console.log(id_usuario);
         }
     }
     cargando_datos();
 
     async function cargando_datos() {
         validarToken();
-        const { data: res } = await axios.post('/profile/' + id_usuario).then(res => {
+        const { data: res } = await axios.get('/profile/' + id_usuario).then(res => {
             form.value = {
                 id_usuario: res.data.id_usuario,
                 nombre_usuario: res.data.nombre_usuario,
@@ -289,6 +290,12 @@ onMounted(() => {
                 correo_usuario: res.data.correo_usuario,
                 visibilidad_usuario: true,
                 id_rol_usuario: res.data.roles.id_rol_usuario
+            };
+            if (res.data.imagen_usuario != null) {
+                form.value.imagen_usuario = res.data.imagen_usuario;
+                imagenPreview.value = api_url + form.value.imagen_usuario;
+            } else {
+                form.value.imagen_usuario = "";
             }
             var cortarnombre = res.data.nombre_usuario.split(" ");
             var nombrecortado = cortarnombre[0];
@@ -300,7 +307,48 @@ onMounted(() => {
         });
     }
 
+    const mostrarIconoBorrar = ref(false);
+
+    function iconoBorrarTrue() {
+        if (imagenPreview.value) {
+            mostrarIconoBorrar.value = true;
+        }
+    }
+
+    function iconoBorrarFalse() {
+        if (imagenPreview.value) {
+            mostrarIconoBorrar.value = false;
+        }
+    }
+
+    const imagenPreview = ref(null);
+    const seleccionarArchivo = () => {
+        if (mostrarIconoBorrar.value == false) {
+            inputImagen.value.click();
+        } else {
+            limpiarImagen();
+        }
+    };
+    const inputImagen = ref(null);
+
+    const cambiarImagen = () => {
+        const input = inputImagen.value;
+        const file = input.files;
+        if (file && file[0]) {
+            form.value.imagen_usuario = file[0];
+            console.log(form.value.imagen_usuario);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagenPreview.value = e.target.result;
+            };
+            reader.readAsDataURL(file[0]);
+            return file[0];
+        }
+    };
 });
+
+var api_url = "http://localhost:8000/storage/usuarios/images/";
+
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
     id_usuario: "",
@@ -316,6 +364,7 @@ const form = ref({
     tema: "Claro",
     visibilidad_usuario: true,
     id_rol_usuario: 0,
+    imagen_usuario: "",
 })
 //Toast del sweetalert
 const Toast = Swal.mixin({

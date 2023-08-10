@@ -29,18 +29,21 @@
         </div>
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
-                <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                    <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarCategoriaGrupos en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar ...">
+                        placeholder="Buscar..." v-model="buscar.buscador" @keyup="buscarPersonal()">
                     <div class="flex justify-end items-center">
-                        <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
-                                fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                        <!-- Se le asigna la función para limpiar el buscador al botón -->
+                        <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
+                                stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
                     </div>
-                </form>
+                </div>
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
@@ -98,21 +101,41 @@
                     </div>
                     <div
                         class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
+                        <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
+                            id="btnedit" @click="leerUnaSeccion(seccione.id_seccion)"
+                            v-if="seccione.visibilidad_seccion == 1">
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
                                     d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
-                                    stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
                             </svg>
                         </button>
                         <button
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            @click="borrarSeccion(seccione.id_seccion)" v-if="seccione.visibilidad_seccion == 1">
                             <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
                                     d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
-                                    stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
+                            </svg>
+                        </button>
+                        <button @click="recuperarSeccion(seccione.id_seccion)"
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                            v-else>
+                            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
+                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path
+                                    d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
+                                    stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
+                                <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
+                                    stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
                     </div>
@@ -124,7 +147,7 @@
                 <TailwindPagination
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
                     :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="personal = $event" />
+                    :data="data" @pagination-change-page="pagina = $event" />
             </div>
         </div>
     </div>
@@ -512,6 +535,9 @@ const Toast = Swal.mixin({
     }
 })
 
+//Variable para validar que acción se quiere hacer cuando se hace un submit al form
+var formAccion = null;
+
 //Función para evaluar que acción se va a hacer al hacer submit en el form
 function accionForm(accion) {
     formAccion = accion;
@@ -697,107 +723,114 @@ const actualizarSeccion = async () => {
     }
 }
 
-const borrarPersonal = async (id) => {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: 'Confirmación',
-        text: "¿Desea ocultar el registro?",
-        icon: 'warning',
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: '#3F4280',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
-        //Se evalua la respuesta de la alerta
-    })
-        .then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    //Se hace la peticion axios
-                    await apiAxios.delete(`/personal/${id}`);
 
-                    //Se cargan los registros
-                    leerPersonales();
-
-                    //Se lanza la alerta de éxito
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Personal ocultado exitosamente'
-                    })
-                } catch (error) {
-                    //Se extrae el mensaje de error
-                    const mensajeError = error.response.data.message;
-                    //Se extrae el sqlstate (identificador de acciones SQL)
-                    const sqlState = validaciones.extraerSqlState(mensajeError);
-                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                    const res = validaciones.mensajeSqlState(sqlState);
-
-                    //Se cierra el modal
-                    document.getElementById('closeModal').click();
-
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: res,
-                        confirmButtonColor: '#3F4280'
-                    });
-                }
-            }
+//Función para cambiar la visibilidad de un registro para ocultarlo
+async function borrarPersonal(id) {
+    const borrarPersonal = async (id) => {
+        //Se lanza una alerta de confirmación
+        Swal.fire({
+            title: 'Confirmación',
+            text: "¿Desea ocultar el registro?",
+            icon: 'warning',
+            reverseButtons: true,
+            showCancelButton: true,
+            confirmButtonColor: '#3F4280',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+            //Se evalua la respuesta de la alerta
         })
-}
+            .then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        //Se hace la peticion axios
+                        await apiAxios.delete(`/personal/${id}`);
 
-//Funcion para cambiar el estado de visibilidad de un registro para recuperarlo
-const recuperarPersonal = async (id) => {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: 'Confirmación',
-        text: "¿Desea recuperar el registro?",
-        icon: 'warning',
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: '#3F4280',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
-        //Se evalua la respuesta de la alerta
-    })
-        .then(async (result) => {
-            if (result.isConfirmed) {
-                try {
-                    //Se hace la peticion axios
-                    await apiAxios.delete(`/personal/${id}`);
+                        //Se cargan los registros
+                        leerPersonales();
 
-                    //Se cargan los registros
-                    leerPersonales();
+                        //Se lanza la alerta de éxito
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Personal ocultado exitosamente'
+                        })
+                    } catch (error) {
+                        //Se extrae el mensaje de error
+                        const mensajeError = error.response.data.message;
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const sqlState = validaciones.extraerSqlState(mensajeError);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const res = validaciones.mensajeSqlState(sqlState);
 
-                    //Se lanza la alerta de éxito
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Personal recuperado exitosamente'
-                    })
-                } catch (error) {
-                    //Se extrae el mensaje de error
-                    const mensajeError = error.response.data.message;
-                    //Se extrae el sqlstate (identificador de acciones SQL)
-                    const sqlState = validaciones.extraerSqlState(mensajeError);
-                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                    const res = validaciones.mensajeSqlState(sqlState);
+                        //Se cierra el modal
+                        document.getElementById('closeModal').click();
 
-                    //Se cierra el modal
-                    document.getElementById('closeModal').click();
-
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: res,
-                        confirmButtonColor: '#3F4280'
-                    });
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: res,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
                 }
-            }
+            })
+    }
+
+    //Función para cambiar la visibilidad de un registro para recuperarlo
+    async function recuperarUnPersonal(id) {
+        //Se lanza una alerta de confirmación
+        Swal.fire({
+            title: 'Confirmación',
+            text: "¿Desea recuperar el registro?",
+            icon: 'warning',
+            reverseButtons: true,
+            showCancelButton: true,
+            confirmButtonColor: '#3F4280',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+            //Se evalua la respuesta de la alerta
         })
+            .then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        //Se hace la peticion axios
+                        await apiAxios.delete(`/personal/${id}`);
+
+                        //Se cargan los registros
+                        leerPersonales();
+
+                        //Se lanza la alerta de éxito
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Personal recuperado exitosamente'
+                        })
+                    } catch (error) {
+                        //Se extrae el mensaje de error
+                        const mensajeError = error.response.data.message;
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const sqlState = validaciones.extraerSqlState(mensajeError);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const res = validaciones.mensajeSqlState(sqlState);
+
+                        //Se cierra el modal
+                        document.getElementById('closeModal').click();
+
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: res,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
+                }
+
+                //Validaciones 
+
+            })
+    }
 }
 
 // Validaciones
