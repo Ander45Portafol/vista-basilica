@@ -75,8 +75,8 @@
             </p>
             <div class="tables overflow-y-scroll h-4/6 pr-4">
                 <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards / Se le agrega el v-if para que no de error la página cuando el usuario no tenga token -->
-                <div class="contained-data flex-col" v-if="paginas" v-for="pagina in paginas" :key="pagina.id_pagina">
-                    <div
+                <div class="contained-data flex-col" v-for="pagina in paginas" :key="pagina.id_pagina">
+                    <div v-if="paginas"
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                             <div
@@ -130,6 +130,25 @@
                                         stroke-linecap="round" stroke-linejoin="round"></path>
                                 </svg>
                             </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tableloading">
+                    <p v-if="!paginas" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                        -
+                        <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+                    </p>
+                    <div v-for="number in 5" :key="number">
+                        <div v-if="!paginas"
+                            class="border-4 border-slate-300 h-28 mt-4 p-4 w-full flex items-center rounded-xl animate-pulse">
+                            <div class="h-16 w-20 md:w-16 bg-slate-300 mr-5 rounded-2xl"></div>
+                            <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
+                                <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5"></div>
+                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-2/3 mb-2.5"></div>
+                                <span class="sr-only">Cargando...</span>
+                            </div>
+                            <div class="h-12 w-16 md:w-12 bg-slate-300 mr-5 rounded-lg"></div>
                         </div>
                     </div>
                 </div>
