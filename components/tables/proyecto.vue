@@ -3,7 +3,7 @@
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                <img :src="api_url + proyecto.icono_proyecto"
+                <img :src="iconos_url + proyecto.icono_proyecto"
                     class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
@@ -189,34 +189,18 @@
                             <div class="relative z-0 mt-6">
                                 <label for="icono_proyecto" class=" text-sm text-gray-200">Icono
                                     - Proyecto</label>
-                                <div class="h-28 w-28 border-2 border-slate-900 rounded-lg cursor-pointer relative"
-                                    @click="seleccionarArchivoIcono" @mouseover="trueIconoBorrarIcono"
-                                    @mouseleave="falseIconoBorrarIcono">
-                                    <img v-if="iconoPreview" :src="iconoPreview" class="h-28 w-28 rounded-lg" />
-                                    <input type="file" ref="inputIcono" class="hidden" @change="cambiarIcono" />
-                                    <div v-if="mostrarIconoBorrarIcono && iconoPreview"
-                                        class="absolute inset-0 h-28 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
-                                            viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
-                                            <path
-                                                d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
-                                            </path>
-                                        </svg>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                         <div class="flex-col w-64">
-                            <p class="mb-4 text-center text-gray-200">Imagen - Proyecto</p>
+                            <p class="mb-4 text-center text-gray-200">Icono - Proyecto</p>
                             <div class="flex-col">
-                                <div class="h-40 w-40 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative"
-                                    @click="seleccionarArchivoImagenPrincipal" @mouseover="trueIconoBorrarImagenPrincipal"
-                                    @mouseleave="falseIconoBorrarImagenPrincipal">
-                                    <img v-if="imagenPrincipalPreview" :src="imagenPrincipalPreview"
-                                        class="h-40 w-40 rounded-lg" />
-                                    <input type="file" ref="inputImagenPrincipal" class="hidden"
-                                        @change="cambiarImagenPrincipal" />
-                                    <div v-if="mostrarIconoBorrarImagenPrincipal && imagenPrincipalPreview"
+                                <div class="ml-14 h-40 w-40 border-2 border-slate-900 rounded-lg cursor-pointer relative"
+                                    @click="seleccionarArchivoIcono" @mouseover="trueIconoBorrarIcono"
+                                    @mouseleave="falseIconoBorrarIcono">
+                                    <img v-if="iconoPreview" :src="iconoPreview" class="h-40 w-40 rounded-lg" />
+                                    <input type="file" ref="inputIcono" class="hidden" @change="cambiarIcono" />
+                                    <div v-if="mostrarIconoBorrarIcono && iconoPreview"
                                         class="absolute inset-0 h-40 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
                                             viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
@@ -227,7 +211,7 @@
                                     </div>
                                 </div>
                                 <button type="button" class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300"
-                                    @click="seleccionarArchivoImagenPrincipal">Seleccionar Imagen</button>
+                                    @click="seleccionarArchivoIcono">Seleccionar icono</button>
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center mr-4" type="button"
@@ -325,7 +309,7 @@
                     <div class="h-80 w-full image-container grid grid-cols-5 gap-5 py-5 px-5">
                         <div v-if="data_imagenes" v-for="item in data_imagenes" :key="item.id_imagen_proyecto"
                             class="relative">
-                            <img :src="api_url + item.archivo_imagen" class="h-32 w-32 rounded-lg" />
+                            <img :src="imagenes_url + item.archivo_imagen" class="h-32 w-32 rounded-lg" />
                             <div @click="agregarImagenBorrada(item.id_imagen_proyecto)"
                                 class="absolute inset-0 w-32 h-32 flex items-center justify-center rounded-lg opacity-0 hover:opacity-100"
                                 style="background-color: rgba(0, 0, 0, 0.5);">
@@ -355,7 +339,7 @@
                     </div>
                     <div class="flex justify-between items-center mt-6">
                         <div class="relative z-0 w-64">
-                            <input type="text" id="proyecto" name="proyecto" v-model="nombre_proyectoref" required
+                            <input type="text" id="proyecto" name="proyecto" v-model="nombre_proyectoref" required readonly
                                 maxlength="100"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
@@ -549,13 +533,13 @@ async function leerUnProyecto(id_proyecto) {
             }
             if (res.data.icono_proyecto != null) {
                 form.value.icono_proyecto = res.data.icono_proyecto;
-                iconoPreview.value = api_url + form.value.icono_proyecto;
+                iconoPreview.value = iconos_url + form.value.icono_proyecto;
             } else {
                 form.value.icono_proyecto = "";
             }
             if (res.data.imagen_principal != null) {
                 form.value.imagen_principal = res.data.imagen_principal;
-                imagenPrincipalPreview.value = api_url + form.value.imagen_principal;
+                imagenPrincipalPreview.value = imagenes_url + form.value.imagen_principal;
             } else {
                 form.value.imagen_principal = "";
             }
@@ -694,7 +678,8 @@ function validarNombreProyecto() {
 //Imagenes proyectos
 
 //Url para cargar las imagenes
-var api_url = "http://localhost:8000/storage/proyectosDonaciones/images/";
+var iconos_url = "http://localhost:8000/storage/iconosProyectos/images/";
+var imagenes_url = "http://localhost:8000/storage/proyectosDonaciones/images/";
 
 //Función para abrir el modal
 async function modalImagenes(id_proyecto) {
@@ -817,20 +802,21 @@ async function actualizarImagenes() {
     try {
         //Se evalua si el array de previews tiene valor, si tiene significa que hay registros para agregar
         if (imagenesPreviewArray.value.length > 0) {
+
+            const formData = new FormData();
+            formData.append('id_proyecto_donacion', id_proyectoref.value);
             //Se hace un for para cada posición del arreglo
             for (const imagenData of imagenesPreviewArray.value) {
                 //Se crea un FormData con el archivo de la imagen y el id del proyecto al que pertenece
-                const formData = new FormData();
-                formData.append('archivo_imagen', imagenData.file);
-                formData.append('id_proyecto_donacion', id_proyectoref.value);
-
-                //Se envia la petición axios
-                await axios.post('/imagenes_proyectos', formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
+                formData.append('archivo_imagen[]', imagenData.file);
             }
+
+            //Se envia la petición axios
+            await axios.post('/imagenes_proyectos', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
         }
 
         //Se evalua si hay datos en el array de imagenesBorradas, si hay significa que hay registros para borrar
@@ -850,10 +836,13 @@ async function actualizarImagenes() {
 
             //Si el usuario escogió la opción de confirmar se eliminan los registros
             if (eleccion.isConfirmed) {
+                const formData = new FormData();
                 //Se hace un for para evaluar cada posición del array y se envia la petición axios
                 for (let i = 0; i < imagenesBorradas.value.length; i++) {
-                    await axios.delete('/imagenes_proyectos/' + imagenesBorradas.value[i]);
+                    formData.append('id_imagen_proyecto[]', imagenesBorradas.value[i]);
                 }
+
+                await axios.delete('imagenes_proyectos', formData);
             }
         }
 
@@ -862,10 +851,6 @@ async function actualizarImagenes() {
         Toast.fire({
             icon: 'success',
             title: 'Imagenes actualizadas exitosamente'
-        }).then((result) => {
-            if (result.dismiss === Toast.DismissReason.timer) {
-                location.reload();
-            }
         });
     } catch (error) {
         console.log(error);
