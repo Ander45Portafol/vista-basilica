@@ -133,25 +133,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="tableloading">
-                    <p v-if="!paginas" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
-                        -
-                        <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
-                    </p>
-                    <div v-for="number in 5" :key="number">
-                        <div v-if="!paginas"
-                            class="border-4 border-slate-300 h-28 mt-4 p-4 w-full flex items-center rounded-xl animate-pulse">
-                            <div class="h-16 w-20 md:w-16 bg-slate-300 mr-5 rounded-2xl"></div>
-                            <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
-                                <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
-                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5"></div>
-                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-2/3 mb-2.5"></div>
-                                <span class="sr-only">Cargando...</span>
-                            </div>
-                            <div class="h-10 w-14 md:w-10 bg-slate-300 mr-5 rounded-lg"></div>
-                        </div>
-                    </div>
-                </div>
                 <!-- Paginación -->
                 <div class="flex justify-center mt-6">
                     <TailwindPagination v-if="data" :item-classes="[
@@ -162,6 +143,25 @@
                         'hover:bg-gray-200',
                     ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
                         :data="data" @pagination-change-page="pagina = $event" />
+                </div>
+            </div>
+            <div class="tableloading">
+                <p v-if="!paginas" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                    -
+                    <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+                </p>
+                <div v-for="number in 5" :key="number">
+                    <div v-if="!paginas"
+                        class="border-4 border-slate-300 h-28 mt-4 p-4 w-full flex items-center rounded-xl animate-pulse">
+                        <div class="h-16 w-20 md:w-16 bg-slate-300 mr-5 rounded-2xl"></div>
+                        <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
+                            <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+                            <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5"></div>
+                            <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-2/3 mb-2.5"></div>
+                            <span class="sr-only">Cargando...</span>
+                        </div>
+                        <div class="h-10 w-14 md:w-10 bg-slate-300 mr-5 rounded-lg"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -380,7 +380,6 @@
 .tables::-webkit-scrollbar {
     width: 7px;
 }
-
 .tables::-webkit-scrollbar-thumb {
     background: #32345A;
 }
