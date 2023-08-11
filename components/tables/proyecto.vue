@@ -140,7 +140,7 @@
                                     - Proyecto<span class="text-sm ml-1"> *
                                     </span></label>
                             </div>
-                            <div class="pt-4 mt-2 flex-col">
+                            <div class="relative z-0 mt-6">
                                 <label for="" class="text-gray-200 text-sm">Visibilidad - Proyecto</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
@@ -164,7 +164,7 @@
                                     - Monetaria<span class="text-sm ml-1"> *
                                     </span></label>
                             </div>
-                            <div class="relative z-0 mt-6">
+                            <div class="pt-4 mt-2 flex-col">
                                 <label for="" class="absolute text-gray-200 text-sm">Estado - Proyecto</label>
                                 <select id="underline_select" v-model="form.estado_proyecto"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
@@ -213,7 +213,7 @@
                                     @click="seleccionarArchivoImagenPrincipal" @mouseover="trueIconoBorrarImagenPrincipal"
                                     @mouseleave="falseIconoBorrarImagenPrincipal">
                                     <img v-if="imagenPrincipalPreview" :src="imagenPrincipalPreview" class="h-32 w-32 rounded-lg" />
-                                    <input type="file" ref="inputIcono" class="hidden" @change="cambiarIcono" />
+                                    <input type="file" ref="inputImagenPrincipal" class="hidden" @change="cambiarImagenPrincipal" />
                                     <div v-if="mostrarIconoBorrarImagenPrincipal && imagenPrincipalPreview"
                                         class="absolute inset-0 h-32 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
@@ -317,19 +317,6 @@
                                     stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
-                    </div>
-                    <div class="h-80 w-full image_loader flex justify-center items-center">
-                        <div class="flex-col w-1/2">
-                            <div class="text-center">
-                                <div class="flex justify-center items-center">
-                                    <img src="/img/logo_pro.png" class="w-32 h-32" />
-                                </div>
-                                <p class="text-white font-extrabold text-xl mt-2">Cargando...</p>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-6 dark:bg-gray-700 mt-4">
-                                <div class="bg-space h-6 rounded-full" style="width: 45%"></div>
-                            </div>
-                        </div>
                     </div>
                     <div class="h-80 w-full image-container grid grid-cols-5 gap-5 py-5 px-5">
                         <div v-if="data_imagenes" v-for="item in data_imagenes" :key="item.id_imagen_proyecto"
