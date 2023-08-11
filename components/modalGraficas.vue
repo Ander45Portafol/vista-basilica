@@ -39,11 +39,13 @@
                         </div>
                     </div>
                     <div class="h-80 contenedor_graficas w-full image-container grid grid-cols-5 gap-5 py-5 px-5">
+                        <Line v-if="dataDonaciones" :data="chartDonaciones" :options="opcionesDonaciones" />
                     </div>
                     <div class="flex justify-between items-center mt-6">
                         <div class="flex">
                             <div class="relative z-0 w-64" id="input_fechai">
-                                <input type="text" id="fecha_inicial" name="fecha_inicial" required readonly maxlength="100"
+                                <input v-model="formFechas.fecha_inicial" type="date" id="fecha_inicial"
+                                    name="fecha_inicial" required maxlength="100"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="fecha_inicial"
@@ -51,14 +53,15 @@
                                     inicial</label>
                             </div>
                             <div class="relative z-0 w-64 ml-14" id="input_fechaf">
-                                <input type="text" id="fecha_final" name="fecha_final" required readonly maxlength="100"
+                                <input v-model="formFechas.fecha_final" type="date" id="fecha_final" name="fecha_final"
+                                    required maxlength="100"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="fecha_final"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
                                     final</label>
                             </div>
-                            <div class="relative z-0 w-64 ml-14" id="input_anio">
+                            <div class="relative z-0 w-64" id="input_anio">
                                 <input type="text" id="anio_input" name="anio" required readonly maxlength="100"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
@@ -67,8 +70,8 @@
                                 </label>
                             </div>
                         </div>
-                        <button class="w-32 h-10 bg-space text-white mt-4 rounded-lg">
-                            Guardar
+                        <button class="w-32 h-10 bg-space text-white mt-4 rounded-lg" @click="cargarDatos">
+                            Generar
                         </button>
                     </div>
                 </div>
@@ -82,6 +85,9 @@
 }
 </style>
 <script setup>
+import { Line, Pie, PolarArea, Bar } from "vue-chartjs";
+import axios from 'axios';
+
 onMounted(() => {
     function validarCheck() {
         const checkrango = document.getElementById('rango_fecha');
@@ -111,4 +117,85 @@ function cambiandoGraficaRango() {
         document.getElementById('anio').checked = false;
     }
 }
+
+const formFechas = ref({
+    fecha_inicial: "",
+    fecha_final: "",
+})
+
+function limpiarFormFechas() {
+    formFechas.value.fecha_inicial = "";
+    formFechas.value.fecha_final = "";
+}
+
+const dataDonaciones = ref(null);
+
+async function cargarDatos() {
+    try {
+        if (formFechas.value.fecha_inicial && formFechas.value.fecha_final) {
+            const { data: res } = await axios.get('/donaciones-pfechas-graf/' + formFechas.value.fecha_inicial + '/' + formFechas.value.fecha_final);
+            dataDonaciones.value = res;
+        }
+        limpiarFormFechas();
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const chartDonaciones = computed(() => {
+    return {
+        labels: dataDonaciones.value.map(item => item.fecha_donacion),
+        datasets: [
+            {
+                label: "Cantidad donada",
+                pointRadius: 8,
+                pointHoverRadius: 15,
+                borderColor: 'rgba(255,255,255,0)',
+                backgroundColor: (ctx) => {
+                    const canvas = ctx.chart.ctx;
+                    const gradient = canvas.createLinearGradient(0, 0, 0, 500);
+
+                    gradient.addColorStop(1, 'rgba(28,37,219,1)');
+                    gradient.addColorStop(0, 'rgba(251,148,123,1)');
+                    return gradient;
+                },
+
+                pointBackgroundColor: 'rgba(255, 202, 81, 1)',
+                fill: true,
+                tension: 0,
+                data: dataDonaciones.value.map(item => item.cantidad_donada),
+            },
+        ],
+    };
+});
+
+const opcionesDonaciones = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+        y: {
+            beginAtZero: true,
+            grid: {
+                color: 'white'
+            },
+            ticks: {
+                color: 'white'
+            }
+        },
+        x: {
+            grid: {
+                color: 'white'
+            },
+            ticks: {
+                color: 'white'
+            }
+        }
+    },
+    plugins: {
+        legend: {
+            display: false
+        }
+    }
+}
+
 </script>
