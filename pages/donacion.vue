@@ -44,7 +44,8 @@
                                 stroke="#1B1C30" stroke-width="2.5"></path>
                         </svg>
                     </button>
-                    <button type="button" id="graficos_modal" class="bg-space w-12 h-10 flex items-center justify-center ml-4 rounded-lg mr-5">
+                    <button type="button" id="graficos_modal"
+                        class="bg-space w-12 h-10 flex items-center justify-center ml-4 rounded-lg mr-5">
                         <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path d="M20 20H4V4" stroke="#FFF" stroke-width="2" stroke-linecap="round"
@@ -136,10 +137,10 @@ onMounted(() => {
         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
     };
     const modal = new Modal(modalElement, modalOptions);
-    document.getElementById('graficos_modal').addEventListener('click',()=>{
+    document.getElementById('graficos_modal').addEventListener('click', () => {
         modal.show();
     });
-    closeButton.addEventListener('click',()=>{
+    closeButton.addEventListener('click', () => {
         modal.hide();
     });
 });

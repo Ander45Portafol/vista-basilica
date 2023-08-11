@@ -161,10 +161,10 @@ async function login() {
 
       //Se hace la petición axios y se guarda el token que retorna
       const token = ((await axios.post("/login", formData)));
-      const captoken = token.data.token;
-      const capusuario = token.data.usuario.id_usuario;
-      const capImagen=token.data.usuario.imagen_usuario;
-      console.log(token.data.usuario.data);
+      console.log(token.data.data);
+      const captoken = token.data.data.token;
+      const capusuario = token.data.data.user.id_usuario;
+      const capImagen=token.data.data.user.imagen_usuario;
       //Si retorno un token se redirige a la página principal
       if (token != null) {
         localStorage.setItem('token', captoken)
