@@ -69,12 +69,40 @@
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ mensajes.length }}<span
-                    class="text-gray-500 font-normal ml-2">registros
-                    encontrados!</span></p>
+            <p v-if="mensajes" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                {{ mensajes.length }}
+                <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+            </p>
+            <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                <span class="text-gray-500 font-normal ml-2">- registros encontrados!</span>
+            </p>
+            <!--Cargando de mensajes -->
+            <div class="loadingtable overflow-hidden h-4/6 pr-4">
+                <div class="contained-data flex-col" v-for="number in 6" :key="number">
+                    <div v-if="!mensajes"
+                        class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                        <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                            <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
+                            <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
+                                <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4"></div>
+                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full"></div>
+                            </div>
+                        </div>
+                        <div
+                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                            <div
+                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
+                            </div>
+                            <div
+                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div id="sectionPage" v-for="mensaje in mensajes" :key="mensaje.id_mensaje">
                 <div class="contained-data flex-col">
-                    <div
+                    <div v-if="mensajes"
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                             <div
@@ -93,7 +121,7 @@
                         <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
                             v-if="mensaje.visibilidad_mensaje == 1">
                             <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4"
-                                @click="leerUnMensaje(mensaje.id_mensaje)">
+                                @click="leerUnMensaje(mensaje.id_mensaje)" v-if="mensaje.visibilidad_mensaje == 1">
                                 <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -104,7 +132,7 @@
                             </button>
                             <button
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                                @click="borrarMensaje(mensaje.id_mensaje)">
+                                @click="borrarMensaje(mensaje.id_mensaje)" v-if="mensaje.visibilidad_mensaje == 1">
                                 <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -135,17 +163,19 @@
                     </div>
                 </div>
             </div>
+            <!-- Paginación -->
             <div class="flex justify-center mt-6">
-                <TailwindPagination
-                    :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
-                    :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="pagina = $event" />
-            </div>
+                    <TailwindPagination v-if="data" :item-classes="[
+                        'text-gray-500',
+                        'rounded-full',
+                        'border-none',
+                        'ml-1',
+                        'hover:bg-gray-200',
+                    ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                        :data="data" @pagination-change-page="pagina = $event" />
+                </div>
         </div>
     </div>
-
-
-
     <!-- Modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -543,18 +573,6 @@ onMounted(() => {
         //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
         const modal = new Modal(modalElement, modalOptions);
 
-        /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
-            del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
-        buttonElement.addEventListener("click", function () {
-            //Se limpia el form al abrir el modal de agregar
-            accionForm("crear");
-            limpiarForm();
-            modalBtnAdd.classList.remove("hidden");
-            modalText.textContent = "Registrar";
-            modalBtnUpdate.classList.add("hidden");
-            modal.show();
-        });
-
         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
         closeButton.addEventListener("click", function () {
             modal.hide();
@@ -563,7 +581,7 @@ onMounted(() => {
     }
 
     //Se leen las páginas al montarse la página para evitar problemas del setup y el localStorage
-    leerPaginas();
+    leerMensajes();
 });
 
 //Variable reactiva para llenar el select
@@ -612,7 +630,7 @@ const buscar = ref({
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let paginas = computed(() => data.value?.data);
+let mensajes = computed(() => data.value?.data);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
@@ -636,7 +654,7 @@ const registros_visibles = ref(true);
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
+    //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
     if (buscar.value.buscador) {
         buscarMensajes();
     } else {
@@ -920,7 +938,7 @@ async function actualizarMensaje() {
                 },
             });
 
-            //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
+            //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
             if (buscar.value.buscador) {
                 buscarMensajes();
             } else {
@@ -991,7 +1009,7 @@ async function borrarMensaje(id) {
                     },
                 });
 
-                //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
+                //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
                 if (buscar.value.buscador) {
                     buscarMensajes();
                 } else {
@@ -1051,7 +1069,7 @@ async function recuperarMensaje(id) {
                     },
                 });
 
-                //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
+                //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
                 if (buscar.value.buscador) {
                     buscarMensajes();
                 } else {
