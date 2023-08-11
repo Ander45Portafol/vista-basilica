@@ -11,3 +11,5 @@ npm install @fullcalendar/vue3
 5- Chart js: npm i vue-chartjs chart.js
 
 6- Proxy: npm i http-proxy-middleware
+
+7- Lightbox:  npm install --save vue-easy-lightbox@next (Es para que al dar click en una imagen salga en grande)

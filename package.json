@@ -30,6 +30,7 @@
     "laravel-vue-pagination": "^4.1.0",
     "npm": "^9.8.0",
     "sweetalert2": "^11.7.20",
-    "vue-chartjs": "^5.2.0"
+    "vue-chartjs": "^5.2.0",
+    "vue-easy-lightbox": "^1.16.0"
   }
 }
