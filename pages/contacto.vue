@@ -1,52 +1,29 @@
 
 <template>
     <div class="principal mt-6">
-        <div class="topprincipal flex justify-between font-semibold text-base ml-4">
-            <div class="options">
-                <NuxtLink to="" class="active ml-4">Contactos</NuxtLink>
-                <NuxtLink to="/mensaje" class="ml-4">Mensajes</NuxtLink>
-            </div>
-            <div class="endtop flex justify-between w-20">
-                <NuxtLink to="/perfil">
-                    <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                        <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round"></path>
-                        <path
-                            d="M19.622 10.395l-1.097-2.65L20 6l-2-2-1.735 1.483-2.707-1.113L12.935 2h-1.954l-.632 2.401-2.645 1.115L6 4 4 6l1.453 1.789-1.08 2.657L2 11v2l2.401.655L5.516 16.3 4 18l2 2 1.791-1.46 2.606 1.072L11 22h2l.604-2.387 2.651-1.098C16.697 18.831 18 20 18 20l2-2-1.484-1.75 1.098-2.652 2.386-.62V11l-2.378-.605z"
-                            stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </NuxtLink>
-                <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
-                    data-drawer-placement="right" aria-controls="drawer-right-example">
-                    <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                        <path
-                            d="M18.134 11C18.715 16.375 21 18 21 18H3s3-2.133 3-9.6c0-1.697.632-3.325 1.757-4.525C8.883 2.675 10.41 2 12 2c.337 0 .672.03 1 .09M19 8a3 3 0 100-6 3 3 0 000 6zM13.73 21a1.999 1.999 0 01-3.46 0"
-                            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
+        <!-- Menu de navegación superior -->
+        <MenuContactoDashboard />
         <!-- Contendor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
+            <!-- Sección del buscador -->
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
-                <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
-                    <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
+                <!-- Sección del buscador -->
+                <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                    <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre/correo)" v-model="buscar.buscador" @keyup="buscarContactos()">
+                        placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarContactos()" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
-                        <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
-                                stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                color="#000000">
+                        <button class="absolute mr-4" @click="limpiarBuscador()">
+                            <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
                     </div>
                 </div>
-                <!-- Botones de navegacion -->
+                <!-- Sección de botones a la derecha del buscador -->
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
@@ -60,18 +37,26 @@
                                 stroke-linejoin="round"></path>
                         </svg>
                     </button>
-                    <button
+                    <button @click="visibilidadRegistros" type="button"
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:mx-8">
-                        <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" color="#000000">
-                            <path d="M7 6h10M7 9h10M9 17h6" stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round"
-                                stroke-linejoin="round"></path>
+                        <!-- Cambia el icono del botón según los registros que se quieren mostrar -->
+                        <svg v-if="registros_visibles" width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24"
+                            fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path d="M12 14a2 2 0 100-4 2 2 0 000 4z" stroke="#000000" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round"></path>
                             <path
-                                d="M3 12h-.4a.6.6 0 00-.6.6v8.8a.6.6 0 00.6.6h18.8a.6.6 0 00.6-.6v-8.8a.6.6 0 00-.6-.6H21M3 12V2.6a.6.6 0 01.6-.6h16.8a.6.6 0 01.6.6V12M3 12h18"
-                                stroke="#1B1C30" stroke-width="2.5"></path>
+                                d="M21 12c-1.889 2.991-5.282 6-9 6s-7.111-3.009-9-6c2.299-2.842 4.992-6 9-6s6.701 3.158 9 6z"
+                                stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                        <svg v-else width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path d="M3 3l18 18M10.5 10.677a2 2 0 002.823 2.823" stroke="#000000" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path
+                                d="M7.362 7.561C5.68 8.74 4.279 10.42 3 12c1.889 2.991 5.282 6 9 6 1.55 0 3.043-.523 4.395-1.35M12 6c4.008 0 6.701 3.158 9 6a15.66 15.66 0 01-1.078 1.5"
+                                stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </button>
-                    <!-- BTN ADD  -->
                     <button id="btnadd" type="button"
                         class="w-20 h-10 flex items-center justify-center mx-4 font-bold rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:ml-0">
                         <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -85,11 +70,12 @@
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ contactos.length }}<span
-                    class="text-gray-500 font-normal ml-2">registro
-                    encontrado!</span></p>
+            <p v-if="contactos" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                {{ contactos.length }}
+                <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+            </p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-            <div id="sectionPage" v-for="contacto in contactos" :key="contacto.id_contacto">
+            <div id="sectionPage" v-if="contactos" v-for="contacto in contactos" :key="contacto.id_contacto">
                 <div class="contained-data flex-col">
                     <div
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
@@ -128,7 +114,7 @@
                                 </svg>
                             </button>
                             <!-- Al darle clic al evento recuperarContacto ejecuta la funcion -->
-                            <button @click="recuperarContacto(contacto.id_contacto)"
+                            <button @click="recuperarUnContacto(contacto.id_contacto)"
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                                 v-else>
                                 <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
@@ -149,11 +135,16 @@
             </div>
             <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
             este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
+            <!-- Paginación -->
             <div class="flex justify-center mt-6">
-                <TailwindPagination
-                    :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
-                    :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="contacto = $event" />
+                <TailwindPagination v-if="data" :item-classes="[
+                    'text-gray-500',
+                    'rounded-full',
+                    'border-none',
+                    'ml-1',
+                    'hover:bg-gray-200',
+                ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                    :data="data" @pagination-change-page="pagina = $event" />
             </div>
         </div>
     </div>
@@ -324,6 +315,9 @@
                     </form>
                 </div>
             </div>
+            <pre>
+                {{ form }}
+        </pre>
         </div>
     </div>
 </template>
@@ -382,48 +376,55 @@
 //Importaciones de plugins y funciones necesarias para el funcionamiento del proyecto
 
 //Importacion para usar el hook de onMounted
-import { onMounted, ref } from 'vue'
+import { onMounted, ref } from "vue";
 //Importación del modal de flowbite
-import { Modal } from 'flowbite'
+import { Modal } from "flowbite";
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
-import axios from 'axios';
+import axios from "axios";
 //Importación del plugin de paginación de registros
-import { TailwindPagination } from 'laravel-vue-pagination';
+import { TailwindPagination } from "laravel-vue-pagination";
 //Importación de sweetalert
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 //Importación de archivo de validaciones
-import validaciones from '../assets/validaciones.js';
+import validaciones from "../assets/validaciones.js";
 
 /*definePageMeta es un macro compilador (Se ejecuta mientras el programa se compila) para los componentes que se 
 encuentran en /pages, este permite establecer/transformar las propiedades de los componentes de nuxt*/
 definePageMeta({
-    //En este caso se establece que este componente pertenece al layout "principal" haciendo uso del definePageMeta
+    //Se le establece el layout principal
     layout: "principal",
-})
+    //Se le establece un middleware a la página
+    middleware: "middleware-paginas"
+});
 
 //onMounted es un hook (en vue los hooks se usan para hacer tareas especificas con los componentes)
 /*En este hook se crean todas las funciones relacionadas al manejo del modal, se crean en este onMounted para que se
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
+
+    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
+    token.value = localStorage.getItem('token');
+
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
-    const buttonElement = document.getElementById('btnadd');
+    const buttonElement = document.getElementById("btnadd");
     //Constante para el modal
-    const modalElement = document.getElementById('staticModal');
+    const modalElement = document.getElementById("staticModal");
     //Constante para el botón de cerrar en el modal
-    const closeButton = document.getElementById('closeModal');
+    const closeButton = document.getElementById("closeModal");
     //Constante para el titulo del modal
-    const modalText = document.getElementById('modalText');
+    const modalText = document.getElementById("modalText");
     //Constante para el boton de actualizar dentro del modal
-    const modalBtnUpdate = document.getElementById('btnModalUpdate');
+    const modalBtnUpdate = document.getElementById("btnModalUpdate");
     //Constante para el boton de agregar dentro del modal
-    const modalBtnAdd = document.getElementById('btnModalAdd');
+    const modalBtnAdd = document.getElementById("btnModalAdd");
 
     /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
-    aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
+      aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
     const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+        backdrop: "static",
+        backdropClasses:
+            "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
     };
 
     //Se evalua si existe un modal y en caso de que si se ejecuta todo lo relacionado a su funcionamiento
@@ -432,29 +433,32 @@ onMounted(() => {
         const modal = new Modal(modalElement, modalOptions);
 
         /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
-        del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
-        buttonElement.addEventListener('click', function () {
+            del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
+        buttonElement.addEventListener("click", function () {
             //Se limpia el form al abrir el modal de agregar
+            accionForm("crear");
             limpiarForm();
-            accionForm('crear');
-            modalBtnAdd.classList.remove('hidden');
+            modalBtnAdd.classList.remove("hidden");
             modalText.textContent = "Registrar";
-            modalBtnUpdate.classList.add('hidden');
+            modalBtnUpdate.classList.add("hidden");
             modal.show();
         });
 
         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
-        closeButton.addEventListener('click', function () {
+        closeButton.addEventListener("click", function () {
             modal.hide();
             limpiarForm();
         });
     }
-})
 
-//Operaciones SCRUD
+    //Se leen los contactos al montarse la página para evitar problemas del setup y el localStorage
+    leerContactos();
+});
 
-/*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
-para almacenar la información que traiga el axios*/
+//Variable reactiva para almacenar el token del localStorage
+const token = ref(null);
+
+//Variable reactiva para almacenar los datos de la tabla
 const data = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
@@ -463,24 +467,11 @@ const pagina = ref(useRoute().query.pagina || 1);
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
     buscador: "",
-})
-
-//Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
-await leerContactos();
-
-//Se crea una variable reactiva para manejar la información del modal
-const form = ref({
-    id_contacto: "",
-    nombre_contacto: "",
-    correo_contacto: "",
-    tipo_contacto: "",
-    visibilidad_contacto: false,
-})
-
+});
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let contactos = computed(() => data.value.data);
+let contactos = computed(() => data.value?.data);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
@@ -490,22 +481,52 @@ watch(pagina, async () => {
         //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
         buscarContactos();
     } else {
-        //Se ejecuta el leer contactos cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
+        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
         leerContactos();
     }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { pagina: pagina.value } })
-})
+    useRouter().push({ query: { pagina: pagina.value } });
+});
+
+//Variable reactiva para poder intercambiar los registros entre visibles y no visibles
+const registros_visibles = ref(true);
+
+//Función para evaluar registros según la visibilidad que quiera el usuario
+function visibilidadRegistros() {
+    //Se establece el valor de la variable registros_visibles a su opuesto
+    registros_visibles.value = !registros_visibles.value;
+    //Se evalua el buscador para realizar leerContactos o buscarContactos 
+    if (buscar.value.buscador) {
+        buscarContactos();
+    } else {
+        leerContactos();
+    }
+}
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerContactos() {
     try {
-        /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
-        además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/contactos?page=${pagina.value}`);
-        //Se asigna el valor de la respuesta de axios a la constante data
-        data.value = res;
+        //Se evalua si se quieren mostrar los registros visibles o invisibles
+        if (registros_visibles.value) {
+            //Se realiza la petición axios para leer los registros visibles
+            const { data: res } = await axios.get(`/contactos?page=${pagina.value}`, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+            //Se asigna el valor de la respuesta de axios a la constante data
+            data.value = res;
+        } else {
+            //Se realiza la petición axios para leer los registros no visibles
+            const { data: res } = await axios.get(`/contactos_ocultos?page=${pagina.value}`, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+            //Se asigna el valor de la respuesta de axios a la constante data
+            data.value = res;
+        }
     } catch (error) {
         //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
@@ -516,13 +537,12 @@ async function leerContactos() {
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
-            icon: 'error',
-            title: 'Error',
+            icon: "error",
+            title: "Error",
             text: res,
-            confirmButtonColor: '#3F4280'
+            confirmButtonColor: "#3F4280",
         });
     }
-
 }
 
 //Función para buscar registros dependiendo del valor del buscador
@@ -530,10 +550,30 @@ async function buscarContactos() {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
-            // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/contactos_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
-            // Actualiza los datos en la constante data
-            data.value = res;
+            //Se evalua si se quieren mostrar los registros visibles o no visibles
+            if (registros_visibles.value) {
+                // Se realiza la petición axios para mostrar los registros visibles
+                const { data: res } = await axios.get(
+                    `/contactos_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                }
+                );
+                // Actualiza los datos en la constante data
+                data.value = res;
+            } else {
+                // Se realiza la petición axios para mostrar los registros no visibles
+                const { data: res } = await axios.get(
+                    `/contactos_search_ocultos?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                }
+                );
+                // Actualiza los datos en la constante data
+                data.value = res;
+            }
             // Actualiza la URL con el parámetro de página
             useRouter().push({ query: { pagina: pagina.value } });
         } else {
@@ -551,10 +591,10 @@ async function buscarContactos() {
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
-            icon: 'error',
-            title: 'Error',
+            icon: "error",
+            title: "Error",
             text: res,
-            confirmButtonColor: '#3F4280'
+            confirmButtonColor: "#3F4280",
         });
     }
 }
@@ -569,6 +609,17 @@ function limpiarBuscador() {
     buscar.value.buscador = "";
 }
 
+//Funciones para manejo del modal
+
+//Se crea una variable reactiva para manejar la información del modal
+const form = ref({
+    id_contacto: "",
+    nombre_contacto: "",
+    correo_contacto: "",
+    tipo_contacto: "",
+    visibilidad_contacto: false,
+});
+
 //Función para limpiar todos los campos del form
 function limpiarForm() {
     //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
@@ -582,15 +633,15 @@ function limpiarForm() {
 //Toast del sweetalert
 const Toast = Swal.mixin({
     toast: true,
-    position: 'top-end',
+    position: "top-end",
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
     didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
-})
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+});
 
 //Variable para validar que acción se quiere hacer cuando se hace un submit al form
 var formAccion = null;
@@ -613,27 +664,35 @@ function submitForm() {
 async function crearContacto() {
     if (form.tipo_contacto != 0 && validarNombreContacto()) {
         try {
-            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-            const formData = {
-                nombre_contacto: form.value.nombre_contacto,
-                correo_contacto: form.value.correo_contacto,
-                tipo_contacto: form.value.tipo_contacto,
-                visibilidad_contacto: form.value.visibilidad_contacto,
-            };
+            //Se crea una constante FormData para almacenar los datos del modal
+            const formData = new FormData();
+            formData.append("nombre_contacto", form.value.nombre_contacto);
+            formData.append("correo_contacto", form.value.correo_contacto);
+            formData.append("tipo_contacto", form.value.tipo_contacto);
+            formData.append(
+                "visibilidad_contacto",
+                form.value.visibilidad_contacto ? 1 : 0
+            );
 
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/contactos", formData);
+            await axios.post("/contactos", formData, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
 
-            //Se cargan todos los contactos y se cierra el modal
+            //Se cargan todas las páginas y se cierra el modal
+            pagina.value = 1;
+            limpiarBuscador();
             leerContactos();
-            document.getElementById('closeModal').click();
+
+            document.getElementById("closeModal").click();
 
             //Se lanza la alerta con el mensaje de éxito
             Toast.fire({
-                icon: 'success',
-                title: 'Contacto creado exitosamente'
-            })
-
+                icon: "success",
+                title: "Contacto creado exitosamente",
+            });
         } catch (error) {
             console.log(error);
             //Se extrae el mensaje de error
@@ -644,57 +703,62 @@ async function crearContacto() {
             const res = validaciones.mensajeSqlState(sqlState);
 
             //Se cierra el modal
-            document.getElementById('closeModal').click();
+            document.getElementById("closeModal").click();
 
             //Se muestra un sweetalert con el mensaje
             Swal.fire({
-                icon: 'error',
-                title: 'Error',
+                icon: "error",
+                title: "Error",
                 text: res,
-                confirmButtonColor: '#3F4280'
+                confirmButtonColor: "#3F4280",
             });
         }
     }
 }
 
-//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro 
+//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
 async function leerUnContacto(id) {
     try {
-        accionForm('actualizar');
+        accionForm("actualizar");
         //Se hace la petición axios y se evalua la respuesta
-        await axios.get('/contactos/' + id).then(res => {
+        await axios.get("/contactos/" + id, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        }).then((res) => {
             //Constante para el modal
-            const modalElement = document.getElementById('staticModal');
+            const modalElement = document.getElementById("staticModal");
             //Constante que contiene las caracteristicas del modal
             const modalOptions = {
-                backdrop: 'static',
-                backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+                backdrop: "static",
+                backdropClasses:
+                    "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
             };
             //Instanciamos el boton para cerrar el modal
-            const closeButton = document.getElementById('closeModal');
+            const closeButton = document.getElementById("closeModal");
             //Constante para el titulo del modal
-            const modalText = document.getElementById('modalText');
+            const modalText = document.getElementById("modalText");
             //Constante para el boton de agregar dentro del modal
-            const modalBtnAdd = document.getElementById('btnModalAdd');
+            const modalBtnAdd = document.getElementById("btnModalAdd");
             //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById('btnModalUpdate');
+            const modalBtnUpdate = document.getElementById("btnModalUpdate");
             //Instanciamos el modal
             const modal = new Modal(modalElement, modalOptions);
             //Le modificamos el texto del header al modal
-            modalText.textContent = 'Editar';
+            modalText.textContent = "Editar";
             //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove('hidden');
+            modalBtnUpdate.classList.remove("hidden");
             //Ocultamos el botón de agregar en el modal
-            modalBtnAdd.classList.add('hidden');
+            modalBtnAdd.classList.add("hidden");
             //Abrimos el modal
             modal.show();
             //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-            closeButton.addEventListener('click', function () {
+            closeButton.addEventListener("click", function () {
                 //Ocultamos el modal
                 modal.hide();
                 //Limpiamos el modal
                 limpiarForm();
-            })
+            });
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
                 id_contacto: res.data.id_contacto,
@@ -703,9 +767,8 @@ async function leerUnContacto(id) {
                 tipo_contacto: res.data.tipo_contacto,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
                 visibilidad_contacto: res.data.visibilidad_contacto ? true : false
-            }
-            console.log(res.data);
-        })
+            };
+        });
     } catch (error) {
         //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
@@ -715,99 +778,59 @@ async function leerUnContacto(id) {
         const res = validaciones.mensajeSqlState(sqlState);
 
         //Se cierra el modal
-        document.getElementById('closeModal').click();
+        document.getElementById("closeModal").click();
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
-            icon: 'error',
-            title: 'Error',
+            icon: "error",
+            title: "Error",
             text: res,
-            confirmButtonColor: '#3F4280'
+            confirmButtonColor: "#3F4280",
         });
     }
 }
 
-//Función actualizar los datos de un registro en específico, estableciendo como parámetro el id del registro 
 async function actualizarContacto() {
     if (form.tipo_contacto != 0 && validarNombreContacto()) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_contacto;;
-            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-            const formData = {
-                nombre_contacto: form.value.nombre_contacto,
-                correo_contacto: form.value.correo_contacto,
-                tipo_contacto: form.value.tipo_contacto,
-                visibilidad_contacto: form.value.visibilidad_contacto,
-            };
+            var id = form.value.id_contacto;
+
+            //Se crea una constante FormData para almacenar los datos del modal
+            const formData = new FormData();
+            formData.append("nombre_contacto", form.value.nombre_contacto);
+            formData.append("correo_contacto", form.value.correo_contacto);
+            formData.append("tipo_contacto", form.value.tipo_contacto);
+            formData.append(
+                "visibilidad_contacto",
+                form.value.visibilidad_contacto ? 1 : 0
+            );
 
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.put("/contactos/" + id, formData);
+            await axios.post("/contactos_update/" + id, formData, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
 
-            //Se cargan todops los contactos y se cierra el modal
-            leerContactos();
-            document.getElementById('closeModal').click();
+            //Se evalua el buscador para realizar leerContactos o buscarContactos
+            if (buscar.value.buscador) {
+                buscarContactos();
+            } else {
+                leerContactos();
+            }
+            //Se cierra el modal
+            document.getElementById("closeModal").click();
 
             //Se lanza la alerta de éxito
             Toast.fire({
-                icon: 'success',
-                title: 'Contacto actualizado exitosamente'
-            })
-
-        } catch (error) {
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
+                icon: "success",
+                title: "Contacto actualizado exitosamente",
             });
-        }
-    }
-}
-
-//Función para cambiar la visibilidad de una página para ocultarla
-async function borrarContacto(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: 'Confirmación',
-        text: "¿Desea ocultar el registro?",
-        icon: 'warning',
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: '#3F4280',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete('/contactos/' + id);
-
-                //Se cargan todos los contactos
-                leerContactos();
-
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Contacto ocultado exitosamente'
-                })
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
+        } catch (error) {
+            console.log(error);
+            const mensajeError = error.response.data.message;
+            if (!error.response.data.errors) {
                 //Se extrae el sqlstate (identificador de acciones SQL)
                 const sqlState = validaciones.extraerSqlState(mensajeError);
                 //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
@@ -823,40 +846,56 @@ async function borrarContacto(id) {
                     text: res,
                     confirmButtonColor: '#3F4280'
                 });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: mensajeError,
+                    confirmButtonColor: '#3F4280'
+                });
             }
         }
-    });
+    }
 }
 
-//Función para cambiar la visibilidad de una página para recuperarla
-async function recuperarContacto(id) {
+//Función para cambiar la visibilidad de una página para ocultarla
+async function borrarContacto(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
-        title: 'Confirmación',
-        text: "¿Desea recuperar el registro?",
-        icon: 'warning',
+        title: "Confirmación",
+        text: "¿Desea ocultar el registro?",
+        icon: "warning",
         reverseButtons: true,
         showCancelButton: true,
-        confirmButtonColor: '#3F4280',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
+        confirmButtonColor: "#3F4280",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
         //Se evalua la respuesta de la alerta
     }).then(async (result) => {
         //Si el usuario selecciono "Confirmar"
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.delete('/contactos/' + id);
+                await axios.delete("/contactos/" + id, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
 
-                //Se cargan todos los contactos
-                leerContactos();
+                //Se evalua el buscador para realizar leerContactos o buscarContactos 
+                if (buscar.value.buscador) {
+                    buscarContactos();
+                } else {
+                    leerContactos();
+                }
 
                 //Se lanza la alerta de éxito
                 Toast.fire({
-                    icon: 'success',
-                    title: 'Contacto recuperado exitosamente'
-                })
+                    icon: "success",
+                    title: "Contacto ocultado exitosamente",
+                });
             } catch (error) {
                 //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
@@ -866,14 +905,74 @@ async function recuperarContacto(id) {
                 const res = validaciones.mensajeSqlState(sqlState);
 
                 //Se cierra el modal
-                document.getElementById('closeModal').click();
+                document.getElementById("closeModal").click();
 
                 //Se muestra un sweetalert con el mensaje
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
+                    icon: "error",
+                    title: "Error",
                     text: res,
-                    confirmButtonColor: '#3F4280'
+                    confirmButtonColor: "#3F4280",
+                });
+            }
+        }
+    });
+}
+
+//Función para cambiar la visibilidad de una página para recuperarla
+async function recuperarUnContacto(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: "Confirmación",
+        text: "¿Desea recuperar el registro?",
+        icon: "warning",
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: "#3F4280",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete("/contactos/" + id, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
+
+                //Se evalua el buscador para realizar leerContactos o buscarContactos 
+                if (buscar.value.buscador) {
+                    buscarContactos();
+                } else {
+                    leerContactos();
+                }
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: "success",
+                    title: "Contacto recuperado exitosamente",
+                });
+            } catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById("closeModal").click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res,
+                    confirmButtonColor: "#3F4280",
                 });
             }
         }

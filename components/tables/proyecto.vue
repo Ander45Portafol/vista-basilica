@@ -285,7 +285,7 @@
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-4xl max-h-full">
             <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 modal">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 modalG">
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
@@ -317,6 +317,19 @@
                                     stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
+                    </div>
+                    <div class="h-80 w-full image_loader flex justify-center items-center">
+                        <div class="flex-col w-1/2">
+                            <div class="text-center">
+                                <div class="flex justify-center items-center">
+                                    <img src="/img/logo_pro.png" class="w-32 h-32" />
+                                </div>
+                                <p class="text-white font-extrabold text-xl mt-2">Cargando...</p>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-6 dark:bg-gray-700 mt-4">
+                                <div class="bg-space h-6 rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="h-80 w-full image-container grid grid-cols-5 gap-5 py-5 px-5">
                         <div v-if="data_imagenes" v-for="item in data_imagenes" :key="item.id_imagen_proyecto"
@@ -399,7 +412,15 @@
     background-color: #1e1e1e;
 }
 
+.modalG {
+    background-color: #1A1B27;
+}
+
 .image-container {
+    border: 3px solid #FFF;
+}
+
+.image_loader {
     border: 3px solid #FFF;
 }
 </style>

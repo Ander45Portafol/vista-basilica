@@ -19,7 +19,7 @@
                 </form>
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
-                    <button
+                    <button @click="generarReporte"
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -30,15 +30,24 @@
                                 stroke-linejoin="round"></path>
                         </svg>
                     </button>
-                    <button
+                    <button @click="visibilidadRegistros" type="button"
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:mx-8">
-                        <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" color="#000000">
-                            <path d="M7 6h10M7 9h10M9 17h6" stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round"
-                                stroke-linejoin="round"></path>
+                        <!-- Cambia el icono del botón según los registros que se quieren mostrar -->
+                        <svg v-if="registros_visibles" width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24"
+                            fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path d="M12 14a2 2 0 100-4 2 2 0 000 4z" stroke="#000000" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round"></path>
                             <path
-                                d="M3 12h-.4a.6.6 0 00-.6.6v8.8a.6.6 0 00.6.6h18.8a.6.6 0 00.6-.6v-8.8a.6.6 0 00-.6-.6H21M3 12V2.6a.6.6 0 01.6-.6h16.8a.6.6 0 01.6.6V12M3 12h18"
-                                stroke="#1B1C30" stroke-width="2.5"></path>
+                                d="M21 12c-1.889 2.991-5.282 6-9 6s-7.111-3.009-9-6c2.299-2.842 4.992-6 9-6s6.701 3.158 9 6z"
+                                stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                        <svg v-else width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path d="M3 3l18 18M10.5 10.677a2 2 0 002.823 2.823" stroke="#000000" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path
+                                d="M7.362 7.561C5.68 8.74 4.279 10.42 3 12c1.889 2.991 5.282 6 9 6 1.55 0 3.043-.523 4.395-1.35M12 6c4.008 0 6.701 3.158 9 6a15.66 15.66 0 01-1.078 1.5"
+                                stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </button>
                     <button id="btnadd" type="button"
@@ -58,14 +67,14 @@
             <div class="h-screen">
                 <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ usuarios.length }}<span
                         class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
-                <div class="tables overflow-y-scroll h-4/6 pr-4">
-                    <TablesUsuarios :dataUsers="usuarios" />
-                    <div class="flex justify-center mt-6">
-                        <TailwindPagination
-                            :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
-                            :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                            :data="data" @pagination-change-page="pagina = $event" />
-                    </div>
+                <div class="tables overflow-y-scroll h-3/5 pr-4">
+                    <TablesUsuarios :dataUsers="usuarios" :actualizarData="leerUsuarios" />
+                </div>
+                <div class="flex justify-center mt-6">
+                    <TailwindPagination
+                        :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
+                        :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                        :data="data" @pagination-change-page="pagina = $event" />
                 </div>
             </div>
         </div>
@@ -105,6 +114,37 @@ onMounted(() => {
         });
     }
 });
+async function generarReporte() {
+    try {
+        const response = await axios.get('/usuario_reporte', {
+            responseType: 'arraybuffer', // Configurar el tipo de respuesta como arraybuffer
+        });
+        // Crear un Blob a partir del arraybuffer recibido
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+
+        // Crear un enlace para mostrar el archivo PDF en el navegador
+        const pdfUrl = URL.createObjectURL(blob);
+        window.open(pdfUrl, '_blank');
+
+        // Liberar el recurso URL
+        URL.revokeObjectURL(pdfUrl);
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+const registros_visibles = ref(true);
+//Función para evaluar registros según la visibilidad que quiera el usuario
+function visibilidadRegistros() {
+    //Se establece el valor de la variable registros_visibles a su opuesto
+    registros_visibles.value = !registros_visibles.value;
+    //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
+    if (buscar.value.buscador) {
+        buscarUsuarios();
+    } else {
+        leerUsuarios();
+    }
+}
 //Seccion para establecer variables
 const data = ref(null);
 const pagina = ref(useRoute().query.pagina || 1);
@@ -126,8 +166,13 @@ const Toast = Swal.mixin({
 //Seccion para establecer funciones y utilizar las constantes
 async function leerUsuarios() {
     try {
-        const { data: res } = await axios.get(`/usuarios?page=${pagina.value}`);
-        return data.value = res;
+        if (registros_visibles.value) {
+            const { data: res } = await axios.get(`/usuarios?page=${pagina.value}`);
+            return data.value = res;
+        } else {
+            const { data: res } = await axios.get(`/usuarios_ocultos?page=${pagina.value}`);
+            return data.value = res;
+        }
     } catch (error) {
         console.log(error);
     }
@@ -149,10 +194,13 @@ async function buscarUsuarios() {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
-            // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/usuarios_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
-            // Actualiza los datos en la constante data
-            data.value = res;
+            if (registros_visibles.value) {
+                const { data: res } = await axios.get(`/usuarios_search?page=${pagina.value}`);
+                return data.value = res;
+            } else {
+                const { data: res } = await axios.get(`/usuarios_search_ocultos?page=${pagina.value}`);
+                return data.value = res;
+            }
             // Actualiza la URL con el parámetro de página
             useRouter().push({ query: { pagina: pagina.value } });
         } else {
@@ -194,6 +242,7 @@ async function buscarUsuarios() {
 .tables::-webkit-scrollbar {
     width: 7px;
 }
+
 .tables::-webkit-scrollbar-thumb {
     background: #32345A;
 }

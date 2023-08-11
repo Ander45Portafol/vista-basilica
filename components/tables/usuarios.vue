@@ -3,6 +3,8 @@
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                <img :src="api_url + usuario.imagen_usuario"
+                    class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{ usuario.nombre_usuario
@@ -86,7 +88,7 @@
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.nombre_usuario" />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.nombre_usuario">
-                                    {{ 
+                                    {{
                                         form.nombre_usuario.length }} /100</span>
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
                                 <label for="nombre_usuario"
@@ -287,7 +289,27 @@
                         <div class="flex-col">
                             <div class="">
                                 <p class="mb-4 text-center text-gray-200">Imagen - Usuario</p>
-                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-2 rounded-lg" />
+                                <div class="flex-col">
+                                    <div class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative"
+                                        @click="seleccionarArchivo" @mouseover="iconoBorrarTrue"
+                                        @mouseleave="iconoBorrarFalse">
+                                        <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
+                                        <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
+                                        <div v-if="mostrarIconoBorrar"
+                                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
+                                                viewBox="0 0 24 24"
+                                                style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                                                <path
+                                                    d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <button type="button"
+                                        class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300"
+                                        @click="seleccionarArchivo">Seleccionar Imagen</button>
+                                </div>
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center mr-4" type="button"
@@ -309,7 +331,8 @@
                                     </svg>
                                 </button>
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
-                                    :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()" @click="accionForm('crear')">
+                                    :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()"
+                                    @click="accionForm('crear')">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -323,7 +346,8 @@
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
                                 <button id="btnModalUpdate" type="submit"
                                     :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()"
-                                    class="h-10 w-10 rounded-lg flex justify-center items-center" @click="accionForm('actualizar')">
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center"
+                                    @click="accionForm('actualizar')">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -349,7 +373,50 @@ import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
     dataUsers: Array,
+    actualizarData:Function,
 });
+
+var api_url = "http://localhost:8000/storage/usuarios/images/";
+
+const mostrarIconoBorrar = ref(false);
+
+function iconoBorrarTrue() {
+    if (imagenPreview.value) {
+        mostrarIconoBorrar.value = true;
+    }
+}
+
+function iconoBorrarFalse() {
+    if (imagenPreview.value) {
+        mostrarIconoBorrar.value = false;
+    }
+}
+
+const imagenPreview = ref(null);
+const seleccionarArchivo = () => {
+    if (mostrarIconoBorrar.value == false) {
+        inputImagen.value.click();
+    } else {
+        limpiarImagen();
+    }
+};
+const inputImagen = ref(null);
+
+const cambiarImagen = () => {
+    const input = inputImagen.value;
+    const file = input.files;
+    if (file && file[0]) {
+        form.value.imagen_usuario = file[0];
+        console.log(form.value.imagen_usuario);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagenPreview.value = e.target.result;
+        };
+        reader.readAsDataURL(file[0]);
+        return file[0];
+    }
+};
+
 //Variable para validar que acción se quiere hacer cuando se hace un submit al form
 var formAccion = null;
 
@@ -382,8 +449,32 @@ function estadoActualizar(id) {
     document.getElementById('btnModalUpdate').classList.remove('hidden');
     closeButton.addEventListener('click', function () {
         modal.hide();
+        limpiarForm();
     });
     leerUnUsuario(id);
+}
+
+function limpiarForm() {
+    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
+    form.value.id_usuario = "";
+    form.value.nombre_usuario = "";
+    form.value.apellido_usuario = "";
+    form.value.usuario = "";
+    form.value.numero_documento_usuario = "";
+    form.value.tipo_documento = "";
+    form.value.correo_usuario = "";
+    form.value.telefono_usuario="";
+    form.value.id_rol_usuario=0;
+    form.value.visibilidad_usuario = false;
+    form.value.id_categoria_grupo_parroquial = "0";
+    limpiarImagen();
+}
+function limpiarImagen() {
+    //Limpiar imagen
+    inputImagen.value.value = '';
+    imagenPreview.value = null;
+    form.value.imagen_usuario = "";
+    mostrarIconoBorrar.value = false;
 }
 
 const form = ref({
@@ -394,6 +485,7 @@ const form = ref({
     numero_documento_usuario: "",
     tipo_documento: 0,
     correo_usuario: "",
+    imagen_usuario: "",
     telefono_usuario: "",
     idioma: "Español (ES)",
     tema: "Claro",
@@ -418,6 +510,12 @@ async function leerUnUsuario(id_usuario) {
                 tema: "Claro",
                 visibilidad_usuario: res.data.visibilidad_usuario ? true : false,
                 id_rol_usuario: res.data.id_rol_usuario,
+            };
+            if (res.data.imagen_usuario != null) {
+                form.value.imagen_usuario = res.data.imagen_usuario;
+                imagenPreview.value = api_url + form.value.imagen_usuario;
+            } else {
+                form.value.imagen_usuario = "";
             }
         });
     } catch (error) {
@@ -456,7 +554,7 @@ async function borrarUsuario(id) {
                         title: 'Usuario desactivado exitosamente'
                     }).then((result) => {
                         if (result.dismiss === Toast.DismissReason.timer) {
-                            location.reload();
+                            props.actualizarData();
                         }
                     }));
             } catch (error) {
@@ -487,7 +585,7 @@ async function recuperarUsuario(id, nombre_completo) {
                     title: 'Usuario activo'
                 }).then((result) => {
                     if (result.dismiss === Toast.DismissReason.timer) {
-                        location.reload();
+                        props.actualizarData();
                     }
                 });
             } catch (error) {
@@ -498,22 +596,28 @@ async function recuperarUsuario(id, nombre_completo) {
 }
 async function crearUsuario() {
     try {
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            nombre_usuario: form.value.nombre_usuario,
-            apellido_usuario: form.value.apellido_usuario,
-            usuario: form.value.usuario,
-            numero_documento_usuario: form.value.numero_documento_usuario,
-            tipo_documento: form.value.tipo_documento,
-            correo_usuario: form.value.correo_usuario,
-            telefono_usuario: form.value.telefono_usuario,
-            tema: form.value.tema,
-            idioma: form.value.idioma,
-            visibilidad_usuario: form.value.visibilidad_usuario,
-            id_rol_usuario: form.value.id_rol_usuario,
-        };
+        const formData = new FormData();
+        formData.append("nombre_usuario", form.value.nombre_usuario);
+        formData.append("apellido_usuario", form.value.apellido_usuario);
+        formData.append("usuario", form.value.usuario);
+        formData.append("numero_documento_usuario", form.value.numero_documento_usuario);
+        formData.append("tipo_documento", form.value.tipo_documento);
+        formData.append("correo_usuario", form.value.correo_usuario);
+        formData.append("telefono_usuario", form.value.telefono_usuario);
+        formData.append("tema", form.value.tema);
+        formData.append("idioma", form.value.idioma);
+        formData.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
+        formData.append(
+            "id_rol_usuario",
+            form.value.id_rol_usuario
+        );
+        formData.append("imagen_usuario", form.value.imagen_usuario);
         //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/usuarios/", formData);
+        await axios.post("/usuarios/", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
         document.getElementById('closeModal').click();
         //Se lanza la alerta con el mensaje de éxito
         Toast.fire({
@@ -553,29 +657,37 @@ async function crearUsuario() {
     }
 }
 async function actualizarUsuario() {
-    var id = form.value.id_usuario;
     try {
-        const formData = {
-            nombre_usuario: form.value.nombre_usuario,
-            apellido_usuario: form.value.apellido_usuario,
-            usuario: form.value.usuario,
-            numero_documento_usuario: form.value.numero_documento_usuario,
-            tipo_documento: form.value.tipo_documento,
-            correo_usuario: form.value.correo_usuario,
-            telefono_usuario: form.value.telefono_usuario,
-            tema: form.value.tema,
-            idioma: form.value.idioma,
-            visibilidad_usuario: form.value.visibilidad_usuario,
-            id_rol_usuario: form.value.id_rol_usuario,
-        };
-        await axios.post("/usuarios_update/" + id, formData);
+        var id = form.value.id_usuario;
+        const formData = new FormData();
+        formData.append("nombre_usuario", form.value.nombre_usuario);
+        formData.append("apellido_usuario", form.value.apellido_usuario);
+        formData.append("usuario", form.value.usuario);
+        formData.append("numero_documento_usuario", form.value.numero_documento_usuario);
+        formData.append("tipo_documento", form.value.tipo_documento);
+        formData.append("correo_usuario", form.value.correo_usuario);
+        formData.append("telefono_usuario", form.value.telefono_usuario);
+        formData.append("tema", form.value.tema);
+        formData.append("idioma", form.value.idioma);
+        formData.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
+        formData.append(
+            "id_rol_usuario",
+            form.value.id_rol_usuario
+        );
+        formData.append("imagen_usuario", form.value.imagen_usuario);
+        console.log(formData);
+        await axios.post("/usuarios_update/" + id, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
         document.getElementById('closeModal').click();
         Toast.fire({
             icon: 'success',
             title: 'Usuario actualizado exitosamente'
         }).then((result) => {
             if (result.dismiss === Toast.DismissReason.timer) {
-                location.reload();
+                props.actualizarData();
             }
         });
     }
