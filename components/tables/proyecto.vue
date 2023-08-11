@@ -4,7 +4,8 @@
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                 <img :src="iconos_url + proyecto.icono_proyecto"
-                    class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+                    @click="mostrarLightBox(iconos_url + proyecto.icono_proyecto)"
+                    class="h-10 w-10 cursor-pointer rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
@@ -70,6 +71,7 @@
             </div>
         </div>
     </div>
+    <vue-easy-lightbox :visible="visibleRef" :imgs="imgsRef" :index="indexRef" @hide="esconderLightBox"></vue-easy-lightbox>
     <!-- Proyet modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -138,30 +140,7 @@
                                     - Proyecto<span class="text-sm ml-1"> *
                                     </span></label>
                             </div>
-                            <div class="pt-4 mt-2 flex-col">
-                                <label for="" class="absolute text-gray-200 text-sm">Estado - Proyecto</label>
-                                <select id="underline_select" v-model="form.estado_proyecto"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="0" class="bg-gray-700">Selecciona una opción</option>
-                                    <option value="En curso" class="bg-gray-700">En curso</option>
-                                    <option value="Finalizado" class="bg-gray-700">Finalizado</option>
-                                    <option value="Cerrado" class="bg-gray-700">Cerrado</option>
-                                </select>
-                                <!-- Se dispara una alerta si se escoge la opción default -->
-                                <div v-if="form.estado_proyecto == 0"
-                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
-                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <div>
-                                        Seleccione <span class="font-medium"> una opción. </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-col mt-6">
+                            <div class="relative z-0 mt-6">
                                 <label for="" class="text-gray-200 text-sm">Visibilidad - Proyecto</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
@@ -185,23 +164,40 @@
                                     - Monetaria<span class="text-sm ml-1"> *
                                     </span></label>
                             </div>
-
-                            <div class="relative z-0 mt-6">
-                                <label for="icono_proyecto" class=" text-sm text-gray-200">Icono
-                                    - Proyecto</label>
-
+                            <div class="pt-4 mt-2 flex-col">
+                                <label for="" class="absolute text-gray-200 text-sm">Estado - Proyecto</label>
+                                <select id="underline_select" v-model="form.estado_proyecto"
+                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                    <option value="0" class="bg-gray-700">Selecciona una opción</option>
+                                    <option value="En curso" class="bg-gray-700">En curso</option>
+                                    <option value="Finalizado" class="bg-gray-700">Finalizado</option>
+                                    <option value="Cerrado" class="bg-gray-700">Cerrado</option>
+                                </select>
+                                <!-- Se dispara una alerta si se escoge la opción default -->
+                                <div v-if="form.estado_proyecto == 0"
+                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        Seleccione <span class="font-medium"> una opción. </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="flex-col w-64">
                             <p class="mb-4 text-center text-gray-200">Icono - Proyecto</p>
                             <div class="flex-col">
-                                <div class="ml-14 h-40 w-40 border-2 border-slate-900 rounded-lg cursor-pointer relative"
+                                <div class="ml-16 h-32 w-32 border-2 border-slate-900 rounded-lg cursor-pointer relative"
                                     @click="seleccionarArchivoIcono" @mouseover="trueIconoBorrarIcono"
                                     @mouseleave="falseIconoBorrarIcono">
-                                    <img v-if="iconoPreview" :src="iconoPreview" class="h-40 w-40 rounded-lg" />
+                                    <img v-if="iconoPreview" :src="iconoPreview" class="h-32 w-32 rounded-lg" />
                                     <input type="file" ref="inputIcono" class="hidden" @change="cambiarIcono" />
                                     <div v-if="mostrarIconoBorrarIcono && iconoPreview"
-                                        class="absolute inset-0 h-40 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                        class="absolute inset-0 h-32 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
                                             viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
                                             <path
@@ -210,10 +206,26 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <button type="button" class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300"
-                                    @click="seleccionarArchivoIcono">Seleccionar icono</button>
                             </div>
-                            <div class="modal-buttons mt-40 flex justify-end items-end">
+                            <p class="mb-4 mt-5 text-center text-gray-200">Imagen - Principal</p>
+                            <div class="flex-col">
+                                <div class="ml-16 h-32 w-32 border-2 border-slate-900 rounded-lg cursor-pointer relative"
+                                    @click="seleccionarArchivoImagenPrincipal" @mouseover="trueIconoBorrarImagenPrincipal"
+                                    @mouseleave="falseIconoBorrarImagenPrincipal">
+                                    <img v-if="imagenPrincipalPreview" :src="imagenPrincipalPreview" class="h-32 w-32 rounded-lg" />
+                                    <input type="file" ref="inputImagenPrincipal" class="hidden" @change="cambiarImagenPrincipal" />
+                                    <div v-if="mostrarIconoBorrarImagenPrincipal && imagenPrincipalPreview"
+                                        class="absolute inset-0 h-32 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
+                                            viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                                            <path
+                                                d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-buttons mt-10 flex justify-end items-end">
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center mr-4" type="button"
                                     @click="limpiarForm()">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
@@ -273,7 +285,7 @@
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-4xl max-h-full">
             <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 modal">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 modalG">
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
@@ -387,7 +399,15 @@
     background-color: #1e1e1e;
 }
 
+.modalG {
+    background-color: #1A1B27;
+}
+
 .image-container {
+    border: 3px solid #FFF;
+}
+
+.image_loader {
     border: 3px solid #FFF;
 }
 </style>
@@ -395,6 +415,7 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Modal } from 'flowbite'
+import VueEasyLightbox from 'vue-easy-lightbox'
 import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
     dataProyectos: Array,
@@ -947,6 +968,23 @@ function falseIconoBorrarIcono() {
     if (iconoPreview.value) {
         mostrarIconoBorrarIcono.value = false;
     }
+}
+
+const visibleRef = ref(false);
+const indexRef = ref(0);
+const imgsRef = ref([]);
+
+function abrirLightBox() {
+    visibleRef.value = true;
+}
+
+function mostrarLightBox(url) {
+    imgsRef.value = url;
+    abrirLightBox();
+}
+
+function esconderLightBox() {
+    visibleRef.value = false
 }
 
 </script>
