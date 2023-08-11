@@ -860,9 +860,7 @@ async function leerUnMensaje(id) {
             //Le modificamos el texto del header al modal
             modalText.textContent = "Editar";
             //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove("hidden");
-            //Ocultamos el botón de agregar en el modal
-            modalBtnAdd.classList.add("hidden");
+            modalBtnUpdate.classList.remove("hidden"); 
             //Abrimos el modal
             modal.show();
             //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
@@ -889,6 +887,7 @@ async function leerUnMensaje(id) {
             };
         });
     } catch (error) {
+        console.log(error); 
         //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
         //Se extrae el sqlstate (identificador de acciones SQL)
