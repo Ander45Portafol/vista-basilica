@@ -10,7 +10,7 @@
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarPaginas()" />
                     <div class="flex justify-end items-center">
-                        <!-- Se le asigna la función para limpiar el buscador al botón -->
+                       <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
                             <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -73,6 +73,33 @@
                 {{ paginas.length }}
                 <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
             </p>
+            <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                -
+                <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+            </p>
+            <div class="loadingtable overflow-hidden h-4/6 pr-4">
+                <div class="contained-data flex-col" v-for="number in 6" :key="number">
+                    <div v-if="!paginas"
+                        class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                        <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                            <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
+                            <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
+                                <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4"></div>
+                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full"></div>
+                            </div>
+                        </div>
+                        <div
+                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                            <div
+                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
+                            </div>
+                            <div
+                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="tables overflow-y-scroll h-4/6 pr-4">
                 <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards / Se le agrega el v-if para que no de error la página cuando el usuario no tenga token -->
                 <div class="contained-data flex-col" v-for="pagina in paginas" :key="pagina.id_pagina">
@@ -133,25 +160,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="tableloading">
-                    <p v-if="!paginas" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
-                        -
-                        <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
-                    </p>
-                    <div v-for="number in 5" :key="number">
-                        <div v-if="!paginas"
-                            class="border-4 border-slate-300 h-28 mt-4 p-4 w-full flex items-center rounded-xl animate-pulse">
-                            <div class="h-16 w-20 md:w-16 bg-slate-300 mr-5 rounded-2xl"></div>
-                            <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
-                                <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
-                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5"></div>
-                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-2/3 mb-2.5"></div>
-                                <span class="sr-only">Cargando...</span>
-                            </div>
-                            <div class="h-10 w-14 md:w-10 bg-slate-300 mr-5 rounded-lg"></div>
-                        </div>
-                    </div>
-                </div>
                 <!-- Paginación -->
                 <div class="flex justify-center mt-6">
                     <TailwindPagination v-if="data" :item-classes="[
@@ -162,6 +170,25 @@
                         'hover:bg-gray-200',
                     ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
                         :data="data" @pagination-change-page="pagina = $event" />
+                </div>
+            </div>
+            <div class="tableloading">
+                <p v-if="!paginas" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                    -
+                    <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+                </p>
+                <div v-for="number in 5" :key="number">
+                    <div v-if="!paginas"
+                        class="border-4 border-slate-300 h-28 mt-4 p-4 w-full flex items-center rounded-xl animate-pulse">
+                        <div class="h-16 w-20 md:w-16 bg-slate-300 mr-5 rounded-2xl"></div>
+                        <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
+                            <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 mb-4"></div>
+                            <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5"></div>
+                            <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-2/3 mb-2.5"></div>
+                            <span class="sr-only">Cargando...</span>
+                        </div>
+                        <div class="h-10 w-14 md:w-10 bg-slate-300 mr-5 rounded-lg"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -380,7 +407,6 @@
 .tables::-webkit-scrollbar {
     width: 7px;
 }
-
 .tables::-webkit-scrollbar-thumb {
     background: #32345A;
 }
