@@ -1,5 +1,5 @@
 <template>
-    <div class="contained-data flex-col" v-for="donacion in dataDonacion" :key="donacion.id_donacion">
+    <div class="contained-data flex-col" v-for="donacion in dataDonacion" :key="donacion.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
