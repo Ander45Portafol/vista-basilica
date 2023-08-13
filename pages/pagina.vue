@@ -102,27 +102,27 @@
             </div>
             <div class="tables overflow-y-scroll h-4/6 pr-4">
                 <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards / Se le agrega el v-if para que no de error la página cuando el usuario no tenga token -->
-                <div class="contained-data flex-col" v-for="pagina in paginas" :key="pagina.id_pagina">
+                <div class="contained-data flex-col" v-for="pagina in paginas" :key="pagina.id">
                     <div v-if="paginas"
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                             <div
                                 class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                                 <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                                    Página- {{ pagina.nombre_pagina }}
+                                    Página- {{ pagina.campos.nombre_pagina }}
                                 </p>
                                 <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]">
-                                    {{ pagina.descripcion_pagina }}
+                                    {{ pagina.campos.descripcion_pagina }}
                                 </p>
                                 <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
-                                    Número de página: {{ pagina.numero_pagina }}
+                                    Número de página: {{ pagina.campos.numero_pagina }}
                                 </p>
                             </div>
                         </div>
                         <div
                             class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                             <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
-                                id="btnedit" @click="leerUnaPagina(pagina.id_pagina)" v-if="pagina.visibilidad_pagina == 1">
+                                id="btnedit" @click="leerUnaPagina(pagina.id)" v-if="pagina.campos.visibilidad_pagina == 1">
                                 <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -133,7 +133,7 @@
                             </button>
                             <button
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                                @click="borrarPagina(pagina.id_pagina)" v-if="pagina.visibilidad_pagina == 1">
+                                @click="borrarPagina(pagina.id)" v-if="pagina.campos.visibilidad_pagina == 1">
                                 <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -142,7 +142,7 @@
                                     </path>
                                 </svg>
                             </button>
-                            <button @click="recuperarPagina(pagina.id_pagina)"
+                            <button @click="recuperarPagina(pagina.id)"
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                                 v-else>
                                 <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
@@ -783,12 +783,12 @@ async function leerUnaPagina(id) {
             });
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
-                id_pagina: res.data.id_pagina,
-                nombre_pagina: res.data.nombre_pagina,
-                numero_pagina: res.data.numero_pagina,
-                descripcion_pagina: res.data.descripcion_pagina,
+                id_pagina: res.data.data.id,
+                nombre_pagina: res.data.data.campos.nombre_pagina,
+                numero_pagina: res.data.data.campos.numero_pagina,
+                descripcion_pagina: res.data.data.campos.descripcion_pagina,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_pagina: res.data.visibilidad_pagina ? true : false,
+                visibilidad_pagina: res.data.data.campos.visibilidad_pagina ? true : false,
             };
         });
     } catch (error) {
