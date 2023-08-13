@@ -1,27 +1,30 @@
 <template>
-    <div class="contained-data flex-col" v-for="proyecto in dataProyectos" :key="proyecto.id_proyecto_donacion">
+    <div class="contained-data flex-col" v-for="proyecto in dataProyectos" :key="proyecto.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                <img :src="iconos_url + proyecto.icono_proyecto"
-                    @click="mostrarLightBox(iconos_url + proyecto.icono_proyecto)"
+                <img :src="iconos_url + proyecto.campos.icono_proyecto"
+                    @click="mostrarLightBox(iconos_url + proyecto.campos.icono_proyecto)"
                     class="h-10 w-10 cursor-pointer rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                        {{ proyecto.nombre_proyecto }}</p>
-                    <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
-                        <span>$</span>{{ proyecto.meta_monetaria }}
+                        {{ proyecto.campos.nombre_proyecto }}</p>
+                    <p class="font-bold text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
+                        Meta monetaria:
+                        <span class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">${{
+                            proyecto.campos.meta_monetaria }}</span>
                     </p>
-                    <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
-                        {{ proyecto.estado_proyecto }}
+                    <p class="font-bold text-sm text-gray-500 max-[750px]:text-[12px]">
+                        Estado: <span class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{
+                            proyecto.campos.estado_proyecto }}</span>
                     </p>
                 </div>
             </div>
             <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-                v-if="proyecto.visibilidad_proyecto == 1">
+                v-if="proyecto.campos.visibilidad_proyecto == 1">
                 <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 imagenbtn max-[750px]:mr-0"
-                    @click="modalImagenes(proyecto.id_proyecto_donacion)">
+                    @click="modalImagenes(proyecto.id)">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M21 7.6v12.8a.6.6 0 01-.6.6H7.6a.6.6 0 01-.6-.6V7.6a.6.6 0 01.6-.6h12.8a.6.6 0 01.6.6z"
@@ -33,7 +36,7 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4 max-[750px]:mt-2"
-                    @click="estadoActualizar(proyecto.id_proyecto_donacion)" v-if="proyecto.visibilidad_proyecto == 1">
+                    @click="estadoActualizar(proyecto.id)" v-if="proyecto.campos.visibilidad_proyecto == 1">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -43,8 +46,8 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="borrarProyecto(proyecto.id_proyecto_donacion, proyecto.nombre_proyecto)"
-                    v-if="proyecto.visibilidad_proyecto == 1">
+                    @click="borrarProyecto(proyecto.id, proyecto.campos.nombre_proyecto)"
+                    v-if="proyecto.campos.visibilidad_proyecto == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -57,7 +60,7 @@
                 v-else>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="recuperarProyecto(proyecto.id_proyecto_donacion, proyecto.nombre_proyecto)">
+                    @click="recuperarProyecto(proyecto.id, proyecto.campos.nombre_proyecto)">
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
@@ -212,8 +215,10 @@
                                 <div class="ml-16 h-32 w-32 border-2 border-slate-900 rounded-lg cursor-pointer relative"
                                     @click="seleccionarArchivoImagenPrincipal" @mouseover="trueIconoBorrarImagenPrincipal"
                                     @mouseleave="falseIconoBorrarImagenPrincipal">
-                                    <img v-if="imagenPrincipalPreview" :src="imagenPrincipalPreview" class="h-32 w-32 rounded-lg" />
-                                    <input type="file" ref="inputImagenPrincipal" class="hidden" @change="cambiarImagenPrincipal" />
+                                    <img v-if="imagenPrincipalPreview" :src="imagenPrincipalPreview"
+                                        class="h-32 w-32 rounded-lg" />
+                                    <input type="file" ref="inputImagenPrincipal" class="hidden"
+                                        @change="cambiarImagenPrincipal" />
                                     <div v-if="mostrarIconoBorrarImagenPrincipal && imagenPrincipalPreview"
                                         class="absolute inset-0 h-32 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
@@ -437,7 +442,7 @@ const form = ref({
     nombre_proyecto: "",
     descripcion_proyecto: "",
     meta_monetaria: "",
-    estado_proyecto: "",
+    estado_proyecto: 0,
     visibilidad_proyecto: false,
     icono_proyecto: "",
     imagen_principal: "",
@@ -544,22 +549,23 @@ async function estadoActualizar(id) {
 async function leerUnProyecto(id_proyecto) {
     try {
         await axios.get('/proyectos/' + id_proyecto).then(res => {
+            console.log(res.data);
             form.value = {
-                id_proyecto_donacion: res.data.id_proyecto_donacion,
-                nombre_proyecto: res.data.nombre_proyecto,
-                descripcion_proyecto: res.data.descripcion_proyecto,
-                meta_monetaria: res.data.meta_monetaria,
-                estado_proyecto: res.data.estado_proyecto,
-                visibilidad_proyecto: res.data.visibilidad_proyecto,
+                id_proyecto_donacion: res.data.data.id,
+                nombre_proyecto: res.data.data.campos.nombre_proyecto,
+                descripcion_proyecto: res.data.data.campos.descripcion_proyecto,
+                meta_monetaria: res.data.data.campos.meta_monetaria,
+                estado_proyecto: res.data.data.campos.estado_proyecto,
+                visibilidad_proyecto: res.data.data.campos.visibilidad_proyecto ? true : false,
             }
-            if (res.data.icono_proyecto != null) {
-                form.value.icono_proyecto = res.data.icono_proyecto;
+            if (res.data.data.campos.icono_proyecto != null) {
+                form.value.icono_proyecto = res.data.data.campos.icono_proyecto;
                 iconoPreview.value = iconos_url + form.value.icono_proyecto;
             } else {
                 form.value.icono_proyecto = "";
             }
-            if (res.data.imagen_principal != null) {
-                form.value.imagen_principal = res.data.imagen_principal;
+            if (res.data.data.campos.imagen_principal != null) {
+                form.value.imagen_principal = res.data.data.campos.imagen_principal;
                 imagenPrincipalPreview.value = imagenes_url + form.value.imagen_principal;
             } else {
                 form.value.imagen_principal = "";
