@@ -9,7 +9,7 @@
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modal_text">Graficar</p>
-                        <p class="text-lg font-medium text-gray-400">Donaciones por rangos de fechas</p>
+                        <p class="text-lg font-medium text-gray-400">{{ texto_donaciones }}</p>
                     </div>
                     <!-- Boton para cerrar el modal -->
                     <button type="button" id="closeModalGrafics"
@@ -25,8 +25,7 @@
                 <!-- Cuerpo del modal -->
                 <div class="p-8 space-y-6 flex-col">
                     <div class="flex justify-between items-center">
-                        <p class="text-gray-100">Ingrese una fecha inicial y una fecha final para enviar como parametro de
-                            graficacion. </p>
+                        <p class="text-gray-100">{{ texto_descripcion }} </p>
                         <div class="flex">
                             <div class="flex text-white">
                                 <input type="checkbox" id="rango_fecha" checked @click="cambiandoGraficaRango">
@@ -38,14 +37,39 @@
                             </div>
                         </div>
                     </div>
-                    <div class="h-80 contenedor_graficas w-full image-container grid grid-cols-5 gap-5 py-5 px-5">
-                        <Line v-if="dataDonaciones" :data="chartDonaciones" :options="opcionesDonaciones" />
+                    <div class="h-80 contenedor_graficas w-full flex items-center justify-center">
+                        <Line v-if="dataDonaciones && dataDonaciones.results.length > 0 && dataListaDonaciones" :data="chartDonaciones"
+                            :options="opcionesDonaciones" />
+                        <div id="info_nodatos" v-else-if="dataListaDonaciones"
+                            class="flex items-center p-4 mb-4 text-blue-800 border-t-4 border-blue-800 bg-blue-50 dark:text-blue-400 dark:bg-gray-800 dark:border-blue-800"
+                            role="alert">
+                            <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                            </svg>
+                            <div class="ml-3 text-sm font-medium">
+                                <p class="font-bold">Información: <span class="font-normal">No existen datos para mostrar.</span></p> 
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex justify-between items-center mt-6">
+                    <div v-if="texto_error"
+                        class="flex items-center p-4 mb-4 text-sm text-red-300 border border-red-300 rounded-lg bg-transparent dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+                        role="alert">
+                        <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                        </svg>
+                        <div>
+                            <p class="font-bold">Error: <span class="font-normal">{{ texto_error }}</span></p> 
+                        </div>
+                    </div>
+                    <form class="flex justify-between items-center mt-6" @submit.prevent="cargarDatos">
                         <div class="flex">
                             <div class="relative z-0 w-64" id="input_fechai">
-                                <input v-model="formFechas.fecha_inicial" type="date" id="fecha_inicial"
-                                    name="fecha_inicial" required maxlength="100"
+                                <input v-model="formFechas.fecha_inicial" @change="validarFechas" type="date"
+                                    id="fecha_inicial" :max="formFechas.fecha_final" name="fecha_inicial"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="fecha_inicial"
@@ -53,8 +77,8 @@
                                     inicial</label>
                             </div>
                             <div class="relative z-0 w-64 ml-14" id="input_fechaf">
-                                <input v-model="formFechas.fecha_final" type="date" id="fecha_final" name="fecha_final"
-                                    required maxlength="100"
+                                <input v-model="formFechas.fecha_final" @change="validarFechas" type="date" id="fecha_final"
+                                    name="fecha_final" :min="formFechas.fecha_inicial"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="fecha_final"
@@ -62,7 +86,8 @@
                                     final</label>
                             </div>
                             <div class="relative z-0 w-64" id="input_anio">
-                                <input type="text" id="anio_input" name="anio" required readonly maxlength="100"
+                                <input v-model="anioref" @input="validarAnio" type="text" id="anio_input" name="anio"
+                                    maxlength="4"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="anio_input"
@@ -70,10 +95,10 @@
                                 </label>
                             </div>
                         </div>
-                        <button class="w-32 h-10 bg-space text-white mt-4 rounded-lg" @click="cargarDatos">
+                        <button type="submit" class="w-32 h-10 bg-space text-white mt-4 rounded-lg" :disabled="texto_error">
                             Generar
                         </button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -87,6 +112,8 @@
 <script setup>
 import { Line, Pie, PolarArea, Bar } from "vue-chartjs";
 import axios from 'axios';
+//Importación de archivo de validaciones
+import validaciones from '../assets/validaciones.js';
 
 onMounted(() => {
     function validarCheck() {
@@ -99,23 +126,40 @@ onMounted(() => {
     }
     validarCheck();
 });
+
+const texto_donaciones = ref('Donaciones por rangos de fechas');
+const texto_descripcion = ref('Ingrese una fecha inicial y una fecha final para enviar como parametro de graficación.');
+
 function cambiandoGraficaAnio() {
     const checkanio = document.getElementById('anio');
     if (checkanio.checked) {
+        texto_donaciones.value = 'Donaciones mensuales según su año';
+        texto_descripcion.value = 'Ingrese el año por el cuál se filtraran los datos de donación mensual registrada por el sistema.';
+        texto_error.value = null;
         document.getElementById('input_anio').classList.remove('hidden');
         document.getElementById('input_fechai').classList.add('hidden');
         document.getElementById('input_fechaf').classList.add('hidden');
         document.getElementById('rango_fecha').checked = false;
     }
+    dataDonaciones.value = null;
+    dataListaDonaciones.value = false;
+    limpiarFormFechas();
 }
 function cambiandoGraficaRango() {
     const checkrango = document.getElementById('rango_fecha');
     if (checkrango.checked) {
+        texto_donaciones.value = 'Donaciones por rangos de fechas';
+        texto_descripcion.value = 'Ingrese una fecha inicial y una fecha final para enviar como parametro de graficación.';
+        texto_error.value = null;
         document.getElementById('input_anio').classList.add('hidden');
         document.getElementById('input_fechai').classList.remove('hidden');
         document.getElementById('input_fechaf').classList.remove('hidden');
         document.getElementById('anio').checked = false;
     }
+    dataDonaciones.value = null;
+    dataListaDonaciones.value = false;
+    anioref.value = null;
+    llenarFechas();
 }
 
 const formFechas = ref({
@@ -123,50 +167,107 @@ const formFechas = ref({
     fecha_final: "",
 })
 
+const anioref = ref(null);
+
 function limpiarFormFechas() {
     formFechas.value.fecha_inicial = "";
     formFechas.value.fecha_final = "";
 }
 
+function llenarFechas() {
+    const fecha_actual = new Date();
+
+    const dia = fecha_actual.getDate().toString().padStart(2, '0');
+    const mes = (fecha_actual.getMonth() + 1).toString().padStart(2, '0');
+    const anio = fecha_actual.getFullYear();
+
+    const fechaConFormato = anio + '-' + mes + '-' + dia;
+
+    formFechas.value.fecha_final = fechaConFormato;
+    formFechas.value.fecha_inicial = fechaConFormato;
+    anioref.value = anio;
+}
+
+llenarFechas();
+
 const dataDonaciones = ref(null);
+const suma_donaciones = ref(null);
+const dataListaDonaciones = ref(false);
 
 async function cargarDatos() {
-    try {
-        if (formFechas.value.fecha_inicial && formFechas.value.fecha_final) {
-            const { data: res } = await axios.get('/donaciones-pfechas-graf/' + formFechas.value.fecha_inicial + '/' + formFechas.value.fecha_final);
-            dataDonaciones.value = res;
+    if (!texto_error.value) {
+        try {
+            if (formFechas.value.fecha_inicial && formFechas.value.fecha_final) {
+                const { data: res } = await axios.get('/donaciones-pfechas-graf/' + formFechas.value.fecha_inicial + '/' + formFechas.value.fecha_final);
+                dataDonaciones.value = res;
+                dataListaDonaciones.value = true;
+                suma_donaciones.value = res.totalDonaciones;
+                opcionesDonaciones.plugins.title.text = 'Total de donaciones: ' + suma_donaciones.value;
+            } else if (anioref.value) {
+                const { data: res } = await axios.get('/donaciones-panio-graf/' + anioref.value);
+                dataDonaciones.value = res;
+                dataListaDonaciones.value = true;
+                suma_donaciones.value = res.totalDonaciones;
+                opcionesDonaciones.plugins.title.text = 'Total donado en el año ' + anioref.value + ': ' + '$' + suma_donaciones.value;
+            }
+        } catch (error) {
+            console.log(error);
         }
-        limpiarFormFechas();
-    } catch (error) {
-        console.log(error);
     }
 }
 
 const chartDonaciones = computed(() => {
-    return {
-        labels: dataDonaciones.value.map(item => item.fecha_donacion),
-        datasets: [
-            {
-                label: "Cantidad donada",
-                pointRadius: 8,
-                pointHoverRadius: 15,
-                borderColor: 'rgba(255,255,255,0)',
-                backgroundColor: (ctx) => {
-                    const canvas = ctx.chart.ctx;
-                    const gradient = canvas.createLinearGradient(0, 0, 0, 500);
+    if (formFechas.value.fecha_inicial && formFechas.value.fecha_final) {
+        return {
+            labels: dataDonaciones.value.results.map(item => item.fecha_donacion),
+            datasets: [
+                {
+                    label: "Cantidad de donaciones",
+                    pointRadius: 8,
+                    pointHoverRadius: 15,
+                    borderColor: 'rgba(255,255,255,0)',
+                    backgroundColor: (ctx) => {
+                        const canvas = ctx.chart.ctx;
+                        const gradient = canvas.createLinearGradient(0, 0, 0, 500);
 
-                    gradient.addColorStop(1, 'rgba(28,37,219,1)');
-                    gradient.addColorStop(0, 'rgba(251,148,123,1)');
-                    return gradient;
+                        gradient.addColorStop(1, 'rgba(28,37,219,1)');
+                        gradient.addColorStop(0, 'rgba(251,148,123,1)');
+                        return gradient;
+                    },
+
+                    pointBackgroundColor: 'rgba(255, 202, 81, 1)',
+                    fill: true,
+                    tension: 0,
+                    data: dataDonaciones.value.results.map(item => item.cantidad_donaciones),
                 },
+            ],
+        };
+    } else if (anioref.value) {
+        return {
+            labels: dataDonaciones.value.results.map(item => item.mes),
+            datasets: [
+                {
+                    label: "Cantidad donada",
+                    pointRadius: 8,
+                    pointHoverRadius: 15,
+                    borderColor: 'rgba(255,255,255,0)',
+                    backgroundColor: (ctx) => {
+                        const canvas = ctx.chart.ctx;
+                        const gradient = canvas.createLinearGradient(0, 0, 0, 500);
 
-                pointBackgroundColor: 'rgba(255, 202, 81, 1)',
-                fill: true,
-                tension: 0,
-                data: dataDonaciones.value.map(item => item.cantidad_donada),
-            },
-        ],
-    };
+                        gradient.addColorStop(1, 'rgba(28,37,219,1)');
+                        gradient.addColorStop(0, 'rgba(251,148,123,1)');
+                        return gradient;
+                    },
+
+                    pointBackgroundColor: 'rgba(255, 202, 81, 1)',
+                    fill: true,
+                    tension: 0,
+                    data: dataDonaciones.value.results.map(item => item.cantidad_mensual),
+                },
+            ],
+        };
+    }
 });
 
 const opcionesDonaciones = {
@@ -194,8 +295,54 @@ const opcionesDonaciones = {
     plugins: {
         legend: {
             display: false
+        },
+        title: {
+            display: true,
+            color: 'white',
+            font: {
+                family: 'Roboto',
+                size: '16',
+                weight: 'bold'
+            }
         }
     }
 }
 
+//Validaciones
+
+function validarAnio() {
+    const resultado = ref(null);
+    if (anioref.value) {
+        resultado.value = validaciones.validarAnio(anioref.value);
+    } else {
+        resultado.value = false;
+    }
+
+    if (resultado.value == false) {
+        texto_error.value = 'Formato de año incorrecto.';
+    } else {
+        texto_error.value = null;
+    }
+
+    return resultado;
+}
+
+function validarFechas() {
+    const resultado = ref(null);
+    if (formFechas.value.fecha_final != '' && formFechas.value.fecha_inicial != '') {
+        resultado.value = true;
+    } else {
+        resultado.value = false;
+    }
+
+    if (resultado.value == false) {
+        texto_error.value = 'Datos ingresados incompletos.';
+    } else {
+        texto_error.value = null;
+    }
+
+    return resultado;
+}
+
+const texto_error = ref(null);
 </script>

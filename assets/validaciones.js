@@ -137,9 +137,21 @@ const validaciones = {
                     return reGeneral.test(texto);
             }
         } else {
-            return true; 
+            return true;
+        }
+    },
+    //Validar que el texto ingresado por el usuario sea un año
+    validarAnio(texto) {
+        //Se evalua si la longitud del texto es de 4 caracteres, en caso de no serlo retorna false
+        if (texto.length == 4) {
+            //Se valida que en la cadena de texto solo existan letras, números, espacios y caracteres de separación (/ | -)
+            var re = /^[0-9]+$/;
+            //Retorna false o true dependiendo de si cumple o no la condición
+            return re.test(texto);
+        } else {
+            return false;
         }
     }
-};
+}
 
 export default validaciones;
