@@ -84,8 +84,11 @@
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                             <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
                             <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
-                                <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4"></div>
-                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full"></div>
+                                <div
+                                    class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4">
+                                </div>
+                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full">
+                                </div>
                             </div>
                         </div>
                         <div
@@ -121,7 +124,8 @@
                         <div
                             class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                             <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
-                                id="btnedit" @click="leerUnMensaje(mensaje.id)" v-if="mensaje.campos.visibilidad_mensaje == 1">
+                                id="btnedit" @click="leerUnMensaje(mensaje.id)"
+                                v-if="mensaje.campos.visibilidad_mensaje == 1">
                                 <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -162,15 +166,15 @@
             </div>
             <!-- Paginación -->
             <div class="flex justify-center mt-6">
-                    <TailwindPagination v-if="data" :item-classes="[
-                        'text-gray-500',
-                        'rounded-full',
-                        'border-none',
-                        'ml-1',
-                        'hover:bg-gray-200',
-                    ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                        :data="data" @pagination-change-page="pagina = $event" />
-                </div>
+                <TailwindPagination v-if="data" :item-classes="[
+                    'text-gray-500',
+                    'rounded-full',
+                    'border-none',
+                    'ml-1',
+                    'hover:bg-gray-200',
+                ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                    :data="data" @pagination-change-page="pagina = $event" />
+            </div>
         </div>
     </div>
     <!-- Modal -->
@@ -579,6 +583,8 @@ onMounted(() => {
 
     //Se leen las páginas al montarse la página para evitar problemas del setup y el localStorage
     leerMensajes();
+
+    llenarSelectContactos();
 });
 
 //Variable reactiva para llenar el select
@@ -588,7 +594,11 @@ var contactos = ref(null);
 async function llenarSelectContactos() {
     try {
         //Se realiza la petición axios
-        const { data: res } = await axios.get('contactos-select');
+        const { data: res } = await axios.get('contactos-select', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         //Lo que devuelve la petición axios se le asigna a "contactos"
         contactos.value = res;
     } catch (error) {
@@ -608,8 +618,6 @@ async function llenarSelectContactos() {
         });
     }
 }
-
-llenarSelectContactos();
 
 //Variable reactiva para almacenar el token del localStorage
 const token = ref(null);
@@ -857,7 +865,7 @@ async function leerUnMensaje(id) {
             //Le modificamos el texto del header al modal
             modalText.textContent = "Editar";
             //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove("hidden"); 
+            modalBtnUpdate.classList.remove("hidden");
             //Abrimos el modal
             modal.show();
             //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
@@ -869,7 +877,7 @@ async function leerUnMensaje(id) {
             });
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
-                id_mensaje: res.data.id,
+                id_mensaje: res.data.data.id,
                 nombre_contactante: res.data.data.campos.nombre_contactante,
                 apellido_contactante: res.data.data.campos.apellido_contactante,
                 telefono_contactante: res.data.data.campos.telefono_contactante,
@@ -884,7 +892,7 @@ async function leerUnMensaje(id) {
             };
         });
     } catch (error) {
-        console.log(error); 
+        console.log(error);
         //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
         //Se extrae el sqlstate (identificador de acciones SQL)

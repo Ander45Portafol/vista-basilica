@@ -789,7 +789,7 @@ async function leerUnContacto(id) {
             });
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
-                id_contacto: res.data.id,
+                id_contacto: res.data.data.id,
                 nombre_contacto: res.data.data.campos.nombre_contacto,
                 correo_contacto: res.data.data.campos.correo_contacto,
                 tipo_contacto: res.data.data.campos.tipo_contacto,
