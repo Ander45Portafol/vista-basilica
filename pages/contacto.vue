@@ -790,11 +790,11 @@ async function leerUnContacto(id) {
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
                 id_contacto: res.data.id,
-                nombre_contacto: res.data.campos.nombre_contacto,
-                correo_contacto: res.data.campos.correo_contacto,
-                tipo_contacto: res.data.campos.tipo_contacto,
+                nombre_contacto: res.data.data.campos.nombre_contacto,
+                correo_contacto: res.data.data.campos.correo_contacto,
+                tipo_contacto: res.data.data.campos.tipo_contacto,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_contacto: res.data.campos.visibilidad_contacto ? true : false
+                visibilidad_contacto: res.data.data.campos.visibilidad_contacto ? true : false
             };
         });
     } catch (error) {

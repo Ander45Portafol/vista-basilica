@@ -100,7 +100,7 @@
                     </div>
                 </div>
             </div>
-            <div id="sectionPage" v-for="mensaje in mensajes" :key="mensaje.id_mensaje">
+            <div id="sectionPage" v-for="mensaje in mensajes" :key="mensaje.id">
                 <div class="contained-data flex-col">
                     <div v-if="mensajes"
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
@@ -108,20 +108,20 @@
                             <div
                                 class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                                 <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{
-                                    mensaje.asunto_mensaje }}
+                                    mensaje.campos.asunto_mensaje }}
                                 </p>
                                 <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
-                                    {{ mensaje.nombre_contactante }} {{ mensaje.apellido_contactante }}</p>
+                                    {{ mensaje.campos.nombre_contactante }} {{ mensaje.campos.apellido_contactante }}</p>
                                 <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
-                                    {{ mensaje.correo_contactante }}
+                                    {{ mensaje.campos.correo_contactante }}
                                 </p>
                             </div>
                         </div>
                         <!-- Boton para leer un mensaje -->
-                        <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-                            v-if="mensaje.visibilidad_mensaje == 1">
-                            <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4"
-                                @click="leerUnMensaje(mensaje.id_mensaje)" v-if="mensaje.visibilidad_mensaje == 1">
+                        <div
+                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                            <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
+                                id="btnedit" @click="leerUnMensaje(mensaje.id)" v-if="mensaje.campos.visibilidad_mensaje == 1">
                                 <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -132,7 +132,7 @@
                             </button>
                             <button
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                                @click="borrarMensaje(mensaje.id_mensaje)" v-if="mensaje.visibilidad_mensaje == 1">
+                                @click="borrarMensaje(mensaje.id)" v-if="mensaje.campos.visibilidad_mensaje == 1">
                                 <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -141,12 +141,9 @@
                                     </path>
                                 </svg>
                             </button>
-                        </div>
-                        <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-                            v-else>
-                            <button
+                            <button @click="recuperarMensaje(mensaje.id)"
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                                @click="recuperarMensaje(mensaje.id_contacto)">
+                                v-else>
                                 <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
@@ -872,18 +869,18 @@ async function leerUnMensaje(id) {
             });
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
-                id_mensaje: res.data.id_mensaje,
-                nombre_contactante: res.data.nombre_contactante,
-                apellido_contactante: res.data.apellido_contactante,
-                telefono_contactante: res.data.telefono_contactante,
-                correo_contactante: res.data.correo_contactante,
-                asunto_mensaje: res.data.asunto_mensaje,
-                mensaje: res.data.mensaje,
-                fecha_mensaje: res.data.fecha_mensaje,
-                estado_mensaje: res.data.estado_mensaje,
+                id_mensaje: res.data.id,
+                nombre_contactante: res.data.data.campos.nombre_contactante,
+                apellido_contactante: res.data.data.campos.apellido_contactante,
+                telefono_contactante: res.data.data.campos.telefono_contactante,
+                correo_contactante: res.data.data.campos.correo_contactante,
+                asunto_mensaje: res.data.data.campos.asunto_mensaje,
+                mensaje: res.data.data.campos.mensaje,
+                fecha_mensaje: res.data.data.campos.fecha_mensaje,
+                estado_mensaje: res.data.data.campos.estado_mensaje,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_mensaje: res.data.visibilidad_mensaje ? true : false,
-                id_contacto: res.data.id_contacto,
+                visibilidad_mensaje: res.data.data.campos.visibilidad_mensaje ? true : false,
+                id_contacto: res.data.data.campos.id_contacto,
             };
         });
     } catch (error) {
