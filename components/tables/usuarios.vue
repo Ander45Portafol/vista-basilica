@@ -3,11 +3,11 @@
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                <img :src="api_url + usuario.imagen_usuario"
+                <img :src="api_url + usuario.campos.imagen_usuario"
                     class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{ usuario.nombre_usuario
+                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{ usuario.campos.nombre_usuario
                     }} {{ usuario.apellido_usuario }}</p>
                     <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]">
                         {{ usuario.rol }}</p>
@@ -375,7 +375,7 @@ const props = defineProps({
     dataUsers: Array,
     actualizarData:Function,
 });
-
+console.log(props.dataUsers);
 var api_url = "http://localhost:8000/storage/usuarios/images/";
 
 const mostrarIconoBorrar = ref(false);
