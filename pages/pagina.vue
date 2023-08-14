@@ -10,7 +10,7 @@
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarPaginas()" />
                     <div class="flex justify-end items-center">
-                        <!-- Se le asigna la función para limpiar el buscador al botón -->
+                       <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
                             <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -73,29 +73,56 @@
                 {{ paginas.length }}
                 <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
             </p>
+            <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                -
+                <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+            </p>
+            <div class="loadingtable overflow-hidden h-4/6 pr-4">
+                <div class="contained-data flex-col" v-for="number in 6" :key="number">
+                    <div v-if="!paginas"
+                        class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                        <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                            <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
+                            <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
+                                <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4"></div>
+                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full"></div>
+                            </div>
+                        </div>
+                        <div
+                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                            <div
+                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
+                            </div>
+                            <div
+                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="tables overflow-y-scroll h-4/6 pr-4">
                 <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards / Se le agrega el v-if para que no de error la página cuando el usuario no tenga token -->
-                <div class="contained-data flex-col" v-for="pagina in paginas" :key="pagina.id_pagina">
+                <div class="contained-data flex-col" v-for="pagina in paginas" :key="pagina.id">
                     <div v-if="paginas"
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                             <div
                                 class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                                 <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                                    Página- {{ pagina.nombre_pagina }}
+                                    Página- {{ pagina.campos.nombre_pagina }}
                                 </p>
                                 <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]">
-                                    {{ pagina.descripcion_pagina }}
+                                    {{ pagina.campos.descripcion_pagina }}
                                 </p>
                                 <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
-                                    Número de página: {{ pagina.numero_pagina }}
+                                    Número de página: {{ pagina.campos.numero_pagina }}
                                 </p>
                             </div>
                         </div>
                         <div
                             class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                             <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
-                                id="btnedit" @click="leerUnaPagina(pagina.id_pagina)" v-if="pagina.visibilidad_pagina == 1">
+                                id="btnedit" @click="leerUnaPagina(pagina.id)" v-if="pagina.campos.visibilidad_pagina == 1">
                                 <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -106,7 +133,7 @@
                             </button>
                             <button
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                                @click="borrarPagina(pagina.id_pagina)" v-if="pagina.visibilidad_pagina == 1">
+                                @click="borrarPagina(pagina.id)" v-if="pagina.campos.visibilidad_pagina == 1">
                                 <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
                                     <path
@@ -115,7 +142,7 @@
                                     </path>
                                 </svg>
                             </button>
-                            <button @click="recuperarPagina(pagina.id_pagina)"
+                            <button @click="recuperarPagina(pagina.id)"
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                                 v-else>
                                 <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
@@ -775,12 +802,12 @@ async function leerUnaPagina(id) {
             });
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
-                id_pagina: res.data.id_pagina,
-                nombre_pagina: res.data.nombre_pagina,
-                numero_pagina: res.data.numero_pagina,
-                descripcion_pagina: res.data.descripcion_pagina,
+                id_pagina: res.data.data.id,
+                nombre_pagina: res.data.data.campos.nombre_pagina,
+                numero_pagina: res.data.data.campos.numero_pagina,
+                descripcion_pagina: res.data.data.campos.descripcion_pagina,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_pagina: res.data.visibilidad_pagina ? true : false,
+                visibilidad_pagina: res.data.data.campos.visibilidad_pagina ? true : false,
             };
         });
     } catch (error) {

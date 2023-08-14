@@ -1,26 +1,30 @@
 <template>
-    <div class="contained-data flex-col" v-for="proyecto in dataProyectos" :key="proyecto.id_proyecto_donacion">
+    <div class="contained-data flex-col" v-for="proyecto in dataProyectos" :key="proyecto.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                <img :src="iconos_url + proyecto.icono_proyecto"
-                    class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+                <img :src="iconos_url + proyecto.campos.icono_proyecto"
+                    @click="mostrarLightBox(iconos_url + proyecto.campos.icono_proyecto)"
+                    class="h-10 w-10 cursor-pointer rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                        {{ proyecto.nombre_proyecto }}</p>
-                    <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
-                        <span>$</span>{{ proyecto.meta_monetaria }}
+                        {{ proyecto.campos.nombre_proyecto }}</p>
+                    <p class="font-bold text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
+                        Meta monetaria:
+                        <span class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">${{
+                            proyecto.campos.meta_monetaria }}</span>
                     </p>
-                    <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
-                        {{ proyecto.estado_proyecto }}
+                    <p class="font-bold text-sm text-gray-500 max-[750px]:text-[12px]">
+                        Estado: <span class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{
+                            proyecto.campos.estado_proyecto }}</span>
                     </p>
                 </div>
             </div>
             <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-                v-if="proyecto.visibilidad_proyecto == 1">
+                v-if="proyecto.campos.visibilidad_proyecto == 1">
                 <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 imagenbtn max-[750px]:mr-0"
-                    @click="modalImagenes(proyecto.id_proyecto_donacion)">
+                    @click="modalImagenes(proyecto.id)">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M21 7.6v12.8a.6.6 0 01-.6.6H7.6a.6.6 0 01-.6-.6V7.6a.6.6 0 01.6-.6h12.8a.6.6 0 01.6.6z"
@@ -32,7 +36,7 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4 max-[750px]:mt-2"
-                    @click="estadoActualizar(proyecto.id_proyecto_donacion)" v-if="proyecto.visibilidad_proyecto == 1">
+                    @click="estadoActualizar(proyecto.id)" v-if="proyecto.campos.visibilidad_proyecto == 1">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -42,8 +46,8 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="borrarProyecto(proyecto.id_proyecto_donacion, proyecto.nombre_proyecto)"
-                    v-if="proyecto.visibilidad_proyecto == 1">
+                    @click="borrarProyecto(proyecto.id, proyecto.campos.nombre_proyecto)"
+                    v-if="proyecto.campos.visibilidad_proyecto == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -56,7 +60,7 @@
                 v-else>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="recuperarProyecto(proyecto.id_proyecto_donacion, proyecto.nombre_proyecto)">
+                    @click="recuperarProyecto(proyecto.id, proyecto.campos.nombre_proyecto)">
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
@@ -70,6 +74,7 @@
             </div>
         </div>
     </div>
+    <vue-easy-lightbox :visible="visibleRef" :imgs="imgsRef" :index="indexRef" @hide="esconderLightBox"></vue-easy-lightbox>
     <!-- Proyet modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -138,30 +143,7 @@
                                     - Proyecto<span class="text-sm ml-1"> *
                                     </span></label>
                             </div>
-                            <div class="pt-4 mt-2 flex-col">
-                                <label for="" class="absolute text-gray-200 text-sm">Estado - Proyecto</label>
-                                <select id="underline_select" v-model="form.estado_proyecto"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="0" class="bg-gray-700">Selecciona una opción</option>
-                                    <option value="En curso" class="bg-gray-700">En curso</option>
-                                    <option value="Finalizado" class="bg-gray-700">Finalizado</option>
-                                    <option value="Cerrado" class="bg-gray-700">Cerrado</option>
-                                </select>
-                                <!-- Se dispara una alerta si se escoge la opción default -->
-                                <div v-if="form.estado_proyecto == 0"
-                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
-                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <div>
-                                        Seleccione <span class="font-medium"> una opción. </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-col mt-6">
+                            <div class="relative z-0 mt-6">
                                 <label for="" class="text-gray-200 text-sm">Visibilidad - Proyecto</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
@@ -185,23 +167,40 @@
                                     - Monetaria<span class="text-sm ml-1"> *
                                     </span></label>
                             </div>
-
-                            <div class="relative z-0 mt-6">
-                                <label for="icono_proyecto" class=" text-sm text-gray-200">Icono
-                                    - Proyecto</label>
-
+                            <div class="pt-4 mt-2 flex-col">
+                                <label for="" class="absolute text-gray-200 text-sm">Estado - Proyecto</label>
+                                <select id="underline_select" v-model="form.estado_proyecto"
+                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                    <option value="0" class="bg-gray-700">Selecciona una opción</option>
+                                    <option value="En curso" class="bg-gray-700">En curso</option>
+                                    <option value="Finalizado" class="bg-gray-700">Finalizado</option>
+                                    <option value="Cerrado" class="bg-gray-700">Cerrado</option>
+                                </select>
+                                <!-- Se dispara una alerta si se escoge la opción default -->
+                                <div v-if="form.estado_proyecto == 0"
+                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        Seleccione <span class="font-medium"> una opción. </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="flex-col w-64">
                             <p class="mb-4 text-center text-gray-200">Icono - Proyecto</p>
                             <div class="flex-col">
-                                <div class="ml-14 h-40 w-40 border-2 border-slate-900 rounded-lg cursor-pointer relative"
+                                <div class="ml-16 h-32 w-32 border-2 border-slate-900 rounded-lg cursor-pointer relative"
                                     @click="seleccionarArchivoIcono" @mouseover="trueIconoBorrarIcono"
                                     @mouseleave="falseIconoBorrarIcono">
-                                    <img v-if="iconoPreview" :src="iconoPreview" class="h-40 w-40 rounded-lg" />
+                                    <img v-if="iconoPreview" :src="iconoPreview" class="h-32 w-32 rounded-lg" />
                                     <input type="file" ref="inputIcono" class="hidden" @change="cambiarIcono" />
                                     <div v-if="mostrarIconoBorrarIcono && iconoPreview"
-                                        class="absolute inset-0 h-40 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                        class="absolute inset-0 h-32 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
                                             viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
                                             <path
@@ -210,10 +209,28 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <button type="button" class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300"
-                                    @click="seleccionarArchivoIcono">Seleccionar icono</button>
                             </div>
-                            <div class="modal-buttons mt-40 flex justify-end items-end">
+                            <p class="mb-4 mt-5 text-center text-gray-200">Imagen - Principal</p>
+                            <div class="flex-col">
+                                <div class="ml-16 h-32 w-32 border-2 border-slate-900 rounded-lg cursor-pointer relative"
+                                    @click="seleccionarArchivoImagenPrincipal" @mouseover="trueIconoBorrarImagenPrincipal"
+                                    @mouseleave="falseIconoBorrarImagenPrincipal">
+                                    <img v-if="imagenPrincipalPreview" :src="imagenPrincipalPreview"
+                                        class="h-32 w-32 rounded-lg" />
+                                    <input type="file" ref="inputImagenPrincipal" class="hidden"
+                                        @change="cambiarImagenPrincipal" />
+                                    <div v-if="mostrarIconoBorrarImagenPrincipal && imagenPrincipalPreview"
+                                        class="absolute inset-0 h-32 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
+                                            viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                                            <path
+                                                d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-buttons mt-10 flex justify-end items-end">
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center mr-4" type="button"
                                     @click="limpiarForm()">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
@@ -305,19 +322,6 @@
                                     stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
-                    </div>
-                    <div class="h-80 w-full image_loader flex justify-center items-center">
-                        <div class="flex-col w-1/2">
-                            <div class="text-center">
-                                <div class="flex justify-center items-center">
-                                    <img src="/img/logo_pro.png" class="w-32 h-32" />
-                                </div>
-                                <p class="text-white font-extrabold text-xl mt-2">Cargando...</p>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-6 dark:bg-gray-700 mt-4">
-                                <div class="bg-space h-6 rounded-full" style="width: 45%"></div>
-                            </div>
-                        </div>
                     </div>
                     <div class="h-80 w-full image-container grid grid-cols-5 gap-5 py-5 px-5">
                         <div v-if="data_imagenes" v-for="item in data_imagenes" :key="item.id_imagen_proyecto"
@@ -416,6 +420,7 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Modal } from 'flowbite'
+import VueEasyLightbox from 'vue-easy-lightbox'
 import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
     dataProyectos: Array,
@@ -437,7 +442,7 @@ const form = ref({
     nombre_proyecto: "",
     descripcion_proyecto: "",
     meta_monetaria: "",
-    estado_proyecto: "",
+    estado_proyecto: 0,
     visibilidad_proyecto: false,
     icono_proyecto: "",
     imagen_principal: "",
@@ -544,22 +549,23 @@ async function estadoActualizar(id) {
 async function leerUnProyecto(id_proyecto) {
     try {
         await axios.get('/proyectos/' + id_proyecto).then(res => {
+            console.log(res.data);
             form.value = {
-                id_proyecto_donacion: res.data.id_proyecto_donacion,
-                nombre_proyecto: res.data.nombre_proyecto,
-                descripcion_proyecto: res.data.descripcion_proyecto,
-                meta_monetaria: res.data.meta_monetaria,
-                estado_proyecto: res.data.estado_proyecto,
-                visibilidad_proyecto: res.data.visibilidad_proyecto,
+                id_proyecto_donacion: res.data.data.id,
+                nombre_proyecto: res.data.data.campos.nombre_proyecto,
+                descripcion_proyecto: res.data.data.campos.descripcion_proyecto,
+                meta_monetaria: res.data.data.campos.meta_monetaria,
+                estado_proyecto: res.data.data.campos.estado_proyecto,
+                visibilidad_proyecto: res.data.data.campos.visibilidad_proyecto ? true : false,
             }
-            if (res.data.icono_proyecto != null) {
-                form.value.icono_proyecto = res.data.icono_proyecto;
+            if (res.data.data.campos.icono_proyecto != null) {
+                form.value.icono_proyecto = res.data.data.campos.icono_proyecto;
                 iconoPreview.value = iconos_url + form.value.icono_proyecto;
             } else {
                 form.value.icono_proyecto = "";
             }
-            if (res.data.imagen_principal != null) {
-                form.value.imagen_principal = res.data.imagen_principal;
+            if (res.data.data.campos.imagen_principal != null) {
+                form.value.imagen_principal = res.data.data.campos.imagen_principal;
                 imagenPrincipalPreview.value = imagenes_url + form.value.imagen_principal;
             } else {
                 form.value.imagen_principal = "";
@@ -857,13 +863,9 @@ async function actualizarImagenes() {
 
             //Si el usuario escogió la opción de confirmar se eliminan los registros
             if (eleccion.isConfirmed) {
-                const formData = new FormData();
-                //Se hace un for para evaluar cada posición del array y se envia la petición axios
-                for (let i = 0; i < imagenesBorradas.value.length; i++) {
-                    formData.append('id_imagen_proyecto[]', imagenesBorradas.value[i]);
-                }
-
-                await axios.delete('imagenes_proyectos', formData);
+                await axios.delete('imagenes_proyectos', {
+                    data: { id_imagen_proyecto: imagenesBorradas.value }
+                });
             }
         }
 
@@ -972,6 +974,23 @@ function falseIconoBorrarIcono() {
     if (iconoPreview.value) {
         mostrarIconoBorrarIcono.value = false;
     }
+}
+
+const visibleRef = ref(false);
+const indexRef = ref(0);
+const imgsRef = ref([]);
+
+function abrirLightBox() {
+    visibleRef.value = true;
+}
+
+function mostrarLightBox(url) {
+    imgsRef.value = url;
+    abrirLightBox();
+}
+
+function esconderLightBox() {
+    visibleRef.value = false
 }
 
 </script>

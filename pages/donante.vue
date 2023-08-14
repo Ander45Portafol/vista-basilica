@@ -77,7 +77,7 @@
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-            <div class="contained-data flex-col" v-for="donante in donantes" :key="donante.id_donante">
+            <div class="contained-data flex-col" v-for="donante in donantes" :key="donante.id">
                 <div
                     class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                     <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -86,20 +86,31 @@
                         <div
                             class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                             <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                                {{ donante.nombre_donante }} {{ donante.apellido_donante }}</p>
+                                {{ donante.campos.nombre_donante }} {{ donante.campos.apellido_donante }}</p>
                             <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
-                                {{ donante.correo_donante }}</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{ donante.usuario_donante
+                                {{ donante.campos.correo_donante }}</p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{
+                                donante.campos.usuario_donante
                             }}
                             </p>
                         </div>
                     </div>
                     <!-- Al darle clic al evento borrarDonante ejecuta la funcion -->
                     <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-                        v-if="donante.visibilidad_donante == 1">
+                        v-if="donante.campos.visibilidad_donante == 1">
+                        <button
+                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 graphbtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
+                            <svg width="32px" height="32px" stroke-width="1.5" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#45A0B4">
+                                <path d="M20 20H4V4" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
+                                <path d="M4 16.5L12 9l3 3 4.5-4.5" stroke="#45A0B4" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
                         <button
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                            @click="borrarDonante(donante.id_donante)">
+                            @click="borrarDonante(donante.id)">
                             <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -113,7 +124,7 @@
                         v-else>
                         <button
                             class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                            @click="recuperarDonante(donante.id_donante)">
+                            @click="recuperarDonante(donante.id)">
                             <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
@@ -308,6 +319,14 @@
 
 .buttons-data .deletebtn {
     border: 3px solid #872727;
+}
+
+.buttons-data .changebtn {
+    border: 3px solid #3f4280;
+}
+
+.buttons-data .graphbtn {
+    border: 3px solid #45A0B4;
 }
 
 .modal {
