@@ -128,6 +128,7 @@ onMounted(() => {
     //Constante para el botón de cerrar en el modal
     const closeButton = document.getElementById('closeModal');
     //Constante para el titulo del modal
+    const modalText = document.getElementById('modalText');
     //Constante para el boton de actualizar dentro del modal
     const modalBtnUpdate = document.getElementById('btnModalUpdate');
     //Constante para el boton de agregar dentro del modal
@@ -149,6 +150,7 @@ onMounted(() => {
         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
         buttonElement.addEventListener('click', function () {
             //Se limpia el form al abrir el modal de agregar
+            modalText.textContent = "Registrar";
             modalBtnAdd.classList.remove('hidden');
             modalBtnUpdate.classList.add('hidden');
             modal.show();
