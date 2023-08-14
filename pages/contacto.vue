@@ -2,7 +2,7 @@
 <template>
     <div class="principal mt-6">
         <!-- Menu de navegación superior -->
-        <MenuContactoDashboard />
+        <MenuContactoDashboard class="mr-8" />
         <!-- Contendor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <!-- Sección del buscador -->
@@ -68,14 +68,42 @@
                     </button>
                 </div>
             </div>
+              <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
             <p v-if="contactos" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
                 {{ contactos.length }}
                 <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
             </p>
+            <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                -
+                <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+            </p>
+            <div class="loadingtable overflow-hidden h-4/6 pr-4">
+                <div class="contained-data flex-col" v-for="number in 6" :key="number">
+                    <div v-if="!contactos"
+                        class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                        <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                            <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
+                            <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
+                                <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4"></div>
+                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full"></div>
+                            </div>
+                        </div>
+                        <div
+                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                            <div
+                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
+                            </div>
+                            <div
+                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-            <div id="sectionPage" v-if="contactos" v-for="contacto in contactos" :key="contacto.id_contacto">
+            <div id="sectionPage" v-if="contactos" v-for="contacto in contactos" :key="contacto.id">
                 <div class="contained-data flex-col">
                     <div
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
@@ -84,15 +112,15 @@
                                 class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                                 <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                                 <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]"> {{
-                                    contacto.nombre_contacto }} </p>
+                                    contacto.campos.nombre_contacto }} </p>
                                 <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> {{
-                                    contacto.correo_contacto }}</p>
+                                    contacto.campos.correo_contacto }}</p>
                             </div>
                         </div>
                         <!-- Al darle clic al evento leerUnContacto ejecuta la funcion -->
                         <div
                             class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                            <button @click="leerUnContacto(contacto.id_contacto)" v-if="contacto.visibilidad_contacto == 1"
+                            <button @click="leerUnContacto(contacto.id)" v-if="contacto.campos.visibilidad_contacto == 1"
                                 class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
                                 <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -103,7 +131,7 @@
                                 </svg>
                             </button>
                             <!-- Al darle clic al evento borrarContacto ejecuta la funcion -->
-                            <button @click="borrarContacto(contacto.id_contacto)" v-if="contacto.visibilidad_contacto == 1"
+                            <button @click="borrarContacto(contacto.id)" v-if="contacto.campos.visibilidad_contacto == 1"
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
                                 <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -114,7 +142,7 @@
                                 </svg>
                             </button>
                             <!-- Al darle clic al evento recuperarContacto ejecuta la funcion -->
-                            <button @click="recuperarUnContacto(contacto.id_contacto)"
+                            <button @click="recuperarUnContacto(contacto.id)"
                                 class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                                 v-else>
                                 <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
@@ -761,12 +789,12 @@ async function leerUnContacto(id) {
             });
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
-                id_contacto: res.data.id_contacto,
-                nombre_contacto: res.data.nombre_contacto,
-                correo_contacto: res.data.correo_contacto,
-                tipo_contacto: res.data.tipo_contacto,
+                id_contacto: res.data.id,
+                nombre_contacto: res.data.campos.nombre_contacto,
+                correo_contacto: res.data.campos.correo_contacto,
+                tipo_contacto: res.data.campos.tipo_contacto,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_contacto: res.data.visibilidad_contacto ? true : false
+                visibilidad_contacto: res.data.campos.visibilidad_contacto ? true : false
             };
         });
     } catch (error) {
@@ -797,7 +825,8 @@ async function actualizarContacto() {
             var id = form.value.id_contacto;
 
             //Se crea una constante FormData para almacenar los datos del modal
-            const formData = new FormData();
+           //Se crea una constante FormData para almacenar los datos del modal
+           const formData = new FormData();
             formData.append("nombre_contacto", form.value.nombre_contacto);
             formData.append("correo_contacto", form.value.correo_contacto);
             formData.append("tipo_contacto", form.value.tipo_contacto);
@@ -813,8 +842,8 @@ async function actualizarContacto() {
                 },
             });
 
-            //Se evalua el buscador para realizar leerContactos o buscarContactos
-            if (buscar.value.buscador) {
+             //Se evalua el buscador para realizar leerContactos o buscarContactos
+             if (buscar.value.buscador) {
                 buscarContactos();
             } else {
                 leerContactos();
