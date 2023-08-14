@@ -1,5 +1,5 @@
 <template>
-    <div class="principal mt-6">
+    <div class="principal mt-4">
         <!--Componente para cargar el menu superior del formulario-->
         <MenuUsuarioDashboard class="mr-8" />
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
