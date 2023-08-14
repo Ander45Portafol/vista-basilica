@@ -20,13 +20,11 @@
             <!-- Al darle clic al evento borrarDonante ejecuta la funcion -->
             <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
                 v-if="donante.campos.visibilidad_donante == 1">
-                <button id="graphbtn"
+                <button id="graphbtn" @click="abrirModalGrafica(donante.id)"
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 graphbtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
-                    <svg width="32px" height="32px" stroke-width="1.5" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#45A0B4">
-                        <path d="M20 20H4V4" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round"></path>
-                        <path d="M4 16.5L12 9l3 3 4.5-4.5" stroke="#45A0B4" stroke-width="1.5" stroke-linecap="round"
+                    <svg width="64px" height="64px" stroke-width="1.5" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" color="#45a0b4">
+                        <path d="M8 16V8M12 16v-5M16 16v-3" stroke="#45a0b4" stroke-width="1.5" stroke-linecap="round"
                             stroke-linejoin="round"></path>
                     </svg>
                 </button>
@@ -86,19 +84,32 @@
                 <div class="p-8 space-y-6">
                     <div class="flex-col">
                         <div class="h-80 contenedor_graficas w-full flex items-center justify-center">
+                            <Bar v-if="dataGrafica && dataGrafica.data.results.length > 0 && dataListaGrafica" :data="chartDonante"
+                                :options="opcionesChart" />
+                            <div id="info_nodatos" v-else-if="dataListaGrafica"
+                                class="flex items-center p-4 mb-4 text-blue-800 border-t-4 border-blue-800 bg-blue-50 dark:text-blue-400 dark:bg-gray-800 dark:border-blue-800"
+                                role="alert">
+                                <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                                </svg>
+                                <div class="ml-3 text-sm font-medium">
+                                    <p class="font-bold">Información: <span class="font-normal">No existen datos para
+                                            mostrar.</span></p>
+                                </div>
+                            </div>
                         </div>
                         <div class="flex justify-between mt-6">
                             <div class="relative z-0 w-64" id="nombre_donante">
-                                <input type="text" id="nombre_donante" name="nombre_donante"
+                                <input v-model="formGrafica.nombre_completo_donante" type="text" id="nombre_donante"
+                                    name="nombre_donante" readonly maxlength="200"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="nombre_donante"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                     Donante</label>
                             </div>
-                            <button type="submit" class="w-32 h-10 bg-space text-white mt-4 rounded-lg">
-                                Generar
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -112,23 +123,10 @@ const props = defineProps({
 });
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Modal } from 'flowbite'
-onMounted(() => {
-    const modalElement = document.getElementById('staticModal');
-    const closeButton = document.getElementById('closeModal');
-    const buttonElement = document.getElementById('graphbtn');
-    const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-    const modal = new Modal(modalElement, modalOptions);
-    buttonElement.addEventListener('click', function () {
-        modal.show();
-    });
-    closeButton.addEventListener('click', function () {
-        modal.hide();
-    });
-});
+import { Modal } from 'flowbite';
+import validaciones from "../../assets/validaciones.js";
+import { Bar } from "vue-chartjs";
+
 //Toast del sweetalert
 const Toast = Swal.mixin({
     toast: true,
@@ -205,6 +203,120 @@ async function recuperarDonante(id) {
         }
     });
 }
+
+const formGrafica = ref({
+    nombre_completo_donante: "",
+    suma_donaciones: "",
+});
+
+function limpiarGrafica() {
+    formGrafica.value.nombre_completo_donante = "";
+    formGrafica.value.suma_donaciones = "";
+    dataListaGrafica.value = false;
+    dataGrafica.value = null;
+}
+
+const dataGrafica = ref(null);
+
+const dataListaGrafica = ref(false);
+
+async function abrirModalGrafica(id) {
+    try {
+        //Se hace la petición axios y se evalua la respuesta
+        await axios.get("/donantes-p-graf/" + id).then((res) => {
+            const modalElement = document.getElementById('staticModal');
+            const closeButton = document.getElementById('closeModal');
+            const modalOptions = {
+                backdrop: 'static',
+                backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+            };
+            const modal = new Modal(modalElement, modalOptions);
+            modal.show();
+            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
+            closeButton.addEventListener("click", function () {
+                //Ocultamos el modal
+                modal.hide();
+                limpiarGrafica();
+            });
+            dataGrafica.value = res;
+            dataListaGrafica.value = true;
+            formGrafica.value.nombre_completo_donante = dataGrafica.value.data.nombreDonante;
+            formGrafica.value.suma_donaciones = dataGrafica.value.data.totalDonaciones;
+            opcionesChart.plugins.title.text = 'Total donado: $' + formGrafica.value.suma_donaciones;
+        });
+    } catch (error) {
+        console.log(error);
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se cierra el modal
+        document.getElementById("closeModal").click();
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: res,
+            confirmButtonColor: "#3F4280",
+        });
+    }
+}
+
+const chartDonante = computed(() => {
+    return {
+        labels: dataGrafica.value.data.results.map(item => item.fecha_donacion),
+        datasets: [
+            {
+                label: "N° de eventos:",
+                data: dataGrafica.value.data.results.map(item => item.cantidad_donada),
+                barPercentage: 0.5,
+                backgroundColor: ["#9497DF", "#565587", "#47497A", "#6C6BA9", "#565587"],
+            },
+        ],
+    };
+});
+
+const opcionesChart = {
+    responsive: true,
+    scales: {
+        y: {
+            grid: {
+                color: 'white'
+            },
+            ticks: {
+                color: 'white'
+            }
+        },
+        x: {
+            grid: {
+                color: 'white'
+            },
+            ticks: {
+                color: 'white'
+            }
+        }
+    },
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            display: false
+        },
+        title: {
+            display: true,
+            color: 'white',
+            font: {
+                family: 'Roboto',
+                size: '16',
+                weight: 'bold'
+            }
+        }
+    }
+}
+
 </script>
 <style scoped>
 .data-contained {
