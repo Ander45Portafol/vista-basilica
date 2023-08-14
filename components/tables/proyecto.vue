@@ -462,6 +462,19 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 });
+
+const formPorcentaje = ref({
+    cantidad_total: "",
+    meta_monetaria: "",
+    porcentaje_logro: "",
+});
+
+function formPorcentajeLimpiar(){
+    form.value.cantidad_total = null;
+    form.value.meta_monetaria = null;
+    form.value.porcentaje_logro = null;
+}
+
 const form = ref({
     id_proyecto_donacion: "",
     nombre_proyecto: "",
@@ -481,6 +494,7 @@ function limpiarForm() {
     form.value.visibilidad_proyecto = false;
     limpiarImagenPrincipal();
     limpiarIcono();
+    formPorcentajeLimpiar();
 }
 //Procesos del CRUD
 var formAccion = null;
@@ -577,21 +591,21 @@ async function leerUnProyecto(id_proyecto) {
         await axios.get('/proyectos/' + id_proyecto).then(res => {
             console.log(res.data);
             form.value = {
-                id_proyecto_donacion: res.data.id,
-                nombre_proyecto: res.data.nombre_proyecto,
-                descripcion_proyecto: res.descripcion_proyecto,
-                meta_monetaria: res.data.meta_monetaria,
-                estado_proyecto: res.data.estado_proyecto,
-                visibilidad_proyecto: res.data.visibilidad_proyecto ? true : false,
+                id_proyecto_donacion: res.data.data.id,
+                nombre_proyecto: res.data.data.campos.nombre_proyecto,
+                descripcion_proyecto: res.data.data.campos.descripcion_proyecto,
+                meta_monetaria: res.data.data.campos.meta_monetaria,
+                estado_proyecto: res.data.data.campos.estado_proyecto,
+                visibilidad_proyecto: res.data.data.campos.visibilidad_proyecto ? true : false,
             }
-            if (res.data.icono_proyecto != null) {
-                form.value.icono_proyecto = res.data.icono_proyecto;
+            if (res.data.data.campos.icono_proyecto != null) {
+                form.value.icono_proyecto = res.data.data.campos.icono_proyecto;
                 iconoPreview.value = iconos_url + form.value.icono_proyecto;
             } else {
                 form.value.icono_proyecto = "";
             }
-            if (res.data.imagen_principal != null) {
-                form.value.imagen_principal = res.data.imagen_principal;
+            if (res.data.data.campos.imagen_principal != null) {
+                form.value.imagen_principal = res.data.data.campos.imagen_principal;
                 imagenPrincipalPreview.value = imagenes_url + form.value.imagen_principal;
             } else {
                 form.value.imagen_principal = "";
