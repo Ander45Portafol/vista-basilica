@@ -38,8 +38,8 @@
                         </div>
                     </div>
                     <div class="h-80 contenedor_graficas w-full flex items-center justify-center">
-                        <Line v-if="dataDonaciones && dataDonaciones.results.length > 0 && dataListaDonaciones" :data="chartDonaciones"
-                            :options="opcionesDonaciones" />
+                        <Line v-if="dataDonaciones && dataDonaciones.results.length > 0 && dataListaDonaciones"
+                            :data="chartDonaciones" :options="opcionesDonaciones" />
                         <div id="info_nodatos" v-else-if="dataListaDonaciones"
                             class="flex items-center p-4 mb-4 text-blue-800 border-t-4 border-blue-800 bg-blue-50 dark:text-blue-400 dark:bg-gray-800 dark:border-blue-800"
                             role="alert">
@@ -49,7 +49,8 @@
                                     d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
                             </svg>
                             <div class="ml-3 text-sm font-medium">
-                                <p class="font-bold">Información: <span class="font-normal">No existen datos para mostrar.</span></p> 
+                                <p class="font-bold">Información: <span class="font-normal">No existen datos para
+                                        mostrar.</span></p>
                             </div>
                         </div>
                     </div>
@@ -62,7 +63,7 @@
                                 d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
                         </svg>
                         <div>
-                            <p class="font-bold">Error: <span class="font-normal">{{ texto_error }}</span></p> 
+                            <p class="font-bold">Error: <span class="font-normal">{{ texto_error }}</span></p>
                         </div>
                     </div>
                     <form class="flex justify-between items-center mt-6" @submit.prevent="cargarDatos">
