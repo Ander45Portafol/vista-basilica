@@ -161,12 +161,17 @@
                                     <p class="mb-4 mt-2 text-base text-white">Porcentaje de logro actual registrado</p>
                                     <div class="flex items-center justify-center text-white">
                                         <p class="mr-4">$0.00</p>
-                                        <div class="w-2/4 bg-gray-200 h-12 rounded-2xl dark:bg-gray-700">
+                                        <div class="w-2/4 bg-gray-200 h-12 rounded-2xl dark:bg-gray-700" data-tooltip-target="tooltip-porcentaje" data-tooltip-placement="bottom"> 
                                             <div v-if="formPorcentaje.porcentaje_logro > 0"
                                                 class="bg-blueProgressBar text-xs h-12 font-medium text-blue-100 text-center p-0.5 leading-none rounded-2xl flex justify-center items items-center"
                                                 :style="{ width: formPorcentaje.porcentaje_logro + '%' }"></div>
                                         </div>
                                         <p class="ml-4">${{ formPorcentaje.meta_monetaria_porcentaje }}</p>
+                                    </div>
+                                    <div id="tooltip-porcentaje" role="tooltip"
+                                        class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-purpleToolTip transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip">
+                                        Cantidad total: ${{ formPorcentaje.cantidad_total }}
+                                        <div class="tooltip-arrow" data-popper-arrow></div>
                                     </div>
                                     <p class="text-white text-base mt-2">{{ formPorcentaje.porcentaje_logro }}%</p>
                                 </div>
@@ -447,6 +452,8 @@ import Swal from 'sweetalert2';
 import { Modal } from 'flowbite'
 import VueEasyLightbox from 'vue-easy-lightbox'
 import validaciones from '../../assets/validaciones.js';
+import { initTooltips } from 'flowbite'
+
 const props = defineProps({
     dataProyectos: Array,
 });
@@ -454,6 +461,7 @@ const props = defineProps({
 onMounted(() => {
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
+    initTooltips();
 });
 
 const token = ref(null);
@@ -612,7 +620,11 @@ async function leerUnProyecto(id_proyecto) {
             }
             if (res.data.porcentaje_proyecto) {
                 formPorcentaje.value.cantidad_total = res.data.porcentaje_proyecto.cantidad_total;
-                formPorcentaje.value.porcentaje_logro = res.data.porcentaje_proyecto.porcentaje_logro;
+                if (res.data.porcentaje_proyecto.porcentaje_logro <= 100) {
+                    formPorcentaje.value.porcentaje_logro = res.data.porcentaje_proyecto.porcentaje_logro;
+                } else {
+                    formPorcentaje.value.porcentaje_logro = 100;
+                }
                 formPorcentaje.value.meta_monetaria_porcentaje = res.data.porcentaje_proyecto.meta_monetaria;
             } else {
                 formPorcentaje.value.cantidad_total = 0.00;
