@@ -17,7 +17,7 @@ const validaciones = {
         //Se valida que el texto no sea nulo
         if (texto != null && texto.trim() != "") {
             //Se valida que en la cadena de texto solo existan letras, números, espacios y caracteres de separación (/ | -)
-            var re = /^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s/|\-,.]+$/;
+            var re = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s/|\-,.]+$/;
             //Retorna false o true dependiendo de si cumple o no la condición
             return re.test(texto);
         } else {
