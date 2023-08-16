@@ -1,9 +1,8 @@
 <template>
     <div class="topprincipal flex justify-between font-semibold text-base ml-4">
         <div class="options mt-2">
-            <NuxtLink to="" class="active ml-4">Usuarios</NuxtLink>
-            <NuxtLink to="/rol_usuario" class="ml-4">Roles Usuarios</NuxtLink>
-            <NuxtLink to="/rol_acceso" class="ml-4">Roles Accesos</NuxtLink>
+            <NuxtLink to="" class="active ml-4">Donantes</NuxtLink>
+            <NuxtLink to="/rango" class="ml-4">Rangos</NuxtLink>
         </div>
         <div class="endtop flex justify-between w-20">
             <NuxtLink to="/perfil" class="mt-2">
@@ -16,7 +15,7 @@
                         stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
             </NuxtLink>
-            <boton-perfil/>
+            <botonPerfil/>
         </div>
     </div>
 </template>

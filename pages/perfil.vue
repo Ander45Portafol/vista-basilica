@@ -38,8 +38,19 @@
         </div>
         <div class="flex h-screen w-full ml-36 items-center">
             <div class=" h-96 w-1/6 mb-24 bg-space opacity-95 mt-40 rounded-lg p-4 text-white flex-col">
-                <div class="flex justify-center">
-                    <img src="/img/db_perfil.png" alt="imagen_db">
+                <div class="flex justify-center relative" @click="seleccionarArchivo" @mouseover="iconoBorrarTrue"
+                    @mouseleave="iconoBorrarFalse">
+                    <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
+                    <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
+                    <div v-if="mostrarIconoBorrar"
+                        class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px" viewBox="0 0 24 24"
+                            style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                            <path
+                                d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                            </path>
+                        </svg>
+                    </div>
                 </div>
                 <div class="text-white mt-4 text-center">
                     <p class="text-2xl font-bold" id="nombre_usuario"></p>
@@ -252,8 +263,6 @@ import { onMounted } from 'vue'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import validaciones from '../assets/validaciones.js';
-import Iconoir from 'iconoir/icons/iconoir.svg'
-import { submitForm } from '@formkit/vue';
 definePageMeta({
     layout: "perfil",
 })
@@ -275,7 +284,7 @@ onMounted(() => {
 
     async function cargando_datos() {
         validarToken();
-        const { data: res } = await axios.get('/profile/' + id_usuario).then(res => {
+        await axios.get('/profile/' + id_usuario).then(res => {
             form.value = {
                 id_usuario: res.data.id_usuario,
                 nombre_usuario: res.data.nombre_usuario,
@@ -306,47 +315,46 @@ onMounted(() => {
             document.getElementById('rol_usuario').textContent = res.data.roles.rol_usuario;
         });
     }
-
-    const mostrarIconoBorrar = ref(false);
-
-    function iconoBorrarTrue() {
-        if (imagenPreview.value) {
-            mostrarIconoBorrar.value = true;
-        }
-    }
-
-    function iconoBorrarFalse() {
-        if (imagenPreview.value) {
-            mostrarIconoBorrar.value = false;
-        }
-    }
-
-    const imagenPreview = ref(null);
-    const seleccionarArchivo = () => {
-        if (mostrarIconoBorrar.value == false) {
-            inputImagen.value.click();
-        } else {
-            limpiarImagen();
-        }
-    };
-    const inputImagen = ref(null);
-
-    const cambiarImagen = () => {
-        const input = inputImagen.value;
-        const file = input.files;
-        if (file && file[0]) {
-            form.value.imagen_usuario = file[0];
-            console.log(form.value.imagen_usuario);
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                imagenPreview.value = e.target.result;
-            };
-            reader.readAsDataURL(file[0]);
-            return file[0];
-        }
-    };
 });
 
+const mostrarIconoBorrar = ref(false);
+
+function iconoBorrarTrue() {
+    if (imagenPreview.value) {
+        mostrarIconoBorrar.value = true;
+    }
+}
+
+function iconoBorrarFalse() {
+    if (imagenPreview.value) {
+        mostrarIconoBorrar.value = false;
+    }
+}
+
+const imagenPreview = ref(null);
+const seleccionarArchivo = () => {
+    if (mostrarIconoBorrar.value == false) {
+        inputImagen.value.click();
+    } else {
+        limpiarImagen();
+    }
+};
+const inputImagen = ref(null);
+
+const cambiarImagen = () => {
+    const input = inputImagen.value;
+    const file = input.files;
+    if (file && file[0]) {
+        form.value.imagen_usuario = file[0];
+        console.log(form.value.imagen_usuario);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagenPreview.value = e.target.result;
+        };
+        reader.readAsDataURL(file[0]);
+        return file[0];
+    }
+};
 var api_url = "http://localhost:8000/storage/usuarios/images/";
 
 //Se crea una variable reactiva para manejar la información del modal
