@@ -480,6 +480,7 @@ function limpiarForm() {
     form.value.estado_proyecto = 0;
     form.value.visibilidad_proyecto = false;
     limpiarImagenPrincipal();
+    limpiarIcono();
 }
 //Procesos del CRUD
 var formAccion = null;
