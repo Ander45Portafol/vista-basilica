@@ -111,12 +111,14 @@
 }
 </style>
 <script setup>
-import { Line, Pie, PolarArea, Bar } from "vue-chartjs";
+import { Line } from "vue-chartjs";
 import axios from 'axios';
 //Importación de archivo de validaciones
 import validaciones from '../assets/validaciones.js';
 
 onMounted(() => {
+    token.value = localStorage.getItem('token');
+
     function validarCheck() {
         const checkrango = document.getElementById('rango_fecha');
         if (checkrango.checked) {
@@ -127,6 +129,8 @@ onMounted(() => {
     }
     validarCheck();
 });
+
+const token = ref(null);
 
 const texto_donaciones = ref('Donaciones por rangos de fechas');
 const texto_descripcion = ref('Ingrese una fecha inicial y una fecha final para enviar como parametro de graficación.');
@@ -199,13 +203,21 @@ async function cargarDatos() {
     if (!texto_error.value) {
         try {
             if (formFechas.value.fecha_inicial && formFechas.value.fecha_final) {
-                const { data: res } = await axios.get('/donaciones-pfechas-graf/' + formFechas.value.fecha_inicial + '/' + formFechas.value.fecha_final);
+                const { data: res } = await axios.get('/donaciones-pfechas-graf/' + formFechas.value.fecha_inicial + '/' + formFechas.value.fecha_final, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
                 dataDonaciones.value = res;
                 dataListaDonaciones.value = true;
                 suma_donaciones.value = res.totalDonaciones;
                 opcionesDonaciones.plugins.title.text = 'Total de donaciones: ' + suma_donaciones.value;
             } else if (anioref.value) {
-                const { data: res } = await axios.get('/donaciones-panio-graf/' + anioref.value);
+                const { data: res } = await axios.get('/donaciones-panio-graf/' + anioref.value, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
                 dataDonaciones.value = res;
                 dataListaDonaciones.value = true;
                 suma_donaciones.value = res.totalDonaciones;

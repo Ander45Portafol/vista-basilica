@@ -30,7 +30,8 @@
                 </button>
             </div>
         </div>
-        <div v-if="!dataListaDonaciones && !dataListaAnuncios && !dataListaNSecciones && !dataListaNUsuarios && !dataListaEventos" class="mdcarga h-screen overflow-hidden flex justify-center items-center">
+        <div v-if="!dataListaDonaciones && !dataListaAnuncios && !dataListaNSecciones && !dataListaNUsuarios && !dataListaEventos"
+            class="mdcarga h-screen overflow-hidden flex justify-center items-center">
             <svg aria-hidden="true" class="w-20 h-20 mr-2 text-gray-300 animate-spin fill-purpleLogin" viewBox="0 0 100 101"
                 fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -70,7 +71,7 @@
                 <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
                     <div class="text-left p-4">
                         <p class="text-2xl font-bold">Usuarios - Registrados</p>
-                        <p class="text-2xl font-bold">Usuarios totales: <span> {{ totalUsuarios }} </span></p>
+                        <p class="text-xl font-bold">Usuarios totales: <span class="text-xl font-normal"> {{ totalUsuarios }} </span></p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <Pie v-if="dataNUsuarios && dataNUsuarios.results.length > 0 && dataListaNUsuarios"
@@ -113,12 +114,16 @@ definePageMeta({
 })
 
 onMounted(() => {
+    token.value = localStorage.getItem('token');
+
     leerDonaciones();
     leerNUsuarios();
     leerNSecciones();
     leerEventos();
     leerAnuncios();
 });
+
+const token = ref(null);
 
 const dataDonaciones = ref(null);
 
@@ -128,7 +133,11 @@ const dataListaDonaciones = ref(false);
 
 async function leerDonaciones() {
     try {
-        const { data: res } = await axios.get('/donaciones-graf');
+        const { data: res } = await axios.get('/donaciones-graf', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         dataDonaciones.value = res;
         totalSumaDonaciones = dataDonaciones.value.totalSuma;
         dataListaDonaciones.value = true;
@@ -187,7 +196,11 @@ var totalUsuarios = null;
 
 async function leerNUsuarios() {
     try {
-        const { data: res } = await axios.get('/usuarios-graf');
+        const { data: res } = await axios.get('/usuarios-graf', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         dataNUsuarios.value = res;
         totalUsuarios = dataNUsuarios.value.totalUsuarios;
         dataListaNUsuarios.value = true;
@@ -221,7 +234,11 @@ const dataListaNSecciones = ref(false);
 
 async function leerNSecciones() {
     try {
-        const { data: res } = await axios.get('/secciones-graf');
+        const { data: res } = await axios.get('/secciones-graf', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         dataNSecciones.value = res;
         dataListaNSecciones.value = true;
     } catch (error) {
@@ -254,7 +271,11 @@ const dataListaEventos = ref(false);
 
 async function leerEventos() {
     try {
-        const { data: res } = await axios.get('/eventos-graf');
+        const { data: res } = await axios.get('/eventos-graf', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         dataEventos.value = res;
         dataListaEventos.value = true;
     } catch (error) {
@@ -292,7 +313,11 @@ const dataListaAnuncios = ref(false);
 
 async function leerAnuncios() {
     try {
-        const { data: res } = await axios.get('/anuncios-graf');
+        const { data: res } = await axios.get('/anuncios-graf', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         dataAnuncios.value = res;
         dataListaAnuncios.value = true;
     } catch (error) {
@@ -335,7 +360,8 @@ const opcionesAnuncios = {
 .container-grafics {
     width: 680px;
 }
-.mdprincipal::-webkit-scrollbar{
+
+.mdprincipal::-webkit-scrollbar {
     width: 5px;
 }
 </style>
