@@ -9,9 +9,11 @@
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                         {{ donacion.donante.nombre_donante }} {{ donacion.donante.apellido_donante }} </p>
                     <p class="font-bold text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
-                        Fecha: <span class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">{{ donacion.campos.fecha_donacion }}</span></p>
+                        Fecha: <span class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">{{
+                            donacion.campos.fecha_donacion }}</span></p>
                     <p class="font-bold text-sm text-gray-500 max-[750px]:text-[12px]">Cantidad donada:
-                        <span class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">${{ donacion.campos.cantidad_donada }}</span>
+                        <span class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">${{
+                            donacion.campos.cantidad_donada }}</span>
                     </p>
                 </div>
             </div>
@@ -249,6 +251,38 @@ import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
     dataDonacion: Array,
 });
+
+onMounted(() => {
+    token.value = localStorage.getItem('token');
+
+    const modalElement = document.getElementById('graficsModal');
+    const closeButton = document.getElementById('closeModalGrafics');
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+    const modal = new Modal(modalElement, modalOptions);
+    document.getElementById('graficos_modal').addEventListener('click', () => {
+        modal.show();
+    });
+    closeButton.addEventListener('click', () => {
+        modal.hide();
+    });
+
+    function validarFechas() {
+        var res = validaciones.validarFecha(0, 1, 0);
+        document.getElementById('fecha_donacion').min = res.min;
+        document.getElementById('fecha_donacion').max = res.max;
+    }
+
+    validarFechas();
+
+    llenarSelectDonantes();
+    llenarSelectProyectos();
+});
+
+const token = ref(null);
+
 const form = ref({
     id_donacion: "",
     cantidad_donada: "",
@@ -260,7 +294,8 @@ const form = ref({
     id_donante: ""
 });
 //Metodo para configurar el modal y enviar el id del usuario
-function estadoActualizar(id) {
+async function estadoActualizar(id) {
+    await leerUnaDonacion(id);
     const modalElement = document.getElementById('staticModal');
     const closeButton = document.getElementById('closeModal');
     const modalOptions = {
@@ -272,12 +307,15 @@ function estadoActualizar(id) {
     closeButton.addEventListener('click', function () {
         modal.hide();
     });
-    leerUnaDonacion(id);
 }
 
 async function leerUnaDonacion(id_donacion) {
     try {
-        await axios.get('/donaciones/' + id_donacion).then(res => {
+        await axios.get('/donaciones/' + id_donacion, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        }).then(res => {
             form.value = {
                 id_donacion: res.data.data.id,
                 cantidad_donada: res.data.data.campos.cantidad_donada,
@@ -297,7 +335,11 @@ const donantes = ref(null);
 async function llenarSelectDonantes() {
     try {
         //Se realiza la petición axios
-        const { data: res } = await axios.get('/donantes-select');
+        const { data: res } = await axios.get('/donantes-select', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         //Lo que devuelve la petición axios se le asigna a "paginas"
         donantes.value = res;
     } catch (error) {
@@ -318,8 +360,6 @@ async function llenarSelectDonantes() {
     }
 }
 
-llenarSelectDonantes();
-
 //Variable reactiva para llenar el select
 const proyectos = ref(null);
 
@@ -327,7 +367,11 @@ const proyectos = ref(null);
 async function llenarSelectProyectos() {
     try {
         //Se realiza la petición axios
-        const { data: res } = await axios.get('/p_donaciones-select');
+        const { data: res } = await axios.get('/p_donaciones-select', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         //Lo que devuelve la petición axios se le asigna a "paginas"
         proyectos.value = res;
     } catch (error) {
@@ -347,8 +391,6 @@ async function llenarSelectProyectos() {
         });
     }
 }
-
-llenarSelectProyectos();
 
 </script>
 <style scoped></style>
