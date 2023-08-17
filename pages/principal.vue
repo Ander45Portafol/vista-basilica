@@ -100,7 +100,7 @@ definePageMeta({
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Actualizacon de secciones</p>
+                            <p class="titule_interac font-semibold">Actualización de secciones</p>
                             <p class="section_change font-normal">Página web</p>
                         </div>
                     </div>
@@ -125,7 +125,7 @@ definePageMeta({
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Actualizacon de secciones</p>
+                            <p class="titule_interac font-semibold">Actualización de secciones</p>
                             <p class="section_change font-normal">Página web</p>
                         </div>
                     </div>
@@ -150,7 +150,7 @@ definePageMeta({
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Actualizacon de secciones</p>
+                            <p class="titule_interac font-semibold">Actualización de secciones</p>
                             <p class="section_change font-normal">Página web</p>
                         </div>
                     </div>
@@ -175,7 +175,7 @@ definePageMeta({
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Actualizacon de secciones</p>
+                            <p class="titule_interac font-semibold">Actualización de secciones</p>
                             <p class="section_change font-normal">Página web</p>
                         </div>
                     </div>
