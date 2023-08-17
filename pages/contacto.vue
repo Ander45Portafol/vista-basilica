@@ -395,6 +395,13 @@
 .buttons-data .changebtn {
     border: 3px solid #3F4280;
 }
+
+.tables::-webkit-scrollbar {
+    width: 7px;
+}
+.tables::-webkit-scrollbar-thumb {
+    background: #32345A;
+}
 </style>
 
 
@@ -590,6 +597,7 @@ async function buscarContactos() {
                 );
                 // Actualiza los datos en la constante data
                 data.value = res;
+                console.log(res);
             } else {
                 // Se realiza la petición axios para mostrar los registros no visibles
                 const { data: res } = await axios.get(
