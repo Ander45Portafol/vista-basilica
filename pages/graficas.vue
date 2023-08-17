@@ -4,7 +4,7 @@
             <div class="topprincipal flex justify-between font-semibold text-base">
                 <div class="options">
                     <NuxtLink to="/principal" class="ml-4">Inicio</NuxtLink>
-                    <NuxtLink to="" class=" active ml-4 ">Graficas</NuxtLink>
+                    <NuxtLink to="" class=" active ml-4 ">Gráficas</NuxtLink>
                     <NuxtLink to="" class="ml-4 ">Reportes</NuxtLink>
                 </div>
             </div>
@@ -45,7 +45,7 @@
         <div v-else class="mdprincipal h-screen overflow-y-scroll flex-col mt-6 px-8 py-10">
             <div class="h-2/3 w-full bg-slate-200 rounded-2xl pl-4">
                 <div class="flex-col text-center pt-4">
-                    <p class="text-2xl font-extrabold ">Donaciones registradas en la semana actual</p>
+                    <p class="text-2xl font-extrabold mt-5">Donaciones registradas en la semana actual</p>
                     <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal"
                             v-if="totalSumaDonaciones">${{ totalSumaDonaciones }}</span><span class="text-xl font-normal"
                             v-else>$0.00</span></p>
@@ -216,7 +216,7 @@ const chartNUsuarios = computed(() => {
             {
                 label: "N° de usuarios: ",
                 data: dataNUsuarios.value.results.map(item => item.n_usuarios),
-                backgroundColor: ["#7A78B4", "#565587"],
+                backgroundColor: ["#9497DF", "#565587", "#47497A", "#6C6BA9", "#565587"],
             },
         ],
     };
