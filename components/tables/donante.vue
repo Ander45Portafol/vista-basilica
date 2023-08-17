@@ -84,8 +84,8 @@
                 <div class="p-8 space-y-6">
                     <div class="flex-col">
                         <div class="h-80 contenedor_graficas w-full flex items-center justify-center">
-                            <Bar v-if="dataGrafica && dataGrafica.data.results.length > 0 && dataListaGrafica" :data="chartDonante"
-                                :options="opcionesChart" />
+                            <Bar v-if="dataGrafica && dataGrafica.data.results.length > 0 && dataListaGrafica"
+                                :data="chartDonante" :options="opcionesChart" />
                             <div id="info_nodatos" v-else-if="dataListaGrafica"
                                 class="flex items-center p-4 mb-4 text-blue-800 border-t-4 border-blue-800 bg-blue-50 dark:text-blue-400 dark:bg-gray-800 dark:border-blue-800"
                                 role="alert">
@@ -127,6 +127,15 @@ import { Modal } from 'flowbite';
 import validaciones from "../../assets/validaciones.js";
 import { Bar } from "vue-chartjs";
 
+onMounted(() => {
+
+    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
+    token.value = localStorage.getItem('token');
+
+});
+
+const token = ref(null);
+
 //Toast del sweetalert
 const Toast = Swal.mixin({
     toast: true,
@@ -158,12 +167,16 @@ async function borrarDonante(id) {
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.delete('/donantes/' + id);
+                await axios.delete('/donantes/' + id, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
 
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: 'success',
-                    title: 'Donante ocultada exitosamente'
+                    title: 'Donante ocultado exitosamente'
                 })
             } catch (error) {
                 console.log(error);
@@ -190,7 +203,11 @@ async function recuperarDonante(id) {
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.delete('/donantes/' + id);
+                await axios.delete('/donantes/' + id, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
 
                 //Se lanza la alerta de éxito
                 Toast.fire({
@@ -223,7 +240,11 @@ const dataListaGrafica = ref(false);
 async function abrirModalGrafica(id) {
     try {
         //Se hace la petición axios y se evalua la respuesta
-        await axios.get("/donantes-p-graf/" + id).then((res) => {
+        await axios.get("/donantes-p-graf/" + id, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        }).then((res) => {
             const modalElement = document.getElementById('staticModal');
             const closeButton = document.getElementById('closeModal');
             const modalOptions = {

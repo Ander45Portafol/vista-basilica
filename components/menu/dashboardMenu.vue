@@ -2,7 +2,7 @@
     <div class="topprincipal flex justify-between font-semibold text-base ml-4">
         <div class="options mt-2">
             <NuxtLink to="" class="active ml-4">Inicio</NuxtLink>
-                    <NuxtLink to="/graficas" class="ml-4 ">Graficas</NuxtLink>
+                    <NuxtLink to="/graficas" class="ml-4 ">Gráficas</NuxtLink>
                     <NuxtLink to="" class="ml-4 ">Reportes</NuxtLink>
         </div>
         <div class="endtop flex justify-between w-20">

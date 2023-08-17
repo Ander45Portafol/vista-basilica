@@ -160,14 +160,20 @@
                                 <div class="h-36 mt-6 progressbar rounded-xl text-center">
                                     <p class="mb-4 mt-2 text-base text-white">Porcentaje de logro actual registrado</p>
                                     <div class="flex items-center justify-center text-white">
-                                        <p class="mr-4">$50.00</p>
-                                        <div class="w-2/4 bg-gray-200 h-12 rounded-2xl dark:bg-gray-700">
-                                            <div class="bg-blue-600 text-xs h-12 font-medium text-blue-100 text-center p-0.5 leading-none rounded-2xl flex justify-center items items-center"
-                                                style="width: 45%"></div>
+                                        <p class="mr-4">$0.00</p>
+                                        <div class="w-2/4 bg-gray-200 h-12 rounded-2xl dark:bg-gray-700" data-tooltip-target="tooltip-porcentaje" data-tooltip-placement="bottom"> 
+                                            <div v-if="formPorcentaje.porcentaje_logro > 0"
+                                                class="bg-blueProgressBar text-xs h-12 font-medium text-blue-100 text-center p-0.5 leading-none rounded-2xl flex justify-center items items-center"
+                                                :style="{ width: formPorcentaje.porcentaje_logro + '%' }"></div>
                                         </div>
-                                        <p class="ml-4">$100.00</p>
+                                        <p class="ml-4">${{ formPorcentaje.meta_monetaria_porcentaje }}</p>
                                     </div>
-                                    <p class="text-white text-base mt-2">45%</p>
+                                    <div id="tooltip-porcentaje" role="tooltip"
+                                        class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-purpleToolTip transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip">
+                                        Cantidad total: ${{ formPorcentaje.cantidad_total }}
+                                        <div class="tooltip-arrow" data-popper-arrow></div>
+                                    </div>
+                                    <p class="text-white text-base mt-2">{{ formPorcentaje.porcentaje_logro }}%</p>
                                 </div>
                             </div>
                             <div class="flex-col w-64">
@@ -300,7 +306,6 @@
                     </form>
                 </div>
             </div>
-            {{ form }}
         </div>
     </div>
 
@@ -447,9 +452,20 @@ import Swal from 'sweetalert2';
 import { Modal } from 'flowbite'
 import VueEasyLightbox from 'vue-easy-lightbox'
 import validaciones from '../../assets/validaciones.js';
+import { initTooltips } from 'flowbite'
+
 const props = defineProps({
     dataProyectos: Array,
 });
+
+onMounted(() => {
+    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
+    token.value = localStorage.getItem('token');
+    initTooltips();
+});
+
+const token = ref(null);
+
 //Toast del sweetalert
 const Toast = Swal.mixin({
     toast: true,
@@ -462,6 +478,19 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 });
+
+const formPorcentaje = ref({
+    cantidad_total: "",
+    porcentaje_logro: "",
+    meta_monetaria_porcentaje: "",
+});
+
+function formPorcentajeLimpiar() {
+    formPorcentaje.value.cantidad_total = null;
+    formPorcentaje.value.porcentaje_logro = null;
+    formPorcentaje.meta_monetaria_porcentaje = null;
+}
+
 const form = ref({
     id_proyecto_donacion: "",
     nombre_proyecto: "",
@@ -481,6 +510,7 @@ function limpiarForm() {
     form.value.visibilidad_proyecto = false;
     limpiarImagenPrincipal();
     limpiarIcono();
+    formPorcentajeLimpiar();
 }
 //Procesos del CRUD
 var formAccion = null;
@@ -513,6 +543,7 @@ async function crearProyecto() {
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.post("/proyectos", formData, {
                 headers: {
+                    Authorization: `Bearer ${token.value}`,
                     "Content-Type": "multipart/form-data",
                 },
             });
@@ -574,30 +605,49 @@ async function estadoActualizar(id) {
 
 async function leerUnProyecto(id_proyecto) {
     try {
-        await axios.get('/proyectos/' + id_proyecto).then(res => {
-            console.log(res.data);
+        await axios.get('/proyectos/' + id_proyecto, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        }).then(res => {
             form.value = {
-                id_proyecto_donacion: res.data.id,
-                nombre_proyecto: res.data.nombre_proyecto,
-                descripcion_proyecto: res.descripcion_proyecto,
-                meta_monetaria: res.data.meta_monetaria,
-                estado_proyecto: res.data.estado_proyecto,
-                visibilidad_proyecto: res.data.visibilidad_proyecto ? true : false,
+                id_proyecto_donacion: res.data.data.id,
+                nombre_proyecto: res.data.data.campos.nombre_proyecto,
+                descripcion_proyecto: res.data.data.campos.descripcion_proyecto,
+                meta_monetaria: res.data.data.campos.meta_monetaria,
+                estado_proyecto: res.data.data.campos.estado_proyecto,
+                visibilidad_proyecto: res.data.data.campos.visibilidad_proyecto ? true : false,
             }
-            if (res.data.icono_proyecto != null) {
-                form.value.icono_proyecto = res.data.icono_proyecto;
+            if (res.data.porcentaje_proyecto) {
+                formPorcentaje.value.cantidad_total = res.data.porcentaje_proyecto.cantidad_total;
+                if (res.data.porcentaje_proyecto.porcentaje_logro <= 100) {
+                    formPorcentaje.value.porcentaje_logro = res.data.porcentaje_proyecto.porcentaje_logro;
+                } else {
+                    formPorcentaje.value.porcentaje_logro = 100;
+                }
+                formPorcentaje.value.meta_monetaria_porcentaje = res.data.porcentaje_proyecto.meta_monetaria;
+            } else {
+                formPorcentaje.value.cantidad_total = 0.00;
+                formPorcentaje.value.porcentaje_logro = 0.00;
+                formPorcentaje.value.meta_monetaria_porcentaje = res.data.data.campos.meta_monetaria;
+            }
+
+            if (res.data.data.campos.icono_proyecto != null) {
+                form.value.icono_proyecto = res.data.data.campos.icono_proyecto;
                 iconoPreview.value = iconos_url + form.value.icono_proyecto;
             } else {
                 form.value.icono_proyecto = "";
             }
-            if (res.data.imagen_principal != null) {
-                form.value.imagen_principal = res.data.imagen_principal;
+
+            if (res.data.data.campos.imagen_principal != null) {
+                form.value.imagen_principal = res.data.data.campos.imagen_principal;
                 imagenPrincipalPreview.value = imagenes_url + form.value.imagen_principal;
             } else {
                 form.value.imagen_principal = "";
             }
         });
     } catch (error) {
+        console.log(error);
         //Se extrae el mensaje de error
         const mensajeError = error.response.data.message;
         //Se extrae el sqlstate (identificador de acciones SQL)
@@ -632,6 +682,7 @@ async function actualizarProyecto() {
 
         await axios.post("/proyectos_update/" + id, formData, {
             headers: {
+                Authorization: `Bearer ${token.value}`,
                 "Content-Type": "multipart/form-data",
             },
         });
@@ -666,7 +717,11 @@ async function borrarProyecto(id, nombre_proyecto) {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await axios.delete('/proyectos/' + id).then(
+                await axios.delete('/proyectos/' + id, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                }).then(
                     Toast.fire({
                         icon: 'success',
                         title: 'Proyecto desactivado exitosamente'
@@ -697,7 +752,11 @@ async function recuperarProyecto(id, nombre_proyecto) {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await axios.delete('/proyectos/' + id);
+                await axios.delete('/proyectos/' + id, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
                 Toast.fire({
                     icon: 'success',
                     title: 'Proyecto activo'
