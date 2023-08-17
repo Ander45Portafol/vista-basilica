@@ -1,6 +1,6 @@
 <template>
     <div class="principal mt-4">
-        <MenuDonantesDashboard class="mr-8"/>
+        <MenuDonantesDashboard class="mr-8" />
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
@@ -47,14 +47,14 @@
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ donantes.length }}<span
+            <p v-if="donantes" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ donantes.length }}<span
                     class="text-gray-500 font-normal ml-2">registro
                     encontrado!</span></p>
-                    <TablesDonante :dataDonante="donantes"/>
+            <TablesDonante v-if="donantes" :dataDonante="donantes" />
             <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
             este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
             <div class="flex justify-center mt-6">
-                <TailwindPagination
+                <TailwindPagination v-if="donantes"
                     :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
                     :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
                     :data="data" @pagination-change-page="pagina = $event" />
@@ -63,7 +63,6 @@
     </div>
 </template>
 <style scoped>
-
 .content-buttons input {
     border: 3px solid #1b1c30;
 }
@@ -94,6 +93,15 @@ definePageMeta({
     layout: "principal",
 })
 
+onMounted(() => {
+
+    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
+    token.value = localStorage.getItem('token');
+
+    leerDonantes();
+});
+
+const token = ref(null);
 
 //Operaciones SCRUD
 
@@ -108,12 +116,10 @@ const pagina = ref(useRoute().query.pagina || 1);
 const buscar = ref({
     buscador: "",
 })
-//Se ejecuta la funcion para llenar la tabla cuando se carga el DOM
-await leerDonantes();
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let donantes = computed(() => data.value.data);
+let donantes = computed(() => data.value?.data);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
@@ -136,25 +142,17 @@ async function leerDonantes() {
     try {
         /*Se manda la petición axios para leer los donantes (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
         además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/donantes?page=${pagina.value}`);
+        const { data: res } = await axios.get(`/donantes?page=${pagina.value}`, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         //Se asigna el valor de la respuesta de axios a la constante data
         data.value = res;
     } catch (error) {
         console.log(error);
     }
 }
-//Toast del sweetalert
-const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
-})
 
 //Función para buscar registros dependiendo del valor del buscador
 async function buscarDonantes() {
@@ -162,7 +160,11 @@ async function buscarDonantes() {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
             // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/donantes_search?page=${pagina.value}&buscador=${buscar.value.buscador}`);
+            const { data: res } = await axios.get(`/donantes_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
             // Actualiza los datos en la constante data
             data.value = res;
             // Actualiza la URL con el parámetro de página
