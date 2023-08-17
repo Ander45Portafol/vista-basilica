@@ -3,22 +3,22 @@
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                <img :src="api_url + usuario.imagen_usuario"
+                <img :src="api_url + usuario.campos.imagen_usuario"
                     class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{ usuario.nombre_usuario
-                    }} {{ usuario.apellido_usuario }}</p>
+                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{ usuario.campos.nombre_usuario
+                    }} {{ usuario.campos.apellido_usuario }}</p>
                     <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]">
-                        {{ usuario.rol }}</p>
+                        {{ usuario.roles.rol_usuario }}</p>
                     <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
-                        {{ usuario.usuario }}</p>
+                        {{ usuario.campos.usuario }}</p>
                 </div>
             </div>
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                 <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn" id="btnedit"
-                    v-if="usuario.visibilidad_usuario == 1" @click.prevent="estadoActualizar(usuario.id_usuario)">
+                    v-if="usuario.campos.visibilidad_usuario == 1" @click.prevent="estadoActualizar(usuario.id)">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -29,7 +29,7 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click.prevent="borrarUsuario(usuario.id_usuario)" v-if="usuario.visibilidad_usuario == 1">
+                    @click.prevent="borrarUsuario(usuario.id)" v-if="usuario.campos.visibilidad_usuario == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -39,7 +39,7 @@
                     </svg>
                 </button>
                 <button v-else
-                    @click="recuperarUsuario(usuario.id_usuario, usuario.nombre_usuario + ' ' + usuario.apellido_usuario)"
+                    @click="recuperarUsuario(usuario.id, usuario.nombre_usuario + ' ' + usuario.apellido_usuario)"
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -375,7 +375,7 @@ const props = defineProps({
     dataUsers: Array,
     actualizarData:Function,
 });
-
+console.log(props.dataUsers);
 var api_url = "http://localhost:8000/storage/usuarios/images/";
 
 const mostrarIconoBorrar = ref(false);
@@ -498,21 +498,21 @@ async function leerUnUsuario(id_usuario) {
         await axios.get('/usuarios/' + id_usuario).then(res => {
             console.log(res.data);
             form.value = {
-                id_usuario: res.data.id_usuario,
-                nombre_usuario: res.data.nombre_usuario,
-                apellido_usuario: res.data.apellido_usuario,
-                usuario: res.data.usuario,
-                numero_documento_usuario: res.data.numero_documento_usuario,
-                tipo_documento: res.data.tipo_documento,
-                correo_usuario: res.data.correo_usuario,
-                telefono_usuario: res.data.telefono_usuario,
+                id_usuario: res.data.data.id,
+                nombre_usuario: res.data.data.campos.nombre_usuario,
+                apellido_usuario: res.data.data.campos.apellido_usuario,
+                usuario: res.data.data.campos.usuario,
+                numero_documento_usuario: res.data.data.campos.numero_documento_usuario,
+                tipo_documento: res.data.data.campos.tipo_documento,
+                correo_usuario: res.data.data.campos.correo_usuario,
+                telefono_usuario: res.data.data.campos.telefono_usuario,
                 idioma: "Español (ES)",
                 tema: "Claro",
-                visibilidad_usuario: res.data.visibilidad_usuario ? true : false,
-                id_rol_usuario: res.data.id_rol_usuario,
+                visibilidad_usuario: res.data.data.campos.visibilidad_usuario ? true : false,
+                id_rol_usuario: res.data.data.roles.id_rol_usuario,
             };
-            if (res.data.imagen_usuario != null) {
-                form.value.imagen_usuario = res.data.imagen_usuario;
+            if (res.data.data.campos.imagen_usuario != null) {
+                form.value.imagen_usuario = res.data.data.campos.imagen_usuario;
                 imagenPreview.value = api_url + form.value.imagen_usuario;
             } else {
                 form.value.imagen_usuario = "";
@@ -535,6 +535,7 @@ const Toast = Swal.mixin({
 })
 //Codigo para cambiar el estado del usuarios a inactivo
 async function borrarUsuario(id) {
+    console.log(id);
     Swal.fire({
         title: 'Confirmación',
         text: "¿Desea ocultar el registro?",

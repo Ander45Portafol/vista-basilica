@@ -1,5 +1,5 @@
 <template>
-    <div class="contained-data flex-col" v-for="donacion in dataDonacion" :key="donacion.id_donacion">
+    <div class="contained-data flex-col" v-for="donacion in dataDonacion" :key="donacion.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -7,11 +7,11 @@
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                        {{ donacion.nombre_donante }} {{ donacion.apellido_donante }} </p>
-                    <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
-                        Fecha: {{ donacion.fecha_donacion }}</p>
-                    <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Cantidad donada:
-                        <span>$</span>{{ donacion.cantidad_donada }}
+                        {{ donacion.donante.nombre_donante }} {{ donacion.donante.apellido_donante }} </p>
+                    <p class="font-bold text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
+                        Fecha: <span class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">{{ donacion.campos.fecha_donacion }}</span></p>
+                    <p class="font-bold text-sm text-gray-500 max-[750px]:text-[12px]">Cantidad donada:
+                        <span class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">${{ donacion.campos.cantidad_donada }}</span>
                     </p>
                 </div>
             </div>
@@ -19,7 +19,7 @@
             <!-- Al darle clic al evento leerUnaDonacion ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                <button v-if="donacion.visibilidad_donacion == 1" @click="estadoActualizar(donacion.id_donacion)"
+                <button v-if="donacion.campos.visibilidad_donacion == 1" @click="estadoActualizar(donacion.id)"
                     class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -29,7 +29,7 @@
                     </svg>
                 </button>
                 <!-- Al darle clic al evento borrarDonacion ejecuta la funcion -->
-                <button v-if="donacion.visibilidad_donacion == 1" @click="borrarDonacion(donacion.id_donacion)"
+                <button v-if="donacion.campos.visibilidad_donacion == 1" @click="borrarDonacion(donacion.id)"
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -39,7 +39,7 @@
                     </svg>
                 </button>
                 <!-- Al darle clic al evento recuperarDonacion ejecuta la funcion -->
-                <button @click="recuperarDonacion(donacion.id_donacion)"
+                <button @click="recuperarDonacion(donacion.id)"
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                     v-else>
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
@@ -278,16 +278,15 @@ function estadoActualizar(id) {
 async function leerUnaDonacion(id_donacion) {
     try {
         await axios.get('/donaciones/' + id_donacion).then(res => {
-            console.log(res.data);
             form.value = {
-                id_donacion: res.data.id_donacion,
-                cantidad_donada: res.data.cantidad_donada,
-                fecha_donacion: res.data.fecha_donacion,
-                mensaje_donacion: res.data.mensaje_donacion,
-                codigo_comprobante: res.data.codigo_comprobante,
-                visibilidad_donacion: res.data.visibilidad_donacion,
-                id_proyecto_donacion: res.data.id_proyecto_donacion,
-                id_donante: res.data.id_donante,
+                id_donacion: res.data.data.id,
+                cantidad_donada: res.data.data.campos.cantidad_donada,
+                fecha_donacion: res.data.data.campos.fecha_donacion,
+                mensaje_donacion: res.data.data.campos.mensaje_donacion,
+                codigo_comprobante: res.data.data.campos.codigo_comprobante,
+                visibilidad_donacion: res.data.data.campos.visibilidad_donacion ? true : false,
+                id_proyecto_donacion: res.data.data.campos.id_proyecto_donacion,
+                id_donante: res.data.data.campos.id_donante,
             };
         });
     } catch (error) {
@@ -350,5 +349,6 @@ async function llenarSelectProyectos() {
 }
 
 llenarSelectProyectos();
+
 </script>
 <style scoped></style>
