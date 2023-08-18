@@ -1,7 +1,7 @@
 <script>
 
 definePageMeta({
-    layout: "principal"
+  layout: "principal"
 })
 
 import { defineComponent } from 'vue'
@@ -9,13 +9,31 @@ import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { INITIAL_EVENTS, createEventId } from '../assets/calendario_data'
+
+let contador_eventos = 0
+let diaActual = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
+
+function crearIdEvento() {
+  return String(contador_eventos++)
+}
 
 export default defineComponent({
   components: {
     FullCalendar,
   },
   data() {
+    const INITIAL_EVENTS = [
+      {
+        id: crearIdEvento(),
+        title: 'All-day event',
+        start: diaActual
+      },
+      {
+        id: crearIdEvento(),
+        title: 'Timed event',
+        start: diaActual + 'T12:00:00'
+      }
+    ]
     return {
       calendarOptions: {
         plugins: [
@@ -59,7 +77,7 @@ export default defineComponent({
 
       if (title) {
         calendarApi.addEvent({
-          id: createEventId(),
+          id: crearIdEvento(),
           title,
           start: selectInfo.startStr,
           end: selectInfo.endStr,
@@ -78,44 +96,49 @@ export default defineComponent({
   }
 })
 
+const formData = ref({
+  id_evento: "0",
+  nombre_evento: "",
+  descripcion_evento: "",
+  fecha_evento: "",
+  hora_inicial_evento: "",
+  hora_final_evento: "",
+  nombre_consultor: "",
+  apellido_consultor: "",
+  telefono_consultor: "",
+  visibilidad_evento: "",
+  modalidad_evento: "",
+  estado_evento: "",
+  id_personal: "",
+  id_zona: "",
+  id_configuracion_parroquia: 1,
+});
+
 </script>
 
 <template>
-  <div class='demo-app m-6'>
+  <div class='demo-app'>
     <div class='demo-app-sidebar'>
       <div class='demo-app-sidebar-section'>
-        <h2>Instructions</h2>
-        <ul>
-          <li>Select dates and you will be prompted to create a new event</li>
-          <li>Drag, drop, and resize events</li>
-          <li>Click an event to delete it</li>
-        </ul>
-      </div>
-      <div class='demo-app-sidebar-section'>
         <label>
-          <input
-            type='checkbox'
-            :checked='calendarOptions.weekends'
-            @change='handleWeekendsToggle'
-          />
+          <input type='checkbox' :checked='calendarOptions.weekends' @change='handleWeekendsToggle' />
           toggle weekends
         </label>
       </div>
-      <div class='demo-app-sidebar-section'>
-        <h2>All Events ({{ currentEvents.length }})</h2>
-        <ul>
-          <li v-for='event in currentEvents' :key='event.id'>
-            <b>{{ event.startStr }}</b>
-            <i>{{ event.title }}</i>
+      <div class='demo-app-sidebar-section mt-[-20px]'>
+        <h2>All Events <strong> ( {{ currentEvents.length }} ) </strong></h2>
+        <ul class="ml-[-20px] text-[14px]">
+          <li v-for='event in currentEvents' :key='event.id' class="flex items-center rounded-md bg-gray-200 p-5">
+            <div class="w-[100%]">
+              <b>{{ event.startStr }}</b>
+              <i>{{ event.title }}</i>
+            </div>
           </li>
         </ul>
       </div>
     </div>
     <div class='demo-app-main'>
-      <FullCalendar
-        class='demo-app-calendar'
-        :options='calendarOptions'
-      >
+      <FullCalendar class='demo-app-calendar' :options='calendarOptions'>
         <template v-slot:eventContent='arg'>
           <b>{{ arg.timeText }}</b>
           <i>{{ arg.event.title }}</i>
@@ -126,7 +149,6 @@ export default defineComponent({
 </template>
 
 <style lang='css'>
-
 h2 {
   margin: 0;
   font-size: 16px;
@@ -142,7 +164,8 @@ li {
   padding: 0;
 }
 
-b { /* used for event dates/times */
+b {
+  /* used for event dates/times */
   margin-right: 3px;
 }
 
@@ -155,8 +178,7 @@ b { /* used for event dates/times */
 
 .demo-app-sidebar {
   width: 300px;
-  line-height: 1.5;
-  background: #eaf9ff;
+  line-height: 1;
   border-right: 1px solid #d3e2e8;
 }
 
@@ -169,9 +191,9 @@ b { /* used for event dates/times */
   padding: 3em;
 }
 
-.fc { /* the calendar root */
+.fc {
+  /* the calendar root */
   max-width: 1100px;
   margin: 0 auto;
 }
-
 </style>
