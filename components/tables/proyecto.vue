@@ -100,7 +100,7 @@
                 <!-- Modal body -->
                 <div class="p-6 space-y-6 pb-10">
                     <form @submit.prevent="submitForm()" class="flex-col">
-                        <div class="flex justify-evenly w-full">
+                        <div class="flex justify-evenly w-full max-[1200px]:flex-wrap">
                             <div class="flex-col w-64">
                                 <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                                 <input type="hidden" v-model="form.id_proyecto_donacion">
@@ -112,7 +112,8 @@
                                     <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
                                         v-if="form.nombre_proyecto">
                                         {{ form.nombre_proyecto.length }} /100</span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0
+                                        /100</span>
                                     <label for="nombre_proyecto"
                                         class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                         - Proyecto<span class="text-sm ml-1"> *
@@ -139,7 +140,8 @@
                                     <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
                                         v-if="form.descripcion_proyecto">
                                         {{ form.descripcion_proyecto.length }} /1000</span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /1000</span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0
+                                        /1000</span>
                                     <label for="descripcion_proyecto"
                                         class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
                                         - Proyecto<span class="text-sm ml-1"> *
