@@ -161,7 +161,8 @@
                                     <p class="mb-4 mt-2 text-base text-white">Porcentaje de logro actual registrado</p>
                                     <div class="flex items-center justify-center text-white">
                                         <p class="mr-4">$0.00</p>
-                                        <div class="w-2/4 bg-gray-200 h-12 rounded-2xl dark:bg-gray-700" data-tooltip-target="tooltip-porcentaje" data-tooltip-placement="bottom"> 
+                                        <div class="w-2/4 bg-gray-200 h-12 rounded-2xl dark:bg-gray-700"
+                                            data-tooltip-target="tooltip-porcentaje" data-tooltip-placement="bottom">
                                             <div v-if="formPorcentaje.porcentaje_logro > 0"
                                                 class="bg-blueProgressBar text-xs h-12 font-medium text-blue-100 text-center p-0.5 leading-none rounded-2xl flex justify-center items items-center"
                                                 :style="{ width: formPorcentaje.porcentaje_logro + '%' }"></div>
@@ -826,7 +827,11 @@ async function leerImagenesProyectos(id_proyecto) {
     id_proyectoref.value = id_proyecto;
     try {
         //Se realiza la petición axios para traer los datos
-        const { data: res } = await axios.get('/imagenes_proyectos/' + id_proyecto);
+        const { data: res } = await axios.get('/imagenes_proyectos/' + id_proyecto, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         //Se asigna el valor de la respuesta de axios a la variable data_imagenes
         data_imagenes.value = res.imagenes;
         nombre_proyectoref.value = res.nombre_proyecto;
@@ -927,6 +932,7 @@ async function actualizarImagenes() {
             await axios.post('/imagenes_proyectos', formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
                 },
             });
         }
@@ -949,7 +955,10 @@ async function actualizarImagenes() {
             //Si el usuario escogió la opción de confirmar se eliminan los registros
             if (eleccion.isConfirmed) {
                 await axios.delete('imagenes_proyectos', {
-                    data: { id_imagen_proyecto: imagenesBorradas.value }
+                    data: { id_imagen_proyecto: imagenesBorradas.value },
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
                 });
             }
         }

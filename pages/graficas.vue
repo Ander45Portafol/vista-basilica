@@ -45,7 +45,7 @@
         <div v-else class="mdprincipal h-screen overflow-y-scroll flex-col mt-6 px-8 py-10">
             <div class="h-2/3 w-full bg-slate-200 rounded-2xl pl-4">
                 <div class="flex-col text-center pt-4">
-                    <p class="text-2xl font-extrabold mt-5">Donaciones registradas en la semana actual</p>
+                    <p class="text-2xl font-extrabold mt-5">Donaciones registradas por fecha en la semana actual</p>
                     <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal"
                             v-if="totalSumaDonaciones">${{ totalSumaDonaciones }}</span><span class="text-xl font-normal"
                             v-else>$0.00</span></p>
@@ -59,8 +59,8 @@
             <div class="flex w-full justify-between mt-10">
                 <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Página - Secciones</p>
-                        <p class="text-xl font-normal">Existentes</p>
+                        <p class="text-2xl font-bold">Cantidad de secciones</p>
+                        <p class="text-xl font-normal">Por página</p>
                     </div>
                     <div class="grafic h-3/4 w-full flex justify-center items-center">
                         <PolarArea v-if="dataNSecciones && dataNSecciones.length > 0 && dataListaNSecciones"
@@ -70,7 +70,7 @@
                 </div>
                 <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Usuarios - Registrados</p>
+                        <p class="text-2xl font-bold">Usuarios registrados por rol</p>
                         <p class="text-xl font-bold">Usuarios totales: <span class="text-xl font-normal"> {{ totalUsuarios }} </span></p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
@@ -83,7 +83,7 @@
             <div class="flex w-full justify-between mt-10 mb-[100px]">
                 <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Eventos - Semanales</p>
+                        <p class="text-2xl font-bold">Cantidad de eventos por fecha de la semana actual</p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <Bar v-if="dataEventos && dataEventos.length > 0 && dataListaEventos" :data="chartEventos"
@@ -93,7 +93,7 @@
                 </div>
                 <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Anuncios - Mensuales</p>
+                        <p class="text-2xl font-bold">Cantidad de anuncios por fecha en el mes actual</p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <Bar v-if="dataAnuncios && dataAnuncios.length > 0 && dataListaAnuncios" :data="chartAnuncios"
@@ -214,7 +214,7 @@ const chartNUsuarios = computed(() => {
         labels: dataNUsuarios.value.results.map(item => item.rol_usuario),
         datasets: [
             {
-                label: "N° de usuarios: ",
+                label: "N° de usuarios",
                 data: dataNUsuarios.value.results.map(item => item.n_usuarios),
                 backgroundColor: ["#9497DF", "#565587", "#47497A", "#6C6BA9", "#565587"],
             },
@@ -251,7 +251,7 @@ const chartNSecciones = computed(() => {
         labels: dataNSecciones.value.map(item => item.nombre_pagina),
         datasets: [
             {
-                label: "N° de secciones: ",
+                label: "N° de secciones",
                 data: dataNSecciones.value.map(item => item.n_secciones),
                 backgroundColor: ["rgba(255, 202, 81, 0.5)", "rgba(192, 161, 255, 0.5)"],
                 borderColor: ["rgba(255, 202, 81, 1)", "rgba(138, 80, 255, 1)"]
@@ -288,7 +288,7 @@ const chartEventos = computed(() => {
         labels: dataEventos.value.map(item => item.fecha_evento),
         datasets: [
             {
-                label: "N° de eventos:",
+                label: "N° de eventos",
                 data: dataEventos.value.map(item => item.cantidad_eventos),
                 barPercentage: 0.5,
                 backgroundColor: ["#9497DF", "#565587", "#47497A", "#6C6BA9", "#565587"],
@@ -330,7 +330,7 @@ const chartAnuncios = computed(() => {
         labels: dataAnuncios.value.map(item => item.fecha),
         datasets: [
             {
-                label: "N° de anuncios:",
+                label: "N° de anuncios",
                 data: dataAnuncios.value.map(item => item.cantidad_anuncios),
                 barPercentage: 0.5,
                 backgroundColor: ["rgba(255, 202, 81, 1)", "rgba(192, 161, 255, 1)"],
