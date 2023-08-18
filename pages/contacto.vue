@@ -68,233 +68,62 @@
                     </button>
                 </div>
             </div>
-              <!-- Línea divisora -->
+            <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
-            <p v-if="contactos" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
-                {{ contactos.length }}
-                <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
-            </p>
-            <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
-                -
-                <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
-            </p>
-            <div class="loadingtable overflow-hidden h-4/6 pr-4">
-                <div class="contained-data flex-col" v-for="number in 6" :key="number">
-                    <div v-if="!contactos"
-                        class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
-                        <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                            <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
-                            <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
-                                <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4"></div>
-                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full"></div>
-                            </div>
-                        </div>
-                        <div
-                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+            <div class="h-screen">
+                <p v-if="contactos" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ contactos.length
+                }}<span class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
+                <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                    -
+                    <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+                </p>
+                <div class="tables overflow-y-scroll h-3/5 pr-4">
+                    <div v-if="!contactos" class="loadingtable overflow-hidden h-full pr-4">
+                        <div class="contained-data flex-col" v-for="number in 6" :key="number">
                             <div
-                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
-                            </div>
-                            <div
-                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
+                                class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                                <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                                    <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
+                                    <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
+                                        <div
+                                            class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4">
+                                        </div>
+                                        <div
+                                            class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                                    <div
+                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
+                                    </div>
+                                    <div
+                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <TablesContacto v-if="contactos" :dataContactos="contactos"  />
+                    <!-- :actualizarData="leerContactos" -->
                 </div>
-            </div>
-            <TablesContacto :dataContactos="contactos" />
-            <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
-            este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
-            <!-- Paginación -->
-            <div class="flex justify-center mt-6">
-                <TailwindPagination v-if="contactos" :item-classes="[
-                    'text-gray-500',
-                    'rounded-full',
-                    'border-none',
-                    'ml-1',
-                    'hover:bg-gray-200',
-                ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="pagina = $event" />
+                <div class="flex justify-center mt-6">
+                    <TailwindPagination v-if="contactos"
+                        :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
+                        :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                        :data="data" @pagination-change-page="pagina = $event" />
+                </div>
             </div>
         </div>
     </div>
     <!-- Modal principal-->
-    <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
-        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-lg max-h-full">
-            <!-- Contenido del modal -->
-            <div class="relative rounded-lg shadow modal">
-                <!-- Modal header -->
-                <div class="flex items-start justify-between p-4 rounded-t">
-                    <div class="flex-col ml-4 pt-4">
-                        <!-- Asignamos un id al título del modal para la creación  y actualizacion de texto-->
-                        <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
-                        <p class="text-base font-medium text-gray-400">Contacto</p>
-                    </div>
-                    <!-- Boton para cerrar el modal -->
-                    <button type="button" id="closeModal"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                        data-modal-hide="staticModal">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </button>
-                </div>
-                <!-- Cuerpo del modal -->
-                <div class="p-6 space-y-6 pb-20">
-                    <!-- Se utiliza el modificador @submit.prevent para evitar la recarga de la página al enviar el formulario. En su lugar, se llama a la función submitForm() definida en Vue.js para ejecutar la lógica personalizada del envío del formulario. -->
-                    <form id="modalForm" @submit.prevent="submitForm()" class="flex justify-evenly">
-                        <div class="flex-col w-72">
-                            <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
-                            <input type="hidden" name="id_contacto" id="id_contacto" v-model="form.id_contacto">
-                            <!-- Campo de entrada Nombre - Contacto -->
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="nombre_contacto" name="nombre_contacto" required maxlength="100"
-                                    @input="validarNombreContacto()" v-model="form.nombre_contacto"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.nombre_contacto">
-                                    {{
-                                        form.nombre_contacto.length
-                                    }} /100
-                                </span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>0 /100</span>
-                                <label for="nombre_contacto"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Contacto<span class="text-sm ml-1"> *
-                                    </span></label>
-                            </div>
-                            <div v-if="!validarNombreContacto()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                                role="alert">
-                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                <div>
-                                    El nombre del contacto solo permite caracteres <span class="font-medium">
-                                        alfanuméricos y algunos especiales (- / |).</span>
-                                </div>
-                            </div>
-                            <!-- Campo de entrada Correo - Contacto -->
-                            <div class="relative z-0 mt-6">
-                                <input type="email" id="correo_contacto" name="correo_contacto" required maxlength="150"
-                                    v-model="form.correo_contacto"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.correo_contacto">
-                                    {{
-                                        form.correo_contacto.length
-                                    }} /150</span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>0 /150</span>
-                                <label for="correo_contacto"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                    - Contacto<span class="text-sm ml-1"> *
-                                    </span></label>
-                            </div>
-                            <!-- Campo de entrada Tipo - Contacto -->
-                            <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="absolute text-sm text-gray-200">Tipo - Contacto<span
-                                        class="text-sm ml-1"> *
-                                    </span></label>
-                                <select id="tipo_contacto" name="tipo_contacto" v-model="form.tipo_contacto"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option class="bg-gray-700" value="0">Seleccione una opción</option>
-                                    <option class="bg-gray-700" value="Principal">Principal</option>
-                                    <option class="bg-gray-700" value="Otro">Otro</option>
-                                </select>
-                                <div v-if="form.tipo_contacto == 0"
-                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
-                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <div>
-                                        Seleccione <span class="font-medium"> una opción. </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Campo de entrada Visibilidad - Contacto -->
-                            <div class="flex-col mt-6">
-                                <label for="" class="text-gray-200">Visibilidad - Contacto</label>
-                                <div class="flex justify-start mt-2">
-                                    <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input type="checkbox" value="" class="sr-only peer" id="visibilidad_contacto"
-                                            name="visibilidad_contacto" v-model="form.visibilidad_contacto">
-                                        <div
-                                            class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="modal-buttons mt-4 flex justify-end items-end">
-                                <!-- Se le coloca la función para limpiar el form al botón -->
-                                <button type="button" id="btnModalClear" @click="limpiarForm()"
-                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
-                                    <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
-                                            stroke-width="2" stroke-linecap="round"></path>
-                                        <path
-                                            d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
-                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path
-                                            d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
-                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                </button>
-                                <!-- Se le coloca la función para crear al botón -->
-                                <button id="btnModalAdd" type="submit"
-                                    :disabled="form.tipo_contacto == 0 || !validarNombreContacto()"
-                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
-                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path
-                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                        <path
-                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                    </svg>
-                                </button>
-                                <!-- Se le coloca la función para actualizar al botón -->
-                                <button id="btnModalUpdate" type="submit"
-                                    :disabled="form.tipo_contacto == 0 || !validarNombreContacto()"
-                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
-                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path
-                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                        <path
-                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <pre>
-                {{ form }}
-        </pre>
-        </div>
-    </div>
+  
 </template>
 
 
 <style scoped>
-
 .content-buttons input {
     border: 3px solid #1b1c30;
 }
@@ -324,6 +153,7 @@
 .tables::-webkit-scrollbar {
     width: 7px;
 }
+
 .tables::-webkit-scrollbar-thumb {
     background: #32345A;
 }
@@ -413,7 +243,7 @@ onMounted(() => {
 
     //Se leen los contactos al montarse la página para evitar problemas del setup y el localStorage
     leerContactos();
-    
+
 });
 
 //Variable reactiva para almacenar el token del localStorage
@@ -574,24 +404,6 @@ function limpiarBuscador() {
 
 //Funciones para manejo del modal
 
-//Se crea una variable reactiva para manejar la información del modal
-const form = ref({
-    id_contacto: "",
-    nombre_contacto: "",
-    correo_contacto: "",
-    tipo_contacto: "",
-    visibilidad_contacto: false,
-});
-
-//Función para limpiar todos los campos del form
-function limpiarForm() {
-    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_contacto = "";
-    form.value.nombre_contacto = "";
-    form.value.correo_contacto = "";
-    form.value.tipo_contacto = 0;
-    form.value.visibilidad_contacto = false;
-}
 
 //Toast del sweetalert
 const Toast = Swal.mixin({
@@ -760,8 +572,8 @@ async function actualizarContacto() {
             var id = form.value.id_contacto;
 
             //Se crea una constante FormData para almacenar los datos del modal
-           //Se crea una constante FormData para almacenar los datos del modal
-           const formData = new FormData();
+            //Se crea una constante FormData para almacenar los datos del modal
+            const formData = new FormData();
             formData.append("nombre_contacto", form.value.nombre_contacto);
             formData.append("correo_contacto", form.value.correo_contacto);
             formData.append("tipo_contacto", form.value.tipo_contacto);
@@ -777,8 +589,8 @@ async function actualizarContacto() {
                 },
             });
 
-             //Se evalua el buscador para realizar leerContactos o buscarContactos
-             if (buscar.value.buscador) {
+            //Se evalua el buscador para realizar leerContactos o buscarContactos
+            if (buscar.value.buscador) {
                 buscarContactos();
             } else {
                 leerContactos();
@@ -943,12 +755,6 @@ async function recuperarUnContacto(id) {
     });
 }
 
-//Validaciones
 
-//Función para validar el nombre contacto
-function validarNombreContacto() {
-    var res = validaciones.validarSoloLetrasYNumeros(form.value.nombre_contacto);
-    return res;
-}
 
 </script>
