@@ -1,6 +1,6 @@
 <template>
   <aside class="flex justify-center items-center fixed top-0 left-0 z-40 w-16 h-screen">
-    <div class="flex-col items-center">
+    <div class="flex-col items-center mr-6">
       <ul class="space-y-2 m-4">
         <li>
           <NuxtLink data-tooltip-target="tooltip-principal" data-tooltip-placement="right"
@@ -147,7 +147,7 @@
           </div>
         </li>
         <li class="item">
-          <NuxtLink to="" data-tooltip-target="tooltip-calendario" data-tooltip-placement="right"
+          <NuxtLink to="/calendario" data-tooltip-target="tooltip-calendario" data-tooltip-placement="right"
             class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
             <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
               xmlns="http://www.w3.org/2000/svg" color="#000000">
