@@ -59,8 +59,7 @@
             <div class="flex w-full justify-between mt-10 flex-wrap">
                 <div class="container-grafics h-96 bg-slate-200 rounded-2xl w-[8rm] max-[1300px]:min-w-full max-[1300px]:pb-12">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Cantidad de secciones</p>
-                        <p class="text-xl font-normal">Por página</p>
+                        <p class="text-2xl text-center mt-3 font-bold">Cantidad de secciones por página</p>
                     </div>
                     <div class="grafic h-3/4 w-full flex justify-center items-center max-[950px]:w-full">
                         <PolarArea v-if="dataNSecciones && dataNSecciones.length > 0 && dataListaNSecciones"
@@ -70,8 +69,8 @@
                 </div>
                 <div class="container-grafics h-96 bg-slate-200 rounded-2xl w-[100%] max-[1300px]:mt-12 max-[1300px]:min-w-full">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Usuarios registrados por rol</p>
-                        <p class="text-xl font-bold">Usuarios totales: <span class="text-xl font-normal"> {{ totalUsuarios }} </span></p>
+                        <p class="text-2xl text-center mt-3 font-bold">Usuarios registrados por rol</p>
+                        <p class="text-xl text-center font-bold">Usuarios totales: <span class="text-xl font-normal"> {{ totalUsuarios }} </span></p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <Pie v-if="dataNUsuarios && dataNUsuarios.results.length > 0 && dataListaNUsuarios"
@@ -83,7 +82,7 @@
             <div class="flex w-full justify-between mt-10 mb-[100px] flex-wrap">
                 <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl max-[1300px]:min-w-full max-[1300px]:pb-12">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Cantidad de eventos por fecha de la semana actual</p>
+                        <p class="text-2xl text-center mt-3 font-bold">Cantidad de eventos por fecha en la semana actual</p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <Bar v-if="dataEventos && dataEventos.length > 0 && dataListaEventos" :data="chartEventos"
@@ -93,7 +92,7 @@
                 </div>
                 <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl max-[1300px]:mt-12 max-[1300px]:min-w-full">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Cantidad de anuncios por fecha en el mes actual</p>
+                        <p class="text-2xl text-center mt-3 font-bold">Cantidad de anuncios por fecha en el mes actual</p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <Bar v-if="dataAnuncios && dataAnuncios.length > 0 && dataListaAnuncios" :data="chartAnuncios"

@@ -1,51 +1,3 @@
-<script setup>
-import { Modal } from "flowbite";
-definePageMeta({
-    layout: "principal",
-});
-function abrirModal() {
-    const modalElement = document.getElementById("modal-show");
-    const modalOptions = {
-        //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
-        backdrop: "static",
-        backdropClasses:
-            "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-    };
-
-    const modal = new Modal(modalElement, modalOptions);
-    // programatically show
-    modal.show();
-}
-function cerrarModal() {
-    const modalElement = document.getElementById("modal-show");
-    const modal = new Modal(modalElement);
-    // programatically show
-    modal.hide();
-}
-function abrirModal2() {
-    const $modalElement = document.querySelector("#modal-data_show");
-    const modalOptions = {
-        //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
-        backdrop: "static",
-        backdropClasses:
-            "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-    };
-
-    if ($modalElement) {
-        const modal = new Modal($modalElement, modalOptions);
-        // programatically show
-        modal.show();
-    }
-}
-function cerrarModal2() {
-    const $modalElement = document.querySelector("#modal-data_show");
-    if ($modalElement) {
-        const modal = new Modal($modalElement);
-        // programatically show
-        modal.hide();
-    }
-}
-</script>
 <template>
     <div class="principal mt-6">
         <div class="topprincipal flex justify-between font-semibold text-base ml-4">
@@ -424,3 +376,51 @@ function cerrarModal2() {
             rgba(49, 50, 71, 0.5609) 100%);
     background-color: #1e1e1e;
 }</style>
+<script setup>
+import { Modal } from "flowbite";
+definePageMeta({
+    layout: "principal",
+});
+function abrirModal() {
+    const modalElement = document.getElementById("modal-show");
+    const modalOptions = {
+        //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
+        backdrop: "static",
+        backdropClasses:
+            "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
+    };
+
+    const modal = new Modal(modalElement, modalOptions);
+    // programatically show
+    modal.show();
+}
+function cerrarModal() {
+    const modalElement = document.getElementById("modal-show");
+    const modal = new Modal(modalElement);
+    // programatically show
+    modal.hide();
+}
+function abrirModal2() {
+    const $modalElement = document.querySelector("#modal-data_show");
+    const modalOptions = {
+        //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
+        backdrop: "static",
+        backdropClasses:
+            "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
+    };
+
+    if ($modalElement) {
+        const modal = new Modal($modalElement, modalOptions);
+        // programatically show
+        modal.show();
+    }
+}
+function cerrarModal2() {
+    const $modalElement = document.querySelector("#modal-data_show");
+    if ($modalElement) {
+        const modal = new Modal($modalElement);
+        // programatically show
+        modal.hide();
+    }
+}
+</script>
