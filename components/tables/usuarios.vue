@@ -1,5 +1,5 @@
 <template>
-    <div class="contained-data flex-col" v-for="usuario in dataUsers" :key="usuario.id_usuario">
+    <div class="contained-data flex-col" v-for="usuario in dataUsers" :key="usuario.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -7,7 +7,8 @@
                     class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{ usuario.campos.nombre_usuario
+                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{
+                        usuario.campos.nombre_usuario
                     }} {{ usuario.campos.apellido_usuario }}</p>
                     <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]">
                         {{ usuario.roles.rol_usuario }}</p>
@@ -29,7 +30,8 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click.prevent="borrarUsuario(usuario.id)" v-if="usuario.campos.visibilidad_usuario == 1">
+                    @click.prevent="borrarUsuario(usuario.id, usuario.campos.usuario)"
+                    v-if="usuario.campos.visibilidad_usuario == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -38,8 +40,7 @@
                         </path>
                     </svg>
                 </button>
-                <button v-else
-                    @click="recuperarUsuario(usuario.id, usuario.nombre_usuario + ' ' + usuario.apellido_usuario)"
+                <button v-else @click="recuperarUsuario(usuario.id, usuario.campos.usuario)"
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -373,9 +374,19 @@ import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
     dataUsers: Array,
-    actualizarData:Function,
+    actualizarData: Function,
 });
 console.log(props.dataUsers);
+
+//Seccion para cargar o modificar el DOM despues de haber cargado todo el template
+onMounted(() => {
+    token.value = localStorage.getItem('token');
+
+    llenarRolUsuario();
+});
+
+const token = ref(null);
+
 var api_url = "http://localhost:8000/storage/usuarios/images/";
 
 const mostrarIconoBorrar = ref(false);
@@ -463,8 +474,8 @@ function limpiarForm() {
     form.value.numero_documento_usuario = "";
     form.value.tipo_documento = "";
     form.value.correo_usuario = "";
-    form.value.telefono_usuario="";
-    form.value.id_rol_usuario=0;
+    form.value.telefono_usuario = "";
+    form.value.id_rol_usuario = 0;
     form.value.visibilidad_usuario = false;
     form.value.id_categoria_grupo_parroquial = "0";
     limpiarImagen();
@@ -495,7 +506,11 @@ const form = ref({
 
 async function leerUnUsuario(id_usuario) {
     try {
-        await axios.get('/usuarios/' + id_usuario).then(res => {
+        await axios.get('/usuarios/' + id_usuario, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        }).then(res => {
             console.log(res.data);
             form.value = {
                 id_usuario: res.data.data.id,
@@ -534,11 +549,11 @@ const Toast = Swal.mixin({
     }
 })
 //Codigo para cambiar el estado del usuarios a inactivo
-async function borrarUsuario(id) {
+async function borrarUsuario(id, nombre_usuario) {
     console.log(id);
     Swal.fire({
         title: 'Confirmación',
-        text: "¿Desea ocultar el registro?",
+        text: "¿Desea ocultar el usuario: " + nombre_usuario + "?",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
@@ -549,7 +564,11 @@ async function borrarUsuario(id) {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await axios.delete('/usuarios/' + id).then(
+                await axios.delete('/usuarios/' + id, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                }).then(
                     Toast.fire({
                         icon: 'success',
                         title: 'Usuario desactivado exitosamente'
@@ -565,11 +584,11 @@ async function borrarUsuario(id) {
     });
 }
 //Función para cambiar un usuario a activo
-async function recuperarUsuario(id, nombre_completo) {
+async function recuperarUsuario(id, nombre_usuario) {
 
     Swal.fire({
         title: 'Confirmación',
-        text: "¿Desea hacer activar a " + nombre_completo + "?",
+        text: "¿Desea recuperar el usuario: " + nombre_usuario + "?",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
@@ -580,10 +599,14 @@ async function recuperarUsuario(id, nombre_completo) {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await axios.delete('/usuarios/' + id);
+                await axios.delete('/usuarios/' + id, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
                 Toast.fire({
                     icon: 'success',
-                    title: 'Usuario activo'
+                    title: 'Usuario recuperado exitosamente'
                 }).then((result) => {
                     if (result.dismiss === Toast.DismissReason.timer) {
                         props.actualizarData();
@@ -617,6 +640,7 @@ async function crearUsuario() {
         await axios.post("/usuarios/", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token.value}`,
             },
         });
         document.getElementById('closeModal').click();
@@ -680,7 +704,8 @@ async function actualizarUsuario() {
         await axios.post("/usuarios_update/" + id, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
-            },
+                Authorization: `Bearer ${token.value}`,
+            }
         });
         document.getElementById('closeModal').click();
         Toast.fire({
@@ -698,10 +723,13 @@ async function actualizarUsuario() {
 }
 var roles = ref(null);
 async function llenarRolUsuario() {
-    const { data: res } = await axios.get('roles-select');
+    const { data: res } = await axios.get('roles-select', {
+        headers: {
+            Authorization: `Bearer ${token.value}`,
+        },
+    });
     roles.value = res;
 }
-await llenarRolUsuario();
 
 //Validaciones
 function validarNombre() {
