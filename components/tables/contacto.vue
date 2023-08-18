@@ -1,6 +1,6 @@
 <template>
     <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-    <div class="contained-data flex-col" v-for="contacto in dataContactos" :key="contacto.id">
+    <div class="contained-data flex-col" v-for="contacto in datosContactos" :key="contacto.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -16,7 +16,7 @@
             <!-- Al darle clic al evento leerUnContacto ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                <button @click="leerUnContacto(contacto.id)" v-if="contacto.campos.visibilidad_contacto == 1"
+                <button v-if="contacto.campos.visibilidad_contacto == 1" @click.prevent="estadoActualizar(contacto.id)"
                     class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -250,15 +250,27 @@
 
 <script setup>
 //Importación de archivo de validaciones
-import validaciones from "../../assets/validaciones.js";
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { Modal } from 'flowbite';
+import validaciones from '../../assets/validaciones.js';
+
 const props = defineProps({
-    dataContactos: Array
+    datosContactos: Array,
+    actualizarData: Function,
+
 });
+
 onMounted(() => {
-    console.log(props.dataContactos);
+console.log(props.datosContactos);
+    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
+    token.value = localStorage.getItem('token');
+
 });
+
+const token = ref(null);
+
+
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
@@ -278,6 +290,402 @@ function limpiarForm() {
     form.value.tipo_contacto = 0;
     form.value.visibilidad_contacto = false;
 }
+
+//Función para limpiar el buscador
+function limpiarBuscador() {
+    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
+    pagina.value = 1;
+    //Se leen todos los registros
+    leerContactos();
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
+}
+
+function estadoActualizar(id) {
+    const modalElement = document.getElementById('staticModal');
+    const closeButton = document.getElementById('closeModal');
+    const modalText = document.getElementById('modalText');
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+    const modal = new Modal(modalElement, modalOptions);
+    modalText.textContent = "Editar";
+    modal.show();
+    document.getElementById('btnModalAdd').classList.add('hidden');
+    document.getElementById('btnModalUpdate').classList.remove('hidden');
+    closeButton.addEventListener('click', function () {
+        modal.hide();
+        limpiarForm();
+    });
+    leerUnContacto(id);
+}
+
+//Funciones para manejo del modal
+//Toast del sweetalert
+const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+});
+
+//Variable para validar que acción se quiere hacer cuando se hace un submit al form
+var formAccion = null;
+
+//Función para evaluar que acción se va a hacer al hacer submit en el form
+function accionForm(accion) {
+    formAccion = accion;
+}
+
+//Función para crear/actualizar un registro cuando se ejecuta el submit del form
+function submitForm() {
+    if (formAccion == "crear") {
+        crearContacto();
+    } else {
+        actualizarContacto();
+    }
+}
+
+//Función para crear una página
+async function crearContacto() {
+    if (form.tipo_contacto != 0 && validarNombreContacto()) {
+        try {
+            //Se crea una constante FormData para almacenar los datos del modal
+            const formData = new FormData();
+            formData.append("nombre_contacto", form.value.nombre_contacto);
+            formData.append("correo_contacto", form.value.correo_contacto);
+            formData.append("tipo_contacto", form.value.tipo_contacto);
+            formData.append(
+                "visibilidad_contacto",
+                form.value.visibilidad_contacto ? 1 : 0
+            );
+
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/contactos", formData, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+
+            //Se cargan todas las páginas y se cierra el modal
+            pagina.value = 1;
+            limpiarBuscador();
+            // leerContactos();
+
+            document.getElementById("closeModal").click();
+
+            props.actualizarData();
+
+            //Se lanza la alerta con el mensaje de éxito
+            Toast.fire({
+                icon: "success",
+                title: "Contacto creado exitosamente",
+            });
+
+        } catch (error) {
+            console.log(error);
+            //Se extrae el mensaje de error
+            const mensajeError = error.response.data.message;
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const res = validaciones.mensajeSqlState(sqlState);
+
+            //Se cierra el modal
+            document.getElementById("closeModal").click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: res,
+                confirmButtonColor: "#3F4280",
+            });
+        }
+    }
+}
+
+//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
+async function leerUnContacto(id) {
+    try {
+        accionForm("actualizar");
+        //Se hace la petición axios y se evalua la respuesta
+        await axios.get("/contactos/" + id, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        }).then((res) => {
+            //Constante para el modal
+            const modalElement = document.getElementById("staticModal");
+            //Constante que contiene las caracteristicas del modal
+            const modalOptions = {
+                backdrop: "static",
+                backdropClasses:
+                    "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
+            };
+            //Instanciamos el boton para cerrar el modal
+            const closeButton = document.getElementById("closeModal");
+            //Constante para el titulo del modal
+            const modalText = document.getElementById("modalText");
+            //Constante para el boton de agregar dentro del modal
+            const modalBtnAdd = document.getElementById("btnModalAdd");
+            //Constante para el boton de actualizar dentro del modal
+            const modalBtnUpdate = document.getElementById("btnModalUpdate");
+            //Instanciamos el modal
+            const modal = new Modal(modalElement, modalOptions);
+            //Le modificamos el texto del header al modal
+            modalText.textContent = "Editar";
+            //Colocamos visibilidad al botón de actualizar en el modal
+            modalBtnUpdate.classList.remove("hidden");
+            //Ocultamos el botón de agregar en el modal
+            modalBtnAdd.classList.add("hidden");
+            //Abrimos el modal
+            modal.show();
+            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
+            closeButton.addEventListener("click", function () {
+                //Ocultamos el modal
+                modal.hide();
+                //Limpiamos el modal
+                limpiarForm();
+            });
+            //Llenamos los inputs del modal con su respectiva informacion
+            form.value = {
+                id_contacto: res.data.data.id,
+                nombre_contacto: res.data.data.campos.nombre_contacto,
+                correo_contacto: res.data.data.campos.correo_contacto,
+                tipo_contacto: res.data.data.campos.tipo_contacto,
+                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
+                visibilidad_contacto: res.data.data.campos.visibilidad_contacto ? true : false
+            };
+        });
+    } catch (error) {
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se cierra el modal
+        document.getElementById("closeModal").click();
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: res,
+            confirmButtonColor: "#3F4280",
+        });
+    }
+}
+
+async function actualizarContacto() {
+    if (form.tipo_contacto != 0 && validarNombreContacto()) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_contacto;
+
+            //Se crea una constante FormData para almacenar los datos del modal
+            const formData = new FormData();
+            formData.append("nombre_contacto", form.value.nombre_contacto);
+            formData.append("correo_contacto", form.value.correo_contacto);
+            formData.append("tipo_contacto", form.value.tipo_contacto);
+            formData.append(
+                "visibilidad_contacto",
+                form.value.visibilidad_contacto ? 1 : 0
+            );
+
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/contactos_update/" + id, formData, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            }).then((result) => {
+                if (result.dismiss === Toast.DismissReason.timer) {
+                    props.actualizarData();
+                }
+            });
+
+            //Se evalua el buscador para realizar leerContactos o buscarContactos
+            if (buscar.value.buscador) {
+                buscarContactos();
+            } else {
+                leerContactos();
+            }
+            //Se cierra el modal
+            document.getElementById("closeModal").click();
+
+            //Se lanza la alerta de éxito
+            Toast.fire({
+                icon: "success",
+                title: "Contacto actualizado exitosamente",
+            });
+        } catch (error) {
+            console.log(error);
+            const mensajeError = error.response.data.message;
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: mensajeError,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
+}
+
+//Función para cambiar la visibilidad de una página para ocultarla
+async function borrarContacto(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: "Confirmación",
+        text: "¿Desea ocultar el registro?",
+        icon: "warning",
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: "#3F4280",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete("/contactos/" + id, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                }).then((result) => {
+                        if (result.dismiss === Toast.DismissReason.timer) {
+                            props.actualizarData();
+                        }
+                    });
+                //Se evalua el buscador para realizar leerContactos o buscarContactos 
+                if (buscar.value.buscador) {
+                    buscarContactos();
+                } else {
+                    leerContactos();
+                }
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: "success",
+                    title: "Contacto ocultado exitosamente",
+                });
+            } catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById("closeModal").click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res,
+                    confirmButtonColor: "#3F4280",
+                });
+            }
+        }
+    });
+}
+
+//Función para cambiar la visibilidad de una página para recuperarla
+async function recuperarUnContacto(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: "Confirmación",
+        text: "¿Desea recuperar el registro?",
+        icon: "warning",
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: "#3F4280",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete("/contactos/" + id, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                })
+
+                //Se evalua el buscador para realizar leerContactos o buscarContactos 
+                if (buscar.value.buscador) {
+                    buscarContactos();
+                } else {
+                    leerContactos();
+                }
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: "success",
+                    title: "Contacto recuperado exitosamente",
+                }).then((result) => {
+                    if (result.dismiss === Toast.DismissReason.timer) {
+                        props.actualizarData();
+                    }
+                });
+            } catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById("closeModal").click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res,
+                    confirmButtonColor: "#3F4280",
+                });
+            }
+        }
+    });
+}
+
+
 
 //Validaciones
 
