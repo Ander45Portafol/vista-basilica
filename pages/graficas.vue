@@ -56,19 +56,19 @@
                     </div>
                 </div>
             </div>
-            <div class="flex w-full justify-between mt-10">
-                <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
+            <div class="flex w-full justify-between mt-10 flex-wrap">
+                <div class="container-grafics h-96 bg-slate-200 rounded-2xl w-[8rm] max-[1300px]:min-w-full max-[1300px]:pb-12">
                     <div class="text-left p-4">
                         <p class="text-2xl font-bold">Página - Secciones</p>
                         <p class="text-xl font-normal">Existentes</p>
                     </div>
-                    <div class="grafic h-3/4 w-full flex justify-center items-center">
+                    <div class="grafic h-3/4 w-full flex justify-center items-center max-[950px]:w-full">
                         <PolarArea v-if="dataNSecciones && dataNSecciones.length > 0 && dataListaNSecciones"
                             :data="chartNSecciones" :options="opcionesNSecciones" />
                         <p v-else-if="dataListaNSecciones">No se encontro información.</p>
                     </div>
                 </div>
-                <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
+                <div class="container-grafics h-96 bg-slate-200 rounded-2xl w-[100%] max-[1300px]:mt-12 max-[1300px]:min-w-full">
                     <div class="text-left p-4">
                         <p class="text-2xl font-bold">Usuarios - Registrados</p>
                         <p class="text-xl font-bold">Usuarios totales: <span class="text-xl font-normal"> {{ totalUsuarios }} </span></p>
@@ -80,8 +80,8 @@
                     </div>
                 </div>
             </div>
-            <div class="flex w-full justify-between mt-10 mb-[100px]">
-                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl">
+            <div class="flex w-full justify-between mt-10 mb-[100px] flex-wrap">
+                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl max-[1300px]:min-w-full max-[1300px]:pb-12">
                     <div class="text-left p-4">
                         <p class="text-2xl font-bold">Eventos - Semanales</p>
                     </div>
@@ -91,7 +91,7 @@
                         <p v-else-if="dataListaEventos">No se encontro información.</p>
                     </div>
                 </div>
-                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl">
+                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl max-[1300px]:mt-12 max-[1300px]:min-w-full">
                     <div class="text-left p-4">
                         <p class="text-2xl font-bold">Anuncios - Mensuales</p>
                     </div>
