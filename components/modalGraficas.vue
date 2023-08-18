@@ -29,7 +29,7 @@
                         <div class="flex">
                             <div class="flex text-white">
                                 <input type="checkbox" id="rango_fecha" checked @click="cambiandoGraficaRango">
-                                <label for="" class="mr-4 ml-2">Rangos de fecha</label>
+                                <label for="" class="mr-4 ml-2">Rango de fecha</label>
                             </div>
                             <div class="flex text-white">
                                 <input type="checkbox" id="anio" @click="cambiandoGraficaAnio">
@@ -132,7 +132,7 @@ onMounted(() => {
 
 const token = ref(null);
 
-const texto_donaciones = ref('Donaciones por rangos de fechas');
+const texto_donaciones = ref('Donaciones por rango de fechas');
 const texto_descripcion = ref('Ingrese una fecha inicial y una fecha final para enviar como parametro de graficación.');
 
 function cambiandoGraficaAnio() {
@@ -153,7 +153,7 @@ function cambiandoGraficaAnio() {
 function cambiandoGraficaRango() {
     const checkrango = document.getElementById('rango_fecha');
     if (checkrango.checked) {
-        texto_donaciones.value = 'Donaciones por rangos de fechas';
+        texto_donaciones.value = 'Donaciones por rango de fechas';
         texto_descripcion.value = 'Ingrese una fecha inicial y una fecha final para enviar como parametro de graficación.';
         texto_error.value = null;
         document.getElementById('input_anio').classList.add('hidden');
