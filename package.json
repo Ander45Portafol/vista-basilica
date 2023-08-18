@@ -29,7 +29,7 @@
     "install": "^0.13.0",
     "laravel-vue-pagination": "^4.1.1",
     "npm": "^9.8.0",
-    "sweetalert2": "^11.7.22",
+    "sweetalert2": "^11.7.23",
     "vue-chartjs": "^5.2.0",
     "vue-easy-lightbox": "^1.16.0"
   }
