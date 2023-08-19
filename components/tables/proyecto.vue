@@ -100,7 +100,7 @@
                 <!-- Modal body -->
                 <div class="p-6 space-y-6 pb-10">
                     <form @submit.prevent="submitForm()" class="flex-col">
-                        <div class="flex justify-evenly w-full">
+                        <div class="flex justify-evenly w-full max-[1200px]:flex-wrap">
                             <div class="flex-col w-64">
                                 <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                                 <input type="hidden" v-model="form.id_proyecto_donacion">
@@ -112,7 +112,8 @@
                                     <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
                                         v-if="form.nombre_proyecto">
                                         {{ form.nombre_proyecto.length }} /100</span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0
+                                        /100</span>
                                     <label for="nombre_proyecto"
                                         class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                         - Proyecto<span class="text-sm ml-1"> *
@@ -139,7 +140,8 @@
                                     <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
                                         v-if="form.descripcion_proyecto">
                                         {{ form.descripcion_proyecto.length }} /1000</span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /1000</span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0
+                                        /1000</span>
                                     <label for="descripcion_proyecto"
                                         class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
                                         - Proyecto<span class="text-sm ml-1"> *
@@ -161,7 +163,8 @@
                                     <p class="mb-4 mt-2 text-base text-white">Porcentaje de logro actual registrado</p>
                                     <div class="flex items-center justify-center text-white">
                                         <p class="mr-4">$0.00</p>
-                                        <div class="w-2/4 bg-gray-200 h-12 rounded-2xl dark:bg-gray-700" data-tooltip-target="tooltip-porcentaje" data-tooltip-placement="bottom"> 
+                                        <div class="w-2/4 bg-gray-200 h-12 rounded-2xl dark:bg-gray-700"
+                                            data-tooltip-target="tooltip-porcentaje" data-tooltip-placement="bottom">
                                             <div v-if="formPorcentaje.porcentaje_logro > 0"
                                                 class="bg-blueProgressBar text-xs h-12 font-medium text-blue-100 text-center p-0.5 leading-none rounded-2xl flex justify-center items items-center"
                                                 :style="{ width: formPorcentaje.porcentaje_logro + '%' }"></div>
@@ -826,7 +829,11 @@ async function leerImagenesProyectos(id_proyecto) {
     id_proyectoref.value = id_proyecto;
     try {
         //Se realiza la petición axios para traer los datos
-        const { data: res } = await axios.get('/imagenes_proyectos/' + id_proyecto);
+        const { data: res } = await axios.get('/imagenes_proyectos/' + id_proyecto, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         //Se asigna el valor de la respuesta de axios a la variable data_imagenes
         data_imagenes.value = res.imagenes;
         nombre_proyectoref.value = res.nombre_proyecto;
@@ -927,6 +934,7 @@ async function actualizarImagenes() {
             await axios.post('/imagenes_proyectos', formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
                 },
             });
         }
@@ -949,7 +957,10 @@ async function actualizarImagenes() {
             //Si el usuario escogió la opción de confirmar se eliminan los registros
             if (eleccion.isConfirmed) {
                 await axios.delete('imagenes_proyectos', {
-                    data: { id_imagen_proyecto: imagenesBorradas.value }
+                    data: { id_imagen_proyecto: imagenesBorradas.value },
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
                 });
             }
         }

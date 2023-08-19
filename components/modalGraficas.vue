@@ -9,7 +9,7 @@
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modal_text">Graficar</p>
-                        <p class="text-lg font-medium text-gray-400">{{ texto_donaciones }}</p>
+                        <p class="text-lg font-medium text-gray-400 max-[1200px]:text-md max-[400px]:text-sm">{{ texto_donaciones }}</p>
                     </div>
                     <!-- Boton para cerrar el modal -->
                     <button type="button" id="closeModalGrafics"
@@ -24,12 +24,12 @@
                 </div>
                 <!-- Cuerpo del modal -->
                 <div class="p-8 space-y-6 flex-col">
-                    <div class="flex justify-between items-center">
-                        <p class="text-gray-100">{{ texto_descripcion }} </p>
-                        <div class="flex">
+                    <div class="flex flex-wrap justify-between items-center max-[1200px]:justify-center">
+                        <p class="text-gray-100 max-[1200px]:w-full max-[1200px]:text-sm max-[1200px]:text-justify max-[400px]:mt-[-30px]">{{ texto_descripcion }} </p>
+                        <div class="flex max-[1200px]:mt-6 max-[1200px]:text-sm">
                             <div class="flex text-white">
                                 <input type="checkbox" id="rango_fecha" checked @click="cambiandoGraficaRango">
-                                <label for="" class="mr-4 ml-2">Rangos de fecha</label>
+                                <label for="" class="mr-4 ml-2">Rango de fecha</label>
                             </div>
                             <div class="flex text-white">
                                 <input type="checkbox" id="anio" @click="cambiandoGraficaAnio">
@@ -86,7 +86,7 @@
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
                                     final</label>
                             </div>
-                            <div class="relative z-0 w-64" id="input_anio">
+                            <div class="relative z-0 w-64 inline-block max-[1200px]:w-full" id="input_anio">
                                 <input v-model="anioref" @input="validarAnio" type="text" id="anio_input" name="anio"
                                     maxlength="4"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
@@ -96,7 +96,7 @@
                                 </label>
                             </div>
                         </div>
-                        <button type="submit" class="w-32 h-10 bg-space text-white mt-4 rounded-lg" :disabled="texto_error">
+                        <button type="submit" class="w-32 h-10 bg-space text-white mt-4 rounded-lg max-[1200px]:w-24 max-[1200px]:text-sm" :disabled="texto_error">
                             Generar
                         </button>
                     </form>
@@ -132,7 +132,7 @@ onMounted(() => {
 
 const token = ref(null);
 
-const texto_donaciones = ref('Donaciones por rangos de fechas');
+const texto_donaciones = ref('Donaciones por rango de fechas');
 const texto_descripcion = ref('Ingrese una fecha inicial y una fecha final para enviar como parametro de graficación.');
 
 function cambiandoGraficaAnio() {
@@ -153,7 +153,7 @@ function cambiandoGraficaAnio() {
 function cambiandoGraficaRango() {
     const checkrango = document.getElementById('rango_fecha');
     if (checkrango.checked) {
-        texto_donaciones.value = 'Donaciones por rangos de fechas';
+        texto_donaciones.value = 'Donaciones por rango de fechas';
         texto_descripcion.value = 'Ingrese una fecha inicial y una fecha final para enviar como parametro de graficación.';
         texto_error.value = null;
         document.getElementById('input_anio').classList.add('hidden');
