@@ -197,17 +197,6 @@ let usuarios = computed(() => data.value?.data);
 const buscar = ref({
     buscador: "",
 })
-const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
-})
 //Seccion para establecer funciones y utilizar las constantes
 async function leerUsuarios() {
     try {
