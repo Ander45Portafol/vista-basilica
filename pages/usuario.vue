@@ -147,6 +147,9 @@ onMounted(() => {
         });
     }
     token.value = localStorage.getItem('token');
+    id.value=localStorage.getItem('usuario');
+    console.log(id.value);
+
     leerUsuarios();
 });
 var formAccion = null;
@@ -156,23 +159,29 @@ function accionForm(accion) {
     formAccion = accion;
 }
 async function generarReporte() {
-    try {
-        const response = await axios.get('/usuario_reporte', {
-            responseType: 'arraybuffer', // Configurar el tipo de respuesta como arraybuffer
-        });
-        // Crear un Blob a partir del arraybuffer recibido
-        const blob = new Blob([response.data], { type: 'application/pdf' });
+    // try {
+    //     const response = await axios.get('/usuario_reporte', {
+    //         responseType: 'arraybuffer', // Configurar el tipo de respuesta como arraybuffer
+    //     });
+    //     // Crear un Blob a partir del arraybuffer recibido
+    //     const blob = new Blob([response.data], { type: 'application/pdf' });
 
-        // Crear un enlace para mostrar el archivo PDF en el navegador
-        const pdfUrl = URL.createObjectURL(blob);
-        window.open(pdfUrl, '_blank');
+    //     // Crear un enlace para mostrar el archivo PDF en el navegador
+    //     const pdfUrl = URL.createObjectURL(blob);
+    //     window.open(pdfUrl, '_blank');
 
-        // Liberar el recurso URL
-        URL.revokeObjectURL(pdfUrl);
-    }
-    catch (error) {
-        console.log(error);
-    }
+    //     // Liberar el recurso URL
+    //     URL.revokeObjectURL(pdfUrl);
+    // }
+    // catch (error) {
+    //     console.log(error);
+    // }
+    // Se declara una constante tipo objeto con la ruta específica del reporte en el servidor.
+    const ruta = new URL(`http://127.0.0.1:8000/api/usuario_reporte`);
+    ruta.searchParams.append('token', token.value);
+    ruta.searchParams.append('id', id.value);
+    // Se abre el reporte en una nueva pestaña del navegador web.
+    window.open(ruta.href);
 }
 const registros_visibles = ref(true);
 //Función para evaluar registros según la visibilidad que quiera el usuario
@@ -188,6 +197,7 @@ function visibilidadRegistros() {
 }
 //Seccion para establecer variables
 const token = ref(null);
+const id=ref(null);
 const data = ref(null);
 const pagina = ref(useRoute().query.pagina || 1);
 let usuarios = computed(() => data.value?.data);
