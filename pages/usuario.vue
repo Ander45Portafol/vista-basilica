@@ -99,7 +99,7 @@
                             </div>
                         </div>
                     </div>
-                    <TablesUsuarios v-if="usuarios" :dataUsers="usuarios" :actualizarData="leerUsuarios" :metodo="formAccion"/>
+                    <TablesUsuarios v-if="usuarios" :datosUsuarios="usuarios" :actualizarDatos="leerUsuarios"/>
                 </div>
                 <div class="flex justify-center mt-6">
                     <TailwindPagination v-if="usuarios"
@@ -124,40 +124,12 @@ definePageMeta({
 });
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
-    const buttonElement = document.getElementById('btnadd');
-    const modalElement = document.getElementById('staticModal');
-    const closeButton = document.getElementById('closeModal');
-    const modalText = document.getElementById('modalText');
-    const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-
-    if (modalElement) {
-        const modal = new Modal(modalElement, modalOptions);
-        buttonElement.addEventListener('click', function () {
-            modalText.textContent = "Registrar";
-            document.getElementById('btnModalAdd').classList.remove('hidden');
-            document.getElementById('btnModalUpdate').classList.add('hidden');
-            modal.show();
-            accionForm('crear');
-        });
-        closeButton.addEventListener('click', function () {
-            modal.hide();
-        });
-    }
     token.value = localStorage.getItem('token');
     id.value=localStorage.getItem('usuario');
     console.log(id.value);
 
     leerUsuarios();
 });
-var formAccion = null;
-
-//Función para evaluar que acción se va a hacer al hacer submit en el form
-function accionForm(accion) {
-    formAccion = accion;
-}
 async function generarReporte() {
     // try {
     //     const response = await axios.get('/usuario_reporte', {

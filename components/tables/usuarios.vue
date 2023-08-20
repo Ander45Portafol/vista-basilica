@@ -1,5 +1,5 @@
 <template>
-    <div class="contained-data flex-col" v-for="usuario in dataUsers" :key="usuario.id">
+    <div class="contained-data flex-col" v-for="usuario in datosUsuarios" :key="usuario.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -80,7 +80,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class="p-2 space-y-6 pb-8">
-                    <form @submit.prevent="submitFormTabla()" class="flex justify-evenly">
+                    <form @submit.prevent="submitForm()" class="flex justify-evenly">
                         <div class="flex-col w-72">
                             <input type="hidden" v-model="form.id_usuario">
                             <div class="relative z-0">
@@ -332,15 +332,16 @@
                                     </svg>
                                 </button>
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
+                                    type="submit"
                                     :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path
-                                        d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                        stroke="#23B7A0" stroke-width="2"></path>
-                                    <path
-                                        d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                        stroke="#23B7A0" stroke-width="2"></path>
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
@@ -371,14 +372,34 @@ import Swal from 'sweetalert2';
 import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
-    dataUsers: Array,
-    actualizarData: Function,
-    metodo: String,
+    datosUsuarios: Array,
+    actualizarDatos: Function,
 });
-console.log(props.dataUsers);
 
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
+    const buttonElement = document.getElementById('btnadd');
+    const modalElement = document.getElementById('staticModal');
+    const closeButton = document.getElementById('closeModal');
+    const modalText = document.getElementById('modalText');
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+
+    if (modalElement) {
+        const modal = new Modal(modalElement, modalOptions);
+        buttonElement.addEventListener('click', function () {
+            modalText.textContent = "Registrar";
+            document.getElementById('btnModalAdd').classList.remove('hidden');
+            document.getElementById('btnModalUpdate').classList.add('hidden');
+            accionForm('crear');
+            modal.show();
+        });
+        closeButton.addEventListener('click', function () {
+            modal.hide();
+        });
+    }
     token.value = localStorage.getItem('token');
 
     llenarRolUsuario();
@@ -428,16 +449,16 @@ const cambiarImagen = () => {
 };
 
 //Variable para validar que acción se quiere hacer cuando se hace un submit al form
-var formAccionTabla = null;
+var formAccion = null;
 
 //Función para evaluar que acción se va a hacer al hacer submit en el form
-function accionFormTabla(accion) {
-    formAccionTabla = accion;
+function accionForm(accion) {
+    formAccion = accion;
 }
 
 //Función para crear/actualizar un registro cuando se ejecuta el submit del form
 function submitForm() {
-    if (accionFormTabla == "crear") {
+    if (formAccion == "crear") {
         crearUsuario();
     } else {
         actualizarUsuario();
@@ -455,7 +476,7 @@ function estadoActualizar(id) {
     const modal = new Modal(modalElement, modalOptions);
     modalText.textContent = "Editar";
     modal.show();
-    accionFormTabla('actualizar');
+    accionForm('actualizar');
     document.getElementById('btnModalAdd').classList.add('hidden');
     document.getElementById('btnModalUpdate').classList.remove('hidden');
     closeButton.addEventListener('click', function () {
@@ -572,11 +593,8 @@ async function borrarUsuario(id, nombre_usuario) {
                     Toast.fire({
                         icon: 'success',
                         title: 'Usuario desactivado exitosamente'
-                    }).then((result) => {
-                        if (result.dismiss === Toast.DismissReason.timer) {
-                            props.actualizarData();
-                        }
                     }));
+                    props.actualizarDatos();
             } catch (error) {
                 console.log(error);
             }
@@ -604,13 +622,10 @@ async function recuperarUsuario(id, nombre_usuario) {
                         Authorization: `Bearer ${token.value}`,
                     },
                 });
+                props.actualizarDatos();
                 Toast.fire({
                     icon: 'success',
                     title: 'Usuario recuperado exitosamente'
-                }).then((result) => {
-                    if (result.dismiss === Toast.DismissReason.timer) {
-                        props.actualizarData();
-                    }
                 });
             } catch (error) {
                 console.log(error);
@@ -645,13 +660,10 @@ async function crearUsuario() {
         });
         document.getElementById('closeModal').click();
         //Se lanza la alerta con el mensaje de éxito
+        props.actualizarDatos();
         Toast.fire({
             icon: 'success',
             title: 'Usuario creado exitosamente'
-        }).then((result) => {
-            if (result.dismiss === Toast.DismissReason.timer) {
-                location.reload();
-            }
         });
     } catch (error) {
         console.log(error);
@@ -708,13 +720,10 @@ async function actualizarUsuario() {
             }
         });
         document.getElementById('closeModal').click();
+        props.actualizarDatos();
         Toast.fire({
             icon: 'success',
             title: 'Usuario actualizado exitosamente'
-        }).then((result) => {
-            if (result.dismiss === Toast.DismissReason.timer) {
-                props.actualizarData();
-            }
         });
     }
     catch (error) {
@@ -773,7 +782,7 @@ function validarNumeroTelefono() {
 }
 
 .buttons-data .changebtn {
-    border: 3px solid #3F4280;
+    border: 3px solid #3F4280; 
 }
 
 .modal {
