@@ -392,5 +392,66 @@ async function llenarSelectProyectos() {
     }
 }
 
+
+//Función para cambiar la visibilidad de una página para ocultarla
+async function borrarDonacion(id) {
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: "Confirmación",
+        text: "¿Desea ocultar el registro?",
+        icon: "warning",
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: "#3F4280",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se realiza la petición axios
+                await axios.delete("/mensajes/" + id, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
+
+                //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
+                if (buscar.value.buscador) {
+                    buscarMensajes();
+                } else {
+                    leerMensajes();
+                }
+
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: "success",
+                    title: "Mensaje ocultado exitosamente",
+                });
+            } catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById("closeModal").click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res,
+                    confirmButtonColor: "#3F4280",
+                });
+            }
+        }
+    });
+} 
+
 </script>
 <style scoped></style>
