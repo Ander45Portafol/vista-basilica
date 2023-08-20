@@ -80,7 +80,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class="p-2 space-y-6 pb-8">
-                    <form @submit.prevent="submitForm()" class="flex justify-evenly">
+                    <form @submit.prevent="submitFormTabla()" class="flex justify-evenly">
                         <div class="flex-col w-72">
                             <input type="hidden" v-model="form.id_usuario">
                             <div class="relative z-0">
@@ -332,23 +332,21 @@
                                     </svg>
                                 </button>
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
-                                    :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()"
-                                    @click="accionForm('crear')">
+                                    :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path
-                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                        <path
-                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path
+                                        d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                        stroke="#23B7A0" stroke-width="2"></path>
+                                    <path
+                                        d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                        stroke="#23B7A0" stroke-width="2"></path>
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
                                 <button id="btnModalUpdate" type="submit"
                                     :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()"
-                                    class="h-10 w-10 rounded-lg flex justify-center items-center"
-                                    @click="accionForm('actualizar')">
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -375,6 +373,7 @@ import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
     dataUsers: Array,
     actualizarData: Function,
+    metodo: String,
 });
 console.log(props.dataUsers);
 
@@ -429,16 +428,16 @@ const cambiarImagen = () => {
 };
 
 //Variable para validar que acción se quiere hacer cuando se hace un submit al form
-var formAccion = null;
+var formAccionTabla = null;
 
 //Función para evaluar que acción se va a hacer al hacer submit en el form
-function accionForm(accion) {
-    formAccion = accion;
+function accionFormTabla(accion) {
+    formAccionTabla = accion;
 }
 
 //Función para crear/actualizar un registro cuando se ejecuta el submit del form
 function submitForm() {
-    if (formAccion == "crear") {
+    if (accionFormTabla == "crear") {
         crearUsuario();
     } else {
         actualizarUsuario();
@@ -456,6 +455,7 @@ function estadoActualizar(id) {
     const modal = new Modal(modalElement, modalOptions);
     modalText.textContent = "Editar";
     modal.show();
+    accionFormTabla('actualizar');
     document.getElementById('btnModalAdd').classList.add('hidden');
     document.getElementById('btnModalUpdate').classList.remove('hidden');
     closeButton.addEventListener('click', function () {
