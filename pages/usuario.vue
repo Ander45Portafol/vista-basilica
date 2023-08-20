@@ -99,7 +99,7 @@
                             </div>
                         </div>
                     </div>
-                    <TablesUsuarios v-if="usuarios" :dataUsers="usuarios" :actualizarData="leerUsuarios" />
+                    <TablesUsuarios v-if="usuarios" :dataUsers="usuarios" :actualizarData="leerUsuarios" :metodo="formAccion"/>
                 </div>
                 <div class="flex justify-center mt-6">
                     <TailwindPagination v-if="usuarios"
@@ -140,6 +140,7 @@ onMounted(() => {
             document.getElementById('btnModalAdd').classList.remove('hidden');
             document.getElementById('btnModalUpdate').classList.add('hidden');
             modal.show();
+            accionForm('crear');
         });
         closeButton.addEventListener('click', function () {
             modal.hide();
@@ -151,6 +152,12 @@ onMounted(() => {
 
     leerUsuarios();
 });
+var formAccion = null;
+
+//Función para evaluar que acción se va a hacer al hacer submit en el form
+function accionForm(accion) {
+    formAccion = accion;
+}
 async function generarReporte() {
     // try {
     //     const response = await axios.get('/usuario_reporte', {
@@ -197,17 +204,7 @@ let usuarios = computed(() => data.value?.data);
 const buscar = ref({
     buscador: "",
 })
-const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
-})
+
 //Seccion para establecer funciones y utilizar las constantes
 async function leerUsuarios() {
     try {
