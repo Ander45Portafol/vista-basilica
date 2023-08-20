@@ -4,7 +4,7 @@
             <div class="topprincipal flex justify-between font-semibold text-base">
                 <div class="options">
                     <NuxtLink to="/principal" class="ml-4">Inicio</NuxtLink>
-                    <NuxtLink to="" class=" active ml-4 ">Graficas</NuxtLink>
+                    <NuxtLink to="" class=" active ml-4 ">Gráficas</NuxtLink>
                     <NuxtLink to="" class="ml-4 ">Reportes</NuxtLink>
                 </div>
             </div>
@@ -30,7 +30,8 @@
                 </button>
             </div>
         </div>
-        <div v-if="!dataListaDonaciones && !dataListaAnuncios && !dataListaNSecciones && !dataListaNUsuarios && !dataListaEventos" class="mdcarga h-screen overflow-hidden flex justify-center items-center">
+        <div v-if="!dataListaDonaciones && !dataListaAnuncios && !dataListaNSecciones && !dataListaNUsuarios && !dataListaEventos"
+            class="mdcarga h-screen overflow-hidden flex justify-center items-center">
             <svg aria-hidden="true" class="w-20 h-20 mr-2 text-gray-300 animate-spin fill-purpleLogin" viewBox="0 0 100 101"
                 fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -43,8 +44,8 @@
         </div>
         <div v-else class="mdprincipal h-screen overflow-y-scroll flex-col mt-6 px-8 py-10">
             <div class="h-2/3 w-full bg-slate-200 rounded-2xl pl-4">
-                <div class="flex-col text-center pt-4">
-                    <p class="text-2xl font-extrabold ">Donaciones registradas en la semana actual</p>
+                <div class="flex-row text-center pt-4">
+                    <p class="text-2xl font-extrabold mt-5">Donaciones registradas por fecha en la semana actual</p>
                     <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal"
                             v-if="totalSumaDonaciones">${{ totalSumaDonaciones }}</span><span class="text-xl font-normal"
                             v-else>$0.00</span></p>
@@ -55,22 +56,21 @@
                     </div>
                 </div>
             </div>
-            <div class="flex w-full justify-between mt-10">
-                <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
+            <div class="flex w-full justify-between mt-10 flex-wrap">
+                <div class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[58%] max-[1300px]:min-w-full max-[1300px]:pb-12">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Página - Secciones</p>
-                        <p class="text-xl font-normal">Existentes</p>
+                        <p class="text-2xl text-center mt-3 font-bold">Cantidad de secciones por página</p>
                     </div>
-                    <div class="grafic h-3/4 w-full flex justify-center items-center">
+                    <div class="grafic h-3/4 w-full flex justify-center items-center max-[950px]:w-full">
                         <PolarArea v-if="dataNSecciones && dataNSecciones.length > 0 && dataListaNSecciones"
                             :data="chartNSecciones" :options="opcionesNSecciones" />
                         <p v-else-if="dataListaNSecciones">No se encontro información.</p>
                     </div>
                 </div>
-                <div class="container-grafics h-96 bg-slate-200 rounded-2xl">
+                <div class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[40%] max-[1300px]:mt-12 max-[1300px]:min-w-full">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Usuarios - Registrados</p>
-                        <p class="text-2xl font-bold">Usuarios totales: <span> {{ totalUsuarios }} </span></p>
+                        <p class="text-2xl text-center mt-3 font-bold">Usuarios registrados por rol</p>
+                        <p class="text-xl text-center font-bold">Usuarios totales: <span class="text-xl font-normal"> {{ totalUsuarios }} </span></p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <Pie v-if="dataNUsuarios && dataNUsuarios.results.length > 0 && dataListaNUsuarios"
@@ -79,10 +79,10 @@
                     </div>
                 </div>
             </div>
-            <div class="flex w-full justify-between mt-10 mb-[100px]">
-                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl">
+            <div class="flex w-full justify-between mt-10 mb-[100px] flex-wrap">
+                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[40%] max-[1300px]:min-w-full max-[1300px]:pb-12">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Eventos - Semanales</p>
+                        <p class="text-2xl text-center mt-3 font-bold">Cantidad de eventos por fecha en la semana actual</p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <Bar v-if="dataEventos && dataEventos.length > 0 && dataListaEventos" :data="chartEventos"
@@ -90,9 +90,9 @@
                         <p v-else-if="dataListaEventos">No se encontro información.</p>
                     </div>
                 </div>
-                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl">
+                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[58%] max-[1300px]:mt-12 max-[1300px]:min-w-full">
                     <div class="text-left p-4">
-                        <p class="text-2xl font-bold">Anuncios - Mensuales</p>
+                        <p class="text-2xl text-center mt-3 font-bold">Cantidad de anuncios por fecha en el mes actual</p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <Bar v-if="dataAnuncios && dataAnuncios.length > 0 && dataListaAnuncios" :data="chartAnuncios"
@@ -113,12 +113,16 @@ definePageMeta({
 })
 
 onMounted(() => {
+    token.value = localStorage.getItem('token');
+
     leerDonaciones();
     leerNUsuarios();
     leerNSecciones();
     leerEventos();
     leerAnuncios();
 });
+
+const token = ref(null);
 
 const dataDonaciones = ref(null);
 
@@ -128,7 +132,11 @@ const dataListaDonaciones = ref(false);
 
 async function leerDonaciones() {
     try {
-        const { data: res } = await axios.get('/donaciones-graf');
+        const { data: res } = await axios.get('/donaciones-graf', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         dataDonaciones.value = res;
         totalSumaDonaciones = dataDonaciones.value.totalSuma;
         dataListaDonaciones.value = true;
@@ -187,7 +195,11 @@ var totalUsuarios = null;
 
 async function leerNUsuarios() {
     try {
-        const { data: res } = await axios.get('/usuarios-graf');
+        const { data: res } = await axios.get('/usuarios-graf', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         dataNUsuarios.value = res;
         totalUsuarios = dataNUsuarios.value.totalUsuarios;
         dataListaNUsuarios.value = true;
@@ -201,9 +213,9 @@ const chartNUsuarios = computed(() => {
         labels: dataNUsuarios.value.results.map(item => item.rol_usuario),
         datasets: [
             {
-                label: "N° de usuarios: ",
+                label: "N° de usuarios",
                 data: dataNUsuarios.value.results.map(item => item.n_usuarios),
-                backgroundColor: ["#7A78B4", "#565587"],
+                backgroundColor: ["#9497DF", "#565587", "#47497A", "#6C6BA9", "#565587"],
             },
         ],
     };
@@ -221,7 +233,11 @@ const dataListaNSecciones = ref(false);
 
 async function leerNSecciones() {
     try {
-        const { data: res } = await axios.get('/secciones-graf');
+        const { data: res } = await axios.get('/secciones-graf', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         dataNSecciones.value = res;
         dataListaNSecciones.value = true;
     } catch (error) {
@@ -234,7 +250,7 @@ const chartNSecciones = computed(() => {
         labels: dataNSecciones.value.map(item => item.nombre_pagina),
         datasets: [
             {
-                label: "N° de secciones: ",
+                label: "N° de secciones",
                 data: dataNSecciones.value.map(item => item.n_secciones),
                 backgroundColor: ["rgba(255, 202, 81, 0.5)", "rgba(192, 161, 255, 0.5)"],
                 borderColor: ["rgba(255, 202, 81, 1)", "rgba(138, 80, 255, 1)"]
@@ -254,7 +270,11 @@ const dataListaEventos = ref(false);
 
 async function leerEventos() {
     try {
-        const { data: res } = await axios.get('/eventos-graf');
+        const { data: res } = await axios.get('/eventos-graf', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         dataEventos.value = res;
         dataListaEventos.value = true;
     } catch (error) {
@@ -267,7 +287,7 @@ const chartEventos = computed(() => {
         labels: dataEventos.value.map(item => item.fecha_evento),
         datasets: [
             {
-                label: "N° de eventos:",
+                label: "N° de eventos",
                 data: dataEventos.value.map(item => item.cantidad_eventos),
                 barPercentage: 0.5,
                 backgroundColor: ["#9497DF", "#565587", "#47497A", "#6C6BA9", "#565587"],
@@ -292,7 +312,11 @@ const dataListaAnuncios = ref(false);
 
 async function leerAnuncios() {
     try {
-        const { data: res } = await axios.get('/anuncios-graf');
+        const { data: res } = await axios.get('/anuncios-graf', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
         dataAnuncios.value = res;
         dataListaAnuncios.value = true;
     } catch (error) {
@@ -305,7 +329,7 @@ const chartAnuncios = computed(() => {
         labels: dataAnuncios.value.map(item => item.fecha),
         datasets: [
             {
-                label: "N° de anuncios:",
+                label: "N° de anuncios",
                 data: dataAnuncios.value.map(item => item.cantidad_anuncios),
                 barPercentage: 0.5,
                 backgroundColor: ["rgba(255, 202, 81, 1)", "rgba(192, 161, 255, 1)"],
@@ -335,7 +359,8 @@ const opcionesAnuncios = {
 .container-grafics {
     width: 680px;
 }
-.mdprincipal::-webkit-scrollbar{
+
+.mdprincipal::-webkit-scrollbar {
     width: 5px;
 }
 </style>
