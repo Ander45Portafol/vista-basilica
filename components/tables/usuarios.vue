@@ -371,13 +371,17 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
+//Definimos las props donde se reciben los datos desde el componente principal
 const props = defineProps({
+    //Prop que se utiliza para cargar los datos de la tabla
     datosUsuarios: Array,
+    //Prop que recibe la funcion de leerUsuarios, para recargar la tabla, cada vez de finalizar alguna acción
     actualizarDatos: Function,
 });
 
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
+    //Codigo para abrir el modal, con el boton de crear
     const buttonElement = document.getElementById('btnadd');
     const modalElement = document.getElementById('staticModal');
     const closeButton = document.getElementById('closeModal');
@@ -400,30 +404,33 @@ onMounted(() => {
             modal.hide();
         });
     }
+    //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
     token.value = localStorage.getItem('token');
-
+    //Ejecutamos este metodo, para poder llenar el select del modal con la informacion de los roles
     llenarRolUsuario();
 });
-
+//Variable reactiva donde guardamos el token
 const token = ref(null);
-
+//Variable para poder concectar con el storage de la api y asi poder buscar imagenes
 var api_url = "http://localhost:8000/storage/usuarios/images/";
 
+//Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
 const mostrarIconoBorrar = ref(false);
-
+//Metodo para hacer visible el icono de borrar una imagen
 function iconoBorrarTrue() {
     if (imagenPreview.value) {
         mostrarIconoBorrar.value = true;
     }
 }
-
+//Metodo para no mostrar el icono de borrar una imagen
 function iconoBorrarFalse() {
     if (imagenPreview.value) {
         mostrarIconoBorrar.value = false;
     }
 }
-
+//Variable reactiva para mostrar la imagen capturada
 const imagenPreview = ref(null);
+//Metodo para seleccionar una imagen para el registro
 const seleccionarArchivo = () => {
     if (mostrarIconoBorrar.value == false) {
         inputImagen.value.click();
@@ -431,8 +438,9 @@ const seleccionarArchivo = () => {
         limpiarImagen();
     }
 };
+//Variable reactiva para caputar el valor de la imagen
 const inputImagen = ref(null);
-
+//Metodo para cambiar la imagen de un registro
 const cambiarImagen = () => {
     const input = inputImagen.value;
     const file = input.files;
@@ -501,6 +509,7 @@ function limpiarForm() {
     form.value.id_categoria_grupo_parroquial = "0";
     limpiarImagen();
 }
+//Metodo para limpiar el campo de la imagen
 function limpiarImagen() {
     //Limpiar imagen
     inputImagen.value.value = '';
@@ -508,7 +517,7 @@ function limpiarImagen() {
     form.value.imagen_usuario = "";
     mostrarIconoBorrar.value = false;
 }
-
+//Variable reactiva para manejar los campos
 const form = ref({
     id_usuario: "",
     nombre_usuario: "",
@@ -524,7 +533,7 @@ const form = ref({
     visibilidad_usuario: false,
     id_rol_usuario: 0,
 });
-
+//Metodo para capturar el id del usuario y buscar la respectiva informacion
 async function leerUnUsuario(id_usuario) {
     try {
         await axios.get('/usuarios/' + id_usuario, {
@@ -558,6 +567,7 @@ async function leerUnUsuario(id_usuario) {
         console.log(error);
     }
 }
+//Metodo para mostrar las alertas
 const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -633,6 +643,7 @@ async function recuperarUsuario(id, nombre_usuario) {
         }
     });
 }
+//Metodo para agregar un nuevo usuario
 async function crearUsuario() {
     try {
         const formData = new FormData();
@@ -693,6 +704,7 @@ async function crearUsuario() {
         }
     }
 }
+//Metodo para actualizar la informacion de un usuario
 async function actualizarUsuario() {
     try {
         var id = form.value.id_usuario;
@@ -730,7 +742,9 @@ async function actualizarUsuario() {
         console.log(error);
     }
 }
+//Variable reativa para capturar los roles de los usuarios
 var roles = ref(null);
+//Funcion para agregarle el valor de los roles a la variable reactiva
 async function llenarRolUsuario() {
     const { data: res } = await axios.get('roles-select', {
         headers: {
