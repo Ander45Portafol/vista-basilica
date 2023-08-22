@@ -76,36 +76,36 @@
             <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
                 <span class="text-gray-500 font-normal ml-2">- registros encontrados!</span>
             </p>
-            <!--Cargando de mensajes -->
-            <div class="loadingtable overflow-hidden h-4/6 pr-4">
-                <div class="contained-data flex-col" v-for="number in 6" :key="number">
-                    <div v-if="!mensajes"
-                        class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
-                        <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                            <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
-                            <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
+            <div class="tables overflow-y-scroll h-3/5 pr-4">
+                    <div v-if="!mensajes" class="loadingtable overflow-hidden h-full pr-4">
+                        <div class="contained-data flex-col" v-for="number in 6" :key="number">
+                            <div
+                                class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                                <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                                    <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
+                                    <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
+                                        <div
+                                            class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4">
+                                        </div>
+                                        <div
+                                            class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full">
+                                        </div>
+                                    </div>
+                                </div>
                                 <div
-                                    class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4">
+                                    class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                                    <div
+                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
+                                    </div>
+                                    <div
+                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
+                                    </div>
                                 </div>
-                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full">
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                            <div
-                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
-                            </div>
-                            <div
-                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
                             </div>
                         </div>
                     </div>
+                    <TablesMensaje v-if="mensajes" :datosMensajes="mensajes" :actualizarDatos="leerMensajes" />
                 </div>
-            </div>
-                <!-- aqui va lo de la tabla -->
-            <TablesMensaje v-if="mensajes" :dataMensajes="mensajes"  />
-
             <!-- Paginación -->
             <div class="flex justify-center mt-6">
                 <TailwindPagination v-if="data" :item-classes="[
@@ -135,6 +135,13 @@
     border: 3px solid #1b1c30;
 }
 
+.tables::-webkit-scrollbar {
+    width: 7px;
+}
+
+.tables::-webkit-scrollbar-thumb {
+    background: #32345A;
+}
 </style>
 
 
@@ -175,77 +182,11 @@ onMounted(() => {
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
 
-    //Constantes para manejar el modal
-    //Constante para el botón de agregar un registro
-    const buttonElement = document.getElementById("btnadd");
-    //Constante para el modal
-    const modalElement = document.getElementById("staticModal");
-    //Constante para el botón de cerrar en el modal
-    const closeButton = document.getElementById("closeModal");
-    //Constante para el titulo del modal
-    const modalText = document.getElementById("modalText");
-    //Constante para el boton de actualizar dentro del modal
-    const modalBtnUpdate = document.getElementById("btnModalUpdate");
-    //Constante para el boton de agregar dentro del modal
-    const modalBtnAdd = document.getElementById("btnModalAdd");
-
-    /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
-      aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
-    const modalOptions = {
-        backdrop: "static",
-        backdropClasses:
-            "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-    };
-
-    //Se evalua si existe un modal y en caso de que si se ejecuta todo lo relacionado a su funcionamiento
-    if (modalElement) {
-        //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
-        const modal = new Modal(modalElement, modalOptions);
-
-        //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
-        closeButton.addEventListener("click", function () {
-            modal.hide();
-            limpiarForm();
-        });
-    }
-
     //Se leen las páginas al montarse la página para evitar problemas del setup y el localStorage
     leerMensajes();
-
-    llenarSelectContactos();
 });
 
-//Variable reactiva para llenar el select
-var contactos = ref(null);
 
-//Función para llenar el select
-async function llenarSelectContactos() {
-    try {
-        //Se realiza la petición axios
-        const { data: res } = await axios.get('contactos-select', {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            },
-        });
-        //Lo que devuelve la petición axios se le asigna a "contactos"
-        contactos.value = res;
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
-    }
-}
 
 //Variable reactiva para almacenar el token del localStorage
 const token = ref(null);
@@ -400,308 +341,4 @@ function limpiarBuscador() {
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
 }
-
-
-//Toast del sweetalert
-const Toast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener("mouseenter", Swal.stopTimer);
-        toast.addEventListener("mouseleave", Swal.resumeTimer);
-    },
-});
-
-//Variable para validar que acción se quiere hacer cuando se hace un submit al form
-var formAccion = null;
-
-//Función para evaluar que acción se va a hacer al hacer submit en el form
-function accionForm(accion) {
-    formAccion = accion;
-}
-
-//Función para actualizar un registro cuando se ejecuta el submit del form
-function submitForm() {
-    if (formAccion == "actualizar") {
-        actualizarMensaje();
-    }
-}
-
-
-//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
-async function leerUnMensaje(id) {
-    try {
-        accionForm("actualizar");
-        //Se hace la petición axios y se evalua la respuesta
-        await axios.get("/mensajes/" + id, {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            },
-        }).then((res) => {
-            //Constante para el modal
-            const modalElement = document.getElementById("staticModal");
-            //Constante que contiene las caracteristicas del modal
-            const modalOptions = {
-                backdrop: "static",
-                backdropClasses:
-                    "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-            };
-            //Instanciamos el boton para cerrar el modal
-            const closeButton = document.getElementById("closeModal");
-            //Constante para el titulo del modal
-            const modalText = document.getElementById("modalText");
-            //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById("btnModalUpdate");
-            //Instanciamos el modal
-            const modal = new Modal(modalElement, modalOptions);
-            //Le modificamos el texto del header al modal
-            modalText.textContent = "Editar";
-            //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove("hidden");
-            //Abrimos el modal
-            modal.show();
-            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-            closeButton.addEventListener("click", function () {
-                //Ocultamos el modal
-                modal.hide();
-                //Limpiamos el modal
-                limpiarForm();
-            });
-            //Llenamos los inputs del modal con su respectiva informacion
-            form.value = {
-                id_mensaje: res.data.data.id,
-                nombre_contactante: res.data.data.campos.nombre_contactante,
-                apellido_contactante: res.data.data.campos.apellido_contactante,
-                telefono_contactante: res.data.data.campos.telefono_contactante,
-                correo_contactante: res.data.data.campos.correo_contactante,
-                asunto_mensaje: res.data.data.campos.asunto_mensaje,
-                mensaje: res.data.data.campos.mensaje,
-                fecha_mensaje: res.data.data.campos.fecha_mensaje,
-                estado_mensaje: res.data.data.campos.estado_mensaje,
-                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_mensaje: res.data.data.campos.visibilidad_mensaje ? true : false,
-                id_contacto: res.data.data.campos.id_contacto,
-            };
-        });
-    } catch (error) {
-        console.log(error);
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se cierra el modal
-        document.getElementById("closeModal").click();
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
-    }
-}
-
-async function actualizarMensaje() {
-    if (validarNombre() && validarApellido() && validarTelefono() && form.estado_mensaje != 0 && form.id_contacto != 0) {
-        try {
-            //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_mensaje;
-
-            //Se crea una constante FormData para almacenar los datos del modal
-            const formData = new FormData();
-            formData.append("nombre_contactante", form.value.nombre_contactante);
-            formData.append("apellido_contactante", form.value.apellido_contactante);
-            formData.append("telefono_contactante", form.value.telefono_contactante);
-            formData.append("correo_contactante", form.value.correo_contactante);
-            formData.append("asunto_mensaje", form.value.asunto_mensaje);
-            formData.append("mensaje", form.value.mensaje);
-            formData.append("fecha_mensaje", form.value.fecha_mensaje);
-            formData.append("estado_mensaje", form.value.estado_mensaje);
-            formData.append(
-                "visibilidad_mensaje",
-                form.value.visibilidad_mensaje ? 1 : 0
-            )
-            formData.append("id_contacto", form.value.id_contacto);
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/mensajes_update/" + id, formData, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-            });
-
-            //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
-            if (buscar.value.buscador) {
-                buscarMensajes();
-            } else {
-                leerMensajes();
-            }
-            //Se cierra el modal
-            document.getElementById("closeModal").click();
-
-            //Se lanza la alerta de éxito
-            Toast.fire({
-                icon: "success",
-                title: "Mensaje actualizado exitosamente",
-            });
-        } catch (error) {
-            console.log(error);
-            const mensajeError = error.response.data.message;
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: mensajeError,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
-    }
-}
-
-//Función para cambiar la visibilidad de una página para ocultarla
-async function borrarMensaje(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: "Confirmación",
-        text: "¿Desea ocultar el registro?",
-        icon: "warning",
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: "#3F4280",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete("/mensajes/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                });
-
-                //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
-                if (buscar.value.buscador) {
-                    buscarMensajes();
-                } else {
-                    leerMensajes();
-                }
-
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Mensaje ocultado exitosamente",
-                });
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
-                });
-            }
-        }
-    });
-}
-
-//Función para cambiar la visibilidad de una página para recuperarla
-async function recuperarMensaje(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: "Confirmación",
-        text: "¿Desea recuperar el registro?",
-        icon: "warning",
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: "#3F4280",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete("/mensajes/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                });
-
-                //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
-                if (buscar.value.buscador) {
-                    buscarMensajes();
-                } else {
-                    leerMensajes();
-                }
-
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Mensaje recuperado exitosamente",
-                });
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
-                });
-            }
-        }
-    });
-}
-
-
 </script>

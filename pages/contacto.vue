@@ -135,19 +135,6 @@
 }
 
 
-
-.modal {
-    background: linear-gradient(180deg,
-            rgba(63, 66, 128, 0.6241) 0%,
-            rgba(49, 50, 71, 0.5609) 100%);
-    background-color: #1e1e1e;
-}
-
-.modal-buttons button {
-    background-color: #32345a;
-}
-
-
 .tables::-webkit-scrollbar {
     width: 7px;
 }
@@ -165,8 +152,6 @@
 
 //Importacion para usar el hook de onMounted
 import { onMounted, ref } from "vue";
-//Importación del modal de flowbite
-import { Modal } from "flowbite";
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from "axios";
 //Importación del plugin de paginación de registros

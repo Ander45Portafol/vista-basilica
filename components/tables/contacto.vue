@@ -246,6 +246,18 @@
 .buttons-data .deletebtn {
     border: 3px solid #872727;
 }
+
+
+.modal {
+    background: linear-gradient(180deg,
+            rgba(63, 66, 128, 0.6241) 0%,
+            rgba(49, 50, 71, 0.5609) 100%);
+    background-color: #1e1e1e;
+}
+
+.modal-buttons button {
+    background-color: #32345a;
+}
 </style>
 
 <script setup>
@@ -313,25 +325,7 @@ function limpiarForm() {
 }
 
 
-function estadoActualizar(id) {
-    const modalElement = document.getElementById('staticModal');
-    const closeButton = document.getElementById('closeModal');
-    const modalText = document.getElementById('modalText');
-    const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-    const modal = new Modal(modalElement, modalOptions);
-    modalText.textContent = "Editar";
-    modal.show();
-    document.getElementById('btnModalAdd').classList.add('hidden');
-    document.getElementById('btnModalUpdate').classList.remove('hidden');
-    closeButton.addEventListener('click', function () {
-        modal.hide();
-        limpiarForm();
-    });
-    leerUnContacto(id);
-}
+
 
 //Funciones para manejo del modal
 //Toast del sweetalert
@@ -395,7 +389,7 @@ async function crearContacto() {
             const sqlState = validaciones.extraerSqlState(mensajeError);
             const res = validaciones.mensajeSqlState(sqlState);
 
-      
+
 
             //Se muestra un sweetalert con el mensaje
             Swal.fire({
@@ -414,6 +408,26 @@ async function crearContacto() {
             });
         }
     }
+}
+
+function estadoActualizar(id) {
+    const modalElement = document.getElementById('staticModal');
+    const closeButton = document.getElementById('closeModal');
+    const modalText = document.getElementById('modalText');
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+    const modal = new Modal(modalElement, modalOptions);
+    modalText.textContent = "Editar";
+    modal.show();
+    document.getElementById('btnModalAdd').classList.add('hidden');
+    document.getElementById('btnModalUpdate').classList.remove('hidden');
+    closeButton.addEventListener('click', function () {
+        modal.hide();
+        limpiarForm();
+    });
+    leerUnContacto(id);
 }
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
@@ -511,11 +525,9 @@ async function actualizarContacto() {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
-            }).then((result) => {
-                if (result.dismiss === Toast.DismissReason.timer) {
-                    props.actualizarData();
-                }
-            });
+            }),
+               //Se manda a llamar la accion para actualizar los datos con las props
+                    props.actualizarDatos();
 
             document.getElementById("closeModal").click();
 
@@ -585,16 +597,15 @@ async function borrarContacto(id) {
                 await axios.delete('/contactos/' + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
-                    },
-                }).then(
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Contacto  ocultado exitosamente'
-                    }).then((result) => {
-                        if (result.dismiss === Toast.DismissReason.timer) {
-                            props.actualizarData();
-                        }
-                    }));
+                    }
+                }),
+                    //Se manda a llamar la accion para actualizar los datos con las props
+                    props.actualizarDatos();
+                //Se lanza la alerta de éxito
+                Toast.fire({
+                    icon: "success",
+                    title: "Contacto  ocultado exitosamente",
+                });
             } catch (error) {
                 console.log(error);
             }
@@ -625,11 +636,9 @@ async function recuperarUnContacto(id) {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
-                }).then((result) => {
-                    if (result.dismiss === Toast.DismissReason.timer) {
-                        props.actualizarData();
-                    }
-                });
+                }),
+                    //Se manda a llamar la accion para actualizar los datos con las props
+                    props.actualizarDatos();
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: "success",
