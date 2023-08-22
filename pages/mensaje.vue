@@ -69,14 +69,15 @@
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
-            <p v-if="mensajes" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
-                {{ mensajes.length }}
-                <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
-            </p>
-            <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
-                <span class="text-gray-500 font-normal ml-2">- registros encontrados!</span>
-            </p>
-            <div class="tables overflow-y-scroll h-3/5 pr-4">
+            <div class="h-screen">
+                <p v-if="mensajes" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                    {{ mensajes.length }}
+                    <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+                </p>
+                <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                    <span class="text-gray-500 font-normal ml-2">- registros encontrados!</span>
+                </p>
+                <div class="tables overflow-y-scroll h-3/5 pr-4">
                     <div v-if="!mensajes" class="loadingtable overflow-hidden h-full pr-4">
                         <div class="contained-data flex-col" v-for="number in 6" :key="number">
                             <div
@@ -106,6 +107,7 @@
                     </div>
                     <TablesMensaje v-if="mensajes" :datosMensajes="mensajes" :actualizarDatos="leerMensajes" />
                 </div>
+            </div>
             <!-- Paginación -->
             <div class="flex justify-center mt-6">
                 <TailwindPagination v-if="data" :item-classes="[
@@ -120,13 +122,10 @@
         </div>
     </div>
     <!-- Modal  Aqui va el modal como componente-->
-
 </template>
 
 
 <style scoped>
-
-
 .content-buttons input {
     border: 3px solid #1b1c30;
 }
@@ -177,7 +176,7 @@ definePageMeta({
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
     //Agrega la funcion par ala validacion de la fecha de los  mensajes
- 
+
 
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
