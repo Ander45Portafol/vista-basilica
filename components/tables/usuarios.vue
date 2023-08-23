@@ -1,5 +1,5 @@
 <template>
-    <div class="contained-data flex-col" v-for="usuario in dataUsers" :key="usuario.id">
+    <div class="contained-data flex-col" v-for="usuario in datosUsuarios" :key="usuario.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -332,8 +332,8 @@
                                     </svg>
                                 </button>
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
-                                    :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()"
-                                    @click="accionForm('crear')">
+                                    type="submit"
+                                    :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -347,8 +347,7 @@
                                 <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
                                 <button id="btnModalUpdate" type="submit"
                                     :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || form.id_rol_usuario == 0 || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()"
-                                    class="h-10 w-10 rounded-lg flex justify-center items-center"
-                                    @click="accionForm('actualizar')">
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -372,38 +371,66 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
+//Definimos las props donde se reciben los datos desde el componente principal
 const props = defineProps({
-    dataUsers: Array,
-    actualizarData: Function,
+    //Prop que se utiliza para cargar los datos de la tabla
+    datosUsuarios: Array,
+    //Prop que recibe la funcion de leerUsuarios, para recargar la tabla, cada vez de finalizar alguna acción
+    actualizarDatos: Function,
 });
-console.log(props.dataUsers);
 
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
-    token.value = localStorage.getItem('token');
+    //Codigo para abrir el modal, con el boton de crear
+    const buttonElement = document.getElementById('btnadd');
+    const modalElement = document.getElementById('staticModal');
+    const closeButton = document.getElementById('closeModal');
+    const modalText = document.getElementById('modalText');
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
 
+    if (modalElement) {
+        const modal = new Modal(modalElement, modalOptions);
+        buttonElement.addEventListener('click', function () {
+            modalText.textContent = "Registrar";
+            document.getElementById('btnModalAdd').classList.remove('hidden');
+            document.getElementById('btnModalUpdate').classList.add('hidden');
+            accionForm('crear');
+            modal.show();
+        });
+        closeButton.addEventListener('click', function () {
+            modal.hide();
+        });
+    }
+    //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
+    token.value = localStorage.getItem('token');
+    //Ejecutamos este metodo, para poder llenar el select del modal con la informacion de los roles
     llenarRolUsuario();
 });
-
+//Variable reactiva donde guardamos el token
 const token = ref(null);
-
+//Variable para poder concectar con el storage de la api y asi poder buscar imagenes
 var api_url = "http://localhost:8000/storage/usuarios/images/";
 
+//Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
 const mostrarIconoBorrar = ref(false);
-
+//Metodo para hacer visible el icono de borrar una imagen
 function iconoBorrarTrue() {
     if (imagenPreview.value) {
         mostrarIconoBorrar.value = true;
     }
 }
-
+//Metodo para no mostrar el icono de borrar una imagen
 function iconoBorrarFalse() {
     if (imagenPreview.value) {
         mostrarIconoBorrar.value = false;
     }
 }
-
+//Variable reactiva para mostrar la imagen capturada
 const imagenPreview = ref(null);
+//Metodo para seleccionar una imagen para el registro
 const seleccionarArchivo = () => {
     if (mostrarIconoBorrar.value == false) {
         inputImagen.value.click();
@@ -411,8 +438,9 @@ const seleccionarArchivo = () => {
         limpiarImagen();
     }
 };
+//Variable reactiva para caputar el valor de la imagen
 const inputImagen = ref(null);
-
+//Metodo para cambiar la imagen de un registro
 const cambiarImagen = () => {
     const input = inputImagen.value;
     const file = input.files;
@@ -456,6 +484,7 @@ function estadoActualizar(id) {
     const modal = new Modal(modalElement, modalOptions);
     modalText.textContent = "Editar";
     modal.show();
+    accionForm('actualizar');
     document.getElementById('btnModalAdd').classList.add('hidden');
     document.getElementById('btnModalUpdate').classList.remove('hidden');
     closeButton.addEventListener('click', function () {
@@ -480,6 +509,7 @@ function limpiarForm() {
     form.value.id_categoria_grupo_parroquial = "0";
     limpiarImagen();
 }
+//Metodo para limpiar el campo de la imagen
 function limpiarImagen() {
     //Limpiar imagen
     inputImagen.value.value = '';
@@ -487,7 +517,7 @@ function limpiarImagen() {
     form.value.imagen_usuario = "";
     mostrarIconoBorrar.value = false;
 }
-
+//Variable reactiva para manejar los campos
 const form = ref({
     id_usuario: "",
     nombre_usuario: "",
@@ -503,7 +533,7 @@ const form = ref({
     visibilidad_usuario: false,
     id_rol_usuario: 0,
 });
-
+//Metodo para capturar el id del usuario y buscar la respectiva informacion
 async function leerUnUsuario(id_usuario) {
     try {
         await axios.get('/usuarios/' + id_usuario, {
@@ -537,6 +567,7 @@ async function leerUnUsuario(id_usuario) {
         console.log(error);
     }
 }
+//Metodo para mostrar las alertas
 const Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -572,11 +603,8 @@ async function borrarUsuario(id, nombre_usuario) {
                     Toast.fire({
                         icon: 'success',
                         title: 'Usuario desactivado exitosamente'
-                    }).then((result) => {
-                        if (result.dismiss === Toast.DismissReason.timer) {
-                            props.actualizarData();
-                        }
                     }));
+                    props.actualizarDatos();
             } catch (error) {
                 console.log(error);
             }
@@ -604,13 +632,10 @@ async function recuperarUsuario(id, nombre_usuario) {
                         Authorization: `Bearer ${token.value}`,
                     },
                 });
+                props.actualizarDatos();
                 Toast.fire({
                     icon: 'success',
                     title: 'Usuario recuperado exitosamente'
-                }).then((result) => {
-                    if (result.dismiss === Toast.DismissReason.timer) {
-                        props.actualizarData();
-                    }
                 });
             } catch (error) {
                 console.log(error);
@@ -618,6 +643,7 @@ async function recuperarUsuario(id, nombre_usuario) {
         }
     });
 }
+//Metodo para agregar un nuevo usuario
 async function crearUsuario() {
     try {
         const formData = new FormData();
@@ -645,13 +671,10 @@ async function crearUsuario() {
         });
         document.getElementById('closeModal').click();
         //Se lanza la alerta con el mensaje de éxito
+        props.actualizarDatos();
         Toast.fire({
             icon: 'success',
             title: 'Usuario creado exitosamente'
-        }).then((result) => {
-            if (result.dismiss === Toast.DismissReason.timer) {
-                location.reload();
-            }
         });
     } catch (error) {
         console.log(error);
@@ -681,6 +704,7 @@ async function crearUsuario() {
         }
     }
 }
+//Metodo para actualizar la informacion de un usuario
 async function actualizarUsuario() {
     try {
         var id = form.value.id_usuario;
@@ -708,20 +732,19 @@ async function actualizarUsuario() {
             }
         });
         document.getElementById('closeModal').click();
+        props.actualizarDatos();
         Toast.fire({
             icon: 'success',
             title: 'Usuario actualizado exitosamente'
-        }).then((result) => {
-            if (result.dismiss === Toast.DismissReason.timer) {
-                props.actualizarData();
-            }
         });
     }
     catch (error) {
         console.log(error);
     }
 }
+//Variable reativa para capturar los roles de los usuarios
 var roles = ref(null);
+//Funcion para agregarle el valor de los roles a la variable reactiva
 async function llenarRolUsuario() {
     const { data: res } = await axios.get('roles-select', {
         headers: {
@@ -773,7 +796,7 @@ function validarNumeroTelefono() {
 }
 
 .buttons-data .changebtn {
-    border: 3px solid #3F4280;
+    border: 3px solid #3F4280; 
 }
 
 .modal {

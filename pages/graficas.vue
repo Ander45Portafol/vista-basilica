@@ -44,7 +44,7 @@
         </div>
         <div v-else class="mdprincipal h-screen overflow-y-scroll flex-col mt-6 px-8 py-10">
             <div class="h-2/3 w-full bg-slate-200 rounded-2xl pl-4">
-                <div class="flex-col text-center pt-4">
+                <div class="flex-row text-center pt-4">
                     <p class="text-2xl font-extrabold mt-5">Donaciones registradas por fecha en la semana actual</p>
                     <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal"
                             v-if="totalSumaDonaciones">${{ totalSumaDonaciones }}</span><span class="text-xl font-normal"
@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="flex w-full justify-between mt-10 flex-wrap">
-                <div class="container-grafics h-96 bg-slate-200 rounded-2xl w-[8rm] max-[1300px]:min-w-full max-[1300px]:pb-12">
+                <div class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[58%] max-[1300px]:min-w-full max-[1300px]:pb-12">
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Cantidad de secciones por página</p>
                     </div>
@@ -67,7 +67,7 @@
                         <p v-else-if="dataListaNSecciones">No se encontro información.</p>
                     </div>
                 </div>
-                <div class="container-grafics h-96 bg-slate-200 rounded-2xl w-[100%] max-[1300px]:mt-12 max-[1300px]:min-w-full">
+                <div class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[40%] max-[1300px]:mt-12 max-[1300px]:min-w-full">
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Usuarios registrados por rol</p>
                         <p class="text-xl text-center font-bold">Usuarios totales: <span class="text-xl font-normal"> {{ totalUsuarios }} </span></p>
@@ -80,7 +80,7 @@
                 </div>
             </div>
             <div class="flex w-full justify-between mt-10 mb-[100px] flex-wrap">
-                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl max-[1300px]:min-w-full max-[1300px]:pb-12">
+                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[40%] max-[1300px]:min-w-full max-[1300px]:pb-12">
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Cantidad de eventos por fecha en la semana actual</p>
                     </div>
@@ -90,7 +90,7 @@
                         <p v-else-if="dataListaEventos">No se encontro información.</p>
                     </div>
                 </div>
-                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl max-[1300px]:mt-12 max-[1300px]:min-w-full">
+                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[58%] max-[1300px]:mt-12 max-[1300px]:min-w-full">
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Cantidad de anuncios por fecha en el mes actual</p>
                     </div>

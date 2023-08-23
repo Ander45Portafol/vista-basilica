@@ -1,5 +1,4 @@
 <script setup>
-import 'flowbite';
 import Iconoir from 'iconoir/icons/iconoir.svg'
 </script>
 <template>
