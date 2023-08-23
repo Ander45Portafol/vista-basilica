@@ -17,8 +17,8 @@
             <!-- Al darle clic al evento leerUnContacto ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                <button v-if="contacto.campos.visibilidad_contacto == 1" @click.prevent="estadoActualizar(contacto.id)"
-                    class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
+                <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn" id="btnedit"
+                v-if="contacto.campos.visibilidad_contacto == 1" @click.prevent="estadoActualizar(contacto.id)">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -27,10 +27,9 @@
                         </path>
                     </svg>
                 </button>
-                <!-- Al darle clic al evento borrarContacto ejecuta la funcion -->
-                <button @click.prevent=" borrarContacto(contacto.id, contacto.campos.contacto)"
-                    v-if="contacto.campos.visibilidad_contacto == 1"
-                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
+                <button
+                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                    @click="borrarContacto(contacto.id)" v-if="contacto.campos.visibilidad_contacto == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -39,9 +38,9 @@
                         </path>
                     </svg>
                 </button>
-                <!-- Al darle clic al evento recuperarContacto ejecuta la funcion -->
-                <button v-else @click="recuperarUnContacto(contacto.id, contacto.campos.contacto)"
-                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
+                <button @click="recuperarUnContacto(contacto.id)"
+                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                    v-else>
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
@@ -576,7 +575,6 @@ async function actualizarContacto() {
 }
 
 //Función para cambiar la visibilidad de una página para ocultarla
-//Codigo para cambiar el estado del usuarios a inactivo
 async function borrarContacto(id) {
     console.log(id);
     Swal.fire({

@@ -68,6 +68,7 @@
                     </button>
                 </div>
             </div>
+            
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
