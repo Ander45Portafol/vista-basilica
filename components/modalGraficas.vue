@@ -80,10 +80,10 @@
                             <div class="relative z-0 w-64 ml-14 max-[1200px]:w-full" id="input_fechaf">
                                 <input v-model="formFechas.fecha_final" @change="validarFechas" type="date" id="fecha_final"
                                     name="fecha_final" :min="formFechas.fecha_inicial"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer max-[800px]:mt-12"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder="" autocomplete="off" />
                                 <label for="fecha_final"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 max-[800px]:mt-12">Fecha
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
                                     final</label>
                             </div>
                             <div class="relative z-0 w-64 inline-block max-[1200px]:w-full" id="input_anio">
