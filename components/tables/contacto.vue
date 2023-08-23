@@ -324,9 +324,6 @@ function limpiarForm() {
     form.value.visibilidad_contacto = false;
 }
 
-
-
-
 //Funciones para manejo del modal
 //Toast del sweetalert
 const Toast = Swal.mixin({
