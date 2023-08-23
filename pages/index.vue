@@ -124,7 +124,6 @@ import validaciones from '../assets/validaciones.js';
 
 definePageMeta({
   layout: "default",
-  middleware: "middleware-login"
 });
 
 //Toast de sweetalert 
