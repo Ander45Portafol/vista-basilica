@@ -1,4 +1,4 @@
-
+<!-- SCRUD como componente -->
 <template>
     <div class="principal mt-6">
         <!-- Menu de navegación superior -->

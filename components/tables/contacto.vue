@@ -1,3 +1,4 @@
+<!-- SCRUD como componente -->
 <template>
     <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
     <div class="contained-data flex-col" v-for="contacto in datosContactos" :key="contacto.id">

@@ -1,3 +1,4 @@
+<!-- SCRUD como componente -->
 <template>
     <div class="principal mt-6">
         <MenuAnuncioDashboard class="mr-8" />

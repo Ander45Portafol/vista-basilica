@@ -1,3 +1,4 @@
+<!-- SCRUD como componente -->
 <template>
     <!-- Tabla como componente -->
     <div class="contained-data flex-col" v-for="mensaje in datosMensajes" :key="mensaje.id">

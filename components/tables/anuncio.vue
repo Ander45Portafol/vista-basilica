@@ -1,3 +1,4 @@
+<!-- SCRUD como componente -->
 <template>
     <div class="contained-data flex-col" v-for="anuncio in datosAnuncio" :key="anuncio.id">
         <div
