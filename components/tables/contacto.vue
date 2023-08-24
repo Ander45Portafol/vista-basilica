@@ -288,9 +288,17 @@ const props = defineProps({
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
 console.log(props.datosContactos);
-    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
-    token.value = localStorage.getItem('token');
     id.value = localStorage.getItem('usuario');
+    //Codigo para abrir el modal, con el boton de crear
+    const buttonElement = document.getElementById('btnadd');
+    const modalElement = document.getElementById('staticModal');
+    const closeButton = document.getElementById('closeModal');
+    const modalText = document.getElementById('modalText');
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+
     if (modalElement) {
         const modal = new Modal(modalElement, modalOptions);
         buttonElement.addEventListener('click', function () {
@@ -304,7 +312,8 @@ console.log(props.datosContactos);
             modal.hide();
         });
     }
-
+    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
+    token.value = localStorage.getItem('token');
 });
 //Variable reactiva para almacenar el token del localStorag
 const token = ref(null);
@@ -424,7 +433,8 @@ async function crearContacto() {
     }
 }
 
-function estadoActualizar(id) {
+async function estadoActualizar(id) {
+    await leerUnContacto(id);
     const modalElement = document.getElementById('staticModal');
     const closeButton = document.getElementById('closeModal');
     const modalText = document.getElementById('modalText');
@@ -441,53 +451,18 @@ function estadoActualizar(id) {
         modal.hide();
         limpiarForm();
     });
-    leerUnContacto(id);
 }
 
-//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
 async function leerUnContacto(id) {
     try {
         accionForm("actualizar");
-        //Se hace la petición axios y se evalua la respuesta
-        await axios.get("/contactos/" + id, {
+        await axios.get('/contactos/' + id, {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
-        }).then((res) => {
-            //Constante para el modal
-            const modalElement = document.getElementById("staticModal");
-            //Constante que contiene las caracteristicas del modal
-            const modalOptions = {
-                backdrop: "static",
-                backdropClasses:
-                    "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-            };
-            //Instanciamos el boton para cerrar el modal
-            const closeButton = document.getElementById("closeModal");
-            //Constante para el titulo del modal
-            const modalText = document.getElementById("modalText");
-            //Constante para el boton de agregar dentro del modal
-            const modalBtnAdd = document.getElementById("btnModalAdd");
-            //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById("btnModalUpdate");
-            //Instanciamos el modal
-            const modal = new Modal(modalElement, modalOptions);
-            //Le modificamos el texto del header al modal
-            modalText.textContent = "Editar";
-            //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove("hidden");
-            //Ocultamos el botón de agregar en el modal
-            modalBtnAdd.classList.add("hidden");
-            //Abrimos el modal
-            modal.show();
-            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-            closeButton.addEventListener("click", function () {
-                //Ocultamos el modal
-                modal.hide();
-                //Limpiamos el modal
-                limpiarForm();
-            });
-            //Llenamos los inputs del modal con su respectiva informacion
+        }).then(res => {
+            console.log(res.data);
+            console.log(res.data.data.campos.enlace_amigo);
             form.value = {
                 id_contacto: res.data.data.id,
                 nombre_contacto: res.data.data.campos.nombre_contacto,
@@ -496,25 +471,10 @@ async function leerUnContacto(id) {
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
                 visibilidad_contacto: res.data.data.campos.visibilidad_contacto ? true : false
             };
+
         });
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se cierra el modal
-        document.getElementById("closeModal").click();
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
+        console.log(error);
     }
 }
 
