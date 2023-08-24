@@ -1,7 +1,10 @@
 <template>
     <div class="topprincipal flex justify-between font-semibold text-base ml-4">
         <div class="options">
-            <a href="" class="active ml-4">Anuncios</a>
+            <NuxtLink class="ml-4" to="/enlace_amigo" >Enlaces Amigos</NuxtLink>
+            <NuxtLink class="active  ml-4" to="/misa">Misas Online</NuxtLink>
+            <NuxtLink class="ml-4" to="/grupos_parroquiales">Grupos</NuxtLink>
+            <NuxtLink class="ml-4" to="/configuracion_parroquia">Configuracion</NuxtLink>
         </div>
         <div class="endtop flex justify-between w-20">
             <NuxtLink to="/perfil">
@@ -14,10 +17,11 @@
                         stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
             </NuxtLink>
-            <BotonPerfil/>
+            <BotonPerfil />
         </div>
     </div>
 </template>
+
 <style scoped>
 .topprincipal .active {
     color: #c99856;
