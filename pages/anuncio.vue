@@ -2,7 +2,7 @@
 <template>
     <div class="principal mt-6">
         <MenuAnuncioDashboard class="mr-8" />
-     <!-- Contendor principal -->
+        <!-- Contendor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <!-- Sección del buscador -->
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
@@ -25,7 +25,7 @@
                 <!-- Sección de botones a la derecha del buscador -->
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
-                    <button
+                    <button id="report"
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -171,7 +171,7 @@ definePageMeta({
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
-    token.value = localStorage.getItem('token');  
+    token.value = localStorage.getItem('token');
     //Se leen los anuncios al montarse la página para evitar problemas del setup y el localStorage
     leerAnuncios();
 });
@@ -345,7 +345,8 @@ function limpiarBuscador() {
 #btnadd {
     background-color: #1b1c30;
 }
-.tables::-webkit-scrollbar{
-    width:5px;
+
+.tables::-webkit-scrollbar {
+    width: 5px;
 }
 </style>
