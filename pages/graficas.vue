@@ -5,7 +5,6 @@
                 <div class="options">
                     <NuxtLink to="/principal" class="ml-4">Inicio</NuxtLink>
                     <NuxtLink to="" class=" active ml-4 ">Gráficas</NuxtLink>
-                    <NuxtLink to="" class="ml-4 ">Reportes</NuxtLink>
                 </div>
             </div>
             <div class="endtop flex justify-between w-20">
