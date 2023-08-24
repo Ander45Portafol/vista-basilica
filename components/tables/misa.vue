@@ -1,27 +1,25 @@
 <template>
     <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-    <div class="contained-data flex-col" v-for="enlace in datosEnlace" :key="enlace.id">
+    <div class="contained-data flex-col" v-for="misa in datosMisas" :key="misa.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
-                <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                        {{ enlace.campos.titulo_enlace }}</p>
-                    <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a href="#">{{
-                        enlace.campos.enlace_amigo }}</a></p>
-                    <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
-                        {{ enlace.campos.descripcion_enlace }}
-                    </p>
+                    <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
+                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]"> {{
+                        misa.campos.titulo_misa }} </p>
+                    <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> {{
+                        misa.campos.fecha_misa }}</p>
+                    <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> {{
+                        misa.campos.descripcion_misa }}</p>
                 </div>
             </div>
-            <!-- Al darle clic al evento leerUnEnlace ejecuta la funcion -->
+            <!-- Al darle clic al evento leerUnContacto ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                 <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn" id="btnedit"
-                    v-if="enlace.campos.visibilidad_enlace == 1" @click.prevent="estadoActualizar(enlace.id)">
+                    v-if="misa.campos.visibilidad_misa == 1" @click.prevent="estadoActualizar (misa.id)">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -32,7 +30,7 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="borrarEnlace(enlace.id)" v-if="enlace.campos.visibilidad_enlace == 1">
+                    @click="borrarMisa(misa.id)" v-if="misa.campos.visibilidad_misa == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -41,7 +39,7 @@
                         </path>
                     </svg>
                 </button>
-                <button @click="recuperarUnEnlace(enlace.id)"
+                <button @click="recuperarUnaMisa(misa.id)"
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                     v-else>
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
@@ -57,23 +55,21 @@
                 </button>
             </div>
         </div>
-    </div>
+    </div> <!--contained data -->
 
-    <!-- Modal principal-->
+    
+    <!-- Modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-xl max-h-full">
-            <!-- Contenido del modal -->
+        <div class="relative w-full max-w-md max-h-full">
+            <!-- Modal content -->
             <div class="relative rounded-lg shadow modal">
-                <!--Encabezado del modal -->
+                <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
-                        <!-- Asignamos un id al título del modal para la creación  y actualizacion de texto-->
-                        <p class="text-3xl font-bold text-gray-100" id="modalText">
-                        </p>
-                        <p class="text-base font-medium text-gray-400">Enlace amigo</p>
+                        <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
+                        <p class="text-base font-medium text-gray-400">Misa online</p>
                     </div>
-                    <!-- Boton para cerrar el modal -->
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                         data-modal-hide="staticModal">
@@ -84,28 +80,43 @@
                         </svg>
                     </button>
                 </div>
-                <!-- Cuerpo del modal  -->
-                <div class="p-6 space-y-6 pb-14">
-                    <!-- Se utiliza el modificador @submit.prevent para evitar la recarga de la página al enviar el formulario. En su lugar, se llama a la función submitForm() definida en Vue.js para ejecutar la lógica personalizada del envío del formulario. -->
-                    <form @submit.prevent="submitForm()" class="flex justify-evenly">
+                <!-- Modal body  -->
+                <div class="p-6 space-y-6 pb-10">
+                    <form id="modalForm" class="flex justify-center" @submit.prevent="submitForm()">
                         <div class="flex-col w-64">
                             <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
-                            <input type="hidden" id="id_enlace_amigo" v-model="form.id_enlace_amigo">
-                            <!-- Campo de entrada Titulo- Enlace-->
+                            <input type="hidden" name="id_misa" id="id_misa" v-model="form.id_misa" />
                             <div class="relative z-0">
-                                <input type="text" id="titulo_enlace" name="titulo_enlace" maxlength="150" required
-                                    @input="validarTitulo()"
+                                <input type="text" id="enlace_misa" name="enlace_misa" v-model="form.enlace_misa" required
+                                    maxlength="250"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" v-model="form.titulo_enlace">
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.titulo_enlace">
-                                    {{
-                                        form.titulo_enlace.length }} /150</span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
-                                <label for="titulo_enlace"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
-                                    - Enlace<span class="text-sm ml-1"> * </span></label>
+                                    placeholder=" " autocomplete="off" />
+                                <label for="enlace-misa"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Enlace
+                                    - Misa<span class="text-sm ml-1"> * </span></label>
                             </div>
-                            <div v-if="!validarTitulo()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                            <div class="relative z-0 mt-6">
+                                <input type="date" id="fecha_misa" name="fecha_misa" v-model="form.fecha_misa" required
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="fecha-misa"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
+                                    - Misa<span class="text-sm ml-1"> * </span></label>
+                            </div>
+                            <div class="relative z-0 mt-6">
+                                <input type="text" id="titulo_misa" name="titulo_misa" v-model="form.titulo_misa" required
+                                    @input="validarTituloMisa()" maxlength="150"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.titulo_misa">
+                                    {{ form.titulo_misa.length }} /150</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>
+                                    0 /150</span>
+                                <label for="titulo-misa"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
+                                    - Misa<span class="text-sm ml-1"> * </span></label>
+                            </div>
+                            <div v-if="!validarTituloMisa()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
                                 role="alert">
                                 <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
                                     viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -114,55 +125,41 @@
                                         clip-rule="evenodd"></path>
                                 </svg>
                                 <div>
-                                    El nombre de la página solo permite caracteres <span class="font-medium">
+                                    El titulo de la misa solo permite caracteres
+                                    <span class="font-medium">
                                         alfanuméricos y algunos especiales (- / |).</span>
                                 </div>
                             </div>
-                            <!-- Campo de entrada Enlace- Amigo-->
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="enlace_amigo" name="enlace_amigo" maxlength="250" required
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" v-model="form.enlace_amigo" />
-                                <label for="enlace_amigo"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Enlace
-                                    - Amigo<span class="text-sm ml-1"> * </span></label>
-                            </div>
-                            <!-- Campo de entrada Descripcion- Enlace-->
-                            <div class="relative z-0 mt-6">
-                                <textarea id="descripcion_enlace" name="descripcion_enlace" maxlength="1000"
-                                    class="block py-2.5 px-0 w-full min-h-[3rem] h-[3rem] max-h-[12rem] text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" v-model="form.descripcion_enlace" />
+                                <textarea id="descripcion_misa" name="descripcion_misa" v-model="form.descripcion_misa"
+                                    maxlength="1000"
+                                    class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
-                                    v-if="form.descripcion_enlace">
-                                    {{ form.descripcion_enlace.length }} /1000</span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /1000</span>
-                                <label for="descripcion_enlace"
+                                    v-if="form.descripcion_misa">
+                                    {{ form.descripcion_misa.length }} /1000</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else>
+                                    0 /1000</span>
+                                <label for="descripcion-misa"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
-                                    - Enlace</label>
+                                    - Misa</label>
                             </div>
-                            <!-- Campo de entrada Visibilidad- Enlace-->
                             <div class="flex-col mt-6">
-                                <label for="" class="text-sm text-gray-200">Visibilidad - Enlace</label>
+                                <label for="visibilidad-misa" class="text-gray-200">Visibilidad - Misa</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input type="checkbox" value="" class="sr-only peer" id="visibilidad_enlace"
-                                            name="visibilidad_enlace" v-model="form.visibilidad_enlace">
+                                        <input id="visibilidad_misa" type="checkbox" value="1" name="visibilidad_misa"
+                                            v-model="form.visibilidad_misa" class="sr-only peer" />
                                         <div
                                             class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                         </div>
                                     </label>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex-col w-64">
-                            <div class="flex-col">
-                                <p class="mb-4 text-center text-gray-200">Imagen - Enlace</p>
-                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
-                            </div>
-                            <!-- Modal botones -->
-                            <div class="modal-buttons mt-24 flex justify-end items-end">
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center mr-4" type="button"
-                                    id="btnModalClear" @click="limpiarForm()">
+                            <div class="modal-buttons mt-4 flex justify-end items-end">
+                                <!-- Se le coloca la función para limpiar el form al botón -->
+                                <button type="button" id="btnModalClear" @click="limpiarForm()"
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
@@ -179,8 +176,9 @@
                                             stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </button>
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
-                                    type="submit" :disabled="!validarTitulo()">
+                                <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
+                                <button id="btnModalAdd" type="submit" :disabled="!validarTituloMisa()"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -191,9 +189,10 @@
                                             stroke="#23B7A0" stroke-width="2"></path>
                                     </svg>
                                 </button>
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" type="submit"
-                                    id="btnModalUpdate" :disabled="!validarTitulo()">
-                                    <svg width=" 22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
+                                <button id="btnModalUpdate" type="submit" :disabled="!validarTituloMisa()"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
                                             d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
@@ -250,13 +249,21 @@ import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
 
 const props = defineProps({
-    datosEnlace: Array,
+    datosMisas: Array,
     actualizarDatos: Function,
 
 });
 
+
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
+    function validarFechas() {
+        var res = validaciones.validarFecha(0, 0, 5);
+        document.getElementById("fecha_misa").min = res.min;
+        document.getElementById("fecha_misa").max = res.max;
+    }
+
+    validarFechas();
     //Codigo para abrir el modal, con el boton de crear
     const buttonElement = document.getElementById('btnadd');
     const modalElement = document.getElementById('staticModal');
@@ -286,26 +293,31 @@ onMounted(() => {
 //Variable reactiva para almacenar el token del localStorag
 const token = ref(null);
 
+
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
-    id_enlace_amigo: "",
-    titulo_enlace: "",
-    enlace_amigo: "",
-    descripcion_enlace: "",
-    visibilidad_enlace: false,
-})
+    id_misa: "",
+    enlace_misa: "",
+    fecha_misa: "",
+    titulo_misa: "",
+    descripcion_misa: "",
+    visibilidad_misa: false,
+    id_configuracion_parroquia: null,
+});
+
+//Funciones para manejo del modal
 
 //Función para limpiar todos los campos del form
 function limpiarForm() {
     //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_enlace_amigo = "";
-    form.value.titulo_enlace = "";
-    form.value.enlace_amigo = "";
-    form.value.descripcion_enlace = "";
-    form.value.visibilidad_enlace = false;
+    form.value.id_misa = "";
+    form.value.enlace_misa = "";
+    form.value.fecha_misa = "";
+    form.value.titulo_misa = "";
+    form.value.descripcion_misa = "";
+    form.value.visibilidad_misa = false;
 }
 
-//Funciones para manejo del modal
 //Toast del sweetalert
 const Toast = Swal.mixin({
     toast: true,
@@ -319,6 +331,7 @@ const Toast = Swal.mixin({
     },
 });
 
+
 //Variable para validar que acción se quiere hacer cuando se hace un submit al form
 var formAccion = null;
 
@@ -330,62 +343,59 @@ function accionForm(accion) {
 //Función para crear/actualizar un registro cuando se ejecuta el submit del form
 function submitForm() {
     if (formAccion == "crear") {
-        crearEnlace();
+        crearMisa();
     } else {
-        actualizarEnlace();
+        actualizarMisa();
     }
 }
 
-//Función para crear un Enlace
-async function crearEnlace() {
-    if (validarTitulo()) {
-        try {
-            const formData = new FormData();
-            formData.append("titulo_enlace", form.value.titulo_enlace);
-            formData.append("enlace_amigo", form.value.enlace_amigo);
-            formData.append("descripcion_enlace", form.value.descripcion_enlace);
-            formData.append(
-                "visibilidad_enlace",
-                form.value.visibilidad_enlace ? 1 : 0
-            );
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/enlaces_amigos/", formData, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
+
+//Función para crear un Contacto
+async function crearMisa() {
+    try {
+        const formData = new FormData();
+        formData.append("enlace_misa", form.value.enlace_misa);
+        formData.append("fecha_misa", form.value.fecha_misa);
+        formData.append("titulo_misa", form.value.titulo_misa);
+        formData.append("descripcion_misa", form.value.descripcion_misa);
+        formData.append(
+            "visibilidad_misa",
+            form.value.visibilidad_misa ? 1 : 0
+        );
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.post("/misas/", formData, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+        document.getElementById('closeModal').click();
+        //Se lanza la alerta con el mensaje de éxito
+        props.actualizarDatos();
+        Toast.fire({
+            icon: 'success',
+            title: 'Misa creada exitosamente'
+        });
+    } catch (error) {
+        console.log(error);
+        const mensajeError = error.response.data.message;
+        if (!error.response.data.errors) {
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            const res = validaciones.mensajeSqlState(sqlState);
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
             });
-            document.getElementById('closeModal').click();
-            //Se lanza la alerta con el mensaje de éxito
-            props.actualizarDatos();
-            Toast.fire({
-                icon: 'success',
-                title: 'Enlace creado exitosamente'
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
             });
-        } catch (error) {
-            console.log(error);
-            const mensajeError = error.response.data.message;
-            if (!error.response.data.errors) {
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                const res = validaciones.mensajeSqlState(sqlState);
-
-
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: mensajeError,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
         }
     }
 }
@@ -407,27 +417,29 @@ function estadoActualizar(id) {
         modal.hide();
         limpiarForm();
     });
-    leerUnEnlace(id);
+    leerUnaMisa(id);
 }
 
 
-async function leerUnEnlace(id) {
+//Metodo para capturar el id del usuario y buscar la respectiva informacion
+async function leerUnaMisa(id) {
     try {
         accionForm("actualizar");
-        await axios.get('/enlaces_amigos/' + id, {
+        await axios.get('/misas/' + id, {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
         }).then(res => {
             console.log(res.data);
-            console.log(res.data.data.campos.enlace_amigo);
             form.value = {
-                id_enlace_amigo: res.data.data.id,
-                titulo_enlace: res.data.data.campos.titulo_enlace,
-                enlace_amigo: res.data.data.campos.enlace_amigo,
-                descripcion_enlace: res.data.data.campos.descripcion_enlace,
+                id_misa: res.data.data.id,
+                enlace_misa: res.data.data.campos.enlace_misa,
+                fecha_misa: res.data.data.campos.fecha_misa,
+                titulo_misa: res.data.data.campos.titulo_misa,
+                descripcion_misa: res.data.data.campos.descripcion_misa,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_enlace: res.data.data.campos.visibilidad_enlace  ? true : false
+                visibilidad_misa: res.data.data.campos.visibilidad_misa ? true : false,
+
             };
 
         });
@@ -437,24 +449,25 @@ async function leerUnEnlace(id) {
 }
 
 
-async function actualizarEnlace() {
-    if (validarTitulo()) {
+async function actualizarMisa() {
+    if (validarTituloMisa()) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_enlace_amigo;
+            var id = form.value.id_misa;
 
             //Se crea una constante FormData para almacenar los datos del modal
             const formData = new FormData();
-            formData.append("titulo_enlace", form.value.titulo_enlace);
-            formData.append("enlace_amigo", form.value.enlace_amigo);
-            formData.append("descripcion_enlace", form.value.descripcion_enlace);
+            formData.append("enlace_misa", form.value.enlace_misa);
+            formData.append("fecha_misa", form.value.fecha_misa);
+            formData.append("titulo_misa", form.value.titulo_misa);
+            formData.append("descripcion_misa", form.value.descripcion_misa);
             formData.append(
-                "visibilidad_enlace",
-                form.value.visibilidad_enlace ? 1 : 0
+                "visibilidad_misa",
+                form.value.visibilidad_misa ? 1 : 0
             );
 
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/enlaces_amigos_update/" + id, formData, {
+            await axios.post("/misas_update/" + id, formData, {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
@@ -467,7 +480,7 @@ async function actualizarEnlace() {
             //Se lanza la alerta de éxito
             Toast.fire({
                 icon: "success",
-                title: "Enlace actualizado exitosamente",
+                title: "Misa actualizada exitosamente",
             });
 
             //Se evalua el buscador para realizar leerContactos o buscarContactos
@@ -510,9 +523,8 @@ async function actualizarEnlace() {
     }
 }
 
-
 //Función para cambiar la visibilidad de una página para ocultarla
-async function borrarEnlace(id) {
+async function borrarMisa(id) {
     console.log(id);
     Swal.fire({
         title: 'Confirmación',
@@ -527,7 +539,7 @@ async function borrarEnlace(id) {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await axios.delete('/enlaces_amigos/' + id, {
+                await axios.delete('/misas/' + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     }
@@ -537,7 +549,7 @@ async function borrarEnlace(id) {
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: "success",
-                    title: "Enlace desactivado exitosamente",
+                    title: "Misa ocultada exitosamente",
                 });
             } catch (error) {
                 console.log(error);
@@ -546,8 +558,9 @@ async function borrarEnlace(id) {
     });
 }
 
+
 //Función para cambiar la visibilidad de una página para recuperarla
-async function recuperarUnEnlace(id) {
+async function recuperarUnaMisa(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: "Confirmación",
@@ -565,7 +578,7 @@ async function recuperarUnEnlace(id) {
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.delete("/enlaces_amigos/" + id, {
+                await axios.delete("/misas/" + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
@@ -575,10 +588,9 @@ async function recuperarUnEnlace(id) {
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: "success",
-                    title: "Enlace recuperado exitosamente",
+                    title: "Misa recuperada exitosamente",
                 });
 
-                
                 //Se evalua el buscador para realizar leerContactos o buscarContactos 
                 // if (buscar.value.buscador) {
                 //     buscarContactos();
@@ -613,8 +625,9 @@ async function recuperarUnEnlace(id) {
 
 //Validaciones
 
-function validarTitulo() {
-    var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_enlace);
+function validarTituloMisa() {
+    var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_misa);
     return res;
 }
+
 </script>

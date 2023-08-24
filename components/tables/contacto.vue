@@ -1,3 +1,4 @@
+<!-- SCRUD como componente -->
 <template>
     <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
     <div class="contained-data flex-col" v-for="contacto in datosContactos" :key="contacto.id">
@@ -36,9 +37,9 @@
                         </path>
                     </svg>
                 </button>
-                <!-- Al darle clic al evento borrarContacto ejecuta la funcion -->
-                <button @click="borrarContacto(contacto.id)" v-if="contacto.campos.visibilidad_contacto == 1"
-                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
+                <button
+                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                    @click="borrarContacto(contacto.id)" v-if="contacto.campos.visibilidad_contacto == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -47,7 +48,6 @@
                         </path>
                     </svg>
                 </button>
-                <!-- Al darle clic al evento recuperarContacto ejecuta la funcion -->
                 <button @click="recuperarUnContacto(contacto.id)"
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                     v-else>
@@ -256,6 +256,18 @@
 .buttons-data .deletebtn {
     border: 3px solid #872727;
 }
+
+
+.modal {
+    background: linear-gradient(180deg,
+            rgba(63, 66, 128, 0.6241) 0%,
+            rgba(49, 50, 71, 0.5609) 100%);
+    background-color: #1e1e1e;
+}
+
+.modal-buttons button {
+    background-color: #32345a;
+    }
 .reportbtn{
     border: 3px solid #7AAB97;
 }
@@ -270,18 +282,32 @@ import validaciones from '../../assets/validaciones.js';
 
 const props = defineProps({
     datosContactos: Array,
-    actualizarData: Function,
+    actualizarDatos: Function,
 
 });
-
+//Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
 console.log(props.datosContactos);
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
     id.value = localStorage.getItem('usuario');
-
+    if (modalElement) {
+        const modal = new Modal(modalElement, modalOptions);
+        buttonElement.addEventListener('click', function () {
+            modalText.textContent = "Registrar";
+            document.getElementById('btnModalAdd').classList.remove('hidden');
+            document.getElementById('btnModalUpdate').classList.add('hidden');
+            accionForm('crear');
+            modal.show();
+        });
+        closeButton.addEventListener('click', function () {
+            modal.hide();
+        });
+    }
+    //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
+    token.value = localStorage.getItem('token');
 });
-
+//Variable reactiva para almacenar el token del localStorag
 const token = ref(null);
 const id=ref(null);
 
@@ -302,7 +328,7 @@ const form = ref({
     id_contacto: "",
     nombre_contacto: "",
     correo_contacto: "",
-    tipo_contacto: "",
+    tipo_contacto: 0,
     visibilidad_contacto: false,
 });
 
@@ -314,36 +340,6 @@ function limpiarForm() {
     form.value.correo_contacto = "";
     form.value.tipo_contacto = 0;
     form.value.visibilidad_contacto = false;
-}
-
-//Función para limpiar el buscador
-function limpiarBuscador() {
-    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
-    pagina.value = 1;
-    //Se leen todos los registros
-    leerContactos();
-    //Se coloca el valor del buscador a nulo
-    buscar.value.buscador = "";
-}
-
-function estadoActualizar(id) {
-    const modalElement = document.getElementById('staticModal');
-    const closeButton = document.getElementById('closeModal');
-    const modalText = document.getElementById('modalText');
-    const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-    const modal = new Modal(modalElement, modalOptions);
-    modalText.textContent = "Editar";
-    modal.show();
-    document.getElementById('btnModalAdd').classList.add('hidden');
-    document.getElementById('btnModalUpdate').classList.remove('hidden');
-    closeButton.addEventListener('click', function () {
-        modal.hide();
-        limpiarForm();
-    });
-    leerUnContacto(id);
 }
 
 //Funciones para manejo del modal
@@ -377,63 +373,76 @@ function submitForm() {
     }
 }
 
-//Función para crear una página
+//Función para crear un Contacto
 async function crearContacto() {
-    if (form.tipo_contacto != 0 && validarNombreContacto()) {
-        try {
-            //Se crea una constante FormData para almacenar los datos del modal
-            const formData = new FormData();
-            formData.append("nombre_contacto", form.value.nombre_contacto);
-            formData.append("correo_contacto", form.value.correo_contacto);
-            formData.append("tipo_contacto", form.value.tipo_contacto);
-            formData.append(
-                "visibilidad_contacto",
-                form.value.visibilidad_contacto ? 1 : 0
-            );
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/contactos", formData, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-            });
-
-            //Se cargan todas las páginas y se cierra el modal
-            pagina.value = 1;
-            limpiarBuscador();
-            // leerContactos();
-
-            document.getElementById("closeModal").click();
-
-            props.actualizarData();
-
-            //Se lanza la alerta con el mensaje de éxito
-            Toast.fire({
-                icon: "success",
-                title: "Contacto creado exitosamente",
-            });
-
-        } catch (error) {
-            console.log(error);
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
+    try {
+        const formData = new FormData();
+        formData.append("nombre_contacto", form.value.nombre_contacto);
+        formData.append("correo_contacto", form.value.correo_contacto);
+        formData.append("tipo_contacto", form.value.tipo_contacto);
+        formData.append(
+            "visibilidad_contacto",
+            form.value.visibilidad_contacto ? 1 : 0
+        );
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.post("/contactos/", formData, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+        document.getElementById('closeModal').click();
+        //Se lanza la alerta con el mensaje de éxito
+        props.actualizarDatos();
+        Toast.fire({
+            icon: 'success',
+            title: 'Contacto creado exitosamente'
+        });
+    } catch (error) {
+        console.log(error);
+        const mensajeError = error.response.data.message;
+        if (!error.response.data.errors) {
             const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
             const res = validaciones.mensajeSqlState(sqlState);
 
-            //Se cierra el modal
-            document.getElementById("closeModal").click();
+
 
             //Se muestra un sweetalert con el mensaje
             Swal.fire({
-                icon: "error",
-                title: "Error",
+                icon: 'error',
+                title: 'Error',
                 text: res,
-                confirmButtonColor: "#3F4280",
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
             });
         }
     }
+}
+
+function estadoActualizar(id) {
+    const modalElement = document.getElementById('staticModal');
+    const closeButton = document.getElementById('closeModal');
+    const modalText = document.getElementById('modalText');
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+    const modal = new Modal(modalElement, modalOptions);
+    modalText.textContent = "Editar";
+    modal.show();
+    document.getElementById('btnModalAdd').classList.add('hidden');
+    document.getElementById('btnModalUpdate').classList.remove('hidden');
+    closeButton.addEventListener('click', function () {
+        modal.hide();
+        limpiarForm();
+    });
+    leerUnContacto(id);
 }
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
@@ -531,19 +540,10 @@ async function actualizarContacto() {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
-            }).then((result) => {
-                if (result.dismiss === Toast.DismissReason.timer) {
-                    props.actualizarData();
-                }
-            });
+            }),
+               //Se manda a llamar la accion para actualizar los datos con las props
+                    props.actualizarDatos();
 
-            //Se evalua el buscador para realizar leerContactos o buscarContactos
-            if (buscar.value.buscador) {
-                buscarContactos();
-            } else {
-                leerContactos();
-            }
-            //Se cierra el modal
             document.getElementById("closeModal").click();
 
             //Se lanza la alerta de éxito
@@ -551,6 +551,15 @@ async function actualizarContacto() {
                 icon: "success",
                 title: "Contacto actualizado exitosamente",
             });
+
+            //Se evalua el buscador para realizar leerContactos o buscarContactos
+            // if (buscar.value.buscador) {
+            //     buscarContactos();
+            // } else {
+            //     leerContactos();
+            // }
+            //Se cierra el modal
+
         } catch (error) {
             console.log(error);
             const mensajeError = error.response.data.message;
@@ -585,62 +594,34 @@ async function actualizarContacto() {
 
 //Función para cambiar la visibilidad de una página para ocultarla
 async function borrarContacto(id) {
-    //Se lanza una alerta de confirmación
+    console.log(id);
     Swal.fire({
-        title: "Confirmación",
-        text: "¿Desea ocultar el registro?",
-        icon: "warning",
+        title: 'Confirmación',
+        text: "¿Desea ocultar el registro? ",
+        icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
-        confirmButtonColor: "#3F4280",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        //Se evalua la respuesta de la alerta
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar'
     }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
         if (result.isConfirmed) {
             try {
-                //Se realiza la petición axios
-                await axios.delete("/contactos/" + id, {
+                await axios.delete('/contactos/' + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
-                    },
-                }).then((result) => {
-                        if (result.dismiss === Toast.DismissReason.timer) {
-                            props.actualizarData();
-                        }
-                    });
-                //Se evalua el buscador para realizar leerContactos o buscarContactos 
-                if (buscar.value.buscador) {
-                    buscarContactos();
-                } else {
-                    leerContactos();
-                }
-
+                    }
+                }),
+                    //Se manda a llamar la accion para actualizar los datos con las props
+                    props.actualizarDatos();
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: "success",
-                    title: "Contacto ocultado exitosamente",
+                    title: "Contacto  ocultado exitosamente",
                 });
             } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
-                });
+                console.log(error);
             }
         }
     });
@@ -669,24 +650,24 @@ async function recuperarUnContacto(id) {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
-                })
-
-                //Se evalua el buscador para realizar leerContactos o buscarContactos 
-                if (buscar.value.buscador) {
-                    buscarContactos();
-                } else {
-                    leerContactos();
-                }
-
+                }),
+                    //Se manda a llamar la accion para actualizar los datos con las props
+                    props.actualizarDatos();
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: "success",
                     title: "Contacto recuperado exitosamente",
-                }).then((result) => {
-                    if (result.dismiss === Toast.DismissReason.timer) {
-                        props.actualizarData();
-                    }
                 });
+
+                //Se evalua el buscador para realizar leerContactos o buscarContactos 
+                // if (buscar.value.buscador) {
+                //     buscarContactos();
+                // } else {
+                //     leerContactos();
+                // } 
+
+                //Se lanza la alerta de éxito
+
             } catch (error) {
                 //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
