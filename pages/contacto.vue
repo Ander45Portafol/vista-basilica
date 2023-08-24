@@ -1,4 +1,4 @@
-
+<!-- SCRUD como componente -->
 <template>
     <div class="principal mt-6">
         <!-- Menu de navegación superior -->
@@ -68,6 +68,7 @@
                     </button>
                 </div>
             </div>
+            
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
@@ -106,7 +107,7 @@
                             </div>
                         </div>
                     </div>
-                    <TablesContacto v-if="contactos" :datosContactos="contactos" :actualizarData="leerContactos" />
+                    <TablesContacto v-if="contactos" :datosContactos="contactos" :actualizarDatos="leerContactos" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <TailwindPagination v-if="contactos"
@@ -135,19 +136,6 @@
 }
 
 
-
-.modal {
-    background: linear-gradient(180deg,
-            rgba(63, 66, 128, 0.6241) 0%,
-            rgba(49, 50, 71, 0.5609) 100%);
-    background-color: #1e1e1e;
-}
-
-.modal-buttons button {
-    background-color: #32345a;
-}
-
-
 .tables::-webkit-scrollbar {
     width: 7px;
 }
@@ -165,8 +153,6 @@
 
 //Importacion para usar el hook de onMounted
 import { onMounted, ref } from "vue";
-//Importación del modal de flowbite
-import { Modal } from "flowbite";
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from "axios";
 //Importación del plugin de paginación de registros
@@ -190,40 +176,7 @@ definePageMeta({
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
-    token.value = localStorage.getItem('token');
-    //Constantes para manejar el modal
-    //Constante para el botón de agregar un registro
-    const buttonElement = document.getElementById('btnadd');
-    //Constante para el modal
-    const modalElement = document.getElementById('staticModal');
-    //Constante para el botón de cerrar en el modal
-    const closeButton = document.getElementById('closeModal');
-    //Constante para el titulo del modal
-    const modalText = document.getElementById('modalText');
-    /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
-  aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
-    const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-
-    //Se evalua si existe un modal y en caso de que si se ejecuta todo lo relacionado a su funcionamiento
-    if (modalElement) {
-        //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
-        const modal = new Modal(modalElement, modalOptions);
-        /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
-      del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
-        buttonElement.addEventListener('click', function () {
-            modalText.textContent = "Registrar";
-            document.getElementById('btnModalAdd').classList.remove('hidden');
-            document.getElementById('btnModalUpdate').classList.add('hidden');
-            modal.show();
-        });
-        closeButton.addEventListener('click', function () {
-            modal.hide();
-        });
-    }
-
+    token.value = localStorage.getItem('token');  
     //Se leen los contactos al montarse la página para evitar problemas del setup y el localStorage
     leerContactos();
 });
@@ -375,5 +328,16 @@ async function buscarContactos() {
         });
     }
 }
+
+//Función para limpiar el buscador
+function limpiarBuscador() {
+    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
+    pagina.value = 1;
+    //Se leen todos los registros
+    leerContactos();
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
+}
+
 
 </script>
