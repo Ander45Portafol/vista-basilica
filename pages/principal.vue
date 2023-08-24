@@ -81,7 +81,7 @@ async function generarReportePersonal() {
                 <div class="top flex justify-between">
                     <div class="text">
                         <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Usuarios</p>
-                        <p class="subtitule  font-semibold mt-0 pt-0 max-[720px]:text-[13px]">En Linea</p>
+                        <p class="subtitule  font-semibold mt-0 pt-0 max-[720px]:text-[13px]">En Línea</p>
                     </div>
                     <svg width="38px" height="38px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">

@@ -9,8 +9,8 @@
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
                         <!-- Asignamos un id al título del modal para la creación  y actualizacion de texto-->
-                        <p class="text-3xl font-bold text-gray-100">Reporte - Anuncios</p>
-                        <p class="text-base font-medium text-gray-400">Por rango de fechas</p>
+                        <p class="text-3xl font-bold text-gray-100">Reporte </p>
+                        <p class="text-base font-medium text-gray-400">Anuncios por rango de fechas</p>
                     </div>
                     <!-- Boton para cerrar el modal -->
                     <button type="button" id="closeModalReport"
@@ -44,6 +44,18 @@
                                 <label for="fecha_final"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
                                     final</label>
+                            </div>
+                        </div>
+                        <div v-if="texto_error"
+                            class="mt-10 flex items-center p-4 mb-4 text-sm text-red-300 border border-red-300 rounded-lg bg-transparent dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
+                            role="alert">
+                            <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                            </svg>
+                            <div>
+                                <p class="font-bold">Error: <span class="font-normal">{{ texto_error }}</span></p>
                             </div>
                         </div>
                         <div class="flex mt-4 justify-center items-center8">
@@ -102,9 +114,28 @@ async function cargarReport() {
     ruta.searchParams.append('id', id.value);
     // Se abre el reporte en una nueva pestaña del navegador web.
     window.open(ruta.href);
-    limpiarFormFechas();
     document.getElementById('closeModalReport').click();
+    llenarFechas();
 }
+
+//Función para llenar las fechas y el año con la información de la fecha actual
+function llenarFechas() {
+    const FECHA_ACTUAL = new Date();
+
+    //Se carga la fecha actual y se le da formato
+    const DIA = FECHA_ACTUAL.getDate().toString().padStart(2, '0');
+    const MES = (FECHA_ACTUAL.getMonth() + 1).toString().padStart(2, '0');
+    const ANIO = FECHA_ACTUAL.getFullYear();
+
+    const FECHA_CON_FORMATO = ANIO + '-' + MES + '-' + DIA;
+
+    //Se llenan los inputs
+    formFechas.value.fecha_final = FECHA_CON_FORMATO;
+    formFechas.value.fecha_inicial = FECHA_CON_FORMATO;
+}
+
+//Se ejecuta la función en el setup (Antes que se cargue el DOM)
+llenarFechas();
 
 function limpiarFormFechas() {
     formFechas.value.fecha_inicial = "";
