@@ -60,7 +60,6 @@
           </svg>
           <p class="ml-2">Cargando...</p>
         </div>
-        <Timer />
       </div>
     </form>
   </div>
