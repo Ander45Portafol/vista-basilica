@@ -159,7 +159,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="h-36 mt-6 progressbar rounded-xl text-center">
+                                <div class="h-36 mt-6 progressbar rounded-xl text-center mb-5">
                                     <p class="mb-4 mt-2 text-base text-white">Porcentaje de logro actual registrado</p>
                                     <div class="flex items-center justify-center text-white">
                                         <p class="mr-4">$0.00</p>

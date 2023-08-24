@@ -295,7 +295,7 @@ const chartDonante = computed(() => {
                 label: "Cantidad donada",
                 data: dataGrafica.value.data.results.map(item => item.cantidad_donada),
                 barPercentage: 0.5,
-                backgroundColor: ["#9497DF", "#565587", "#47497A", "#6C6BA9", "#565587"],
+                backgroundColor: ["#FFCA51"],
             },
         ],
     };

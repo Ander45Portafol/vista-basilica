@@ -267,6 +267,8 @@ onMounted(() => {
     });
     closeButton.addEventListener('click', () => {
         modal.hide();
+        const event = new Event('modal-closed');
+        window.dispatchEvent(event);
     });
 
     function validarFechas() {
@@ -451,7 +453,7 @@ async function borrarDonacion(id) {
             }
         }
     });
-} 
+}
 
 </script>
 <style scoped></style>
