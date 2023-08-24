@@ -23,7 +23,7 @@
             </div>
             <div class="buttons-data flex justify-center flex-row items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2 max-[400px]:flex-wrap"
                 v-if="proyecto.campos.visibilidad_proyecto == 1">
-                <div class="flex">
+                <div class="flex max-[400px]:mr-2">
                     <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 imagenbtn max-[750px]:mr-0 max-[750px]:mt-2"
                         @click="modalImagenes(proyecto.id)">
                         <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -35,7 +35,7 @@
                                 stroke="#3F4280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </button>
-                    <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 reportbtn max-[750px]:mt-2 max-[750px]:m-0"
+                    <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 reportbtn max-[750px]:mt-2 max-[750px]:m-0 max-[400px]:ml-2"
                         v-if="proyecto.campos.visibilidad_proyecto == 1" @click="generarReporteProyecto(proyecto.id)">
                         <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -47,9 +47,9 @@
                         </svg>
                     </button>
                 </div>
-                <div class="flex">
+                <div class="flex max-[400px]:mr-2">
                     <button
-                        class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4 max-[750px]:mt-2 max-[400px]:ml-12"
+                        class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[750px]:mt-2"
                         @click="estadoActualizar(proyecto.id)" v-if="proyecto.campos.visibilidad_proyecto == 1">
                         <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -59,7 +59,7 @@
                         </svg>
                     </button>
                     <button
-                        class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4 max-[400px]:mr-12"
+                        class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:ml-2"
                         @click="borrarProyecto(proyecto.id, proyecto.campos.nombre_proyecto)"
                         v-if="proyecto.campos.visibilidad_proyecto == 1">
                         <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
