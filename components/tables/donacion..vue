@@ -1,4 +1,3 @@
-<!-- SCRUD como componente -->
 <template>
     <div class="contained-data flex-col" v-for="donacion in dataDonacion" :key="donacion.id">
         <div
@@ -8,7 +7,7 @@
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                        {{ donacion.campos.nombre_donante }} {{ donacion.campos.apellido_donante }} </p>
+                        {{ donacion.donante.nombre_donante }} {{ donacion.donante.apellido_donante }} </p>
                     <p class="font-bold text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
                         Fecha: <span class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">{{
                             donacion.campos.fecha_donacion }}</span></p>
@@ -22,28 +21,27 @@
             <!-- Al darle clic al evento leerUnaDonacion ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn" id="btnedit"
-                v-if="donacion.campos.visibilidad_donacion == 1" @click.prevent="estadoActualizar(donacion.id)">
+                <button v-if="donacion.campos.visibilidad_donacion == 1" @click="estadoActualizar(donacion.id)"
+                    class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
                             d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
-                            stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        </path>
+                            stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                 </button>
-                <button
-                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="borrarMensaje(donacion.id)" v-if="donacion.campos.visibilidad_donacion == 1">
+                <!-- Al darle clic al evento borrarDonacion ejecuta la funcion -->
+                <button v-if="donacion.campos.visibilidad_donacion == 1" @click="borrarDonacion(donacion.id)"
+                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
                             d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
-                            stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        </path>
+                            stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                     </svg>
                 </button>
-                <button @click="recuperarUnaDonacion(donacion.id)"
+                <!-- Al darle clic al evento recuperarDonacion ejecuta la funcion -->
+                <button @click="recuperarDonacion(donacion.id)"
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                     v-else>
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
@@ -69,7 +67,7 @@
                 <!-- Asignamos un id al título del modal para la creación  y actualizacion de texto-->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
-                        <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
+                        <p class="text-3xl font-bold text-gray-100" id="modal_text">Editar</p>
                         <p class="text-lg font-medium text-gray-400">Donación</p>
                     </div>
                     <!-- Boton para cerrar el modal -->
@@ -203,8 +201,7 @@
                             </div>
                             <!-- Botones del modal -->
                             <div class="modal-buttons mt-24 flex justify-end items-end">
-                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalClear"
-                                    @click="limpiarForm()">
+                                <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalClear">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
@@ -253,12 +250,11 @@ import Swal from 'sweetalert2';
 import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
     dataDonacion: Array,
-    actualizarDatos: Function,
 });
 
 onMounted(() => {
-    //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
     token.value = localStorage.getItem('token');
+
     const modalElement = document.getElementById('graficsModal');
     const closeButton = document.getElementById('closeModalGrafics');
     const modalOptions = {
@@ -271,6 +267,8 @@ onMounted(() => {
     });
     closeButton.addEventListener('click', () => {
         modal.hide();
+        const event = new Event('modal-closed');
+        window.dispatchEvent(event);
     });
 
     function validarFechas() {
@@ -279,15 +277,10 @@ onMounted(() => {
         document.getElementById('fecha_donacion').max = res.max;
     }
 
-
-
     validarFechas();
 
     llenarSelectDonantes();
     llenarSelectProyectos();
-
-    //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
-    token.value = localStorage.getItem('token');
 });
 
 const token = ref(null);
@@ -302,81 +295,20 @@ const form = ref({
     id_proyecto_donacion: "",
     id_donante: ""
 });
-
-//Función para limpiar todos los campos del form
-function limpiarForm() {
-    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_donacion = "";
-    form.value.cantidad_donada = "";
-    form.value.fecha_donacion = "";
-    form.value.mensaje_donacion = "";
-    form.value.codigo_comprobante = "";
-    form.value.visibilidad_donacion = false;
-    form.value.id_proyecto_donacion = 0;
-    form.value.id_donante = 0;
-}
-
-
-//Toast del sweetalert
-const Toast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener("mouseenter", Swal.stopTimer);
-        toast.addEventListener("mouseleave", Swal.resumeTimer);
-    },
-});
-// //Metodo para configurar el modal y enviar el id del usuario
-// async function estadoActualizar(id) {
-//     await leerUnaDonacion(id);
-//     const modalElement = document.getElementById('staticModal');
-//     const closeButton = document.getElementById('closeModal');
-//     const modalOptions = {
-//         backdrop: 'static',
-//         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-//     };
-//     const modal = new Modal(modalElement, modalOptions);
-//     modal.show();
-//     closeButton.addEventListener('click', function () {
-//         modal.hide();
-//     });
-// }
-
-function estadoActualizar(id) {
-//Constante para el modal
-const modalElement = document.getElementById("staticModal");
-            //Constante que contiene las caracteristicas del modal
-            const modalOptions = {
-                backdrop: "static",
-                backdropClasses:
-                    "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-            };
-            //Instanciamos el boton para cerrar el modal
-            const closeButton = document.getElementById("closeModal");
-            //Constante para el titulo del modal
-            const modalText = document.getElementById("modalText");
-            //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById("btnModalUpdate");
-            //Instanciamos el modal
-            const modal = new Modal(modalElement, modalOptions);
-            //Le modificamos el texto del header al modal
-            modalText.textContent = "Editar";
-            //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove("hidden");
-            //Abrimos el modal
-            modal.show();
-            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-            closeButton.addEventListener("click", function () {
-                //Ocultamos el modal
-                modal.hide();
-                //Limpiamos el modal
-                limpiarForm();
-            });
-    //se llama la funcion  para poder acapturar la
-    leerUnaDonacion(id);
+//Metodo para configurar el modal y enviar el id del usuario
+async function estadoActualizar(id) {
+    await leerUnaDonacion(id);
+    const modalElement = document.getElementById('staticModal');
+    const closeButton = document.getElementById('closeModal');
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+    const modal = new Modal(modalElement, modalOptions);
+    modal.show();
+    closeButton.addEventListener('click', function () {
+        modal.hide();
+    });
 }
 
 async function leerUnaDonacion(id_donacion) {
@@ -402,7 +334,6 @@ async function leerUnaDonacion(id_donacion) {
     }
 }
 const donantes = ref(null);
-
 async function llenarSelectDonantes() {
     try {
         //Se realiza la petición axios
@@ -465,47 +396,11 @@ async function llenarSelectProyectos() {
 
 
 //Función para cambiar la visibilidad de una página para ocultarla
-//Codigo para cambiar el estado del usuarios a inactivo
 async function borrarDonacion(id) {
-    console.log(id);
-    Swal.fire({
-        title: 'Confirmación',
-        text: "¿Desea ocultar el registro? ",
-        icon: 'warning',
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: '#3F4280',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            try {
-                await axios.delete('/donaciones/' + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    }
-                }),
-                    //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Donacion ocultada exitosamente",
-                });
-            } catch (error) {
-                console.log(error);
-            }
-        }
-    });
-}
-
-//Función para cambiar la visibilidad de una página para recuperarla
-async function recuperarUnaDonacion(id) {
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: "Confirmación",
-        text: "¿Desea recuperar el registro?",
+        text: "¿Desea ocultar el registro?",
         icon: "warning",
         reverseButtons: true,
         showCancelButton: true,
@@ -519,28 +414,24 @@ async function recuperarUnaDonacion(id) {
         if (result.isConfirmed) {
             try {
                 //Se realiza la petición axios
-                await axios.delete("/donaciones/" + id, {
+                await axios.delete("/mensajes/" + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
-                }),
-                    //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
+                });
+
+                //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
+                if (buscar.value.buscador) {
+                    buscarMensajes();
+                } else {
+                    leerMensajes();
+                }
+
                 //Se lanza la alerta de éxito
                 Toast.fire({
                     icon: "success",
-                    title: "Donacion recuperada exitosamente",
+                    title: "Mensaje ocultado exitosamente",
                 });
-
-                //Se evalua el buscador para realizar leerContactos o buscarContactos 
-                // if (buscar.value.buscador) {
-                //     buscarContactos();
-                // } else {
-                //     leerContactos();
-                // } 
-
-                //Se lanza la alerta de éxito
-
             } catch (error) {
                 //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
@@ -563,8 +454,6 @@ async function recuperarUnaDonacion(id) {
         }
     });
 }
-
-
 
 </script>
 <style scoped></style>
