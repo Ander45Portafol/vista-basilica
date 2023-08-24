@@ -30,7 +30,8 @@
                 </button>
             </div>
         </div>
-        <div v-if="!dataListaDonaciones && !dataListaAnuncios && !dataListaNSecciones && !dataListaNUsuarios && !dataListaEventos"
+        <!-- Se valida que las gráficas esten listas para mostrarse, si no estan listas se muestra la pantalla de carga -->
+        <div v-if="!dataListaDonaciones && !data_lista_anuncios && !data_lista_n_secciones && !data_lista_usuarios && !data_lista_eventos"
             class="mdcarga h-screen overflow-hidden flex justify-center items-center">
             <svg aria-hidden="true" class="w-20 h-20 mr-2 text-gray-300 animate-spin fill-purpleLogin" viewBox="0 0 100 101"
                 fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -45,59 +46,79 @@
         <div v-else class="mdprincipal h-screen overflow-y-scroll flex-col mt-6 px-8 py-10">
             <div class="h-2/3 w-full bg-slate-200 rounded-2xl pl-4">
                 <div class="flex-row text-center pt-4">
+                    <!-- Título de la gráfica -->
                     <p class="text-2xl font-extrabold mt-5">Donaciones registradas por fecha en la semana actual</p>
                     <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal"
                             v-if="totalSumaDonaciones">${{ totalSumaDonaciones }}</span><span class="text-xl font-normal"
                             v-else>$0.00</span></p>
                     <div class="grafic h-80 w-full flex justify-center items-center">
-                        <Line v-if="dataDonaciones && dataDonaciones.results.length > 0 && dataListaDonaciones"
-                            :data="chartDonaciones" :options="opcionesDonaciones" />
-                        <p v-else-if="dataListaDonaciones">No hay donaciones registradas en esta semana.</p>
+                        <!-- Se valida si el gráfico esta listo para mostrarse -->
+                        <Line v-if="data_donaciones && data_donaciones.results.length > 0 && data_lista_donaciones"
+                            :data="CHART_DONACIONES" :options="OPCIONES_DONACIONES" />
+                        <!-- Si no esta listo se muestra un mensaje de que no hay información -->
+                        <p v-else-if="data_lista_donaciones">No hay donaciones registradas en esta semana.</p>
                     </div>
                 </div>
             </div>
-            <div class="flex w-full justify-between mt-10 max-[1000px]:flex-wrap">
-                <div class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[50%] max-[1000px]:min-w-full max-[1000px]:pb-12">
+            <div class="flex w-full justify-between mt-10 flex-wrap">
+                <div
+                    class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[58%] max-[1300px]:min-w-full max-[1300px]:pb-12">
+                    <!-- Título de la gráfica -->
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Cantidad de secciones por página</p>
                     </div>
                     <div class="grafic h-3/4 w-full flex justify-center items-center max-[950px]:w-full">
-                        <PolarArea v-if="dataNSecciones && dataNSecciones.length > 0 && dataListaNSecciones"
-                            :data="chartNSecciones" :options="opcionesNSecciones" />
-                        <p v-else-if="dataListaNSecciones">No se encontro información.</p>
+                        <!-- Se valida si el gráfico esta listo para mostrarse -->
+                        <PolarArea v-if="data_n_secciones && data_n_secciones.length > 0 && data_lista_n_secciones"
+                            :data="CHART_N_SECCIONES" :options="OPCIONES_N_SECCIONES" />
+                        <!-- Si no esta listo se muestra un mensaje de que no hay información -->
+                        <p v-else-if="data_lista_n_secciones">No se encontro información.</p>
                     </div>
                 </div>
-                <div class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[50%] max-[1000px]:mt-12 max-[1000px]:min-w-full">
+                <div
+                    class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[40%] max-[1300px]:mt-12 max-[1300px]:min-w-full">
+                    <!-- Título de la gráfica -->
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Usuarios registrados por rol</p>
-                        <p class="text-xl text-center font-bold">Usuarios totales: <span class="text-xl font-normal"> {{ totalUsuarios }} </span></p>
+                        <p class="text-xl text-center font-bold">Usuarios totales: <span class="text-xl font-normal"> {{
+                            total_usuarios }} </span></p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
-                        <Pie v-if="dataNUsuarios && dataNUsuarios.results.length > 0 && dataListaNUsuarios"
-                            :data="chartNUsuarios" :options="opcionesNUsuarios" />
-                        <p v-else-if="dataListaNUsuarios">No se encontro información.</p>
+                        <!-- Se valida si el gráfico esta listo para mostrarse -->
+                        <Pie v-if="data_n_usuarios && data_n_usuarios.results.length > 0 && data_lista_usuarios"
+                            :data="CHART_N_USUARIOS" :options="OPCIONES_N_USUARIOS" />
+                        <!-- Si no esta listo se muestra un mensaje de que no hay información -->
+                        <p v-else-if="data_lista_usuarios">No se encontro información.</p>
                     </div>
                 </div>
             </div>
-            <div class="flex w-full justify-between mt-10 mb-[100px] max-[1000px]:flex-wrap">
-                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[50%] max-[1000px]:min-w-full">
+            <div class="flex w-full justify-between mt-10 mb-[100px] flex-wrap">
+                <div
+                    class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[40%] max-[1300px]:min-w-full max-[1300px]:pb-12">
+                    <!-- Título de la gráfica -->
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Cantidad de eventos por fecha en la semana actual</p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
-                        <Bar v-if="dataEventos && dataEventos.length > 0 && dataListaEventos" :data="chartEventos"
-                            :options="opcionesEventos" />
-                        <p v-else-if="dataListaEventos">No se encontro información.</p>
+                        <!-- Se valida si el gráfico esta listo para mostrarse -->
+                        <Bar v-if="data_eventos && data_eventos.length > 0 && data_lista_eventos" :data="CHART_EVENTOS"
+                            :options="OPCIONES_EVENTOS" />
+                        <!-- Si no esta listo se muestra un mensaje de que no hay información -->
+                        <p v-else-if="data_lista_eventos">No se encontro información.</p>
                     </div>
                 </div>
-                <div class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[50%] max-[1000px]:mt-12 max-[1000px]:min-w-full">
+                <div
+                    class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[58%] max-[1300px]:mt-12 max-[1300px]:min-w-full">
+                    <!-- Título de la gráfica -->
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Cantidad de anuncios por fecha en el mes actual</p>
                     </div>
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
-                        <Bar v-if="dataAnuncios && dataAnuncios.length > 0 && dataListaAnuncios" :data="chartAnuncios"
-                            :options="opcionesAnuncios" />
-                        <p v-else-if="dataListaAnuncios">No se encontro información.</p>
+                        <!-- Se valida si el gráfico esta listo para mostrarse -->
+                        <Bar v-if="data_anuncios && data_anuncios.length > 0 && data_lista_anuncios" :data="CHART_ANUNCIOS"
+                            :options="OPCIONES_ANUNCIOS" />
+                        <!-- Si no esta listo se muestra un mensaje de que no hay información -->
+                        <p v-else-if="data_lista_anuncios">No se encontro información.</p>
                     </div>
                 </div>
             </div>
@@ -105,16 +126,23 @@
     </div>
 </template>
 <script setup>
+//Importación de axios para las peticiones a la API
 import axios from 'axios';
+//Importaciones de la libreria de chartJS
 import { Line, Pie, PolarArea, Bar } from "vue-chartjs";
 
+//Configuración de la página
 definePageMeta({
+    //Se establece el layout "principal"
     layout: "principal",
 })
 
+//onMounted es un hook (en vue los hooks se usan para hacer tareas especificas con los componentes)
 onMounted(() => {
+    //Se carga el token del localStorage
     token.value = localStorage.getItem('token');
 
+    //Se realizan las funciones para llenar las gráficas ya cuando el token ya tiene valor
     leerDonaciones();
     leerNUsuarios();
     leerNSecciones();
@@ -122,38 +150,54 @@ onMounted(() => {
     leerAnuncios();
 });
 
+//Constante para el token
 const token = ref(null);
 
-const dataDonaciones = ref(null);
+//Constante ref para almacenar todos los datos de la gráfica de donaciones
+const data_donaciones = ref(null);
 
-var totalSumaDonaciones = null;
+//Variable para almacenar el total donado y mostrarlo en el titulo de la gráfica
+var total_suma_donaciones = null;
 
-const dataListaDonaciones = ref(false);
+//Constante ref para saber si ya se cargaron los datos de la gráfica
+const data_lista_donaciones = ref(false);
 
+//Función para traer los datos con los que llenar la gráfica de donaciones
 async function leerDonaciones() {
     try {
+        //Se realiza la petición axios
         const { data: res } = await axios.get('/donaciones-graf', {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
         });
-        dataDonaciones.value = res;
-        totalSumaDonaciones = dataDonaciones.value.totalSuma;
-        dataListaDonaciones.value = true;
+        //Se asigna valor a todas las variables
+        data_donaciones.value = res;
+        total_suma_donaciones = data_donaciones.value.totalSuma;
+        data_lista_donaciones.value = true;
     } catch (error) {
         console.log(error);
     }
 }
 
-const chartDonaciones = computed(() => {
+//Constante con la que se crea el gráfico de donaciones, es computed para que cada que el valor cambie también cambie el gráfico
+const CHART_DONACIONES = computed(() => {
     return {
-        labels: dataDonaciones.value.results.map(item => item.fecha_donacion),
+        //Se establecen los labels que son el texto que se muestra al estar encima de una opción del gráfico, se hace un map para ver todos los registros que hay individualmente
+        labels: data_donaciones.value.results.map(item => item.fecha_donacion),
+        //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
         datasets: [
             {
+                //Se le agrega un prefijo personalizado a los labels
                 label: "Cantidad donada",
+                //Estilo para los puntos de la gráfica
+                pointBackgroundColor: '#1B1C30',
                 pointRadius: 8,
+                //El hover es mayor para que el punto se haga mas grande al tener el mouse encima
                 pointHoverRadius: 15,
+                //Estilo para la linea de la gráfica
                 borderColor: 'rgba(255,255,255,0)',
+                //Estilo para el color de la gráfica
                 backgroundColor: (ctx) => {
                     const canvas = ctx.chart.ctx;
                     const gradient = canvas.createLinearGradient(0, 0, 0, 500);
@@ -163,23 +207,31 @@ const chartDonaciones = computed(() => {
                     return gradient;
                 },
 
-                pointBackgroundColor: '#1B1C30',
+                //Se establece fill para poder aplicarle el backgroundColor a la línea de la gráfica
                 fill: true,
+                //Se establece tension 0 para que la gráfica no tenga curvas, solo lineas rectas
                 tension: 0,
-                data: dataDonaciones.value.results.map(item => item.cantidad_donada),
+                //Se establece la data de la grafica con un map de los registros
+                data: data_donaciones.value.results.map(item => item.cantidad_donada),
             },
         ],
     };
 });
 
-const opcionesDonaciones = {
+//Constante para configurar el canvas del gráfico
+const OPCIONES_DONACIONES = {
+    //Opciones para que el gráfico se acomode al div donde esta dentro
     responsive: true,
     maintainAspectRatio: false,
+
+    //Se configura el eje y para que siempre empiece desde 0
     scales: {
         y: {
             beginAtZero: true
         }
     },
+
+    //Se desactiva la leyenda de los datasets
     plugins: {
         legend: {
             display: false
@@ -187,118 +239,158 @@ const opcionesDonaciones = {
     }
 }
 
-const dataNUsuarios = ref(null);
+//Constante ref para almacenar todos los datos de la gráfica de usuarios
+const data_n_usuarios = ref(null);
 
-const dataListaNUsuarios = ref(false);
+//Constante ref para saber si ya se cargaron los datos de la gráfica
+const data_lista_usuarios = ref(false);
 
-var totalUsuarios = null;
+//Variable para almacenar el total de usuarios y mostrarlo en el titulo de la gráfica
+var total_usuarios = null;
 
+//Función para traer los datos con los que llenar la gráfica de usuarios
 async function leerNUsuarios() {
     try {
+        //Se realiza la petición axios
         const { data: res } = await axios.get('/usuarios-graf', {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
         });
-        dataNUsuarios.value = res;
-        totalUsuarios = dataNUsuarios.value.totalUsuarios;
-        dataListaNUsuarios.value = true;
+        //Se asigna valor a todas las variables
+        data_n_usuarios.value = res;
+        total_usuarios = data_n_usuarios.value.total_usuarios;
+        data_lista_usuarios.value = true;
     } catch (error) {
         console.log(error);
     }
 }
 
-const chartNUsuarios = computed(() => {
+//Constante con la que se crea el gráfico de usuarios, es computed para que cada que el valor cambie también cambie el gráfico
+const CHART_N_USUARIOS = computed(() => {
     return {
-        labels: dataNUsuarios.value.results.map(item => item.rol_usuario),
+        //Se establecen los labels que son el texto que se muestra al estar encima de una opción del gráfico, se hace un map para ver todos los registros que hay individualmente
+        labels: data_n_usuarios.value.results.map(item => item.rol_usuario),
+        //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
         datasets: [
             {
+                //Se añade un prefijo personalizado a los labels 
                 label: "N° de usuarios",
-                data: dataNUsuarios.value.results.map(item => item.n_usuarios),
+                //Se establece la data de la grafica con un map de los registros
+                data: data_n_usuarios.value.results.map(item => item.n_usuarios),
+                //Se establecen todos los colores posibles para los datasets con el backgroundColor
                 backgroundColor: ["#9497DF", "#565587", "#47497A", "#6C6BA9", "#565587"],
             },
         ],
     };
 });
 
-const opcionesNUsuarios = {
+const OPCIONES_N_USUARIOS = {
+    //Opciones para que el gráfico se acomode al div donde esta dentro
     responsive: true,
     maintainAspectRatio: false,
 }
 
+//Constante ref para almacenar todos los datos de la gráfica de secciones
+const data_n_secciones = ref(null);
 
-const dataNSecciones = ref(null);
+//Constante ref para saber si ya se cargaron los datos de la gráfica
+const data_lista_n_secciones = ref(false);
 
-const dataListaNSecciones = ref(false);
-
+//Función para traer los datos con los que llenar la gráfica de secciones
 async function leerNSecciones() {
     try {
+        //Se realiza la petición axios
         const { data: res } = await axios.get('/secciones-graf', {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
         });
-        dataNSecciones.value = res;
-        dataListaNSecciones.value = true;
+        //Se asigna valor a todas las variables
+        data_n_secciones.value = res;
+        data_lista_n_secciones.value = true;
     } catch (error) {
         console.log(error);
     }
 }
 
-const chartNSecciones = computed(() => {
+//Constante con la que se crea el gráfico de secciones, es computed para que cada que el valor cambie también cambie el gráfico
+const CHART_N_SECCIONES = computed(() => {
     return {
-        labels: dataNSecciones.value.map(item => item.nombre_pagina),
+        //Se establecen los labels que son el texto que se muestra al estar encima de una opción del gráfico, se hace un map para ver todos los registros que hay individualmente
+        labels: data_n_secciones.value.map(item => item.nombre_pagina),
+        //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
         datasets: [
             {
+                //Se añade un prefijo personalizado a los labels 
                 label: "N° de secciones",
-                data: dataNSecciones.value.map(item => item.n_secciones),
+                //Se establece la data de la grafica con un map de los registros
+                data: data_n_secciones.value.map(item => item.n_secciones),
+                //Se establecen todos los colores posibles para los datasets con el backgroundColor
                 backgroundColor: ["rgba(255, 202, 81, 0.5)", "rgba(192, 161, 255, 0.5)"],
+                //Se establecen todos los colores posibles para los bordes con el borderColor
                 borderColor: ["rgba(255, 202, 81, 1)", "rgba(138, 80, 255, 1)"]
             },
         ],
     };
 });
 
-const opcionesNSecciones = {
+const OPCIONES_N_SECCIONES = {
+    //Opciones para que el gráfico se acomode al div donde esta dentro
     responsive: true,
     maintainAspectRatio: false,
 }
 
-const dataEventos = ref(null);
+//Función para traer los datos con los que llenar la gráfica de eventos
+const data_eventos = ref(null);
 
-const dataListaEventos = ref(false);
+//Constante ref para saber si ya se cargaron los datos de la gráfica
+const data_lista_eventos = ref(false);
 
+//Función para traer los datos con los que llenar la gráfica de eventos
 async function leerEventos() {
     try {
+        //Se realiza la petición axios
         const { data: res } = await axios.get('/eventos-graf', {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
         });
-        dataEventos.value = res;
-        dataListaEventos.value = true;
+        //Se asigna valor a todas las variables
+        data_eventos.value = res;
+        data_lista_eventos.value = true;
     } catch (error) {
         console.log(error);
     }
 }
 
-const chartEventos = computed(() => {
+//Constante con la que se crea el gráfico de eventos, es computed para que cada que el valor cambie también cambie el gráfico
+const CHART_EVENTOS = computed(() => {
     return {
-        labels: dataEventos.value.map(item => item.fecha_evento),
+        //Se establecen los labels que son el texto que se muestra al estar encima de una opción del gráfico, se hace un map para ver todos los registros que hay individualmente
+        labels: data_eventos.value.map(item => item.fecha_evento),
+        //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
         datasets: [
             {
+                //Se añade un prefijo personalizado a los labels 
                 label: "N° de eventos",
-                data: dataEventos.value.map(item => item.cantidad_eventos),
+                //Se establece la data de la grafica con un map de los registros
+                data: data_eventos.value.map(item => item.cantidad_eventos),
+                //Se pone el porcentaje de la barra a 0.5 para que se vean mas delgadas y no ocupen el cuadro completo
                 barPercentage: 0.5,
+                //Se establecen todos los colores posibles para los datasets con el backgroundColor
                 backgroundColor: ["#9497DF", "#565587", "#47497A", "#6C6BA9", "#565587"],
             },
         ],
     };
 });
 
-const opcionesEventos = {
+const OPCIONES_EVENTOS = {
+    //Opciones para que el gráfico se acomode al div donde esta dentro
     responsive: true,
     maintainAspectRatio: false,
+
+    //Se desactiva la leyenda de los datasets
     plugins: {
         legend: {
             display: false
@@ -306,42 +398,59 @@ const opcionesEventos = {
     }
 }
 
-const dataAnuncios = ref(null);
+//Constante ref para almacenar todos los datos de la gráfica de anuncios
+const data_anuncios = ref(null);
 
-const dataListaAnuncios = ref(false);
+//Constante ref para saber si ya se cargaron los datos de la gráfica
+const data_lista_anuncios = ref(false);
 
+//Función para traer los datos con los que llenar la gráfica de anuncios
 async function leerAnuncios() {
     try {
+        //Se realiza la petición axios
         const { data: res } = await axios.get('/anuncios-graf', {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
         });
-        dataAnuncios.value = res;
-        dataListaAnuncios.value = true;
+        //Se asigna valor a todas las variables
+        data_anuncios.value = res;
+        data_lista_anuncios.value = true;
     } catch (error) {
         console.log(error);
     }
 }
 
-const chartAnuncios = computed(() => {
+//Constante con la que se crea el gráfico de anuncios, es computed para que cada que el valor cambie también cambie el gráfico
+const CHART_ANUNCIOS = computed(() => {
     return {
-        labels: dataAnuncios.value.map(item => item.fecha),
+        //Se establecen los labels que son el texto que se muestra al estar encima de una opción del gráfico, se hace un map para ver todos los registros que hay individualmente
+        labels: data_anuncios.value.map(item => item.fecha),
+        //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
         datasets: [
             {
+                //Se añade un prefijo personalizado a los labels 
                 label: "N° de anuncios",
-                data: dataAnuncios.value.map(item => item.cantidad_anuncios),
+                //Se establece la data de la grafica con un map de los registros
+                data: data_anuncios.value.map(item => item.cantidad_anuncios),
+                //Se pone el porcentaje de la barra a 0.5 para que se vean mas delgadas y no ocupen el cuadro completo
                 barPercentage: 0.5,
+                //Se establecen los colores posibles para las barritas con el backgroundColor
                 backgroundColor: ["rgba(255, 202, 81, 1)", "rgba(192, 161, 255, 1)"],
             },
         ],
     };
 });
 
-const opcionesAnuncios = {
+const OPCIONES_ANUNCIOS = {
+    //Se establece el indexAxis en y para que el gráfico sea horizontal
     indexAxis: 'y',
+
+    //Opciones para que el gráfico se acomode al div donde esta dentro
     responsive: true,
     maintainAspectRatio: false,
+
+    //Se desactiva la leyenda de los datasets
     plugins: {
         legend: {
             display: false
