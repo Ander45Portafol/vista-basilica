@@ -9,7 +9,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import Swal from 'sweetalert2';
 
 //Se calculan los 5 minutos_restantes en segundos_restantes
-const segundos_restantes_totales = ref(5 * 60);
+const segundos_restantes_totales = ref(2 * 60);
 //Se dividen los segundos_restantes totales entre 60 para sacar los minutos_restantes restantes
 const minutos_restantes = ref(Math.floor(segundos_restantes_totales.value / 60));
 //Se usa el operador mod con los segundos_restantes totales entre 60 para saber cuantos segundos_restantes quedan en el minuto
@@ -25,6 +25,11 @@ let intervalo_segundos_restantes;
 //Al montarse el componente se inicia el intervalo para restar los segundos_restantes
 onMounted(() => {
   intervalo_segundos_restantes = setInterval(CONTEO, 1000);
+
+  //Se agrega un eventListener reiniciar el timer
+  window.addEventListener('reset-timer', () => {
+    reiniciarTimer();
+  });
 });
 
 // Antes de montar se limpian ambos intervalos y se cierra el sweetalert para evitar conflictos de un intervalo ya iniciado
@@ -60,7 +65,7 @@ const CONTEO = () => {
       //Se evalua el resultado del sweetalert para que si el usuario da click en confirmar se reinicie el timer
       alerta_1minuto.then((result) => {
         if (result.isConfirmed) {
-          resetTimer();
+          reiniciarTimer();
         }
       });
     }
@@ -90,8 +95,8 @@ const CAMBIAR_TITULO = () => {
 };
 
 //Función para reiniciar el timer
-function resetTimer() {
-  segundos_restantes_totales.value = (5 * 60);
+function reiniciarTimer() {
+  segundos_restantes_totales.value = (2 * 60);
   alerta_1minuto = null;
   clearInterval(intervalo_titulo);
 }

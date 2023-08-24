@@ -10,7 +10,7 @@
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarPaginas()" />
                     <div class="flex justify-end items-center">
-                       <!-- Se le asigna la función para limpiar el buscador al botón -->
+                        <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
                             <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -84,8 +84,11 @@
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                             <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
                             <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
-                                <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4"></div>
-                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full"></div>
+                                <div
+                                    class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4">
+                                </div>
+                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full">
+                                </div>
                             </div>
                         </div>
                         <div
@@ -339,6 +342,7 @@
             </div>
         </div>
     </div>
+    <TimerToken />
 </template>
 <style scoped>
 .topprincipal .active {
@@ -388,6 +392,7 @@
 .tables::-webkit-scrollbar {
     width: 7px;
 }
+
 .tables::-webkit-scrollbar-thumb {
     background: #32345A;
 }
@@ -464,6 +469,7 @@ onMounted(() => {
             modalText.textContent = "Registrar";
             modalBtnUpdate.classList.add("hidden");
             modal.show();
+            window.dispatchEvent(EVENT);
         });
 
         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
@@ -476,6 +482,9 @@ onMounted(() => {
     //Se leen las páginas al montarse la página para evitar problemas del setup y el localStorage
     leerPaginas();
 });
+
+
+const EVENT = new Event('reset-timer');
 
 //Variable reactiva para almacenar el token del localStorage
 const token = ref(null);
