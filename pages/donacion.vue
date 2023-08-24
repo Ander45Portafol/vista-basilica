@@ -23,7 +23,7 @@
                 <!-- Botones  -->
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
-                    <button
+                    <button @click="generarReporte"
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -135,11 +135,13 @@ definePageMeta({
 //Se usa el onMounted para añadir el max y min del input de fecha al crear el componente
 onMounted(() => {
     token.value = localStorage.getItem('token');
+    id.value=localStorage.getItem('usuario');
 
     leerDonaciones();
 });
 
 const token = ref(null);
+const id=ref(null);
 
 //Operaciones SCRUD
 
@@ -184,6 +186,17 @@ function visibilidadRegistros() {
     }
 }
 
+//Funcion para generar un reporte
+async function generarReporte() {
+    //Constante donde se almacena la respuesta que retorna de la api
+    const ruta = new URL(`http://127.0.0.1:8000/api/evento_reporte`);
+    //Le añadimos el token en la ruta del reporte
+    ruta.searchParams.append('token', token.value);
+    //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
+    ruta.searchParams.append('id', id.value);
+    // Se abre el reporte en una nueva pestaña del navegador web.
+    window.open(ruta.href);
+}
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/

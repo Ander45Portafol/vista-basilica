@@ -130,27 +130,13 @@ onMounted(() => {
 
     leerUsuarios();
 });
+//Funcion para generar un reporte
 async function generarReporte() {
-    // try {
-    //     const response = await axios.get('/usuario_reporte', {
-    //         responseType: 'arraybuffer', // Configurar el tipo de respuesta como arraybuffer
-    //     });
-    //     // Crear un Blob a partir del arraybuffer recibido
-    //     const blob = new Blob([response.data], { type: 'application/pdf' });
-
-    //     // Crear un enlace para mostrar el archivo PDF en el navegador
-    //     const pdfUrl = URL.createObjectURL(blob);
-    //     window.open(pdfUrl, '_blank');
-
-    //     // Liberar el recurso URL
-    //     URL.revokeObjectURL(pdfUrl);
-    // }
-    // catch (error) {
-    //     console.log(error);
-    // }
-    // Se declara una constante tipo objeto con la ruta específica del reporte en el servidor.
+    //Constante donde se almacena la respuesta que retorna de la api
     const ruta = new URL(`http://127.0.0.1:8000/api/usuario_reporte`);
+    //Le añadimos el token en la ruta del reporte
     ruta.searchParams.append('token', token.value);
+    //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
     ruta.searchParams.append('id', id.value);
     // Se abre el reporte en una nueva pestaña del navegador web.
     window.open(ruta.href);
