@@ -1,33 +1,6 @@
 <template>
     <div class="principal mt-6">
-        <div class="topprincipal flex justify-between font-semibold text-base ml-4">
-            <div class="options">
-                <a href="/usuario" class="ml-4">Usuarios</a>
-                <a href="" class="active ml-4">Roles Usuarios</a>
-                <a href="/rol_acceso" class="ml-4">Roles Accesos</a>
-            </div>
-            <div class="endtop flex justify-between w-20">
-                <NuxtLink to="/perfil">
-                    <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                        <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round"></path>
-                        <path
-                            d="M19.622 10.395l-1.097-2.65L20 6l-2-2-1.735 1.483-2.707-1.113L12.935 2h-1.954l-.632 2.401-2.645 1.115L6 4 4 6l1.453 1.789-1.08 2.657L2 11v2l2.401.655L5.516 16.3 4 18l2 2 1.791-1.46 2.606 1.072L11 22h2l.604-2.387 2.651-1.098C16.697 18.831 18 20 18 20l2-2-1.484-1.75 1.098-2.652 2.386-.62V11l-2.378-.605z"
-                            stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </NuxtLink>
-                <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
-                    data-drawer-placement="right" aria-controls="drawer-right-example">
-                    <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                        <path
-                            d="M18.134 11C18.715 16.375 21 18 21 18H3s3-2.133 3-9.6c0-1.697.632-3.325 1.757-4.525C8.883 2.675 10.41 2 12 2c.337 0 .672.03 1 .09M19 8a3 3 0 100-6 3 3 0 000 6zM13.73 21a1.999 1.999 0 01-3.46 0"
-                            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
+        <MenuRolUsuarioDashboard class="mr-8" />
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <form action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
@@ -78,74 +51,19 @@
                 </div>
             </div>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ rolusuarios.length }}<span
-                    class="text-gray-500 font-normal ml-2">registro
-                    encontrado!</span></p>
-            <div class="contained-data flex-col" v-for="rolusuario in rolusuarios" :key="rolusuario.id_rol_usuario">
-                <div
-                    class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
-                    <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                        <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center"
-                            v-if="rolusuario.visibilidad_rol_usuario == 1">
-                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                                {{ rolusuario.rol_usuario }}</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Habilitado
-                            </p>
-                        </div>
-                        <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center"
-                            v-else>
-                            <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                                {{ rolusuario.rol_usuario }}</p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Deshabilitado
-                            </p>
-                        </div>
-                    </div>
-                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-                        v-if="rolusuario.visibilidad_rol_usuario == 1">
-                        <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4"
-                            @click="leerUnRol(rolusuario.id_rol_usuario)">
-                            <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path
-                                    d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
-                                    stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                        <button
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                            @click="borrarRol(rolusuario.id_rol_usuario)">
-                            <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path
-                                    d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
-                                    stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-                        v-else>
-                        <button
-                            class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                            @click="changeVisible(rolusuario.id_rol_usuario)">
-                            <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
-                                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path
-                                    d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
-                                    stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
-                                    stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                    </div>
+            <div class="h-screen">
+                <p class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ rolusuarios.length }}<span
+                        class="text-gray-500 font-normal ml-2">registro
+                        encontrado!</span></p>
+                <div class="tables overflow-y-scroll h-3/5 pr-4">
+                    <TablesRolUsuario :datosRol="rolusuarios" :actualizarDatos="leerRolesUsuarios" />
                 </div>
-            </div>
-            <div class="flex justify-center mt-6">
-                <TailwindPagination
-                    :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
-                    :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="rolusuario = $event" />
+                <div class="flex justify-center mt-6">
+                    <TailwindPagination
+                        :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
+                        :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
+                        :data="data" @pagination-change-page="rolusuario = $event" />
+                </div>
             </div>
         </div>
     </div>
@@ -310,13 +228,20 @@
 .modal-buttons button {
     background-color: #32345a;
 }
+
+.tables::-webkit-scrollbar {
+    width: 7px;
+}
+
+.tables::-webkit-scrollbar-thumb {
+    background: #32345A;
+}
 </style>
 <script setup>
 import { Modal } from 'flowbite'
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from 'axios';
 import { TailwindPagination } from 'laravel-vue-pagination';
-import { onMounted, ref } from 'vue'
 //Importación de sweetalert
 import Swal from 'sweetalert2';
 //Importación de archivo de validaciones
@@ -324,57 +249,60 @@ import validaciones from '../assets/validaciones.js';
 
 definePageMeta({
     layout: "principal",
-})
-
-onMounted(() => {
-    //Constantes para manejar el modal
-    //Constante para el botón de agregar un registro
-    const buttonElement = document.getElementById('btnadd');
-    //Constante para el modal
-    const modalElement = document.getElementById('staticModal');
-    //Constante para el botón de cerrar en el modal
-    const closeButton = document.getElementById('closeModal');
-    //Constante para el titulo del modal
-    const modalText = document.getElementById('modalText');
-    //Constante para el boton de actualizar dentro del modal
-    const modalBtnUpdate = document.getElementById('btnModalUpdate');
-    //Constante para el boton de agregar dentro del modal
-    const modalBtnAdd = document.getElementById('btnModalAdd');
-
-    /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
-    aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
-    const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-
-    //Se evalua si existe un modal y en caso de que si se ejecuta todo lo relacionado a su funcionamiento
-    if (modalElement) {
-        //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
-        const modal = new Modal(modalElement, modalOptions);
-
-        /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
-        del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
-        buttonElement.addEventListener('click', function () {
-            //Se limpia el form al abrir el modal de agregar
-            accionForm('crear');
-            limpiarForm();
-            modalBtnAdd.classList.remove('hidden');
-            modalText.textContent = "Registrar";
-            modalBtnUpdate.classList.add('hidden');
-            modal.show();
-        });
-
-        //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
-        closeButton.addEventListener('click', function () {
-            modal.hide();
-            limpiarForm();
-        });
-    }
+    middleware: "middleware-paginas",
 });
+// onMounted(() => {
+//     //Constantes para manejar el modal
+//     //Constante para el botón de agregar un registro
+//     const buttonElement = document.getElementById('btnadd');
+//     //Constante para el modal
+//     const modalElement = document.getElementById('staticModal');
+//     //Constante para el botón de cerrar en el modal
+//     const closeButton = document.getElementById('closeModal');
+//     //Constante para el titulo del modal
+//     const modalText = document.getElementById('modalText');
+//     //Constante para el boton de actualizar dentro del modal
+//     const modalBtnUpdate = document.getElementById('btnModalUpdate');
+//     //Constante para el boton de agregar dentro del modal
+//     const modalBtnAdd = document.getElementById('btnModalAdd');
+
+//     /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
+//     aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
+//     const modalOptions = {
+//         backdrop: 'static',
+//         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+//     };
+
+//     //Se evalua si existe un modal y en caso de que si se ejecuta todo lo relacionado a su funcionamiento
+//     if (modalElement) {
+//         //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
+//         const modal = new Modal(modalElement, modalOptions);
+
+//         /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
+//         del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
+//         buttonElement.addEventListener('click', function () {
+//             //Se limpia el form al abrir el modal de agregar
+//             accionForm('crear');
+//             limpiarForm();
+//             modalBtnAdd.classList.remove('hidden');
+//             modalText.textContent = "Registrar";
+//             modalBtnUpdate.classList.add('hidden');
+//             modal.show();
+//         });
+
+//         //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
+//         closeButton.addEventListener('click', function () {
+//             modal.hide();
+//             limpiarForm();
+//         });
+//     }
+//     token.value = localStorage.getItem('token');
+//     id.value = localStorage.getItem('usuario');
+// });
+// const token = ref(null);
+// const id=ref(null);
 
 //Operaciones SCRUD
-
 /*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
 para almacenar la información que traiga el axios*/
 const data = ref(null);

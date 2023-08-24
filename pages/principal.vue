@@ -10,10 +10,71 @@ definePageMeta({
 // function perfil(){
 //     navigateTo('/perfil');
 // }
+//Funcion para generar un reporte
+onMounted(() => {
+    token.value = localStorage.getItem('token');
+    id.value = localStorage.getItem('usuario');
+});
+const token = ref(null);
+const id = ref(null);
+async function generarReporteUsuario() {
+    //Constante donde se almacena la respuesta que retorna de la api
+    const ruta = new URL(`http://127.0.0.1:8000/api/usuario_reporte`);
+    //Le añadimos el token en la ruta del reporte
+    ruta.searchParams.append('token', token.value);
+    //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
+    ruta.searchParams.append('id', id.value);
+    // Se abre el reporte en una nueva pestaña del navegador web.
+    window.open(ruta.href);
+}
+//Funcion para generar un reporte
+async function generarReporteDonacion() {
+    //Constante donde se almacena la respuesta que retorna de la api
+    const ruta = new URL(`http://127.0.0.1:8000/api/donacion_reporte`);
+    //Le añadimos el token en la ruta del reporte
+    ruta.searchParams.append('token', token.value);
+    //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
+    ruta.searchParams.append('id', id.value);
+    // Se abre el reporte en una nueva pestaña del navegador web.
+    window.open(ruta.href);
+}
+//Funcion para generar un reporte
+async function generarReporteEvento() {
+    //Constante donde se almacena la respuesta que retorna de la api
+    const ruta = new URL(`http://127.0.0.1:8000/api/evento_reporte`);
+    //Le añadimos el token en la ruta del reporte
+    ruta.searchParams.append('token', token.value);
+    //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
+    ruta.searchParams.append('id', id.value);
+    // Se abre el reporte en una nueva pestaña del navegador web.
+    window.open(ruta.href);
+}
+//Funcion para generar un reporte
+async function generarReporteGrupos() {
+    //Constante donde se almacena la respuesta que retorna de la api
+    const ruta = new URL(`http://127.0.0.1:8000/api/grupo_reporte`);
+    //Le añadimos el token en la ruta del reporte
+    ruta.searchParams.append('token', token.value);
+    //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
+    ruta.searchParams.append('id', id.value);
+    // Se abre el reporte en una nueva pestaña del navegador web.
+    window.open(ruta.href);
+}
+//Funcion para generar un reporte
+async function generarReportePersonal() {
+    //Constante donde se almacena la respuesta que retorna de la api
+    const ruta = new URL(`http://127.0.0.1:8000/api/personal_reporte`);
+    //Le añadimos el token en la ruta del reporte
+    ruta.searchParams.append('token', token.value);
+    //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
+    ruta.searchParams.append('id', id.value);
+    // Se abre el reporte en una nueva pestaña del navegador web.
+    window.open(ruta.href);
+}
 </script>
 <template>
     <div class="mr-8">
-        <MenuDashboardMenu class="mt-4"/>
+        <MenuDashboardMenu class="mt-4" />
         <div class="flex flex-wrap my-8 justify-around">
             <div class="text-white sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 min-w-[200px] max-[1400px]:max-w-[30%] max-[550px]:max-w-full"
                 id="usuarios">
@@ -91,104 +152,132 @@ definePageMeta({
                     <div class="left flex items-center ml-6 w-3/4">
                         <div
                             class="icon absolute bg-slate-800 flex justify-center items-center w-10 h-10 rounded-full max-[450px]:w-8 max-[450px]:h-8">
-                            <svg class="max-[450px]:w-6" width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24"
-                                fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path d="M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#fff"
-                                    stroke-width="2.5"></path>
-                                <path d="M6 8h1" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
+                            <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM7 7h10M7 12h10M7 17h6"
+                                    stroke="#FFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Actualización de secciones</p>
-                            <p class="section_change font-normal">Página web</p>
+                            <p class="titule_interac font-semibold">Reportes generales - Usuarios</p>
+                            <p class="section_change font-normal">Usuarios por rol</p>
                         </div>
                     </div>
-                    <div class="right flex justify-center items-center mr-4 max-[400px]:hidden">
+                    <button class="right flex justify-center items-center mr-4 max-[400px]:hidden"
+                        @click="generarReporteUsuario">
                         <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path
-                                d="M12 7v6M12 17.01l.01-.011M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                d="M9 17h6M12 6v7m0 0l3.5-3.5M12 13L8.5 9.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                                 stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
-                    </div>
+                    </button>
                 </div>
                 <div class="interraccion flex justify-between w-full h-16 mb-4 rounded-2xl">
                     <div class="left flex items-center ml-6 w-3/4">
                         <div class="icon absolute bg-slate-800 flex justify-center items-center w-10 h-10 rounded-full">
                             <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path d="M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#fff"
-                                    stroke-width="2.5"></path>
-                                <path d="M6 8h1" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
+                                <path
+                                    d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM7 7h10M7 12h10M7 17h6"
+                                    stroke="#FFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Actualización de secciones</p>
-                            <p class="section_change font-normal">Página web</p>
+                            <p class="titule_interac font-semibold">Reporte general - Donaciones</p>
+                            <p class="section_change font-normal">Donaciones por proyecto</p>
                         </div>
                     </div>
-                    <div class="right flex justify-center items-center mr-4 max-[400px]:hidden">
+                    <button class="right flex justify-center items-center mr-4 max-[400px]:hidden"
+                        @click="generarReporteDonacion">
                         <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path
-                                d="M12 7v6M12 17.01l.01-.011M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                d="M9 17h6M12 6v7m0 0l3.5-3.5M12 13L8.5 9.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                                 stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
-                    </div>
+                    </button>
                 </div>
                 <div class="interraccion flex justify-between w-full h-16 mb-4 rounded-2xl">
                     <div class="left flex items-center ml-6 w-3/4">
                         <div class="icon absolute bg-slate-800 flex justify-center items-center w-10 h-10 rounded-full">
                             <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path d="M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#fff"
-                                    stroke-width="2.5"></path>
-                                <path d="M6 8h1" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
+                                <path
+                                    d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM7 7h10M7 12h10M7 17h6"
+                                    stroke="#FFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Actualización de secciones</p>
-                            <p class="section_change font-normal">Página web</p>
+                            <p class="titule_interac font-semibold">Reporte general - Eventos</p>
+                            <p class="section_change font-normal">Eventos por zona</p>
                         </div>
                     </div>
-                    <div class="right flex justify-center items-center mr-4 max-[400px]:hidden">
-                        <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                    <button class="right flex justify-center items-center mr-4 max-[400px]:hidden" @click="generarReporteEvento">
+                        <svg width="32px" height="32px" stroke-width="2.5"
+                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path
-                                d="M12 7v6M12 17.01l.01-.011M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                d="M9 17h6M12 6v7m0 0l3.5-3.5M12 13L8.5 9.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                                 stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
-                    </div>
+                    </button>
                 </div>
                 <div class="interraccion flex justify-between w-full h-16 mb-4 rounded-2xl">
                     <div class="left flex items-center ml-6 w-3/4">
                         <div class="icon absolute bg-slate-800 flex justify-center items-center w-10 h-10 rounded-full">
                             <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path d="M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#fff"
-                                    stroke-width="2.5"></path>
-                                <path d="M6 8h1" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
+                                <path
+                                    d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM7 7h10M7 12h10M7 17h6"
+                                    stroke="#FFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Actualización de secciones</p>
-                            <p class="section_change font-normal">Página web</p>
+                            <p class="titule_interac font-semibold">Reporte general - Personal</p>
+                            <p class="section_change font-normal">Personal por tipo</p>
                         </div>
                     </div>
-                    <div class="right flex justify-center items-center mr-4 max-[400px]:hidden">
-                        <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                    <button class="right flex justify-center items-center mr-4 max-[400px]:hidden" @click="generarReportePersonal">
+                        <svg width="32px" height="32px" stroke-width="2.5"
+                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path
-                                d="M12 7v6M12 17.01l.01-.011M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                d="M9 17h6M12 6v7m0 0l3.5-3.5M12 13L8.5 9.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                                 stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
+                    </button>
+                </div>
+                <div class="interraccion flex justify-between w-full h-16 mb-4 rounded-2xl">
+                    <div class="left flex items-center ml-6 w-3/4">
+                        <div class="icon absolute bg-slate-800 flex justify-center items-center w-10 h-10 rounded-full">
+                            <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zM7 7h10M7 12h10M7 17h6"
+                                    stroke="#FFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
+                            </svg>
+                        </div>
+                        <div class="textinterac flex-col ml-16">
+                            <p class="titule_interac font-semibold">Reporte general - Grupos parroquiales</p>
+                            <p class="section_change font-normal">Grupos parroquiales por categoria</p>
+                        </div>
                     </div>
+                    <button class="right flex justify-center items-center mr-4 max-[400px]:hidden" @click="generarReporteGrupos">
+                        <svg width="32px" height="32px" stroke-width="2.5"
+                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path
+                                d="M9 17h6M12 6v7m0 0l3.5-3.5M12 13L8.5 9.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
                 </div>
             </div>
+            
             <p class="next flex text-yellow-600 font-bold">Ver todas las interacciones
                 <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -232,5 +321,4 @@ body {
 
 .interraccion {
     background: #ebeff8;
-}
-</style>
+}</style>
