@@ -104,6 +104,7 @@ const formFechas = ref({
     fecha_final: "",
 })
 async function cargarReport() {
+    if(!texto_error.value){
     var fecha_i = formFechas.value.fecha_inicial;
     var fecha_f = formFechas.value.fecha_final;
     //Constante donde se almacena la respuesta que retorna de la api
@@ -116,6 +117,7 @@ async function cargarReport() {
     window.open(ruta.href);
     document.getElementById('closeModalReport').click();
     llenarFechas();
+    }
 }
 
 //Función para llenar las fechas y el año con la información de la fecha actual
@@ -137,10 +139,6 @@ function llenarFechas() {
 //Se ejecuta la función en el setup (Antes que se cargue el DOM)
 llenarFechas();
 
-function limpiarFormFechas() {
-    formFechas.value.fecha_inicial = "";
-    formFechas.value.fecha_final = "";
-}
 //Validaciones
 function validarFechas() {
     const resultado = ref(null);
