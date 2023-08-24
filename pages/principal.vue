@@ -19,57 +19,57 @@ const token = ref(null);
 const id = ref(null);
 async function generarReporteUsuario() {
     //Constante donde se almacena la respuesta que retorna de la api
-    const ruta = new URL(`http://127.0.0.1:8000/api/usuario_reporte`);
+    const RUTA = new URL(`http://127.0.0.1:8000/api/usuario_reporte`);
     //Le añadimos el token en la ruta del reporte
-    ruta.searchParams.append('token', token.value);
+    RUTA.searchParams.append('token', token.value);
     //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
-    ruta.searchParams.append('id', id.value);
+    RUTA.searchParams.append('id', id.value);
     // Se abre el reporte en una nueva pestaña del navegador web.
-    window.open(ruta.href);
+    window.open(RUTA.href);
 }
 //Funcion para generar un reporte
 async function generarReporteDonacion() {
     //Constante donde se almacena la respuesta que retorna de la api
-    const ruta = new URL(`http://127.0.0.1:8000/api/donacion_reporte`);
+    const RUTA = new URL(`http://127.0.0.1:8000/api/donacion_reporte`);
     //Le añadimos el token en la ruta del reporte
-    ruta.searchParams.append('token', token.value);
+    RUTA.searchParams.append('token', token.value);
     //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
-    ruta.searchParams.append('id', id.value);
+    RUTA.searchParams.append('id', id.value);
     // Se abre el reporte en una nueva pestaña del navegador web.
-    window.open(ruta.href);
+    window.open(RUTA.href);
 }
 //Funcion para generar un reporte
 async function generarReporteEvento() {
     //Constante donde se almacena la respuesta que retorna de la api
-    const ruta = new URL(`http://127.0.0.1:8000/api/evento_reporte`);
+    const RUTA = new URL(`http://127.0.0.1:8000/api/evento_reporte`);
     //Le añadimos el token en la ruta del reporte
-    ruta.searchParams.append('token', token.value);
+    RUTA.searchParams.append('token', token.value);
     //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
-    ruta.searchParams.append('id', id.value);
+    RUTA.searchParams.append('id', id.value);
     // Se abre el reporte en una nueva pestaña del navegador web.
-    window.open(ruta.href);
+    window.open(RUTA.href);
 }
 //Funcion para generar un reporte
 async function generarReporteGrupos() {
     //Constante donde se almacena la respuesta que retorna de la api
-    const ruta = new URL(`http://127.0.0.1:8000/api/grupo_reporte`);
+    const RUTA = new URL(`http://127.0.0.1:8000/api/grupo_reporte`);
     //Le añadimos el token en la ruta del reporte
-    ruta.searchParams.append('token', token.value);
+    RUTA.searchParams.append('token', token.value);
     //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
-    ruta.searchParams.append('id', id.value);
+    RUTA.searchParams.append('id', id.value);
     // Se abre el reporte en una nueva pestaña del navegador web.
-    window.open(ruta.href);
+    window.open(RUTA.href);
 }
 //Funcion para generar un reporte
 async function generarReportePersonal() {
     //Constante donde se almacena la respuesta que retorna de la api
-    const ruta = new URL(`http://127.0.0.1:8000/api/personal_reporte`);
+    const RUTA = new URL(`http://127.0.0.1:8000/api/personal_reporte`);
     //Le añadimos el token en la ruta del reporte
-    ruta.searchParams.append('token', token.value);
+    RUTA.searchParams.append('token', token.value);
     //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
-    ruta.searchParams.append('id', id.value);
+    RUTA.searchParams.append('id', id.value);
     // Se abre el reporte en una nueva pestaña del navegador web.
-    window.open(ruta.href);
+    window.open(RUTA.href);
 }
 </script>
 <template>
