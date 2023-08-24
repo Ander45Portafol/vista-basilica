@@ -69,22 +69,22 @@
                             <p class="font-bold">Error: <span class="font-normal">{{ texto_error }}</span></p>
                         </div>
                     </div>
-                    <form class="flex justify-between items-center mt-6" @submit.prevent="cargarDatos">
+                    <form class="flex justify-between items-center flex-wrap mt-6" @submit.prevent="cargarDatos">
                         <div class="flex">
-                            <div class="relative z-0 w-64" id="input_fechai">
-                                <input v-model="form_fechas.fecha_inicial" @change="validarFechas" type="date"
-                                    min="2023-01-01" id="fecha_inicial" :max="form_fechas.fecha_final" name="fecha_inicial"
+                            <div class="relative z-0 w-64 max-[1200px]:w-full" id="input_fechai">
+                                <input v-model="form_fechas.fecha_inicial" @change="validarFechas" type="date" min="2023-01-01"
+                                    id="fecha_inicial" :max="form_fechas.fecha_final" name="fecha_inicial"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="fecha_inicial"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
                                     inicial</label>
                             </div>
-                            <div class="relative z-0 w-64 ml-14" id="input_fechaf">
-                                <input v-model="form_fechas.fecha_final" @change="validarFechas" type="date"
-                                    :max="fecha_actual" id="fecha_final" name="fecha_final" :min="form_fechas.fecha_inicial"
+                            <div class="relative z-0 w-64 ml-14 max-[1200px]:w-full" id="input_fechaf">
+                                <input v-model="form_fechas.fecha_final" @change="validarFechas" type="date" id="fecha_final" :max="fecha_actual"
+                                    name="fecha_final" :min="form_fechas.fecha_inicial"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
+                                    placeholder="" autocomplete="off" />
                                 <label for="fecha_final"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
                                     final</label>
@@ -99,9 +99,7 @@
                                 </label>
                             </div>
                         </div>
-                        <button type="submit"
-                            class="w-32 h-10 bg-space text-white mt-4 rounded-lg max-[1200px]:w-24 max-[1200px]:text-sm"
-                            :disabled="texto_error">
+                        <button type="submit" class="w-32 h-10 bg-space text-white mt-4 rounded-lg max-[1200px]:w-24 max-[1200px]:text-sm" :disabled="texto_error">
                             Generar
                         </button>
                     </form>
