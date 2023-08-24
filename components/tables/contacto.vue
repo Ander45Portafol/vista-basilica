@@ -283,7 +283,7 @@ console.log(props.datosContactos);
 });
 
 const token = ref(null);
-const id=ref=(null);
+const id=ref(null);
 
 //Funcion para generar un reporte
 async function generarReporteContacto(id_contacto) {
