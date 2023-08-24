@@ -269,29 +269,14 @@ async function cargarDatos() {
             }
         } catch (error) {
             console.log(error);
-            const MENSAJE_ERROR = error.response.data.message;
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: RES,
-                    confirmButtonColor: '#3F4280'
-                });
-            } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: MENSAJE_ERROR,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
+            const MENSAJE_ERROR = error.response.data.message
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: MENSAJE_ERROR,
+                confirmButtonColor: '#3F4280'
+            });
         }
     }
 }
