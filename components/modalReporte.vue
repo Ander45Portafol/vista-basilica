@@ -29,7 +29,7 @@
                         <div class="flex">
                             <div class="relative z-0 w-64 max-[1200px]:w-full" id="input_fechai">
                                 <input v-model="formFechas.fecha_inicial" @change="validarFechas" type="date"
-                                    id="fecha_inicial" :max="formFechas.fecha_final" name="fecha_inicial"
+                                    id="fecha_inicial" :max="formFechas.fecha_final" name="fecha_inicial" min="2023-01-01"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="fecha_inicial"
@@ -38,7 +38,7 @@
                             </div>
                             <div class="relative z-0 w-64 ml-14 max-[1200px]:w-full" id="input_fechaf">
                                 <input v-model="formFechas.fecha_final" @change="validarFechas" type="date" id="fecha_final"
-                                    name="fecha_final" :min="formFechas.fecha_inicial"
+                                    name="fecha_final" :min="formFechas.fecha_inicial" :max="fecha_actual"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder="" autocomplete="off" />
                                 <label for="fecha_final"
@@ -120,6 +120,9 @@ async function cargarReport() {
     }
 }
 
+//Constante ref para usar la fecha actual en validaciones
+const fecha_actual = ref(null);
+
 //Función para llenar las fechas y el año con la información de la fecha actual
 function llenarFechas() {
     const FECHA_ACTUAL = new Date();
@@ -134,6 +137,7 @@ function llenarFechas() {
     //Se llenan los inputs
     formFechas.value.fecha_final = FECHA_CON_FORMATO;
     formFechas.value.fecha_inicial = FECHA_CON_FORMATO;
+    fecha_actual.value = FECHA_CON_FORMATO;
 }
 
 //Se ejecuta la función en el setup (Antes que se cargue el DOM)
