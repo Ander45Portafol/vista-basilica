@@ -150,7 +150,7 @@ onMounted(() => {
 const token = ref(null);
 
 //Constantes para cambiar el titulo del modal dependiendo de la selección del check del usuario
-const texto_donaciones = ref('Donaciones por rango de fechas');
+const texto_donaciones = ref('Donaciones por rango de fechas (Últimas 10 donaciones realizadas)');
 const texto_descripcion = ref('Ingrese una fecha inicial y una fecha final para enviar como parametro de graficación.');
 
 //Función para cambiar el diseño del modal cuando se seleccione la opción de "Año"
@@ -174,7 +174,7 @@ function cambiandoGraficaAnio() {
 function cambiandoGraficaRango() {
     const CHECK_RANGO = document.getElementById('rango_fecha');
     if (CHECK_RANGO.checked) {
-        texto_donaciones.value = 'Donaciones por rango de fechas';
+        texto_donaciones.value = 'Donaciones por rango de fechas (Últimas 10 donaciones realizadas)';
         texto_descripcion.value = 'Ingrese una fecha inicial y una fecha final para enviar como parametro de graficación.';
         texto_error.value = null;
         document.getElementById('input_anio').classList.add('hidden');
