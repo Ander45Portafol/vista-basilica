@@ -1,3 +1,4 @@
+<!-- SCRUD como componente -->
 <template>
     <div class="principal mt-4">
         <MenuDonacionDashboard class="mr-8" />
@@ -22,7 +23,7 @@
                 <!-- Botones  -->
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
-                    <button
+                    <button @click="generarReporte"
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -33,15 +34,25 @@
                                 stroke-linejoin="round"></path>
                         </svg>
                     </button>
-                    <button
+                    <!-- Falta un boton por que me dijo daniel que no lo ibamos a usar  -->
+                    <button @click="visibilidadRegistros" type="button"
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:mx-8">
-                        <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" color="#000000">
-                            <path d="M7 6h10M7 9h10M9 17h6" stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round"
-                                stroke-linejoin="round"></path>
+                        <!-- Cambia el icono del botón según los registros que se quieren mostrar -->
+                        <svg v-if="registros_visibles" width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24"
+                            fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path d="M12 14a2 2 0 100-4 2 2 0 000 4z" stroke="#000000" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round"></path>
                             <path
-                                d="M3 12h-.4a.6.6 0 00-.6.6v8.8a.6.6 0 00.6.6h18.8a.6.6 0 00.6-.6v-8.8a.6.6 0 00-.6-.6H21M3 12V2.6a.6.6 0 01.6-.6h16.8a.6.6 0 01.6.6V12M3 12h18"
-                                stroke="#1B1C30" stroke-width="2.5"></path>
+                                d="M21 12c-1.889 2.991-5.282 6-9 6s-7.111-3.009-9-6c2.299-2.842 4.992-6 9-6s6.701 3.158 9 6z"
+                                stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                        <svg v-else width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path d="M3 3l18 18M10.5 10.677a2 2 0 002.823 2.823" stroke="#000000" stroke-width="2.5"
+                                stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path
+                                d="M7.362 7.561C5.68 8.74 4.279 10.42 3 12c1.889 2.991 5.282 6 9 6 1.55 0 3.043-.523 4.395-1.35M12 6c4.008 0 6.701 3.158 9 6a15.66 15.66 0 01-1.078 1.5"
+                                stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </button>
                     <button type="button" id="graficos_modal"
@@ -62,7 +73,7 @@
                 }}<span class="text-gray-500 font-normal ml-2">registros
                         encontrados!</span></p>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <TablesDonacion v-if="donaciones" :dataDonacion="donaciones" />
+                    <TablesDonacion v-if="donaciones" :dataDonacion="donaciones" :actualizarDatos="leerDonaciones" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <TailwindPagination v-if="donaciones"
@@ -124,11 +135,13 @@ definePageMeta({
 //Se usa el onMounted para añadir el max y min del input de fecha al crear el componente
 onMounted(() => {
     token.value = localStorage.getItem('token');
+    id.value=localStorage.getItem('usuario');
 
     leerDonaciones();
 });
 
 const token = ref(null);
+const id=ref(null);
 
 //Operaciones SCRUD
 
@@ -158,22 +171,72 @@ watch(pagina, async () => {
     useRouter().push({ query: { pagina: pagina.value } })
 })
 
+//Variable reactiva para poder intercambiar los registros entre visibles y no visibles
+const registros_visibles = ref(true);
+
+//Función para evaluar registros según la visibilidad que quiera el usuario
+function visibilidadRegistros() {
+    //Se establece el valor de la variable registros_visibles a su opuesto
+    registros_visibles.value = !registros_visibles.value;
+    //Se evalua el buscador para realizar leerContactos o buscarContactos 
+    if (buscar.value.buscador) {
+        buscarDonaciones();
+    } else {
+        leerDonaciones();
+    }
+}
+
+//Funcion para generar un reporte
+async function generarReporte() {
+    //Constante donde se almacena la respuesta que retorna de la api
+    const ruta = new URL(`http://127.0.0.1:8000/api/evento_reporte`);
+    //Le añadimos el token en la ruta del reporte
+    ruta.searchParams.append('token', token.value);
+    //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
+    ruta.searchParams.append('id', id.value);
+    // Se abre el reporte en una nueva pestaña del navegador web.
+    window.open(ruta.href);
+}
+
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerDonaciones() {
     try {
-        /*Se manda la petición axios para leer las paginas (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
-        además usando el valor de la constante values se filtra la pagina de registros que axios va a traer*/
-        const { data: res } = await axios.get(`/donaciones?page=${pagina.value}`, {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            },
-        });
-        //Se asigna el valor de la respuesta de axios a la constante data
-        data.value = res;
-        console.log(donaciones.value);
+        //Se evalua si se quieren mostrar los registros visibles o invisibles
+        if (registros_visibles.value) {
+            //Se realiza la petición axios para leer los registros visibles
+            const { data: res } = await axios.get(`/donaciones?page=${pagina.value}`, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+            //Se asigna el valor de la respuesta de axios a la constante data
+            data.value = res;
+        } else {
+            //Se realiza la petición axios para leer los registros no visibles
+            const { data: res } = await axios.get(`/donaciones_ocultas?page=${pagina.value}`, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+            //Se asigna el valor de la respuesta de axios a la constante data
+            data.value = res;
+        }
     } catch (error) {
-        console.log(error);
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: res,
+            confirmButtonColor: "#3F4280",
+        });
     }
 }
 
@@ -192,19 +255,36 @@ function limpiarBuscador() {
     buscar.value.buscador = "";
 }
 
+
 //Función para buscar registros dependiendo del valor del buscador
 async function buscarDonaciones() {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
-            // Realiza la petición axios para llamar a la ruta de búsqueda
-            const { data: res } = await axios.get(`/donaciones_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-            });
-            // Actualiza los datos en la constante data
-            data.value = res;
+            //Se evalua si se quieren mostrar los registros visibles o no visibles
+            if (registros_visibles.value) {
+                // Se realiza la petición axios para mostrar los registros visibles
+                const { data: res } = await axios.get(
+                    `/donaciones_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                }
+                );
+                // Actualiza los datos en la constante data
+                data.value = res;
+            } else {
+                // Se realiza la petición axios para mostrar los registros no visibles
+                const { data: res } = await axios.get(
+                    `/donaciones_search_ocultas?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                }
+                );
+                // Actualiza los datos en la constante data
+                data.value = res;
+            }
             // Actualiza la URL con el parámetro de página
             useRouter().push({ query: { pagina: pagina.value } });
         } else {
@@ -222,10 +302,10 @@ async function buscarDonaciones() {
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
-            icon: 'error',
-            title: 'Error',
+            icon: "error",
+            title: "Error",
             text: res,
-            confirmButtonColor: '#3F4280'
+            confirmButtonColor: "#3F4280",
         });
     }
 }
