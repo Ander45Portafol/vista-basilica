@@ -146,7 +146,7 @@ async function generarReportePersonal() {
             </div>
         </div>
         <div class="endprincipal ml-4 flex flex-col justify-around max-[450px]:text-[13px] max-[315px]:text-[10px]">
-            <p class="text-xl font-extrabold max-[450px]:text-center">Interracciones Generales</p>
+            <p class="text-xl font-extrabold max-[450px]:text-center">Reportes generales</p>
             <div class="interac_general flex-col mt-4 p-0 ml-0">
                 <div class="interraccion flex justify-between w-full h-16 mb-4 rounded-2xl min-w-[150px]">
                     <div class="left flex items-center ml-6 w-3/4">
@@ -161,8 +161,8 @@ async function generarReportePersonal() {
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Reportes generales - Usuarios</p>
-                            <p class="section_change font-normal">Usuarios por rol</p>
+                            <p class="titule_interac font-semibold">Usuarios</p>
+                            <p class="section_change font-normal">Listado general de usuarios y sus respectivos roles.</p>
                         </div>
                     </div>
                     <button class="right flex justify-center items-center mr-4 max-[400px]:hidden"
@@ -187,8 +187,8 @@ async function generarReportePersonal() {
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Reporte general - Donaciones</p>
-                            <p class="section_change font-normal">Donaciones por proyecto</p>
+                            <p class="titule_interac font-semibold">Donaciones</p>
+                            <p class="section_change font-normal">Listado general de donaciones realizadas por proyecto publicado.</p>
                         </div>
                     </div>
                     <button class="right flex justify-center items-center mr-4 max-[400px]:hidden"
@@ -213,8 +213,8 @@ async function generarReportePersonal() {
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Reporte general - Eventos</p>
-                            <p class="section_change font-normal">Eventos por zona</p>
+                            <p class="titule_interac font-semibold">Eventos</p>
+                            <p class="section_change font-normal">Listado general de eventos agendados y zonas de desarrollo correspondientes.</p>
                         </div>
                     </div>
                     <button class="right flex justify-center items-center mr-4 max-[400px]:hidden" @click="generarReporteEvento">
@@ -238,8 +238,8 @@ async function generarReportePersonal() {
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Reporte general - Personal</p>
-                            <p class="section_change font-normal">Personal por tipo</p>
+                            <p class="titule_interac font-semibold">Personal</p>
+                            <p class="section_change font-normal">Listado general del personal y el respectivo cargo que desempeñan.</p>
                         </div>
                     </div>
                     <button class="right flex justify-center items-center mr-4 max-[400px]:hidden" @click="generarReportePersonal">
@@ -263,8 +263,8 @@ async function generarReportePersonal() {
                             </svg>
                         </div>
                         <div class="textinterac flex-col ml-16">
-                            <p class="titule_interac font-semibold">Reporte general - Grupos parroquiales</p>
-                            <p class="section_change font-normal">Grupos parroquiales por categoria</p>
+                            <p class="titule_interac font-semibold">Grupos parroquiales</p>
+                            <p class="section_change font-normal">Listado general de grupos parroquiales separados por categorías.</p>
                         </div>
                     </div>
                     <button class="right flex justify-center items-center mr-4 max-[400px]:hidden" @click="generarReporteGrupos">
@@ -277,14 +277,6 @@ async function generarReportePersonal() {
                     </button>
                 </div>
             </div>
-            
-            <p class="next flex text-yellow-600 font-bold">Ver todas las interacciones
-                <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                    <path d="M9 6l6 6-6 6" stroke="#C99856" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    </path>
-                </svg>
-            </p>
         </div>
     </div>
 </template>
