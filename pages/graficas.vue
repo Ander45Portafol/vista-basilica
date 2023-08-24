@@ -49,7 +49,7 @@
                     <!-- Título de la gráfica -->
                     <p class="text-2xl font-extrabold mt-5">Donaciones registradas por fecha en la semana actual</p>
                     <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal"
-                            v-if="totalSumaDonaciones">${{ totalSumaDonaciones }}</span><span class="text-xl font-normal"
+                            v-if="total_suma_donaciones">${{ total_suma_donaciones }}</span><span class="text-xl font-normal"
                             v-else>$0.00</span></p>
                     <div class="grafic h-80 w-full flex justify-center items-center">
                         <!-- Se valida si el gráfico esta listo para mostrarse -->
@@ -62,7 +62,7 @@
             </div>
             <div class="flex w-full justify-between mt-10 max-[1000px]:flex-wrap">
                 <div
-                    class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[50%] max-[1000px]:min-w-full max-[1000px]:pb-12">
+                    class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[48%] max-[1000px]:min-w-full max-[1000px]:pb-12 min-[1000px]:mr-[2%]">
                     <!-- Título de la gráfica -->
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Cantidad de secciones por página</p>
@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div
-                    class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[50%] max-[1000px]:mt-12 max-[1000px]:min-w-full">
+                    class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[48%] max-[1000px]:mt-12 max-[1000px]:min-w-full">
                     <!-- Título de la gráfica -->
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Usuarios registrados por rol</p>
@@ -94,7 +94,7 @@
             </div>
             <div class="flex w-full justify-between mt-10 mb-[100px] max-[1000px]:flex-wrap">
                 <div
-                    class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[50%] max-[1000px]:min-w-full">
+                    class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[48%] max-[1000px]:min-w-full min-[1000px]:mr-[2%]">
                     <!-- Título de la gráfica -->
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Cantidad de eventos por fecha en la semana actual</p>
@@ -108,7 +108,7 @@
                     </div>
                 </div>
                 <div
-                    class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[50%] max-[1000px]:mt-12 max-[1000px]:min-w-full">
+                    class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[48%] max-[1000px]:mt-12 max-[1000px]:min-w-full">
                     <!-- Título de la gráfica -->
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Cantidad de anuncios por fecha en el mes actual</p>
@@ -259,7 +259,7 @@ async function leerNUsuarios() {
         });
         //Se asigna valor a todas las variables
         data_n_usuarios.value = res;
-        total_usuarios = data_n_usuarios.value.total_usuarios;
+        total_usuarios = data_n_usuarios.value.totalUsuarios;
         data_lista_usuarios.value = true;
     } catch (error) {
         console.log(error);
