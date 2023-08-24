@@ -304,12 +304,11 @@ console.log(props.datosContactos);
             modal.hide();
         });
     }
-    //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
-    token.value = localStorage.getItem('token');
+
 });
 //Variable reactiva para almacenar el token del localStorag
 const token = ref(null);
-const id=ref=(null);
+const id=ref(null);
 
 //Funcion para generar un reporte
 async function generarReporteContacto(id_contacto) {
