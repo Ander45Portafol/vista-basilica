@@ -80,7 +80,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class="p-2 space-y-6 pb-8">
-                    <form @submit.prevent="submitForm()" class="flex justify-evenly">
+                    <form @submit.prevent="submitForm()" class="flex justify-evenly flex-wrap">
                         <div class="flex-col w-72">
                             <input type="hidden" v-model="form.id_usuario">
                             <div class="relative z-0">
@@ -287,11 +287,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex-col">
+                        <div class="flex-col max-[630px]:w-full">
                             <div class="">
                                 <p class="mb-4 text-center text-gray-200">Imagen - Usuario</p>
-                                <div class="flex-col">
-                                    <div class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative"
+                                <div class="flex-col m-auto">
+                                    <div class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative max-[630px]:m-auto"
                                         @click="seleccionarArchivo" @mouseover="iconoBorrarTrue"
                                         @mouseleave="iconoBorrarFalse">
                                         <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
@@ -307,9 +307,11 @@
                                             </svg>
                                         </div>
                                     </div>
-                                    <button type="button"
-                                        class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300"
-                                        @click="seleccionarArchivo">Seleccionar Imagen</button>
+                                    <div class="m-auto max-[630px]:text-center max-[630px]:ml-[-58px]">
+                                        <button type="button"
+                                            class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300 text-center"
+                                            @click="seleccionarArchivo">Seleccionar Imagen</button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
@@ -604,7 +606,7 @@ async function borrarUsuario(id, nombre_usuario) {
                         icon: 'success',
                         title: 'Usuario desactivado exitosamente'
                     }));
-                    props.actualizarDatos();
+                props.actualizarDatos();
             } catch (error) {
                 console.log(error);
             }
@@ -796,7 +798,7 @@ function validarNumeroTelefono() {
 }
 
 .buttons-data .changebtn {
-    border: 3px solid #3F4280; 
+    border: 3px solid #3F4280;
 }
 
 .modal {
