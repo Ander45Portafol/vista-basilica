@@ -22,7 +22,7 @@
                 </div>
                 <!-- Sección de botones a la derecha del buscador -->
                 <div
-                    class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
+                    class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3 max-[450px]:mb-[500px]">
                     <button
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -114,7 +114,8 @@
                                 <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                                     Página- {{ pagina.campos.nombre_pagina }}
                                 </p>
-                                <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]">
+                                <p v-if="pagina.campos.descripcion_pagina && pagina.campos.descripcion_pagina != 'null'"
+                                    class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]">
                                     {{ pagina.campos.descripcion_pagina }}
                                 </p>
                                 <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
@@ -404,8 +405,6 @@
 
 //Importacion para usar el hook de onMounted
 import { onMounted, ref } from "vue";
-//Importación del modal de flowbite
-import { Modal } from "flowbite";
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from "axios";
 //Importación del plugin de paginación de registros
@@ -476,6 +475,7 @@ onMounted(() => {
         closeButton.addEventListener("click", function () {
             modal.hide();
             limpiarForm();
+            window.dispatchEvent(EVENT);
         });
     }
 
@@ -537,6 +537,7 @@ function visibilidadRegistros() {
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerPaginas() {
+    window.dispatchEvent(EVENT);
     try {
         //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
@@ -548,6 +549,8 @@ async function leerPaginas() {
             });
             //Se asigna el valor de la respuesta de axios a la constante data
             data.value = res;
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
         } else {
             //Se realiza la petición axios para leer los registros no visibles
             const { data: res } = await axios.get(`/paginas_ocultas?page=${pagina.value}`, {
@@ -557,6 +560,8 @@ async function leerPaginas() {
             });
             //Se asigna el valor de la respuesta de axios a la constante data
             data.value = res;
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
         }
     } catch (error) {
         //Se extrae el mensaje de error
@@ -578,47 +583,20 @@ async function leerPaginas() {
 
 //Función para buscar registros dependiendo del valor del buscador
 async function buscarPaginas() {
+    window.dispatchEvent(EVENT);
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
-            //Se evalua si se quieren mostrar los registros visibles o no visibles
-            if (registros_visibles.value) {
-                // Se realiza la petición axios para mostrar los registros visibles
-                const { data: res } = await axios.get(
-                    `/paginas_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
-            } else {
-                // Se realiza la petición axios para mostrar los registros no visibles
-                const { data: res } = await axios.get(
-                    `/paginas_search_ocultos?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
-            }
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: pagina.value } });
+            useRouter().push({ query: { buscador: buscar.value.buscador } });
+            data.value.data = paginas.value.filter(pagina => pagina.campos.nombre_pagina.toLowerCase().includes(buscar.value.buscador.toLowerCase()));
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
             pagina.value = 1;
             leerPaginas();
+            useRouter().push({ query: { pagina: pagina.value } });
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        console.log(error);
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
@@ -693,6 +671,7 @@ function submitForm() {
 
 //Función para crear una página
 async function crearPagina() {
+    window.dispatchEvent(EVENT);
     if (validarNumeroPagina() && validarNombrePagina()) {
         try {
             //Se crea una constante FormData para almacenar los datos del modal
@@ -710,12 +689,15 @@ async function crearPagina() {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
+            }).then((res) => {
+                console.log(res.data.data.token);
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
             });
 
             //Se cargan todas las páginas y se cierra el modal
             pagina.value = 1;
             limpiarBuscador();
-            leerPaginas();
 
             document.getElementById("closeModal").click();
 
@@ -749,6 +731,7 @@ async function crearPagina() {
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
 async function leerUnaPagina(id) {
+    window.dispatchEvent(EVENT);
     try {
         accionForm("actualizar");
         //Se hace la petición axios y se evalua la respuesta
@@ -789,6 +772,8 @@ async function leerUnaPagina(id) {
                 modal.hide();
                 //Limpiamos el modal
                 limpiarForm();
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
             });
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
@@ -799,6 +784,8 @@ async function leerUnaPagina(id) {
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
                 visibilidad_pagina: res.data.data.campos.visibilidad_pagina ? true : false,
             };
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
         });
     } catch (error) {
         //Se extrae el mensaje de error
@@ -822,6 +809,7 @@ async function leerUnaPagina(id) {
 }
 
 async function actualizarPagina() {
+    window.dispatchEvent(EVENT);
     if (validarNumeroPagina() && validarNombrePagina()) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
@@ -842,6 +830,9 @@ async function actualizarPagina() {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
+            }).then((res) => {
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
             });
 
             //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
@@ -889,6 +880,7 @@ async function actualizarPagina() {
 
 //Función para cambiar la visibilidad de una página para ocultarla
 async function borrarPagina(id) {
+    window.dispatchEvent(EVENT);
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: "Confirmación",
@@ -900,16 +892,21 @@ async function borrarPagina(id) {
         cancelButtonColor: "#d33",
         confirmButtonText: "Confirmar",
         cancelButtonText: "Cancelar",
+        allowOutsideClick: false,
         //Se evalua la respuesta de la alerta
     }).then(async (result) => {
         //Si el usuario selecciono "Confirmar"
         if (result.isConfirmed) {
+            window.dispatchEvent(EVENT);
             try {
                 //Se realiza la petición axios
                 await axios.delete("/paginas/" + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
+                }).then((res) => {
+                    localStorage.setItem('token', res.data.data.token);
+                    token.value = localStorage.getItem('token');
                 });
 
                 //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
@@ -943,12 +940,15 @@ async function borrarPagina(id) {
                     confirmButtonColor: "#3F4280",
                 });
             }
+        } else {
+            window.dispatchEvent(EVENT);
         }
     });
 }
 
 //Función para cambiar la visibilidad de una página para recuperarla
 async function recuperarPagina(id) {
+    window.dispatchEvent(EVENT);
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: "Confirmación",
@@ -960,16 +960,21 @@ async function recuperarPagina(id) {
         cancelButtonColor: "#d33",
         confirmButtonText: "Confirmar",
         cancelButtonText: "Cancelar",
+        allowOutsideClick: false,
         //Se evalua la respuesta de la alerta
     }).then(async (result) => {
         //Si el usuario selecciono "Confirmar"
         if (result.isConfirmed) {
+            window.dispatchEvent(EVENT);
             try {
                 //Se realiza la petición axios
                 await axios.delete("/paginas/" + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
+                }).then((res) => {
+                    localStorage.setItem('token', res.data.data.token);
+                    token.value = localStorage.getItem('token');
                 });
 
                 //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
@@ -1003,6 +1008,8 @@ async function recuperarPagina(id) {
                     confirmButtonColor: "#3F4280",
                 });
             }
+        } else {
+            window.dispatchEvent(EVENT);
         }
     });
 }

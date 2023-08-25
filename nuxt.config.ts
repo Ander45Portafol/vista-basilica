@@ -2,7 +2,7 @@ module.exports = {
   app: {
     head: {
       link: [
-        { rel: 'icon', type: 'image/png', href: '/img/logo_adastra.png' }
+        { rel: 'icon', type: 'image/png', href: '/img/logo_sin_letras.png' }
       ]
     }
   },

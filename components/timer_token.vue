@@ -9,7 +9,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import Swal from 'sweetalert2';
 
 //Se calculan los 5 minutos_restantes en segundos_restantes
-const segundos_restantes_totales = ref(2 * 60);
+const segundos_restantes_totales = ref(1 * 60);
 //Se dividen los segundos_restantes totales entre 60 para sacar los minutos_restantes restantes
 const minutos_restantes = ref(Math.floor(segundos_restantes_totales.value / 60));
 //Se usa el operador mod con los segundos_restantes totales entre 60 para saber cuantos segundos_restantes quedan en el minuto
@@ -48,9 +48,10 @@ const CONTEO = () => {
     segundos_restantes_totales.value--;
     minutos_restantes.value = Math.floor(segundos_restantes_totales.value / 60);
     segundos_restantes.value = (segundos_restantes_totales.value % 60).toString().padStart(2, '0');
+    console.log(minutos_restantes.value + ':' + segundos_restantes.value);
 
     //Si queda menos de 1 minuto se muestra un sweetalert y se inicia el intervalo del titulo
-    if (segundos_restantes_totales.value <= 60 && !alerta_1minuto) {
+    if (segundos_restantes_totales.value <= 10 && !alerta_1minuto) {
       alerta_1minuto = Swal.fire({
         title: 'La sesión caduca en: ' + minutos_restantes.value + ':' + segundos_restantes.value,
         icon: 'warning',
@@ -96,7 +97,7 @@ const CAMBIAR_TITULO = () => {
 
 //Función para reiniciar el timer
 function reiniciarTimer() {
-  segundos_restantes_totales.value = (2 * 60);
+  segundos_restantes_totales.value = (1 * 60);
   alerta_1minuto = null;
   clearInterval(intervalo_titulo);
 }
