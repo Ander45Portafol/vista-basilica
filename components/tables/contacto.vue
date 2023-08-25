@@ -1,7 +1,7 @@
 <!-- SCRUD como componente -->
 <template>
     <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-    <div class="contained-data flex-col" v-for="contacto in datosContactos" :key="contacto.id">
+    <div class="contained-data flex-col" v-for="contacto in datos_contactos" :key="contacto.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -17,9 +17,10 @@
             <!-- Al darle clic al evento leerUnContacto ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                <button class="h-10 w-10 rounded-md flex items-center justify-center reportbtn" v-if="contacto.campos.visibilidad_contacto == 1" @click="generarReporteContacto(contacto.id)">
-                    <svg width="26px" height="26px" viewBox="0 0 24 24"
-                        stroke-width="2" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                <button class="h-10 w-10 rounded-md flex items-center justify-center reportbtn"
+                    v-if="contacto.campos.visibilidad_contacto == 1" @click="generarReporteContacto(contacto.id)">
+                    <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
                             d="M4 21.4V2.6a.6.6 0 01.6-.6h11.652a.6.6 0 01.424.176l3.148 3.148A.6.6 0 0120 5.75V21.4a.6.6 0 01-.6.6H4.6a.6.6 0 01-.6-.6zM8 10h8M8 18h8M8 14h4"
                             stroke="#7AAB97" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -267,8 +268,9 @@
 
 .modal-buttons button {
     background-color: #32345a;
-    }
-.reportbtn{
+}
+
+.reportbtn {
     border: 3px solid #7AAB97;
 }
 </style>
@@ -277,43 +279,52 @@
 //Importación de archivo de validaciones
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
 
 const props = defineProps({
-    datosContactos: Array,
-    actualizarDatos: Function,
+    datos_contactos: Array,
+    actualizar_datos: Function,
 
 });
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
-console.log(props.datosContactos);
-    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
-    token.value = localStorage.getItem('token');
+    console.log(props.datosContactos);
     id.value = localStorage.getItem('usuario');
-    if (modalElement) {
-        const modal = new Modal(modalElement, modalOptions);
-        buttonElement.addEventListener('click', function () {
-            modalText.textContent = "Registrar";
+    //Codigo para abrir el modal, con el boton de crear
+    const AGREGAR_BOTON = document.getElementById('btnadd');
+    const MODAL_ID = document.getElementById('staticModal');
+    const CERRAR_BOTON = document.getElementById('closeModal');
+    const TITULO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+
+    if (MODAL_ID) {
+        const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+        AGREGAR_BOTON.addEventListener('click', function () {
+            TITULO_MODAL.textContent = "Registrar";
             document.getElementById('btnModalAdd').classList.remove('hidden');
             document.getElementById('btnModalUpdate').classList.add('hidden');
             accionForm('crear');
-            modal.show();
+            MODAL.show();
         });
-        closeButton.addEventListener('click', function () {
-            modal.hide();
+        CERRAR_BOTON.addEventListener('click', function () {
+            MODAL.hide();
         });
     }
-
+    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
+    token.value = localStorage.getItem('token');
 });
-//Variable reactiva para almacenar el token del localStorag
+//Variable reactiva para almacenar el token del localStorage
 const token = ref(null);
-const id=ref(null);
+//Variable reactiva para almacenar el id del usuario que se encuentra en el localStorage
+const id = ref(null);
 
 //Funcion para generar un reporte
 async function generarReporteContacto(id_contacto) {
     //Constante donde se almacena la respuesta que retorna de la api
-    const ruta = new URL(`http://127.0.0.1:8000/api/contacto_reporte/`+id_contacto);
+    const ruta = new URL(`http://127.0.0.1:8000/api/contacto_reporte/` + id_contacto);
     //Le añadimos el token en la ruta del reporte
     ruta.searchParams.append('token', token.value);
     //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
@@ -343,15 +354,15 @@ function limpiarForm() {
 
 //Funciones para manejo del modal
 //Toast del sweetalert
-const Toast = Swal.mixin({
+const TOAST = Swal.mixin({
     toast: true,
     position: "top-end",
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener("mouseenter", Swal.stopTimer);
-        toast.addEventListener("mouseleave", Swal.resumeTimer);
+    didOpen: (TOAST) => {
+        TOAST.addEventListener("mouseenter", Swal.stopTimer);
+        TOAST.addEventListener("mouseleave", Swal.resumeTimer);
     },
 });
 
@@ -375,119 +386,84 @@ function submitForm() {
 //Función para crear un Contacto
 async function crearContacto() {
     try {
-        const formData = new FormData();
-        formData.append("nombre_contacto", form.value.nombre_contacto);
-        formData.append("correo_contacto", form.value.correo_contacto);
-        formData.append("tipo_contacto", form.value.tipo_contacto);
-        formData.append(
+        const FORM_DATA = new FormData();
+        FORM_DATA.append("nombre_contacto", form.value.nombre_contacto);
+        FORM_DATA.append("correo_contacto", form.value.correo_contacto);
+        FORM_DATA.append("tipo_contacto", form.value.tipo_contacto);
+        FORM_DATA.append(
             "visibilidad_contacto",
             form.value.visibilidad_contacto ? 1 : 0
         );
         //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/contactos/", formData, {
+        await axios.post("/contactos/", FORM_DATA, {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
         });
         document.getElementById('closeModal').click();
         //Se lanza la alerta con el mensaje de éxito
-        props.actualizarDatos();
-        Toast.fire({
+        props.actualizar_datos();
+        TOAST.fire({
             icon: 'success',
             title: 'Contacto creado exitosamente'
         });
     } catch (error) {
         console.log(error);
-        const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            const res = validaciones.mensajeSqlState(sqlState);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        } else {
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: mensajeError,
-                confirmButtonColor: '#3F4280'
-            });
-        }
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
     }
 }
 
-function estadoActualizar(id) {
-    const modalElement = document.getElementById('staticModal');
-    const closeButton = document.getElementById('closeModal');
-    const modalText = document.getElementById('modalText');
-    const modalOptions = {
+async function estadoActualizar(id) {
+    await leerUnContacto(id);
+    const MODAL_ELEMENT = document.getElementById('staticModal');
+    const CLOSE_BUTTON = document.getElementById('closeModal');
+    const MODAL_TEXT = document.getElementById('modalText');
+    const MODAL_OPTIONS = {
         backdrop: 'static',
         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
     };
-    const modal = new Modal(modalElement, modalOptions);
-    modalText.textContent = "Editar";
+    const modal = new Modal(MODAL_ELEMENT, MODAL_OPTIONS);
+    MODAL_TEXT.textContent = "Editar";
     modal.show();
     document.getElementById('btnModalAdd').classList.add('hidden');
     document.getElementById('btnModalUpdate').classList.remove('hidden');
-    closeButton.addEventListener('click', function () {
+    CLOSE_BUTTON.addEventListener('click', function () {
         modal.hide();
         limpiarForm();
     });
-    leerUnContacto(id);
 }
 
-//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
 async function leerUnContacto(id) {
     try {
         accionForm("actualizar");
-        //Se hace la petición axios y se evalua la respuesta
-        await axios.get("/contactos/" + id, {
+        await axios.get('/contactos/' + id, {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
-        }).then((res) => {
-            //Constante para el modal
-            const modalElement = document.getElementById("staticModal");
-            //Constante que contiene las caracteristicas del modal
-            const modalOptions = {
-                backdrop: "static",
-                backdropClasses:
-                    "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-            };
-            //Instanciamos el boton para cerrar el modal
-            const closeButton = document.getElementById("closeModal");
-            //Constante para el titulo del modal
-            const modalText = document.getElementById("modalText");
-            //Constante para el boton de agregar dentro del modal
-            const modalBtnAdd = document.getElementById("btnModalAdd");
-            //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById("btnModalUpdate");
-            //Instanciamos el modal
-            const modal = new Modal(modalElement, modalOptions);
-            //Le modificamos el texto del header al modal
-            modalText.textContent = "Editar";
-            //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove("hidden");
-            //Ocultamos el botón de agregar en el modal
-            modalBtnAdd.classList.add("hidden");
-            //Abrimos el modal
-            modal.show();
-            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-            closeButton.addEventListener("click", function () {
-                //Ocultamos el modal
-                modal.hide();
-                //Limpiamos el modal
-                limpiarForm();
-            });
-            //Llenamos los inputs del modal con su respectiva informacion
+        }).then(res => {
+            console.log(res.data);
             form.value = {
                 id_contacto: res.data.data.id,
                 nombre_contacto: res.data.data.campos.nombre_contacto,
@@ -496,25 +472,33 @@ async function leerUnContacto(id) {
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
                 visibilidad_contacto: res.data.data.campos.visibilidad_contacto ? true : false
             };
+
         });
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-        //Se cierra el modal
-        document.getElementById("closeModal").click();
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: RES,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: MENSAJE_ERROR,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -525,57 +509,46 @@ async function actualizarContacto() {
             var id = form.value.id_contacto;
 
             //Se crea una constante FormData para almacenar los datos del modal
-            const formData = new FormData();
-            formData.append("nombre_contacto", form.value.nombre_contacto);
-            formData.append("correo_contacto", form.value.correo_contacto);
-            formData.append("tipo_contacto", form.value.tipo_contacto);
-            formData.append(
+            const FORM_DATA = new FormData();
+            FORM_DATA.append("nombre_contacto", form.value.nombre_contacto);
+            FORM_DATA.append("correo_contacto", form.value.correo_contacto);
+            FORM_DATA.append("tipo_contacto", form.value.tipo_contacto);
+            FORM_DATA.append(
                 "visibilidad_contacto",
                 form.value.visibilidad_contacto ? 1 : 0
             );
 
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/contactos_update/" + id, formData, {
+            await axios.post("/contactos_update/" + id, FORM_DATA, {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             }),
-               //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
+                //Se manda a llamar la accion para actualizar los datos con las props
+                props.actualizar_datos();
 
             document.getElementById("closeModal").click();
 
             //Se lanza la alerta de éxito
-            Toast.fire({
+            TOAST.fire({
                 icon: "success",
                 title: "Contacto actualizado exitosamente",
             });
 
-            //Se evalua el buscador para realizar leerContactos o buscarContactos
-            // if (buscar.value.buscador) {
-            //     buscarContactos();
-            // } else {
-            //     leerContactos();
-            // }
-            //Se cierra el modal
-
         } catch (error) {
             console.log(error);
-            const mensajeError = error.response.data.message;
+            const MENSAJE_ERROR = error.response.data.message;
             if (!error.response.data.errors) {
                 //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
                 //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
 
                 //Se muestra un sweetalert con el mensaje
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: res,
+                    text: RES,
                     confirmButtonColor: '#3F4280'
                 });
             } else {
@@ -583,7 +556,7 @@ async function actualizarContacto() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: mensajeError,
+                    text: MENSAJE_ERROR,
                     confirmButtonColor: '#3F4280'
                 });
             }
@@ -603,9 +576,10 @@ async function borrarContacto(id) {
         confirmButtonColor: '#3F4280',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-        if (result.isConfirmed) {
+        cancelButtonText: 'Cancelar',
+        allowOutsideClick: false,
+    }).then(async (res) => {
+        if (res.isConfirmed) {
             try {
                 await axios.delete('/contactos/' + id, {
                     headers: {
@@ -613,14 +587,37 @@ async function borrarContacto(id) {
                     }
                 }),
                     //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
+                    props.actualizar_datos();
                 //Se lanza la alerta de éxito
-                Toast.fire({
+                TOAST.fire({
                     icon: "success",
                     title: "Contacto  ocultado exitosamente",
                 });
             } catch (error) {
                 console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
             }
         }
     });
@@ -639,10 +636,11 @@ async function recuperarUnContacto(id) {
         cancelButtonColor: "#d33",
         confirmButtonText: "Confirmar",
         cancelButtonText: "Cancelar",
+        allowOutsideClick: false,
         //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
+    }).then(async (res) => {
         //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
+        if (res.isConfirmed) {
             try {
                 //Se realiza la petición axios
                 await axios.delete("/contactos/" + id, {
@@ -651,22 +649,12 @@ async function recuperarUnContacto(id) {
                     },
                 }),
                     //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
+                    props.actualizar_datos();
                 //Se lanza la alerta de éxito
-                Toast.fire({
+                TOAST.fire({
                     icon: "success",
                     title: "Contacto recuperado exitosamente",
                 });
-
-                //Se evalua el buscador para realizar leerContactos o buscarContactos 
-                // if (buscar.value.buscador) {
-                //     buscarContactos();
-                // } else {
-                //     leerContactos();
-                // } 
-
-                //Se lanza la alerta de éxito
-
             } catch (error) {
                 //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
