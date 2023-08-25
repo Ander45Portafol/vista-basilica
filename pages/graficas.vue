@@ -5,7 +5,6 @@
                 <div class="options">
                     <NuxtLink to="/principal" class="ml-4">Inicio</NuxtLink>
                     <NuxtLink to="" class=" active ml-4 ">Gráficas</NuxtLink>
-                    <NuxtLink to="" class="ml-4 ">Reportes</NuxtLink>
                 </div>
             </div>
             <div class="endtop flex justify-between w-20">
@@ -43,13 +42,13 @@
                     fill="currentFill" />
             </svg>
         </div>
-        <div v-else class="mdprincipal h-screen overflow-y-scroll flex-col mt-6 px-8 py-10">
+        <div v-else class="mdprincipal h-screen overflow-y-scroll flex-col mt-6 pl-6 pr-8 py-10">
             <div class="h-2/3 w-full bg-slate-200 rounded-2xl pl-4">
                 <div class="flex-row text-center pt-4">
                     <!-- Título de la gráfica -->
                     <p class="text-2xl font-extrabold mt-5">Donaciones registradas por fecha en la semana actual</p>
                     <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal"
-                            v-if="totalSumaDonaciones">${{ totalSumaDonaciones }}</span><span class="text-xl font-normal"
+                            v-if="total_suma_donaciones">${{ total_suma_donaciones }}</span><span class="text-xl font-normal"
                             v-else>$0.00</span></p>
                     <div class="grafic h-80 w-full flex justify-center items-center">
                         <!-- Se valida si el gráfico esta listo para mostrarse -->
@@ -60,9 +59,9 @@
                     </div>
                 </div>
             </div>
-            <div class="flex w-full justify-between mt-10 flex-wrap">
+            <div class="flex w-full justify-between mt-10 max-[1000px]:flex-wrap">
                 <div
-                    class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[58%] max-[1300px]:min-w-full max-[1300px]:pb-12">
+                    class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[48%] max-[1000px]:min-w-full max-[1000px]:pb-12 min-[1000px]:mr-[2%]">
                     <!-- Título de la gráfica -->
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Cantidad de secciones por página</p>
@@ -76,7 +75,7 @@
                     </div>
                 </div>
                 <div
-                    class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[40%] max-[1300px]:mt-12 max-[1300px]:min-w-full">
+                    class="container-grafics h-96 bg-slate-200 rounded-2xl min-w-[48%] max-[1000px]:mt-12 max-[1000px]:min-w-full">
                     <!-- Título de la gráfica -->
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Usuarios registrados por rol</p>
@@ -92,9 +91,9 @@
                     </div>
                 </div>
             </div>
-            <div class="flex w-full justify-between mt-10 mb-[100px] flex-wrap">
+            <div class="flex w-full justify-between mt-10 mb-[100px] max-[1000px]:flex-wrap">
                 <div
-                    class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[40%] max-[1300px]:min-w-full max-[1300px]:pb-12">
+                    class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[48%] max-[1000px]:min-w-full min-[1000px]:mr-[2%]">
                     <!-- Título de la gráfica -->
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Cantidad de eventos por fecha en la semana actual</p>
@@ -108,7 +107,7 @@
                     </div>
                 </div>
                 <div
-                    class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[58%] max-[1300px]:mt-12 max-[1300px]:min-w-full">
+                    class="container-grafics h-96 w-5/12 bg-slate-200 rounded-2xl min-w-[48%] max-[1000px]:mt-12 max-[1000px]:min-w-full">
                     <!-- Título de la gráfica -->
                     <div class="text-left p-4">
                         <p class="text-2xl text-center mt-3 font-bold">Cantidad de anuncios por fecha en el mes actual</p>
@@ -183,12 +182,12 @@ async function leerDonaciones() {
 //Constante con la que se crea el gráfico de donaciones, es computed para que cada que el valor cambie también cambie el gráfico
 const CHART_DONACIONES = computed(() => {
     return {
-        //Se establecen los labels que son el texto que se muestra al estar encima de una opción del gráfico, se hace un map para ver todos los registros que hay individualmente
+        //Se establecen los labels que son los textos que se muestran abajo del eje x, además se usa el map para evaluar cada registro indivualmente
         labels: data_donaciones.value.results.map(item => item.fecha_donacion),
         //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
         datasets: [
             {
-                //Se le agrega un prefijo personalizado a los labels
+                //Se le agrega un prefijo personalizado a los labels, que además muestran el valor de la data para ese registro individual
                 label: "Cantidad donada",
                 //Estilo para los puntos de la gráfica
                 pointBackgroundColor: '#1B1C30',
@@ -196,7 +195,7 @@ const CHART_DONACIONES = computed(() => {
                 //El hover es mayor para que el punto se haga mas grande al tener el mouse encima
                 pointHoverRadius: 15,
                 //Estilo para la linea de la gráfica
-                borderColor: 'rgba(255,255,255,0)',
+                borderColor: 'rgba(255,255,255,0)', //Color de la línea, se pone blanco con opacidad 0 para que sea invisible y solo se vea el gradient
                 //Estilo para el color de la gráfica
                 backgroundColor: (ctx) => {
                     const canvas = ctx.chart.ctx;
@@ -231,7 +230,7 @@ const OPCIONES_DONACIONES = {
         }
     },
 
-    //Se desactiva la leyenda de los datasets
+    //Se desactiva la leyenda de los datasets (cuadritos que salen encima de los graficos)
     plugins: {
         legend: {
             display: false
@@ -259,7 +258,7 @@ async function leerNUsuarios() {
         });
         //Se asigna valor a todas las variables
         data_n_usuarios.value = res;
-        total_usuarios = data_n_usuarios.value.total_usuarios;
+        total_usuarios = data_n_usuarios.value.totalUsuarios;
         data_lista_usuarios.value = true;
     } catch (error) {
         console.log(error);
@@ -269,12 +268,12 @@ async function leerNUsuarios() {
 //Constante con la que se crea el gráfico de usuarios, es computed para que cada que el valor cambie también cambie el gráfico
 const CHART_N_USUARIOS = computed(() => {
     return {
-        //Se establecen los labels que son el texto que se muestra al estar encima de una opción del gráfico, se hace un map para ver todos los registros que hay individualmente
+        //Se establecen los labels que son los textos que se muestran abajo del eje x, además se usa el map para evaluar cada registro indivualmente
         labels: data_n_usuarios.value.results.map(item => item.rol_usuario),
         //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
         datasets: [
             {
-                //Se añade un prefijo personalizado a los labels 
+                //Se le agrega un prefijo personalizado a los labels, que además muestran el valor de la data para ese registro individual
                 label: "N° de usuarios",
                 //Se establece la data de la grafica con un map de los registros
                 data: data_n_usuarios.value.results.map(item => item.n_usuarios),
@@ -317,12 +316,12 @@ async function leerNSecciones() {
 //Constante con la que se crea el gráfico de secciones, es computed para que cada que el valor cambie también cambie el gráfico
 const CHART_N_SECCIONES = computed(() => {
     return {
-        //Se establecen los labels que son el texto que se muestra al estar encima de una opción del gráfico, se hace un map para ver todos los registros que hay individualmente
+        //Se establecen los labels que son los textos que se muestran abajo del eje x, además se usa el map para evaluar cada registro indivualmente
         labels: data_n_secciones.value.map(item => item.nombre_pagina),
         //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
         datasets: [
             {
-                //Se añade un prefijo personalizado a los labels 
+                //Se le agrega un prefijo personalizado a los labels, que además muestran el valor de la data para ese registro individual
                 label: "N° de secciones",
                 //Se establece la data de la grafica con un map de los registros
                 data: data_n_secciones.value.map(item => item.n_secciones),
@@ -367,12 +366,12 @@ async function leerEventos() {
 //Constante con la que se crea el gráfico de eventos, es computed para que cada que el valor cambie también cambie el gráfico
 const CHART_EVENTOS = computed(() => {
     return {
-        //Se establecen los labels que son el texto que se muestra al estar encima de una opción del gráfico, se hace un map para ver todos los registros que hay individualmente
+        //Se establecen los labels que son los textos que se muestran abajo del eje x, además se usa el map para evaluar cada registro indivualmente
         labels: data_eventos.value.map(item => item.fecha_evento),
         //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
         datasets: [
             {
-                //Se añade un prefijo personalizado a los labels 
+                //Se le agrega un prefijo personalizado a los labels, que además muestran el valor de la data para ese registro individual
                 label: "N° de eventos",
                 //Se establece la data de la grafica con un map de los registros
                 data: data_eventos.value.map(item => item.cantidad_eventos),
@@ -390,7 +389,7 @@ const OPCIONES_EVENTOS = {
     responsive: true,
     maintainAspectRatio: false,
 
-    //Se desactiva la leyenda de los datasets
+    //Se desactiva la leyenda de los datasets (cuadritos que salen encima de los graficos)
     plugins: {
         legend: {
             display: false
@@ -424,12 +423,12 @@ async function leerAnuncios() {
 //Constante con la que se crea el gráfico de anuncios, es computed para que cada que el valor cambie también cambie el gráfico
 const CHART_ANUNCIOS = computed(() => {
     return {
-        //Se establecen los labels que son el texto que se muestra al estar encima de una opción del gráfico, se hace un map para ver todos los registros que hay individualmente
+        //Se establecen los labels que son los textos que se muestran abajo del eje x, además se usa el map para evaluar cada registro indivualmente
         labels: data_anuncios.value.map(item => item.fecha),
         //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
         datasets: [
             {
-                //Se añade un prefijo personalizado a los labels 
+                //Se le agrega un prefijo personalizado a los labels, que además muestran el valor de la data para ese registro individual
                 label: "N° de anuncios",
                 //Se establece la data de la grafica con un map de los registros
                 data: data_anuncios.value.map(item => item.cantidad_anuncios),
@@ -450,7 +449,7 @@ const OPCIONES_ANUNCIOS = {
     responsive: true,
     maintainAspectRatio: false,
 
-    //Se desactiva la leyenda de los datasets
+    //Se desactiva la leyenda de los datasets (cuadritos que salen encima de los graficos)
     plugins: {
         legend: {
             display: false

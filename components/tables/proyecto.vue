@@ -21,50 +21,55 @@
                     </p>
                 </div>
             </div>
-            <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
+            <div class="buttons-data flex justify-center flex-row items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2 max-[400px]:flex-wrap"
                 v-if="proyecto.campos.visibilidad_proyecto == 1">
-                <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 imagenbtn max-[750px]:mr-0"
-                    @click="modalImagenes(proyecto.id)">
-                    <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                        <path d="M21 7.6v12.8a.6.6 0 01-.6.6H7.6a.6.6 0 01-.6-.6V7.6a.6.6 0 01.6-.6h12.8a.6.6 0 01.6.6z"
-                            stroke="#3F4280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path
-                            d="M18 4H4.6a.6.6 0 00-.6.6V18M7 16.8l5.444-1.8L21 18M16.5 13a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"
-                            stroke="#3F4280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </button>
-                <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 reportbtn" v-if="proyecto.campos.visibilidad_proyecto == 1" @click="generarReporteProyecto(proyecto.id)">
-                    <svg width="26px" height="26px" viewBox="0 0 24 24"
-                        stroke-width="2" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
-                        <path
-                            d="M4 21.4V2.6a.6.6 0 01.6-.6h11.652a.6.6 0 01.424.176l3.148 3.148A.6.6 0 0120 5.75V21.4a.6.6 0 01-.6.6H4.6a.6.6 0 01-.6-.6zM8 10h8M8 18h8M8 14h4"
-                            stroke="#7AAB97" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        <path d="M16 2v3.4a.6.6 0 00.6.6H20" stroke="#7AAB97" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round"></path>
-                    </svg>
-                </button>
-                <button
-                    class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[400px]:mx-4 max-[750px]:mt-2"
-                    @click="estadoActualizar(proyecto.id)" v-if="proyecto.campos.visibilidad_proyecto == 1">
-                    <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                        <path
-                            d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
-                            stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </button>
-                <button
-                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="borrarProyecto(proyecto.id, proyecto.campos.nombre_proyecto)"
-                    v-if="proyecto.campos.visibilidad_proyecto == 1">
-                    <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                        <path
-                            d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
-                            stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </button>
+                <div class="flex max-[400px]:mr-2">
+                    <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 imagenbtn max-[750px]:mr-0 max-[750px]:mt-2"
+                        @click="modalImagenes(proyecto.id)">
+                        <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path d="M21 7.6v12.8a.6.6 0 01-.6.6H7.6a.6.6 0 01-.6-.6V7.6a.6.6 0 01.6-.6h12.8a.6.6 0 01.6.6z"
+                                stroke="#3F4280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path
+                                d="M18 4H4.6a.6.6 0 00-.6.6V18M7 16.8l5.444-1.8L21 18M16.5 13a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"
+                                stroke="#3F4280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                    <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 reportbtn max-[750px]:mt-2 max-[750px]:m-0 max-[400px]:ml-2"
+                        v-if="proyecto.campos.visibilidad_proyecto == 1" @click="generarReporteProyecto(proyecto.id)">
+                        <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path
+                                d="M4 21.4V2.6a.6.6 0 01.6-.6h11.652a.6.6 0 01.424.176l3.148 3.148A.6.6 0 0120 5.75V21.4a.6.6 0 01-.6.6H4.6a.6.6 0 01-.6-.6zM8 10h8M8 18h8M8 14h4"
+                                stroke="#7AAB97" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M16 2v3.4a.6.6 0 00.6.6H20" stroke="#7AAB97" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex max-[400px]:mr-2">
+                    <button
+                        class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[750px]:mt-2"
+                        @click="estadoActualizar(proyecto.id)" v-if="proyecto.campos.visibilidad_proyecto == 1">
+                        <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path
+                                d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
+                                stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                    <button
+                        class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:ml-2"
+                        @click="borrarProyecto(proyecto.id, proyecto.campos.nombre_proyecto)"
+                        v-if="proyecto.campos.visibilidad_proyecto == 1">
+                        <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <path
+                                d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
+                                stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
             <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
                 v-else>
@@ -110,7 +115,7 @@
                 <!-- Modal body -->
                 <div class="p-6 space-y-6 pb-10">
                     <form @submit.prevent="submitForm()" class="flex-col">
-                        <div class="flex justify-evenly w-full max-[1200px]:flex-wrap">
+                        <div class="flex justify-evenly w-full flex-wrap">
                             <div class="flex-col w-64">
                                 <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                                 <input type="hidden" v-model="form.id_proyecto_donacion">
@@ -169,25 +174,6 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="h-36 mt-6 progressbar rounded-xl text-center">
-                                    <p class="mb-4 mt-2 text-base text-white">Porcentaje de logro actual registrado</p>
-                                    <div class="flex items-center justify-center text-white">
-                                        <p class="mr-4">$0.00</p>
-                                        <div class="w-2/4 bg-gray-200 h-12 rounded-2xl dark:bg-gray-700"
-                                            data-tooltip-target="tooltip-porcentaje" data-tooltip-placement="bottom">
-                                            <div v-if="formPorcentaje.porcentaje_logro > 0"
-                                                class="bg-blueProgressBar text-xs h-12 font-medium text-blue-100 text-center p-0.5 leading-none rounded-2xl flex justify-center items items-center"
-                                                :style="{ width: formPorcentaje.porcentaje_logro + '%' }"></div>
-                                        </div>
-                                        <p class="ml-4">${{ formPorcentaje.meta_monetaria_porcentaje }}</p>
-                                    </div>
-                                    <div id="tooltip-porcentaje" role="tooltip"
-                                        class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-purpleToolTip transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip">
-                                        Cantidad total: ${{ formPorcentaje.cantidad_total }}
-                                        <div class="tooltip-arrow" data-popper-arrow></div>
-                                    </div>
-                                    <p class="text-white text-base mt-2">{{ formPorcentaje.porcentaje_logro }}%</p>
-                                </div>
                             </div>
                             <div class="flex-col w-64">
                                 <div class="relative z-0">
@@ -225,49 +211,70 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex-col w-64">
-                                <p class="mb-4 text-center text-gray-200">Icono - Proyecto</p>
-                                <div class="flex-col">
-                                    <div class="ml-16 h-32 w-32 border-2 border-slate-900 rounded-lg cursor-pointer relative"
-                                        @click="seleccionarArchivoIcono" @mouseover="trueIconoBorrarIcono"
-                                        @mouseleave="falseIconoBorrarIcono">
-                                        <img v-if="iconoPreview" :src="iconoPreview" class="h-32 w-32 rounded-lg" />
-                                        <input type="file" ref="inputIcono" class="hidden" @change="cambiarIcono" />
-                                        <div v-if="mostrarIconoBorrarIcono && iconoPreview"
-                                            class="absolute inset-0 h-32 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
-                                                viewBox="0 0 24 24"
-                                                style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
-                                                <path
-                                                    d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
-                                                </path>
-                                            </svg>
+                            <div class="h-42 ml-32 mt-6 progressbar rounded-xl text-center min-w-[75%]">
+                                <p class="mb-4 mt-2 text-base text-white">Porcentaje de logro actual registrado</p>
+                                <div class="flex items-center justify-center text-white">
+                                    <p class="mr-4">$0.00</p>
+                                    <div class="w-2/4 bg-gray-200 h-12 rounded-2xl dark:bg-gray-700"
+                                        data-tooltip-target="tooltip-porcentaje" data-tooltip-placement="bottom">
+                                        <div v-if="formPorcentaje.porcentaje_logro > 0"
+                                            class="bg-blueProgressBar text-xs h-12 font-medium text-blue-100 text-center p-0.5 leading-none rounded-2xl flex justify-center items items-center"
+                                            :style="{ width: formPorcentaje.porcentaje_logro + '%' }"></div>
+                                    </div>
+                                    <p class="ml-4">${{ formPorcentaje.meta_monetaria_porcentaje }}</p>
+                                </div>
+                                <div id="tooltip-porcentaje" role="tooltip"
+                                    class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-purpleToolTip transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip">
+                                    Cantidad total: ${{ formPorcentaje.cantidad_total }}
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
+                                <p class="text-white text-base mt-2">{{ formPorcentaje.porcentaje_logro }}%</p>
+                            </div>
+                            <div class="flex flex-wrap w-64 mt-12 mb-24">
+                                <div class="flex ml-[-100px]">
+                                    <div class="flex-row">
+                                        <p class="mb-4 ml-12 text-center text-gray-200">Icono - Proyecto</p>
+                                        <div class="ml-16 h-32 w-32 border-2 border-slate-900 rounded-lg cursor-pointer relative"
+                                            @click="seleccionarArchivoIcono" @mouseover="trueIconoBorrarIcono"
+                                            @mouseleave="falseIconoBorrarIcono">
+                                            <img v-if="iconoPreview" :src="iconoPreview" class="h-32 w-32 rounded-lg" />
+                                            <input type="file" ref="inputIcono" class="hidden" @change="cambiarIcono" />
+                                            <div v-if="mostrarIconoBorrarIcono && iconoPreview"
+                                                class="absolute inset-0 h-32 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
+                                                    viewBox="0 0 24 24"
+                                                    style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                                                    <path
+                                                        d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-col">
+                                        <p class="mb-4 ml-12 text-center text-gray-200">Imagen - Principal</p>
+                                        <div class="ml-16 h-32 w-32 border-2 border-slate-900 rounded-lg cursor-pointer relative"
+                                            @click="seleccionarArchivoImagenPrincipal"
+                                            @mouseover="trueIconoBorrarImagenPrincipal"
+                                            @mouseleave="falseIconoBorrarImagenPrincipal">
+                                            <img v-if="imagenPrincipalPreview" :src="imagenPrincipalPreview"
+                                                class="h-32 w-32 rounded-lg" />
+                                            <input type="file" ref="inputImagenPrincipal" class="hidden"
+                                                @change="cambiarImagenPrincipal" />
+                                            <div v-if="mostrarIconoBorrarImagenPrincipal && imagenPrincipalPreview"
+                                                class="absolute inset-0 h-32 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
+                                                    viewBox="0 0 24 24"
+                                                    style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                                                    <path
+                                                        d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                                    </path>
+                                                </svg>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <p class="mb-4 mt-5 text-center text-gray-200">Imagen - Principal</p>
-                                <div class="flex-col">
-                                    <div class="ml-16 h-32 w-32 border-2 border-slate-900 rounded-lg cursor-pointer relative"
-                                        @click="seleccionarArchivoImagenPrincipal"
-                                        @mouseover="trueIconoBorrarImagenPrincipal"
-                                        @mouseleave="falseIconoBorrarImagenPrincipal">
-                                        <img v-if="imagenPrincipalPreview" :src="imagenPrincipalPreview"
-                                            class="h-32 w-32 rounded-lg" />
-                                        <input type="file" ref="inputImagenPrincipal" class="hidden"
-                                            @change="cambiarImagenPrincipal" />
-                                        <div v-if="mostrarIconoBorrarImagenPrincipal && imagenPrincipalPreview"
-                                            class="absolute inset-0 h-32 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
-                                                viewBox="0 0 24 24"
-                                                style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
-                                                <path
-                                                    d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
-                                                </path>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-buttons mt-10 flex justify-end items-end">
+                                <div class="modal-buttons flex justify-end items-end absolute bottom-6 right-6">
                                     <button class="h-10 w-10 rounded-lg flex justify-center items-center mr-4" type="button"
                                         @click="limpiarForm()">
                                         <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
@@ -301,7 +308,7 @@
                                     <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
                                     <button id="btnModalUpdate" type="submit"
                                         :disabled="!validarNombreProyecto() || form.estado_proyecto == 0"
-                                        class="h-10 w-10 rounded-lg flex justify-center items-center"
+                                        class="h-10 w-10 rounded-lg flex justify-center items-center ml-4"
                                         @click="accionForm('actualizar')">
                                         <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -458,7 +465,8 @@
 .image_loader {
     border: 3px solid #FFF;
 }
-.reportbtn{
+
+.reportbtn {
     border: 3px solid #7AAB97;
 }
 </style>
@@ -482,11 +490,11 @@ onMounted(() => {
 });
 
 const token = ref(null);
-const id=ref(null);
+const id = ref(null);
 
 async function generarReporteProyecto(id_proyecto) {
     //Constante donde se almacena la respuesta que retorna de la api
-    const ruta = new URL(`http://127.0.0.1:8000/api/proyecto_reporte/`+id_proyecto);
+    const ruta = new URL(`http://127.0.0.1:8000/api/proyecto_reporte/` + id_proyecto);
     //Le añadimos el token en la ruta del reporte
     ruta.searchParams.append('token', token.value);
     //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
