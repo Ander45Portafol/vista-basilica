@@ -107,7 +107,7 @@
                             </div>
                         </div>
                     </div>
-                    <TablesContacto v-if="contactos" :datosContactos="contactos" :actualizarDatos="leerContactos" />
+                    <TablesContacto v-if="contactos" :datos_contactos="contactos" :actualizar_datos="leerContactos" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <TailwindPagination v-if="contactos"

@@ -99,7 +99,7 @@
                             </div>
                         </div>
                     </div>
-                    <TablesUsuarios v-if="usuarios" :datosUsuarios="usuarios" :actualizarDatos="leerUsuarios"/>
+                    <TablesUsuarios v-if="usuarios" :datos_usuarios="usuarios" :actualizar_datos="leerUsuarios"/>
                 </div>
                 <div class="flex justify-center mt-6">
                     <TailwindPagination v-if="usuarios"
