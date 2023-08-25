@@ -106,7 +106,7 @@
                             </div>
                         </div>
                     </div>
-                    <TablesMensaje v-if="mensajes" :datosMensajes="mensajes" :actualizarDatos="leerMensajes" />
+                    <TablesMensaje v-if="mensajes" :datos_mensajes="mensajes" :actualizar_datos="leerMensajes" />
                 </div>
             </div>
             <!-- Paginación -->
@@ -152,8 +152,6 @@
 
 //Importacion para usar el hook de onMounted
 import { onMounted, ref } from "vue";
-//Importación del modal de flowbite
-import { Modal } from "flowbite";
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from "axios";
 //Importación del plugin de paginación de registros
@@ -176,9 +174,6 @@ definePageMeta({
 /*En este hook se crean todas las funciones relacionadas al manejo del modal, se crean en este onMounted para que se
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
-    //Agrega la funcion par ala validacion de la fecha de los  mensajes
-
-
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
 

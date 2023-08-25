@@ -1,7 +1,7 @@
 <!-- SCRUD como componente -->
 <template>
     <!-- Tabla como componente -->
-    <div class="contained-data flex-col" v-for="mensaje in datosMensajes" :key="mensaje.id">
+    <div class="contained-data flex-col" v-for="mensaje in datos_mensajes" :key="mensaje.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -373,23 +373,21 @@
 //Importación de archivo de validaciones
 import axios from 'axios';
 import Swal from 'sweetalert2';
-
 import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
-    datosMensajes: Array,
-    actualizarDatos: Function,
+    datos_mensajes: Array,
+    actualizar_datos: Function,
 });
 onMounted(() => {
-    console.log(props.datosMensajes);
-
+    console.log(props.datos_mensajes);
+    //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
+    token.value = localStorage.getItem('token');
+    //Agrega la funcion par ala validacion de la fecha de los  mensajes
     function validarFechas() {
         var res = validaciones.validarFecha(0, 1, 0);
         document.getElementById('fecha_mensaje').min = res.min;
         document.getElementById('fecha_mensaje').max = res.max;
     }
-
-    //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
-    token.value = localStorage.getItem('token');
     validarFechas();
     //Ejecutamos este metodo, para poder llenar el select del modal con la informacion de loS contactos
     llenarSelectContactos();
@@ -397,7 +395,6 @@ onMounted(() => {
 
 //Variable reactiva para almacenar el token del localStorag
 const token = ref(null);
-
 
 //Funciones para manejo del modal
 //Se crea una variable reactiva para manejar la información del modal
@@ -465,38 +462,52 @@ async function llenarSelectContactos() {
 }
 
 //Toast del sweetalert
-const Toast = Swal.mixin({
+const TOAST = Swal.mixin({
     toast: true,
     position: "top-end",
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener("mouseenter", Swal.stopTimer);
-        toast.addEventListener("mouseleave", Swal.resumeTimer);
+    didOpen: (TOAST) => {
+        TOAST.addEventListener("mouseenter", Swal.stopTimer);
+        TOAST.addEventListener("mouseleave", Swal.resumeTimer);
     },
 });
 
+//Variable para validar que acción se quiere hacer cuando se hace un submit al form
+var formAccion = null;
+
+//Función para evaluar que acción se va a hacer al hacer submit en el form
+function accionForm(accion) {
+    formAccion = accion;
+}
+
+//Función para actualizar un registro cuando se ejecuta el submit del form
+function submitForm() {
+    if (formAccion == "actualizar") {
+        actualizarMensaje();
+    }
+}
 
 async function estadoActualizar(id) {
     //se llama la funcion  para poder acapturar la
     await leerUnMensaje(id);
     //Constante para el modal
-    const modalElement = document.getElementById("staticModal");
+    const MODAL_ID = document.getElementById("staticModal");
     //Constante que contiene las caracteristicas del modal
-    const modalOptions = {
+    const OPCIONES_MODAL = {
         backdrop: "static",
         backdropClasses:
             "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
     };
     //Instanciamos el boton para cerrar el modal
-    const closeButton = document.getElementById("closeModal");
+    const CERRAR_BOTON = document.getElementById("closeModal");
     //Constante para el titulo del modal
     const modalText = document.getElementById("modalText");
     //Constante para el boton de actualizar dentro del modal
     const modalBtnUpdate = document.getElementById("btnModalUpdate");
     //Instanciamos el modal
-    const modal = new Modal(modalElement, modalOptions);
+    const modal = new Modal(MODAL_ID, OPCIONES_MODAL);
     //Le modificamos el texto del header al modal
     modalText.textContent = "Editar";
     //Colocamos visibilidad al botón de actualizar en el modal
@@ -504,7 +515,7 @@ async function estadoActualizar(id) {
     //Abrimos el modal
     modal.show();
     //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-    closeButton.addEventListener("click", function () {
+    CERRAR_BOTON.addEventListener("click", function () {
         //Ocultamos el modal
         modal.hide();
         //Limpiamos el modal
@@ -544,20 +555,6 @@ async function leerUnMensaje(id) {
         console.log(error);
     }
 }
-//Variable para validar que acción se quiere hacer cuando se hace un submit al form
-var formAccion = null;
-
-//Función para evaluar que acción se va a hacer al hacer submit en el form
-function accionForm(accion) {
-    formAccion = accion;
-}
-
-//Función para actualizar un registro cuando se ejecuta el submit del form
-function submitForm() {
-    if (formAccion == "actualizar") {
-        actualizarMensaje();
-    }
-}
 
 async function actualizarMensaje() {
     if (validarNombre() && validarApellido() && validarTelefono() && form.estado_mensaje != 0 && form.id_contacto != 0) {
@@ -586,10 +583,10 @@ async function actualizarMensaje() {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
-                //Se actualizan los datos con  las props esto hace que llame la actualizarDatos este hace la funcion de leer 
+                //Se actualizan los datos con  las props esto hace que llame la actualizar_datos este hace la funcion de leer 
             })
             //Se manda a llamar la accion para actualizar los datos con las props
-            props.actualizarDatos();
+            props.actualizar_datos();
             //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
             // if (buscar.value.buscador) {
             //     buscarMensajes();
@@ -600,7 +597,7 @@ async function actualizarMensaje() {
             document.getElementById("closeModal").click();
 
             //Se lanza la alerta de éxito
-            Toast.fire({
+            TOAST.fire({
                 icon: "success",
                 title: "Mensaje actualizado exitosamente",
             });
@@ -662,9 +659,9 @@ async function borrarMensaje(id) {
                     },
                 })
                 //Se manda a llamar la accion para actualizar los datos con las props
-                props.actualizarDatos();
+                props.actualizar_datos();
                 //Se lanza la alerta de éxito
-                Toast.fire({
+                TOAST.fire({
                     icon: "success",
                     title: "Mensaje ocultado exitosamente",
                 });
@@ -723,9 +720,9 @@ async function recuperarMensaje(id) {
                     },
                 }),
                     //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
+                    props.actualizar_datos();
                 //Se lanza la alerta de éxito
-                Toast.fire({
+                TOAST.fire({
                     icon: "success",
                     title: "Mensaje recuperado exitosamente",
                 });

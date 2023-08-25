@@ -284,11 +284,12 @@ import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
     datos_contactos: Array,
     actualizar_datos: Function,
-
+    cargar_tabla_crear: Function,
 });
+
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
-    console.log(props.datosContactos);
+    console.log(props.datos_contactos);
     id.value = localStorage.getItem('usuario');
     //Codigo para abrir el modal, con el boton de crear
     const AGREGAR_BOTON = document.getElementById('btnadd');
@@ -352,7 +353,7 @@ function limpiarForm() {
     form.value.visibilidad_contacto = false;
 }
 
-//Funciones para manejo del modal
+
 //Toast del sweetalert
 const TOAST = Swal.mixin({
     toast: true,
@@ -402,7 +403,7 @@ async function crearContacto() {
         });
         document.getElementById('closeModal').click();
         //Se lanza la alerta con el mensaje de éxito
-        props.actualizar_datos();
+        props.cargar_tabla_crear();
         TOAST.fire({
             icon: 'success',
             title: 'Contacto creado exitosamente'
@@ -437,19 +438,19 @@ async function crearContacto() {
 
 async function estadoActualizar(id) {
     await leerUnContacto(id);
-    const MODAL_ELEMENT = document.getElementById('staticModal');
-    const CLOSE_BUTTON = document.getElementById('closeModal');
-    const MODAL_TEXT = document.getElementById('modalText');
-    const MODAL_OPTIONS = {
+    const MODAL_ID = document.getElementById('staticModal');
+    const CERRAR_BOTON = document.getElementById('closeModal');
+    const TITULO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
         backdrop: 'static',
         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
     };
-    const modal = new Modal(MODAL_ELEMENT, MODAL_OPTIONS);
-    MODAL_TEXT.textContent = "Editar";
+    const modal = new Modal(MODAL_ID, OPCIONES_MODAL);
+    TITULO_MODAL.textContent = "Editar";
     modal.show();
     document.getElementById('btnModalAdd').classList.add('hidden');
     document.getElementById('btnModalUpdate').classList.remove('hidden');
-    CLOSE_BUTTON.addEventListener('click', function () {
+    CERRAR_BOTON.addEventListener('click', function () {
         modal.hide();
         limpiarForm();
     });
@@ -501,6 +502,8 @@ async function leerUnContacto(id) {
         }
     }
 }
+
+
 
 async function actualizarContacto() {
     if (form.tipo_contacto != 0 && validarNombreContacto()) {
@@ -656,23 +659,30 @@ async function recuperarUnContacto(id) {
                     title: "Contacto recuperado exitosamente",
                 });
             } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
+                console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (!error.response.data.errors) {
                 //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
                 //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
 
                 //Se muestra un sweetalert con el mensaje
                 Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
                 });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }``
             }
         }
     });

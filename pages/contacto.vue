@@ -107,7 +107,7 @@
                             </div>
                         </div>
                     </div>
-                    <TablesContacto v-if="contactos" :datos_contactos="contactos" :actualizar_datos="leerContactos" />
+                    <TablesContacto v-if="contactos" :datos_contactos="contactos" :actualizar_datos="cargarTabla" :cargar_tabla_crear="limpiarBuscador" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <TailwindPagination v-if="contactos"
@@ -337,6 +337,16 @@ function limpiarBuscador() {
     leerContactos();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
+}
+
+
+function cargarTabla(){
+    if(buscar.value.buscador){
+        buscarContactos();
+        
+    }else{
+        leerContactos();
+    }
 }
 
 
