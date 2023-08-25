@@ -549,24 +549,24 @@ function submitForm() {
 //Metodo para agregar un nuevo usuario
 async function crearUsuario() {
     try {
-        const formData = new FormData();
-        formData.append("nombre_usuario", form.value.nombre_usuario);
-        formData.append("apellido_usuario", form.value.apellido_usuario);
-        formData.append("usuario", form.value.usuario);
-        formData.append("numero_documento_usuario", form.value.numero_documento_usuario);
-        formData.append("tipo_documento", form.value.tipo_documento);
-        formData.append("correo_usuario", form.value.correo_usuario);
-        formData.append("telefono_usuario", form.value.telefono_usuario);
-        formData.append("tema", form.value.tema);
-        formData.append("idioma", form.value.idioma);
-        formData.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
-        formData.append(
+        const FORMDATA = new FormData();
+        FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
+        FORMDATA.append("apellido_usuario", form.value.apellido_usuario);
+        FORMDATA.append("usuario", form.value.usuario);
+        FORMDATA.append("numero_documento_usuario", form.value.numero_documento_usuario);
+        FORMDATA.append("tipo_documento", form.value.tipo_documento);
+        FORMDATA.append("correo_usuario", form.value.correo_usuario);
+        FORMDATA.append("telefono_usuario", form.value.telefono_usuario);
+        FORMDATA.append("tema", form.value.tema);
+        FORMDATA.append("idioma", form.value.idioma);
+        FORMDATA.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
+        FORMDATA.append(
             "id_rol_usuario",
             form.value.id_rol_usuario
         );
-        formData.append("imagen_usuario", form.value.imagen_usuario);
+        FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
         //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/usuarios/", formData, {
+        await axios.post("/usuarios/", FORMDATA, {
             headers: {
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${token.value}`,
@@ -669,24 +669,24 @@ async function leerUnUsuario(id_usuario) {
 async function actualizarUsuario() {
     try {
         var id = form.value.id_usuario;
-        const formData = new FormData();
-        formData.append("nombre_usuario", form.value.nombre_usuario);
-        formData.append("apellido_usuario", form.value.apellido_usuario);
-        formData.append("usuario", form.value.usuario);
-        formData.append("numero_documento_usuario", form.value.numero_documento_usuario);
-        formData.append("tipo_documento", form.value.tipo_documento);
-        formData.append("correo_usuario", form.value.correo_usuario);
-        formData.append("telefono_usuario", form.value.telefono_usuario);
-        formData.append("tema", form.value.tema);
-        formData.append("idioma", form.value.idioma);
-        formData.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
-        formData.append(
+        const FORMDATA = new FormData();
+        FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
+        FORMDATA.append("apellido_usuario", form.value.apellido_usuario);
+        FORMDATA.append("usuario", form.value.usuario);
+        FORMDATA.append("numero_documento_usuario", form.value.numero_documento_usuario);
+        FORMDATA.append("tipo_documento", form.value.tipo_documento);
+        FORMDATA.append("correo_usuario", form.value.correo_usuario);
+        FORMDATA.append("telefono_usuario", form.value.telefono_usuario);
+        FORMDATA.append("tema", form.value.tema);
+        FORMDATA.append("idioma", form.value.idioma);
+        FORMDATA.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
+        FORMDATA.append(
             "id_rol_usuario",
             form.value.id_rol_usuario
         );
-        formData.append("imagen_usuario", form.value.imagen_usuario);
-        console.log(formData);
-        await axios.post("/usuarios_update/" + id, formData, {
+        FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
+        console.log(FORMDATA);
+        await axios.post("/usuarios_update/" + id, FORMDATA, {
             headers: {
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${token.value}`,
