@@ -369,7 +369,6 @@
 <script setup>
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
 //Definimos las props donde se reciben los datos desde el componente principal
 const props = defineProps({
