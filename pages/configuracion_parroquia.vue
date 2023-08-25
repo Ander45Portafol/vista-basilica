@@ -32,7 +32,7 @@
         <div class="">
             <!-- Formulario -->
             <form action=""
-                class="flex pt-20 justify-evenly max-[700px]:flex-col max-[700px]:items-center max-[700px]:text-2xl">
+                class="flex pt-20 justify-evenly max-[700px]:flex-col max-[700px]:items-center max-[700px]:text-2xl overflow-auto h-screen">       
                 <div class="flex-col w-80">
                     <!-- Campo de entrada oculto -->
                     <input type="hidden" v-model="form.id_configuracion_parroquia">
@@ -73,9 +73,9 @@
                             - Representante</label>
                     </div>
 
-                    <div class="pt-4 mt-2 flex-col">
+                    <div class="pt-4 mt-2">
                         <!-- Etiqueta: Tipo - Documento -->
-                        <label for="" class="text-sm absolute text-slate-900">Tipo - Documento</label>
+                        <label for="" class="text-sm text-slate-900">Tipo - Documento</label>
                         <!-- Selección desplegable -->
                         <select id="underline_select" v-model="form.tipo_documento_representante"
                             class="block mt-4 py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-salte-900 appearance-none focus:outline-none focus:ring-0 focus:border-slate-900 peer">
