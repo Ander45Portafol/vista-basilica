@@ -1,5 +1,5 @@
 <template>
-    <div class="contained-data flex-col" v-for="usuario in datosUsuarios" :key="usuario.id">
+    <div class="contained-data flex-col" v-for="usuario in datos_usuarios" :key="usuario.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -370,37 +370,41 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import validaciones from '../../assets/validaciones.js';
+
 //Definimos las props donde se reciben los datos desde el componente principal
 const props = defineProps({
     //Prop que se utiliza para cargar los datos de la tabla
-    datosUsuarios: Array,
+    datos_usuarios: Array,
     //Prop que recibe la funcion de leerUsuarios, para recargar la tabla, cada vez de finalizar alguna acción
-    actualizarDatos: Function,
+    actualizar_datos: Function,
 });
 
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
-    //Codigo para abrir el modal, con el boton de crear
-    const buttonElement = document.getElementById('btnadd');
-    const modalElement = document.getElementById('staticModal');
-    const closeButton = document.getElementById('closeModal');
-    const modalText = document.getElementById('modalText');
-    const modalOptions = {
+    //Capturando datos para abrir el modal, con el boton de crear
+    const AGREGAR_BOTON = document.getElementById('btnadd');
+    const MODAL_ID = document.getElementById('staticModal');
+    const CERRAR_BOTON   = document.getElementById('closeModal');
+    const TITULO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
         backdrop: 'static',
         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
     };
 
-    if (modalElement) {
-        const modal = new Modal(modalElement, modalOptions);
-        buttonElement.addEventListener('click', function () {
-            modalText.textContent = "Registrar";
+    if (MODAL_ID) {
+        const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+        //programando el evento click del boton para abrir el modal
+        AGREGAR_BOTON.addEventListener('click', function () {
+            TITULO_MODAL.textContent = "Registrar";
             document.getElementById('btnModalAdd').classList.remove('hidden');
             document.getElementById('btnModalUpdate').classList.add('hidden');
+            //Codigo para espeficiar que al darle click con este boton, se ejecute la funcion de crear
             accionForm('crear');
-            modal.show();
+            MODAL.show();
         });
-        closeButton.addEventListener('click', function () {
-            modal.hide();
+        //Programando evento click del boton de cerrar modal
+        CERRAR_BOTON.addEventListener('click', function () {
+            MODAL.hide();
         });
     }
     //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
@@ -408,6 +412,20 @@ onMounted(() => {
     //Ejecutamos este metodo, para poder llenar el select del modal con la informacion de los roles
     llenarRolUsuario();
 });
+
+//Variable reativa para capturar los roles de los usuarios
+var roles = ref(null);
+
+//Funcion para agregarle el valor de los roles a la variable reactiva
+async function llenarRolUsuario() {
+    const { data: res } = await axios.get('roles-select', {
+        headers: {
+            Authorization: `Bearer ${token.value}`,
+        },
+    });
+    roles.value = res;
+}
+
 //Variable reactiva donde guardamos el token
 const token = ref(null);
 //Variable para poder concectar con el storage de la api y asi poder buscar imagenes
@@ -455,44 +473,24 @@ const cambiarImagen = () => {
     }
 };
 
-//Variable para validar que acción se quiere hacer cuando se hace un submit al form
-var formAccion = null;
+//Variable reactiva para manejar los campos
+const form = ref({
+    id_usuario: "",
+    nombre_usuario: "",
+    apellido_usuario: "",
+    usuario: "",
+    numero_documento_usuario: "",
+    tipo_documento: 0,
+    correo_usuario: "",
+    imagen_usuario: "",
+    telefono_usuario: "",
+    idioma: "Español (ES)",
+    tema: "Claro",
+    visibilidad_usuario: false,
+    id_rol_usuario: 0,
+});
 
-//Función para evaluar que acción se va a hacer al hacer submit en el form
-function accionForm(accion) {
-    formAccion = accion;
-}
-
-//Función para crear/actualizar un registro cuando se ejecuta el submit del form
-function submitForm() {
-    if (formAccion == "crear") {
-        crearUsuario();
-    } else {
-        actualizarUsuario();
-    }
-}
-//Metodo para configurar el modal y enviar el id del usuario
-function estadoActualizar(id) {
-    const modalElement = document.getElementById('staticModal');
-    const closeButton = document.getElementById('closeModal');
-    const modalText = document.getElementById('modalText');
-    const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-    const modal = new Modal(modalElement, modalOptions);
-    modalText.textContent = "Editar";
-    modal.show();
-    accionForm('actualizar');
-    document.getElementById('btnModalAdd').classList.add('hidden');
-    document.getElementById('btnModalUpdate').classList.remove('hidden');
-    closeButton.addEventListener('click', function () {
-        modal.hide();
-        limpiarForm();
-    });
-    leerUnUsuario(id);
-}
-
+//Metodo para limpiar los campos del modal
 function limpiarForm() {
     //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
     form.value.id_usuario = "";
@@ -516,22 +514,121 @@ function limpiarImagen() {
     form.value.imagen_usuario = "";
     mostrarIconoBorrar.value = false;
 }
-//Variable reactiva para manejar los campos
-const form = ref({
-    id_usuario: "",
-    nombre_usuario: "",
-    apellido_usuario: "",
-    usuario: "",
-    numero_documento_usuario: "",
-    tipo_documento: 0,
-    correo_usuario: "",
-    imagen_usuario: "",
-    telefono_usuario: "",
-    idioma: "Español (ES)",
-    tema: "Claro",
-    visibilidad_usuario: false,
-    id_rol_usuario: 0,
-});
+
+//Metodo para mostrar las alertas
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+})
+
+//Variable para validar que acción se quiere hacer cuando se hace un submit al form
+var formAccion = null;
+
+//Función para evaluar que acción se va a hacer al hacer submit en el form
+function accionForm(accion) {
+    formAccion = accion;
+}
+
+//Función para crear/actualizar un registro cuando se ejecuta el submit del form
+function submitForm() {
+    if (formAccion == "crear") {
+        crearUsuario();
+    } else {
+        actualizarUsuario();
+    }
+}
+
+//Metodo para agregar un nuevo usuario
+async function crearUsuario() {
+    try {
+        const FORMDATA = new FormData();
+        FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
+        FORMDATA.append("apellido_usuario", form.value.apellido_usuario);
+        FORMDATA.append("usuario", form.value.usuario);
+        FORMDATA.append("numero_documento_usuario", form.value.numero_documento_usuario);
+        FORMDATA.append("tipo_documento", form.value.tipo_documento);
+        FORMDATA.append("correo_usuario", form.value.correo_usuario);
+        FORMDATA.append("telefono_usuario", form.value.telefono_usuario);
+        FORMDATA.append("tema", form.value.tema);
+        FORMDATA.append("idioma", form.value.idioma);
+        FORMDATA.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
+        FORMDATA.append(
+            "id_rol_usuario",
+            form.value.id_rol_usuario
+        );
+        FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.post("/usuarios/", FORMDATA, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+        document.getElementById('closeModal').click();
+        //Se lanza la alerta con el mensaje de éxito
+        props.actualizar_datos();
+        Toast.fire({
+            icon: 'success',
+            title: 'Usuario creado exitosamente'
+        });
+    } catch (error) {
+        console.log(error);
+        const mensajeError = error.response.data.message;
+        if (!error.response.data.errors) {
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            const res = validaciones.mensajeSqlState(sqlState);
+
+            //Se cierra el modal
+            document.getElementById('closeModal').click();
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
+    }
+}
+
+//Metodo para configurar el modal y enviar el id del usuario
+async function estadoActualizar(id) {
+    await leerUnUsuario(id);
+    const MODAL_ID = document.getElementById('staticModal');
+    const CERRAR_BOTON = document.getElementById('closeModal');
+    const TITULO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+    const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+    TITULO_MODAL.textContent = "Editar";
+    MODAL.show();
+    accionForm('actualizar');
+    document.getElementById('btnModalAdd').classList.add('hidden');
+    document.getElementById('btnModalUpdate').classList.remove('hidden');
+    CERRAR_BOTON.addEventListener('click', function () {
+        MODAL.hide();
+        limpiarForm();
+    });
+}
+
 //Metodo para capturar el id del usuario y buscar la respectiva informacion
 async function leerUnUsuario(id_usuario) {
     try {
@@ -566,18 +663,46 @@ async function leerUnUsuario(id_usuario) {
         console.log(error);
     }
 }
-//Metodo para mostrar las alertas
-const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
+
+//Metodo para actualizar la informacion de un usuario
+async function actualizarUsuario() {
+    try {
+        var id = form.value.id_usuario;
+        const FORMDATA = new FormData();
+        FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
+        FORMDATA.append("apellido_usuario", form.value.apellido_usuario);
+        FORMDATA.append("usuario", form.value.usuario);
+        FORMDATA.append("numero_documento_usuario", form.value.numero_documento_usuario);
+        FORMDATA.append("tipo_documento", form.value.tipo_documento);
+        FORMDATA.append("correo_usuario", form.value.correo_usuario);
+        FORMDATA.append("telefono_usuario", form.value.telefono_usuario);
+        FORMDATA.append("tema", form.value.tema);
+        FORMDATA.append("idioma", form.value.idioma);
+        FORMDATA.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
+        FORMDATA.append(
+            "id_rol_usuario",
+            form.value.id_rol_usuario
+        );
+        FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
+        console.log(FORMDATA);
+        await axios.post("/usuarios_update/" + id, FORMDATA, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token.value}`,
+            }
+        });
+        document.getElementById('closeModal').click();
+        props.actualizar_datos();
+        Toast.fire({
+            icon: 'success',
+            title: 'Usuario actualizado exitosamente'
+        });
     }
-})
+    catch (error) {
+        console.log(error);
+    }
+}
+
 //Codigo para cambiar el estado del usuarios a inactivo
 async function borrarUsuario(id, nombre_usuario) {
     console.log(id);
@@ -590,6 +715,7 @@ async function borrarUsuario(id, nombre_usuario) {
         confirmButtonColor: '#3F4280',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Confirmar',
+        allowOutsideClick: false,
         cancelButtonText: 'Cancelar'
     }).then(async (result) => {
         if (result.isConfirmed) {
@@ -603,7 +729,7 @@ async function borrarUsuario(id, nombre_usuario) {
                         icon: 'success',
                         title: 'Usuario desactivado exitosamente'
                     }));
-                    props.actualizarDatos();
+                props.actualizar_datos();
             } catch (error) {
                 console.log(error);
             }
@@ -622,7 +748,8 @@ async function recuperarUsuario(id, nombre_usuario) {
         confirmButtonColor: '#3F4280',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
+        cancelButtonText: 'Cancelar',
+        allowOutsideClick: false,
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
@@ -631,7 +758,7 @@ async function recuperarUsuario(id, nombre_usuario) {
                         Authorization: `Bearer ${token.value}`,
                     },
                 });
-                props.actualizarDatos();
+                props.actualizar_datos();
                 Toast.fire({
                     icon: 'success',
                     title: 'Usuario recuperado exitosamente'
@@ -641,116 +768,6 @@ async function recuperarUsuario(id, nombre_usuario) {
             }
         }
     });
-}
-//Metodo para agregar un nuevo usuario
-async function crearUsuario() {
-    try {
-        const formData = new FormData();
-        formData.append("nombre_usuario", form.value.nombre_usuario);
-        formData.append("apellido_usuario", form.value.apellido_usuario);
-        formData.append("usuario", form.value.usuario);
-        formData.append("numero_documento_usuario", form.value.numero_documento_usuario);
-        formData.append("tipo_documento", form.value.tipo_documento);
-        formData.append("correo_usuario", form.value.correo_usuario);
-        formData.append("telefono_usuario", form.value.telefono_usuario);
-        formData.append("tema", form.value.tema);
-        formData.append("idioma", form.value.idioma);
-        formData.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
-        formData.append(
-            "id_rol_usuario",
-            form.value.id_rol_usuario
-        );
-        formData.append("imagen_usuario", form.value.imagen_usuario);
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/usuarios/", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token.value}`,
-            },
-        });
-        document.getElementById('closeModal').click();
-        //Se lanza la alerta con el mensaje de éxito
-        props.actualizarDatos();
-        Toast.fire({
-            icon: 'success',
-            title: 'Usuario creado exitosamente'
-        });
-    } catch (error) {
-        console.log(error);
-        const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        } else {
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: mensajeError,
-                confirmButtonColor: '#3F4280'
-            });
-        }
-    }
-}
-//Metodo para actualizar la informacion de un usuario
-async function actualizarUsuario() {
-    try {
-        var id = form.value.id_usuario;
-        const formData = new FormData();
-        formData.append("nombre_usuario", form.value.nombre_usuario);
-        formData.append("apellido_usuario", form.value.apellido_usuario);
-        formData.append("usuario", form.value.usuario);
-        formData.append("numero_documento_usuario", form.value.numero_documento_usuario);
-        formData.append("tipo_documento", form.value.tipo_documento);
-        formData.append("correo_usuario", form.value.correo_usuario);
-        formData.append("telefono_usuario", form.value.telefono_usuario);
-        formData.append("tema", form.value.tema);
-        formData.append("idioma", form.value.idioma);
-        formData.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
-        formData.append(
-            "id_rol_usuario",
-            form.value.id_rol_usuario
-        );
-        formData.append("imagen_usuario", form.value.imagen_usuario);
-        console.log(formData);
-        await axios.post("/usuarios_update/" + id, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token.value}`,
-            }
-        });
-        document.getElementById('closeModal').click();
-        props.actualizarDatos();
-        Toast.fire({
-            icon: 'success',
-            title: 'Usuario actualizado exitosamente'
-        });
-    }
-    catch (error) {
-        console.log(error);
-    }
-}
-//Variable reativa para capturar los roles de los usuarios
-var roles = ref(null);
-//Funcion para agregarle el valor de los roles a la variable reactiva
-async function llenarRolUsuario() {
-    const { data: res } = await axios.get('roles-select', {
-        headers: {
-            Authorization: `Bearer ${token.value}`,
-        },
-    });
-    roles.value = res;
 }
 
 //Validaciones
@@ -795,7 +812,7 @@ function validarNumeroTelefono() {
 }
 
 .buttons-data .changebtn {
-    border: 3px solid #3F4280; 
+    border: 3px solid #3F4280;
 }
 
 .modal {
