@@ -1,10 +1,9 @@
 <template>
   <div class="w-full grid place-items-center">
-    <div class="top flex-col">
-      <h1 class="font-bold text-white text-4xl text-center">Iniciar sesión</h1>
-      <h3 class="font-semibold text-white mt-4 text-center">AD-ASTRA</h3>
+    <div class="top flex items-center">
+      <img src="/img/logo_con_letras.svg" alt="logo_login" class="h-[20vh]">
     </div>
-    <form class="middle flex-col w-1/2 mt-20" @submit.prevent="login()">
+    <form class="middle flex-col w-1/2 mt-12" @submit.prevent="login()">
       <div class="relative z-0">
         <input type="text" id="username" name="usuario" v-model="form.usuario" required maxlength="50"
           @input="validarUsuario()"

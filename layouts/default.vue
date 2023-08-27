@@ -45,7 +45,6 @@
   }
     
   .container-left {
-    margin-top: 70px;
     border: none;
     width: 100%;
     height: 100vh;

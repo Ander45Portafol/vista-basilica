@@ -2,7 +2,7 @@ Cosas a instalar:
 
 1- Axios (Para las rutas): npm install @nuxtjs/axios
 2- Sweetalert2: npm install sweetalert2
-3- Paginación (Da acceso al componente para paginar los registros): npm install laravel-vue-pagination
+3- Paginación (Da acceso al componente para paginar los registros): npm i vue-awesome-paginate
 4- FullCalendar: 
 
 npm install @fullcalendar/core 
