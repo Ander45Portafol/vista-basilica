@@ -53,7 +53,7 @@ const CONTEO = () => {
     console.log(minutos_restantes.value + ':' + segundos_restantes.value);
 
     //Si queda menos de 1 minuto se muestra un sweetalert y se inicia el intervalo del titulo
-    if (segundos_restantes_totales.value <= 10 && !alerta_1minuto) {
+    if (segundos_restantes_totales.value <= 60 && !alerta_1minuto) {
       alerta_1minuto = Swal.fire({
         title: 'La sesión caduca en: ' + minutos_restantes.value + ':' + segundos_restantes.value,
         icon: 'warning',
