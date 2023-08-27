@@ -7,9 +7,11 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 //Importación de sweetalert
 import Swal from 'sweetalert2';
+//Importación de axios
+import axios from 'axios';
 
 //Se calculan los 5 minutos_restantes en segundos_restantes
-const segundos_restantes_totales = ref(1 * 60);
+const segundos_restantes_totales = ref(5 * 60);
 //Se dividen los segundos_restantes totales entre 60 para sacar los minutos_restantes restantes
 const minutos_restantes = ref(Math.floor(segundos_restantes_totales.value / 60));
 //Se usa el operador mod con los segundos_restantes totales entre 60 para saber cuantos segundos_restantes quedan en el minuto
@@ -66,6 +68,7 @@ const CONTEO = () => {
       //Se evalua el resultado del sweetalert para que si el usuario da click en confirmar se reinicie el timer
       alerta_1minuto.then((result) => {
         if (result.isConfirmed) {
+          refreshToken();
           reiniciarTimer();
         }
       });
@@ -97,9 +100,22 @@ const CAMBIAR_TITULO = () => {
 
 //Función para reiniciar el timer
 function reiniciarTimer() {
-  segundos_restantes_totales.value = (1 * 60);
+  segundos_restantes_totales.value = (5 * 60);
   alerta_1minuto = null;
   clearInterval(intervalo_titulo);
+}
+
+//Función para refrescar el token cuando sea necesario
+async function refreshToken() {
+  //Se realiza la petición axios
+  const res = await axios.get('refresh/', {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  });
+
+  //Se actualiza el valor del token en el localStorage
+  localStorage.setItem('token', res.data.token);
 }
 
 </script>

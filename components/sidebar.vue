@@ -216,12 +216,12 @@ aside {
 
   onMounted(() => {
     initTooltips();
-    token.value = localStorage.getItem('token');
   });
 
   const token = ref(null);
 
   async function deshabilitarToken() {
+    token.value = localStorage.getItem('token');
     try {
         await axios.post("/logout", token.value, {
             headers: {
