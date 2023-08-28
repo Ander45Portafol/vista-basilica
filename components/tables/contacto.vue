@@ -181,10 +181,10 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="modal-buttons mt-4 flex justify-end items-end">
+                            <div class="modal-buttons mt-4 flex justify-end items-end max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                                 <!-- Se le coloca la función para limpiar el form al botón -->
                                 <button type="button" id="btnModalClear" @click="limpiarForm()"
-                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4 ">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
@@ -204,7 +204,7 @@
                                 <!-- Se le coloca la función para crear al botón -->
                                 <button id="btnModalAdd" type="submit"
                                     :disabled="form.tipo_contacto == 0 || !validarNombreContacto()"
-                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[400px]:mx-4 max-[750px]:my-1 max-[750px]:ml-[-1px] max-[400px]:ml-6 max-[400px]:mr-[6px]">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -218,7 +218,7 @@
                                 <!-- Se le coloca la función para actualizar al botón -->
                                 <button id="btnModalUpdate" type="submit"
                                     :disabled="form.tipo_contacto == 0 || !validarNombreContacto()"
-                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4 max-[750px]:mt-[1px]">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
