@@ -113,7 +113,6 @@
 </template>
 <script setup>
 //Seccion para importar librerias o extensiones
-import { Modal } from 'flowbite'
 import { TailwindPagination } from 'laravel-vue-pagination';
 import { onMounted } from 'vue';
 import axios from 'axios';
