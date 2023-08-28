@@ -9,6 +9,7 @@ import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import ModalEvento from '../components/tables/evento.vue'
 
 let contador_eventos = 0
 let diaActual = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
@@ -20,6 +21,7 @@ function crearIdEvento() {
 export default defineComponent({
   components: {
     FullCalendar,
+    ModalEvento
   },
   data() {
     const INITIAL_EVENTS = [
@@ -35,6 +37,7 @@ export default defineComponent({
       }
     ]
     return {
+      mostrarModal: false,
       calendarOptions: {
         plugins: [
           dayGridPlugin,
@@ -69,7 +72,8 @@ export default defineComponent({
     handleWeekendsToggle() {
       this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
     },
-    handleDateSelect(selectInfo) {
+    handleDateSelect() {
+      this.mostrarModal = true;
       let title = prompt('Please enter a new title for your event')
       let calendarApi = selectInfo.view.calendar
 
@@ -93,26 +97,8 @@ export default defineComponent({
     handleEvents(events) {
       this.currentEvents = events
     },
-  }
+  },
 })
-
-const formData = ref({
-  id_evento: "0",
-  nombre_evento: "",
-  descripcion_evento: "",
-  fecha_evento: "",
-  hora_inicial_evento: "",
-  hora_final_evento: "",
-  nombre_consultor: "",
-  apellido_consultor: "",
-  telefono_consultor: "",
-  visibilidad_evento: "",
-  modalidad_evento: "",
-  estado_evento: "",
-  id_personal: "",
-  id_zona: "",
-  id_configuracion_parroquia: 1,
-});
 
 </script>
 
