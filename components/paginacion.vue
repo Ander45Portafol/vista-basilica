@@ -42,9 +42,9 @@ function eventoCambioDePagina(pagina) {
         -lastPageContent: Establece el texto que se va a mostrar en el botón para ir a la última página (>>)
 
     -->
-    <vue-awesome-paginate :total-items="props.items_totales" :items-per-page="10" :max-pages-shown="1"
-        v-model="pagina_actual" :on-click="eventoCambioDePagina" showEndingButtons=true hidePrevNext=true
-        showBreakpointButtons=true :startingBreakpointContent="'...' + (pagina_actual - 1)"
+    <vue-awesome-paginate :total-items="props.items_totales" :items-per-page="1" :max-pages-shown="1"
+        v-model="pagina_actual" :on-click="eventoCambioDePagina" :showEndingButtons="Boolean(1)" :hidePrevNext="Boolean(1)"
+        :showBreakpointButtons="Boolean(1)" :startingBreakpointContent="'...' + (pagina_actual - 1)"
         :endingBreakpointButtonContent="pagina_actual + 1 + '...'" firstPageContent="<<" lastPageContent=">>" />
 </template>
 <style>
