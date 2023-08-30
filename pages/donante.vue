@@ -85,7 +85,7 @@
 <script setup>
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from 'axios';
-import { TailwindPagination } from 'laravel-vue-pagination';
+
 import { ref } from 'vue'
 //Importación de sweetalert
 import Swal from 'sweetalert2';

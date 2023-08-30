@@ -475,9 +475,7 @@ import { onMounted, ref } from 'vue'
 import { Modal } from 'flowbite'
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from 'axios';
-//Importación del plugin de paginación de registros
-import { TailwindPagination } from 'laravel-vue-pagination';
-//Importación de sweetalert
+//Impiónortac de sweetalert
 import Swal from 'sweetalert2';
 //Importación de archivo de validaciones
 import validaciones from '../assets/validaciones.js';

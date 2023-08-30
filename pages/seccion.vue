@@ -155,8 +155,6 @@
 import { onMounted, ref } from "vue";
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from "axios";
-//Importación del plugin de paginación de registros
-import { TailwindPagination } from "laravel-vue-pagination";
 
 /*definePageMeta es un macro compilador (Se ejecuta mientras el programa se compila) para los componentes que se 
 encuentran en /pages, este permite establecer/transformar las propiedades de los componentes de nuxt*/
