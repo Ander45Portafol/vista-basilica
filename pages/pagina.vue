@@ -182,7 +182,7 @@
                                 d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
                         </svg>
                         <div class="text-base">
-                            <span class="font-medium">No se encontraron registros, </span> la búsqueda realizada no
+                            <span class="font-medium">No se encontraron registros, </span> la petición realizada no
                             obtuvo resultados.
                         </div>
                     </div>
@@ -615,8 +615,6 @@ async function leerPaginas() {
 
 //Función para buscar registros dependiendo del valor del buscador
 async function buscarPaginas() {
-    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-    token.value = localStorage.getItem('token');
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
@@ -651,6 +649,8 @@ async function buscarPaginas() {
             pagina.value = 1;
             leerPaginas();
             useRouter().push({ query: { pagina: pagina.value } });
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         }
     } catch (error) {
         console.log(error);
