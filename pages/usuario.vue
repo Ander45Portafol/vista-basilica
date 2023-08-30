@@ -120,7 +120,7 @@
                             </div>
                         </div>
                     </div>
-                    <TablesUsuarios v-if="usuarios.length > 0" :datos_usuarios="usuarios" :actualizar_datos="cargarTabla" />
+                    <TablesUsuarios v-if="usuarios.length > 0" :datos_usuarios="usuarios" :actualizar_datos="cargarTabla" :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="usuarios.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
@@ -219,8 +219,8 @@ async function leerUsuarios() {
 
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 1) {
-                usuarios.value.push(res.data.slice(i, i + 1));
+            for (let i = 0; i < res.data.length; i += 10) {
+                usuarios.value.push(res.data.slice(i, i + 10));
             }
 
             //Se reinicia el timer
@@ -241,8 +241,8 @@ async function leerUsuarios() {
             usuarios.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 1) {
-                usuarios.value.push(res.data.slice(i, i + 1));
+            for (let i = 0; i < res.data.length; i += 2) {
+                usuarios.value.push(res.data.slice(i, i + 2));
             }
 
             //Se reinicia el timer
@@ -293,8 +293,8 @@ async function buscarUsuarios() {
                 ceroRegistrosEncontrados.value = true;
             } else {
                 //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data.value.length; i += 1) {
-                    usuarios.value.push(data.value.slice(i, i + 1));
+                for (let i = 0; i < data.value.length; i += 10) {
+                    usuarios.value.push(data.value.slice(i, i + 10));
                 }
                 //Se actualiza el valor de la constante de búsqueda a false
                 ceroRegistrosEncontrados.value = false;

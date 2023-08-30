@@ -1,5 +1,5 @@
 <template>
-    <div class="contained-data flex-col" v-for="usuario in datos_usuarios[datos_usuarios.length - 1]" :key="usuario.id">
+    <div class="contained-data flex-col" v-for="usuario in datos_usuarios[paginacion - 1]" :key="usuario.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -379,8 +379,9 @@ const props = defineProps({
     datos_usuarios: Array,
     //Prop que recibe la funcion de leerUsuarios, para recargar la tabla, cada vez de finalizar alguna acción
     actualizar_datos: Function,
+    paginacion:Number,
 });
-console.log(props.datos_usuarios);
+console.log(props.paginacion);
 //Evento para reiniciar el tiempo del componente del timer
 const EVENT = new Event('reset-timer');
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
