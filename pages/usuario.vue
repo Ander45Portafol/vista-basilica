@@ -8,8 +8,9 @@
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar... (usuario/correo)" v-model="buscar.buscador" @keyup="buscarUsuarios()">
                     <div class="flex justify-end items-center">
-                        <button class="absolute mr-4"><svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24"
-                                fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                        <button class="absolute mr-4" type="button" @click="limpiarBuscador()"><svg width="20px"
+                                height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 </path>
@@ -73,6 +74,23 @@
                     -
                     <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
                 </p>
+                <!-- Alerta a mostrar el usuario busca algo que no coincide con ningún registro -->
+                <div class="flex-col">
+                    <div v-if="usuarios.length == 0 && ceroRegistrosEncontrados">
+                        <div class="flex items-center px-4 py-6 mt-5 mb-4 text-sm text-purpleLogin border-2 border-purpleLogin rounded-lg bg-transparent"
+                            role="alert">
+                            <svg class="flex-shrink-0 inline w-6 h-6 mr-3" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                            </svg>
+                            <div class="text-base">
+                                <span class="font-medium">No se encontraron registros, </span> la petición realizada no
+                                obtuvo resultados.
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
                     <div v-if="usuarios.length == 0 && !ceroRegistrosEncontrados"
                         class="loadingtable overflow-hidden h-full pr-4">
@@ -102,8 +120,7 @@
                             </div>
                         </div>
                     </div>
-                    <TablesUsuarios v-if="usuarios.length > 0" :datos_usuarios="usuarios" :actualizar_datos="leerUsuarios"
-                        :buscar_datos="buscarUsuarios" :texto_buscador="buscar" />
+                    <TablesUsuarios v-if="usuarios.length > 0" :datos_usuarios="usuarios" :actualizar_datos="cargarTabla" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="usuarios.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
@@ -112,6 +129,7 @@
             </div>
         </div>
     </div>
+    <TimerToken />
 </template>
 <script setup>
 import { onMounted } from 'vue';
@@ -134,10 +152,7 @@ onMounted(() => {
 const EVENT = new Event('reset-timer');
 //Se crea una constante ref para saber cuando el usuario realizo una búsqueda que no retorno ningún registro
 const ceroRegistrosEncontrados = ref(false);
-//Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
-function cambioDePagina(pagina_prop) {
-    pagina.value = pagina_prop;
-}
+
 //Funcion para generar un reporte
 async function generarReporte() {
     //Constante donde se almacena la respuesta que retorna de la api
@@ -167,13 +182,31 @@ function visibilidadRegistros() {
 const token = ref(null);
 const id = ref(null);
 const data = ref(null);
+
+//Se establece una constante ref para manejar la paginación de registros, se establece como 1 ya que es la pagina default
 const pagina = ref(useRoute().query.pagina || 1);
+
+//Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
+function cambioDePagina(pagina_prop) {
+    pagina.value = pagina_prop;
+}
+
 let usuarios = ref([]);
 const buscar = ref({
     buscador: "",
 })
+
+function cargarTabla() {
+    leerUsuarios();
+    if (buscar.value.texto_buscador) {
+        buscarUsuarios();
+    }
+}
+
 //Seccion para establecer funciones y utilizar las constantes
 async function leerUsuarios() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
         if (registros_visibles.value) {
             const { data: res } = await axios.get('/usuarios', {
@@ -186,8 +219,8 @@ async function leerUsuarios() {
 
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 10) {
-                usuarios.value.push(res.data.slice(i, i + 10));
+            for (let i = 0; i < res.data.length; i += 1) {
+                usuarios.value.push(res.data.slice(i, i + 1));
             }
 
             //Se reinicia el timer
@@ -208,8 +241,8 @@ async function leerUsuarios() {
             usuarios.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 10) {
-                usuarios.value.push(res.data.slice(i, i + 10));
+            for (let i = 0; i < res.data.length; i += 1) {
+                usuarios.value.push(res.data.slice(i, i + 1));
             }
 
             //Se reinicia el timer
@@ -225,6 +258,10 @@ async function leerUsuarios() {
             //Se actualiza el valor de la constante pagina
             pagina.value = pagina.value - 1;
         }
+
+        if (usuarios.value.length == 0) {
+            ceroRegistrosEncontrados.value = true;
+        }
     } catch (error) {
         console.log(error);
     }
@@ -234,8 +271,6 @@ watch(pagina, async () => {
     useRouter().push({ query: { pagina: pagina.value } })
 })
 async function buscarUsuarios() {
-    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-    token.value = localStorage.getItem('token');
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
@@ -244,9 +279,9 @@ async function buscarUsuarios() {
             useRouter().push({ query: { buscador: buscar.value.buscador } });
 
             //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
-            data.value = data.value.filter(pagina =>
-                pagina.campos.nombre_pagina.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
-                pagina.campos.numero_pagina.toString().includes(buscar.value.buscador)
+            data.value = data.value.filter(usuario =>
+                usuario.campos.usuario.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+                usuario.campos.correo_usuario.toLowerCase().includes(buscar.value.buscador.toLowerCase())
             );
 
             //Se limpia el array de registros paginados
@@ -258,8 +293,8 @@ async function buscarUsuarios() {
                 ceroRegistrosEncontrados.value = true;
             } else {
                 //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data.value.length; i += 10) {
-                    usuarios.value.push(data.value.slice(i, i + 10));
+                for (let i = 0; i < data.value.length; i += 1) {
+                    usuarios.value.push(data.value.slice(i, i + 1));
                 }
                 //Se actualiza el valor de la constante de búsqueda a false
                 ceroRegistrosEncontrados.value = false;
@@ -270,6 +305,8 @@ async function buscarUsuarios() {
             pagina.value = 1;
             leerUsuarios();
             useRouter().push({ query: { pagina: pagina.value } });
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         }
     } catch (error) {
         console.log(error);
@@ -282,6 +319,16 @@ async function buscarUsuarios() {
             confirmButtonColor: "#3F4280",
         });
     }
+}
+
+//Función para limpiar el buscador
+function limpiarBuscador() {
+    //Se coloca la constante pagina 1 para que salga la primera pagina de registros
+    pagina.value = 1;
+    //Se leen todos los registros
+    leerUsuarios();
+    //Se coloca el valor del buscador a nulo
+    buscar.value.buscador = "";
 }
 </script>
 <style scoped>

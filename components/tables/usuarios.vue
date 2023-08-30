@@ -379,10 +379,6 @@ const props = defineProps({
     datos_usuarios: Array,
     //Prop que recibe la funcion de leerUsuarios, para recargar la tabla, cada vez de finalizar alguna acción
     actualizar_datos: Function,
-    //Prop que recibe la funcion de buscarUsuarios, para al momento de buscar no recargue la pagina
-    buscar_datos: Function,
-    //Prop definida para validar que no se encuentre ningun valor agregado en el buscador de lo contrario, seguira buscando acorde a ese valor
-    texto_buscador: Object,
 });
 console.log(props.datos_usuarios);
 //Evento para reiniciar el tiempo del componente del timer
@@ -431,6 +427,7 @@ async function llenarRolUsuario() {
             Authorization: `Bearer ${token.value}`,
         },
     });
+    console.log(res);
     roles.value = res;
 }
 
@@ -555,6 +552,8 @@ function submitForm() {
 
 //Metodo para agregar un nuevo usuario
 async function crearUsuario() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
         const FORMDATA = new FormData();
         FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
@@ -578,7 +577,17 @@ async function crearUsuario() {
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${token.value}`,
             },
+        }).then(res => {
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
         });
+
+        //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+        await props.actualizar_datos();
+
         document.getElementById('closeModal').click();
         //Se lanza la alerta con el mensaje de éxito
         // props.actualizar_datos();
@@ -639,6 +648,8 @@ async function estadoActualizar(id) {
 
 //Metodo para capturar el id del usuario y buscar la respectiva informacion
 async function leerUnUsuario(id_usuario) {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
         await axios.get('/usuarios/' + id_usuario, {
             headers: {
@@ -666,6 +677,12 @@ async function leerUnUsuario(id_usuario) {
             } else {
                 form.value.imagen_usuario = "";
             }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
         });
     } catch (error) {
         console.log(error);
@@ -674,6 +691,8 @@ async function leerUnUsuario(id_usuario) {
 
 //Metodo para actualizar la informacion de un usuario
 async function actualizarUsuario() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
         var id = form.value.id_usuario;
         const FORMDATA = new FormData();
@@ -698,7 +717,17 @@ async function actualizarUsuario() {
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${token.value}`,
             }
+        }).then(res => {
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
         });
+
+        //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+        await props.actualizar_datos();
+
         document.getElementById('closeModal').click();
         // props.actualizar_datos();
         Toast.fire({
@@ -742,10 +771,6 @@ async function borrarUsuario(id, nombre_usuario) {
                         //Se actualiza el token con la respuesta del axios
                         localStorage.setItem('token', res.data.data.token);
                         token.value = localStorage.getItem('token');
-
-                        if (props.texto_buscador.buscador) {
-                            props.buscar_datos();
-                        }
 
                         //Se lanza la alerta de éxito
                         Toast.fire({
@@ -817,10 +842,6 @@ async function recuperarUsuario(id, nombre_usuario) {
                     //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
                     await props.actualizar_datos();
 
-                    if (props.texto_buscador.buscador) {
-                        props.buscar_datos();
-                    }
-
                     //Se lanza la alerta de éxito
                     Toast.fire({
                         icon: "success",
@@ -849,9 +870,6 @@ async function recuperarUsuario(id, nombre_usuario) {
                     confirmButtonColor: "#3F4280",
                 });
             }
-        } else {
-            window.dispatchEvent(EVENT);
-            token.value = localStorage.getItem('token');
         }
     });
 }
