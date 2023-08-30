@@ -164,7 +164,7 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>  
                 <!-- Paginación -->
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="paginas.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"

@@ -87,7 +87,7 @@
                 <!-- Cuerpo del modal  -->
                 <div class="p-6 space-y-6 pb-14">
                     <!-- Se utiliza el modificador @submit.prevent para evitar la recarga de la página al enviar el formulario. En su lugar, se llama a la función submitForm() definida en Vue.js para ejecutar la lógica personalizada del envío del formulario. -->
-                    <form @submit.prevent="submitForm()" class="flex justify-evenly">
+                    <form @submit.prevent="submitForm()" class="flex justify-evenly flex-wrap">
                         <div class="flex-col w-64">
                             <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                             <input type="hidden" id="id_enlace_amigo" v-model="form.id_enlace_amigo">

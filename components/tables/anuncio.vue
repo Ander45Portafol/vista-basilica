@@ -84,7 +84,7 @@
                 </div>
                 <!-- Cuerpo del modal -->
                 <div class="p-6 space-y-6 pb-10">
-                    <form @submit.prevent="submitForm()" class="flex justify-evenly">
+                    <form @submit.prevent="submitForm()" class="flex justify-evenly flex-wrap">
                         <div class="flex-col w-64">
                             <!-- Input invisible para reconocer el  registro   -->
                             <input type="hidden" name="id_anuncio" id="id_anuncio" v-model="form.id_anuncio">
