@@ -65,14 +65,17 @@
             <p class="text-black text-lg"></p>
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <div class="h-screen">
-                <p v-if="usuarios" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ usuarios.length
-                }}<span class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
+                <p v-if="usuarios.length > 0 && !ceroRegistrosEncontrados"
+                    class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ usuarios[pagina -
+                        1].length
+                    }}<span class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
                 <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
                     -
                     <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
                 </p>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <div v-if="!usuarios" class="loadingtable overflow-hidden h-full pr-4">
+                    <div v-if="usuarios.length == 0 && !ceroRegistrosEncontrados"
+                        class="loadingtable overflow-hidden h-full pr-4">
                         <div class="contained-data flex-col" v-for="number in 6" :key="number">
                             <div
                                 class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
@@ -99,22 +102,18 @@
                             </div>
                         </div>
                     </div>
-                    <TablesUsuarios v-if="usuarios" :datos_usuarios="usuarios" :actualizar_datos="leerUsuarios"/>
+                    <TablesUsuarios v-if="usuarios.length > 0" :datos_usuarios="usuarios" :actualizar_datos="leerUsuarios"
+                        :buscar_datos="buscarUsuarios" :texto_buscador="buscar" />
                 </div>
                 <div class="flex justify-center mt-6">
-                    <TailwindPagination v-if="usuarios"
-                        :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
-                        :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                        :data="data" @pagination-change-page="pagina = $event" />
+                    <Paginacion v-if="usuarios.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
+                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script setup>
-//Seccion para importar librerias o extensiones
-import { Modal } from 'flowbite'
-import { TailwindPagination } from 'laravel-vue-pagination';
 import { onMounted } from 'vue';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -125,11 +124,20 @@ definePageMeta({
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
     token.value = localStorage.getItem('token');
-    id.value=localStorage.getItem('usuario');
+    id.value = localStorage.getItem('usuario');
     console.log(id.value);
 
     leerUsuarios();
 });
+
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
+//Se crea una constante ref para saber cuando el usuario realizo una búsqueda que no retorno ningún registro
+const ceroRegistrosEncontrados = ref(false);
+//Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
+function cambioDePagina(pagina_prop) {
+    pagina.value = pagina_prop;
+}
 //Funcion para generar un reporte
 async function generarReporte() {
     //Constante donde se almacena la respuesta que retorna de la api
@@ -146,101 +154,132 @@ const registros_visibles = ref(true);
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
+    //Se establece el número de página a 1
+    pagina.value = 1;
+    //Se leen todas las páginas
+    leerUsuarios();
+    //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
         buscarUsuarios();
-    } else {
-        leerUsuarios();
     }
 }
 //Seccion para establecer variables
 const token = ref(null);
-const id=ref(null);
+const id = ref(null);
 const data = ref(null);
 const pagina = ref(useRoute().query.pagina || 1);
-let usuarios = computed(() => data.value?.data);
+let usuarios = ref([]);
 const buscar = ref({
     buscador: "",
-})  
+})
 //Seccion para establecer funciones y utilizar las constantes
 async function leerUsuarios() {
     try {
         if (registros_visibles.value) {
-            const { data: res } = await axios.get(`/usuarios?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/usuarios', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            data.value = res;
-            console.log(usuarios.value);
+            data.value = res.data;
+            usuarios.value = [];
+
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                usuarios.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         } else {
-            const { data: res } = await axios.get(`/usuarios_ocultos?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/usuarios_ocultos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            data.value = res;
+            data.value = res.data;
+            usuarios.value = [];
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                usuarios.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
+        }
+        if (usuarios.value.length < pagina.value) {
+            //Se actualiza el valor de la constante pagina
+            pagina.value = pagina.value - 1;
         }
     } catch (error) {
         console.log(error);
     }
 }
 watch(pagina, async () => {
-    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
-    if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarUsuarios();
-    } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerUsuarios();
-    }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
     useRouter().push({ query: { pagina: pagina.value } })
 })
 async function buscarUsuarios() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
-            if (registros_visibles.value) {
-                const { data: res } = await axios.get(
-                    `/usuarios_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }
-                );
-                data.value = res;
+
+            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
+            useRouter().push({ query: { buscador: buscar.value.buscador } });
+
+            //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
+            data.value = data.value.filter(pagina =>
+                pagina.campos.nombre_pagina.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+                pagina.campos.numero_pagina.toString().includes(buscar.value.buscador)
+            );
+
+            //Se limpia el array de registros paginados
+            usuarios.value = [];
+
+            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+            if (data.value.length == 0) {
+                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+                ceroRegistrosEncontrados.value = true;
             } else {
-                const { data: res } = await axios.get(
-                    `/usuarios_search_ocultos?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
+                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+                for (let i = 0; i < data.value.length; i += 10) {
+                    usuarios.value.push(data.value.slice(i, i + 10));
                 }
-                );
-                data.value = res;
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
             }
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: pagina.value } });
+
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
             pagina.value = 1;
             leerUsuarios();
+            useRouter().push({ query: { pagina: pagina.value } });
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        console.log(error);
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
+            icon: "error",
+            title: "Error",
+            text: error,
+            confirmButtonColor: "#3F4280",
         });
     }
 }

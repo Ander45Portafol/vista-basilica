@@ -1,5 +1,5 @@
 <template>
-    <div class="contained-data flex-col" v-for="usuario in datos_usuarios" :key="usuario.id">
+    <div class="contained-data flex-col" v-for="usuario in datos_usuarios[datos_usuarios.length - 1]" :key="usuario.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -379,14 +379,20 @@ const props = defineProps({
     datos_usuarios: Array,
     //Prop que recibe la funcion de leerUsuarios, para recargar la tabla, cada vez de finalizar alguna acción
     actualizar_datos: Function,
+    //Prop que recibe la funcion de buscarUsuarios, para al momento de buscar no recargue la pagina
+    buscar_datos: Function,
+    //Prop definida para validar que no se encuentre ningun valor agregado en el buscador de lo contrario, seguira buscando acorde a ese valor
+    texto_buscador: Object,
 });
-
+console.log(props.datos_usuarios);
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
     //Capturando datos para abrir el modal, con el boton de crear
     const AGREGAR_BOTON = document.getElementById('btnadd');
     const MODAL_ID = document.getElementById('staticModal');
-    const CERRAR_BOTON   = document.getElementById('closeModal');
+    const CERRAR_BOTON = document.getElementById('closeModal');
     const TITULO_MODAL = document.getElementById('modalText');
     const OPCIONES_MODAL = {
         backdrop: 'static',
@@ -575,7 +581,7 @@ async function crearUsuario() {
         });
         document.getElementById('closeModal').click();
         //Se lanza la alerta con el mensaje de éxito
-        props.actualizar_datos();
+        // props.actualizar_datos();
         Toast.fire({
             icon: 'success',
             title: 'Usuario creado exitosamente'
@@ -694,7 +700,7 @@ async function actualizarUsuario() {
             }
         });
         document.getElementById('closeModal').click();
-        props.actualizar_datos();
+        // props.actualizar_datos();
         Toast.fire({
             icon: 'success',
             title: 'Usuario actualizado exitosamente'
@@ -722,18 +728,55 @@ async function borrarUsuario(id, nombre_usuario) {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await axios.delete('/usuarios/' + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }).then(
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Usuario desactivado exitosamente'
-                    }));
-                props.actualizar_datos();
-            } catch (error) {
-                console.log(error);
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/usuarios/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer  
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+
+                        if (props.texto_buscador.buscador) {
+                            props.buscar_datos();
+                        }
+
+                        //Se lanza la alerta de éxito
+                        Toast.fire({
+                            icon: "success",
+                            title: "Usuario ocultado exitosamente",
+                        });
+                    });
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById("closeModal").click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res,
+                    confirmButtonColor: "#3F4280",
+                });
             }
         }
     });
@@ -755,19 +798,60 @@ async function recuperarUsuario(id, nombre_usuario) {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await axios.delete('/usuarios/' + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                });
-                props.actualizar_datos();
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Usuario recuperado exitosamente'
-                });
-            } catch (error) {
-                console.log(error);
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/usuarios/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el valor del token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+                    });;
+
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
+
+                    if (props.texto_buscador.buscador) {
+                        props.buscar_datos();
+                    }
+
+                    //Se lanza la alerta de éxito
+                    Toast.fire({
+                        icon: "success",
+                        title: "Usuario recuperado exitosamente",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
             }
+            catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById("closeModal").click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res,
+                    confirmButtonColor: "#3F4280",
+                });
+            }
+        } else {
+            window.dispatchEvent(EVENT);
+            token.value = localStorage.getItem('token');
         }
     });
 }
