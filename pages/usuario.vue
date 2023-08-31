@@ -1,5 +1,4 @@
-<template>
-    <div class="principal mt-4">
+<template>    <div class="principal mt-4">
         <!--Componente para cargar el menu superior del formulario-->
         <MenuUsuarioDashboard class="mr-8" />
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
@@ -184,11 +183,11 @@ const id = ref(null);
 const data = ref(null);
 
 //Se establece una constante ref para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const pagina = ref(useRoute().query.pagina || 1);
+const pagina = ref(parseInt(useRoute().query.pagina || 1));
 
 //Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
 function cambioDePagina(pagina_prop) {
-    pagina.value = pagina_prop;
+    pagina.value = parseInt(pagina_prop);
 }
 
 let usuarios = ref([]);
@@ -219,8 +218,8 @@ async function leerUsuarios() {
 
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 10) {
-                usuarios.value.push(res.data.slice(i, i + 10));
+            for (let i = 0; i < res.data.length; i +=2) {
+                usuarios.value.push(res.data.slice(i, i + 2));
             }
 
             //Se reinicia el timer

@@ -1,6 +1,6 @@
 <!-- SCRUD como componente -->
 <template>
-    <div class="contained-data flex-col" v-for="anuncio in datosAnuncio" :key="anuncio.id">
+    <div class="contained-data flex-col" v-for="anuncio in datos_anuncios[paginacion - 1]" :key="anuncio.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -163,9 +163,31 @@
                             </div>
                         </div>
                         <div class="flex-col w-64">
-                            <div class="flex-col">
+                            <div class="">
                                 <p class="mb-4 text-center text-gray-200">Imagen - Anuncio</p>
-                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
+                                <div class="flex-col m-auto">
+                                    <div class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative max-[630px]:m-auto"
+                                        @click="seleccionarArchivo" @mouseover="iconoBorrarTrue"
+                                        @mouseleave="iconoBorrarFalse">
+                                        <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
+                                        <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
+                                        <div v-if="mostrarIconoBorrar"
+                                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
+                                                viewBox="0 0 24 24"
+                                                style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                                                <path
+                                                    d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="m-auto max-[630px]:text-center max-[630px]:ml-[-58px]">
+                                        <button type="button"
+                                            class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300 text-center"
+                                            @click="seleccionarArchivo">Seleccionar Imagen</button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="modal-buttons mt-40 flex justify-end items-end">
                                 <button class="h-10 w-10 rounded-lg flex justify-center items-center mr-4" type="button"
@@ -221,7 +243,7 @@
             </div>
         </div>
     </div>
-    <modalReporte/>
+    <modalReporte />
 </template>
 
 <style scoped>
@@ -262,10 +284,12 @@ import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
 //Definimos la prop que traera los datos del componente principál
 const props = defineProps({
-    datosAnuncio: Array,
-    actualizarDatos: Function,
+    datos_anuncios: Array,
+    actualizar_datos: Function,
+    paginacion: Number,
 });
-
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
     //Codigo para abrir el modal, con el boton de crear
@@ -297,7 +321,50 @@ onMounted(() => {
 
 //Variable reactiva para almacenar el token del localStorag
 const token = ref(null);
+var api_url = "http://localhost:8000/storage/anuncios/images/";
 
+
+//Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
+const mostrarIconoBorrar = ref(false);
+//Metodo para hacer visible el icono de borrar una imagen
+function iconoBorrarTrue() {
+    if (imagenPreview.value) {
+        mostrarIconoBorrar.value = true;
+    }
+}
+//Metodo para no mostrar el icono de borrar una imagen
+function iconoBorrarFalse() {
+    if (imagenPreview.value) {
+        mostrarIconoBorrar.value = false;
+    }
+}
+//Variable reactiva para mostrar la imagen capturada
+const imagenPreview = ref(null);
+//Metodo para seleccionar una imagen para el registro
+const seleccionarArchivo = () => {
+    if (mostrarIconoBorrar.value == false) {
+        inputImagen.value.click();
+    } else {
+        limpiarImagen();
+    }
+};
+//Variable reactiva para caputar el valor de la imagen
+const inputImagen = ref(null);
+//Metodo para cambiar la imagen de un registro
+const cambiarImagen = () => {
+    const input = inputImagen.value;
+    const file = input.files;
+    if (file && file[0]) {
+        form.value.imagen_usuario = file[0];
+        console.log(form.value.imagen_usuario);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagenPreview.value = e.target.result;
+        };
+        reader.readAsDataURL(file[0]);
+        return file[0];
+    }
+};
 
 //constante form, para guardar los datos del modal y luego enviarlos a la APÍ
 const form = ref({
@@ -305,6 +372,7 @@ const form = ref({
     titulo_anuncio: "",
     contenido_anuncio: "",
     fecha_anuncio: "",
+    imagen_anuncio: "",
     enlace_externo: "",
     visibilidad_anuncio: false
 });
@@ -318,6 +386,14 @@ function limpiarForm() {
     form.value.fecha_anuncio = "";
     form.value.enlace_externo = "";
     form.value.visibilidad_anuncio = false;
+}
+//Metodo para limpiar el campo de la imagen
+function limpiarImagen() {
+    //Limpiar imagen
+    inputImagen.value.value = '';
+    imagenPreview.value = null;
+    form.value.imagen_anuncio = "";
+    mostrarIconoBorrar.value = false;
 }
 
 //Con esta variable Toast configuramos el mensaje que nos confirma que un proceso se ha realizado.
@@ -354,6 +430,8 @@ function submitForm() {
 
 //Función para crear un anuncio
 async function crearAnuncio() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
         const formData = new FormData();
         formData.append("titulo_anuncio", form.value.titulo_anuncio);
@@ -364,15 +442,22 @@ async function crearAnuncio() {
             "visibilidad_anuncio",
             form.value.visibilidad_anuncio ? 1 : 0
         );
+        formData.append("imagen_usuario", form.value.imagen_anuncio);
         //Se realiza la petición axios mandando la ruta y el formData
         await axios.post("/anuncios/", formData, {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
+        }).then(res => {
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
         });
         document.getElementById('closeModal').click();
         //Se lanza la alerta con el mensaje de éxito
-        props.actualizarDatos();
+        props.actualizar_datos();
         Toast.fire({
             icon: 'success',
             title: 'Anuncio creado exitosamente'
@@ -403,38 +488,26 @@ async function crearAnuncio() {
 }
 
 
-function estadoActualizar(id) {
-//Constante para el modal
-const modalElement = document.getElementById("staticModal");
-            //Constante que contiene las caracteristicas del modal
-            const modalOptions = {
-                backdrop: "static",
-                backdropClasses:
-                    "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-            };
-            //Instanciamos el boton para cerrar el modal
-            const closeButton = document.getElementById("closeModal");
-            //Constante para el titulo del modal
-            const modalText = document.getElementById("modalText");
-            //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById("btnModalUpdate");
-            //Instanciamos el modal
-            const modal = new Modal(modalElement, modalOptions);
-            //Le modificamos el texto del header al modal
-            modalText.textContent = "Editar";
-            //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove("hidden");
-            //Abrimos el modal
-            modal.show();
-            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-            closeButton.addEventListener("click", function () {
-                //Ocultamos el modal
-                modal.hide();
-                //Limpiamos el modal
-                limpiarForm();
-            });
+async function estadoActualizar(id) {
     //se llama la funcion  para poder acapturar los datos
-    leerUnAnuncio(id);
+    await leerUnAnuncio(id);
+    const MODAL_ID = document.getElementById('staticModal');
+    const CERRAR_BOTON = document.getElementById('closeModal');
+    const TITULO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+    const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+    TITULO_MODAL.textContent = "Editar";
+    MODAL.show();
+    accionForm('actualizar');
+    document.getElementById('btnModalAdd').classList.add('hidden');
+    document.getElementById('btnModalUpdate').classList.remove('hidden');
+    CERRAR_BOTON.addEventListener('click', function () {
+        MODAL.hide();
+        limpiarForm();
+    });
 }
 
 
@@ -443,6 +516,7 @@ const modalElement = document.getElementById("staticModal");
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
 async function leerUnAnuncio(id) {
+    token.value = localStorage.getItem('token');
     try {
         accionForm("actualizar");
         //Se hace la petición axios y se evalua la respuesta
@@ -450,40 +524,7 @@ async function leerUnAnuncio(id) {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
-        }).then((res) => {
-            //Constante para el modal
-            const modalElement = document.getElementById("staticModal");
-            //Constante que contiene las caracteristicas del modal
-            const modalOptions = {
-                backdrop: "static",
-                backdropClasses:
-                    "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-            };
-            //Instanciamos el boton para cerrar el modal
-            const closeButton = document.getElementById("closeModal");
-            //Constante para el titulo del modal
-            const modalText = document.getElementById("modalText");
-            //Constante para el boton de agregar dentro del modal
-            const modalBtnAdd = document.getElementById("btnModalAdd");
-            //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById("btnModalUpdate");
-            //Instanciamos el modal
-            const modal = new Modal(modalElement, modalOptions);
-            //Le modificamos el texto del header al modal
-            modalText.textContent = "Editar";
-            //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove("hidden");
-            //Ocultamos el botón de agregar en el modal
-            modalBtnAdd.classList.add("hidden");
-            //Abrimos el modal
-            modal.show();
-            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-            closeButton.addEventListener("click", function () {
-                //Ocultamos el modal
-                modal.hide();
-                //Limpiamos el modal
-                limpiarForm();
-            });
+        }).then(res => {
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
                 id_anuncio: res.data.data.id,
@@ -494,31 +535,28 @@ async function leerUnAnuncio(id) {
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
                 visibilidad_anuncio: res.data.data.campos.visibilidad_anuncio ? true : false
             };
-        });
+            if (res.data.data.campos.imagen_anuncio != null) {
+                form.value.imagen_anuncio = res.data.data.campos.imagen_anuncio;
+                imagenPreview.value = api_url + form.value.imagen_anuncio;
+            } else {
+                form.value.imagen_usuario = "";
+            }
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
+        })
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se cierra el modal
-        document.getElementById("closeModal").click();
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
+        console.log(error);
     }
 }
 
 
 async function actualizarAnuncio() {
     if (validarTituloAnuncio()) {
+        //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+        token.value = localStorage.getItem('token');
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
             var id = form.value.id_anuncio;
@@ -533,15 +571,22 @@ async function actualizarAnuncio() {
                 "visibilidad_anuncio",
                 form.value.visibilidad_anuncio ? 1 : 0
             );
-
+            formData.append("imagen_anuncio", form.value.imagen_anuncio);
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.post("/anuncios_update/" + id, formData, {
                 headers: {
+                    "Content-Type": "multipart/form-data",
                     Authorization: `Bearer ${token.value}`,
-                },
-            }),
-               //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
+                }
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
+            //Se manda a llamar la accion para actualizar los datos con las props
+            props.actualizar_datos();
 
             document.getElementById("closeModal").click();
 
@@ -550,14 +595,6 @@ async function actualizarAnuncio() {
                 icon: "success",
                 title: "Anuncio actualizado exitosamente",
             });
-
-            //Se evalua el buscador para realizar leerContactos o buscarContactos
-            // if (buscar.value.buscador) {
-            //     buscarContactos();
-            // } else {
-            //     leerContactos();
-            // }
-            //Se cierra el modal
 
         } catch (error) {
             console.log(error);
@@ -608,20 +645,51 @@ async function borrarAnuncio(id) {
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await axios.delete('/anuncios/' + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    }
-                }),
-                    //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Anuncio desactivado exitosamente",
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/anuncios/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer  
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+
+                        //Se lanza la alerta de éxito
+                        Toast.fire({
+                            icon: "success",
+                            title: "Anuncio ocultado exitosamente",
+                        });
+                    });
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById("closeModal").click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res,
+                    confirmButtonColor: "#3F4280",
                 });
-            } catch (error) {
-                console.log(error);
             }
         }
     });
@@ -645,30 +713,35 @@ async function recuperarUnAnuncio(id) {
         //Si el usuario selecciono "Confirmar"
         if (result.isConfirmed) {
             try {
-                //Se realiza la petición axios
-                await axios.delete("/anuncios/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }),
-                    //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Anuncio recuperado exitosamente",
-                });
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/anuncios/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el valor del token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+                    });;
 
-                //Se evalua el buscador para realizar leerContactos o buscarContactos 
-                // if (buscar.value.buscador) {
-                //     buscarContactos();
-                // } else {
-                //     leerContactos();
-                // } 
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
 
-                //Se lanza la alerta de éxito
-
-            } catch (error) {
+                    //Se lanza la alerta de éxito
+                    Toast.fire({
+                        icon: "success",
+                        title: "anuncio recuperado exitosamente",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            catch (error) {
                 //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
                 //Se extrae el sqlstate (identificador de acciones SQL)
