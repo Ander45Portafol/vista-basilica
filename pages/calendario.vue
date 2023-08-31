@@ -28,7 +28,7 @@
       </FullCalendar>
     </div>
   </div>
-  <ModalEvento v-if="mostrarModal" @closeModal="mostrarModal = false"></ModalEvento>
+    <ModalEvento v-if="mostrarModal"/>
 </template>
 
 <script>
@@ -70,7 +70,7 @@ export default defineComponent({
       }
     ]
     return {
-      mostrarModal: true,
+      mostrarModal: false,
       calendarOptions: {
         plugins: [
           dayGridPlugin,
@@ -106,8 +106,8 @@ export default defineComponent({
       this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
     },
     handleDateSelect() {
-      console.log("Mostrar modal funciona")
       this.mostrarModal = true;
+      console.log("Modal abierto")
     },
     handleEventClick(clickInfo) {
       if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
