@@ -10,7 +10,7 @@
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarPaginas()" />
                     <div class="flex justify-end items-center">
-                       <!-- Se le asigna la función para limpiar el buscador al botón -->
+                        <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
                             <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -22,7 +22,7 @@
                 </div>
                 <!-- Sección de botones a la derecha del buscador -->
                 <div
-                    class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
+                    class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3 max-[450px]:mb-[500px]">
                     <button
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
                         <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -69,8 +69,9 @@
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Sección de cards -->
             <!-- Conteo de registros / Se le agrega el v-if para que no de error la página cuando el usuario no tenga token -->
-            <p v-if="paginas" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
-                {{ paginas.length }}
+            <p v-if="paginas.length > 0 && !ceroRegistrosEncontrados"
+                class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                {{ paginas[pagina - 1].length }}
                 <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
             </p>
             <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
@@ -79,13 +80,16 @@
             </p>
             <div class="loadingtable overflow-hidden h-4/6 pr-4">
                 <div class="contained-data flex-col" v-for="number in 6" :key="number">
-                    <div v-if="!paginas"
+                    <div v-if="paginas.length == 0 && !ceroRegistrosEncontrados"
                         class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                             <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
                             <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
-                                <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4"></div>
-                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full"></div>
+                                <div
+                                    class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4">
+                                </div>
+                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full">
+                                </div>
                             </div>
                         </div>
                         <div
@@ -102,8 +106,8 @@
             </div>
             <div class="tables overflow-y-scroll h-4/6 pr-4">
                 <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards / Se le agrega el v-if para que no de error la página cuando el usuario no tenga token -->
-                <div class="contained-data flex-col" v-for="pagina in paginas" :key="pagina.id">
-                    <div v-if="paginas"
+                <div class="contained-data flex-col" v-for="pagina in paginas[pagina - 1]" :key="pagina.id">
+                    <div v-if="paginas.length > 0 && !ceroRegistrosEncontrados"
                         class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
                         <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                             <div
@@ -111,7 +115,8 @@
                                 <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                                     Página- {{ pagina.campos.nombre_pagina }}
                                 </p>
-                                <p class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]">
+                                <p v-if="pagina.campos.descripcion_pagina && pagina.campos.descripcion_pagina != 'null'"
+                                    class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]">
                                     {{ pagina.campos.descripcion_pagina }}
                                 </p>
                                 <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
@@ -159,17 +164,28 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>  
                 <!-- Paginación -->
                 <div class="flex justify-center mt-6">
-                    <TailwindPagination v-if="data" :item-classes="[
-                        'text-gray-500',
-                        'rounded-full',
-                        'border-none',
-                        'ml-1',
-                        'hover:bg-gray-200',
-                    ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                        :data="data" @pagination-change-page="pagina = $event" />
+                    <Paginacion v-if="paginas.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
+                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                </div>
+            </div>
+            <!-- Alerta a mostrar el usuario busca algo que no coincide con ningún registro -->
+            <div class="flex-col">
+                <div v-if="paginas.length == 0 && ceroRegistrosEncontrados">
+                    <div class="flex items-center px-4 py-6 mb-4 text-sm text-purpleLogin border-2 border-purpleLogin rounded-lg bg-transparent"
+                        role="alert">
+                        <svg class="flex-shrink-0 inline w-6 h-6 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                        </svg>
+                        <div class="text-base">
+                            <span class="font-medium">No se encontraron registros, </span> la petición realizada no
+                            obtuvo resultados.
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -339,6 +355,7 @@
             </div>
         </div>
     </div>
+    <TimerToken />
 </template>
 <style scoped>
 .topprincipal .active {
@@ -388,6 +405,7 @@
 .tables::-webkit-scrollbar {
     width: 7px;
 }
+
 .tables::-webkit-scrollbar-thumb {
     background: #32345A;
 }
@@ -399,12 +417,8 @@
 
 //Importacion para usar el hook de onMounted
 import { onMounted, ref } from "vue";
-//Importación del modal de flowbite
-import { Modal } from "flowbite";
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from "axios";
-//Importación del plugin de paginación de registros
-import { TailwindPagination } from "laravel-vue-pagination";
 //Importación de sweetalert
 import Swal from "sweetalert2";
 //Importación de archivo de validaciones
@@ -423,10 +437,6 @@ definePageMeta({
 /*En este hook se crean todas las funciones relacionadas al manejo del modal, se crean en este onMounted para que se
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
-
-    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
-    token.value = localStorage.getItem('token');
-
     //Constantes para manejar el modal
     //Constante para el botón de agregar un registro
     const buttonElement = document.getElementById("btnadd");
@@ -477,93 +487,129 @@ onMounted(() => {
     leerPaginas();
 });
 
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
+
 //Variable reactiva para almacenar el token del localStorage
 const token = ref(null);
 
 //Variable reactiva para almacenar los datos de la tabla
 const data = ref(null);
 
-//Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
+//Se establece una constante ref para manejar la paginación de registros, se establece como 1 ya que es la pagina default
 const pagina = ref(useRoute().query.pagina || 1);
 
-//Se crea una variable reactiva para el buscador
+//Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
+function cambioDePagina(pagina_prop) {
+    pagina.value = pagina_prop;
+}
+
+//Se crea una constante ref para el buscador
 const buscar = ref({
     buscador: "",
 });
 
-/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
-y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let paginas = computed(() => data.value?.data);
+//Se crea una constante ref para saber cuando el usuario realizo una búsqueda que no retorno ningún registro
+const ceroRegistrosEncontrados = ref(false);
 
-/*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
-además muestra en la url la página actual*/
+/*Se crea una constante ref que se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
+const paginas = ref([]);
+
+/*Se crea un watch (detecta cada que "pagina" cambia) para mostrar en la url la página actual*/
 watch(pagina, async () => {
-    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
-    if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarPaginas();
-    } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerPaginas();
-    }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
     useRouter().push({ query: { pagina: pagina.value } });
 });
 
-//Variable reactiva para poder intercambiar los registros entre visibles y no visibles
+//Constante ref para poder intercambiar los registros entre visibles y no visibles
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
+    //Se establece el número de página a 1
+    pagina.value = 1;
+    //Se leen todas las páginas
+    leerPaginas();
+    //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
         buscarPaginas();
-    } else {
-        leerPaginas();
     }
 }
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerPaginas() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
         //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
             //Se realiza la petición axios para leer los registros visibles
-            const { data: res } = await axios.get(`/paginas?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/paginas', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
+
             //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
+            data.value = res.data;
+
+            //Se limpia el array de registros paginados
+            paginas.value = [];
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                paginas.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
+
         } else {
             //Se realiza la petición axios para leer los registros no visibles
-            const { data: res } = await axios.get(`/paginas_ocultas?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/paginas_ocultas', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
             //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
-        }
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+            data.value = res.data;
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
+            //Se limpia el array de registros paginados
+            paginas.value = [];
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                paginas.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
+        }
+
+        //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+        //y que se bugee la paginación
+        if (paginas.value.length < pagina.value) {
+            //Se actualiza el valor de la constante pagina
+            pagina.value = pagina.value - 1;
+        }
+
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -572,50 +618,48 @@ async function buscarPaginas() {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
-            //Se evalua si se quieren mostrar los registros visibles o no visibles
-            if (registros_visibles.value) {
-                // Se realiza la petición axios para mostrar los registros visibles
-                const { data: res } = await axios.get(
-                    `/paginas_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
+
+            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
+            useRouter().push({ query: { buscador: buscar.value.buscador } });
+
+            //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
+            data.value = data.value.filter(pagina =>
+                pagina.campos.nombre_pagina.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+                pagina.campos.numero_pagina.toString().includes(buscar.value.buscador)
+            );
+
+            //Se limpia el array de registros paginados
+            paginas.value = [];
+
+            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+            if (data.value.length == 0) {
+                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+                ceroRegistrosEncontrados.value = true;
             } else {
-                // Se realiza la petición axios para mostrar los registros no visibles
-                const { data: res } = await axios.get(
-                    `/paginas_search_ocultos?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
+                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+                for (let i = 0; i < data.value.length; i += 10) {
+                    paginas.value.push(data.value.slice(i, i + 10));
                 }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
             }
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: pagina.value } });
+
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
             pagina.value = 1;
             leerPaginas();
+            useRouter().push({ query: { pagina: pagina.value } });
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        console.log(error);
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
             icon: "error",
             title: "Error",
-            text: res,
+            text: error,
             confirmButtonColor: "#3F4280",
         });
     }
@@ -633,7 +677,7 @@ function limpiarBuscador() {
 
 //Funciones para manejo del modal
 
-//Se crea una variable reactiva para manejar la información del modal
+//Se crea una constante ref para manejar la información del modal
 const form = ref({
     id_pagina: "",
     nombre_pagina: "",
@@ -684,6 +728,8 @@ function submitForm() {
 
 //Función para crear una página
 async function crearPagina() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     if (validarNumeroPagina() && validarNombrePagina()) {
         try {
             //Se crea una constante FormData para almacenar los datos del modal
@@ -701,12 +747,16 @@ async function crearPagina() {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
             });
 
-            //Se cargan todas las páginas y se cierra el modal
-            pagina.value = 1;
+            //Se leen todos los registros y se cierra el modal
             limpiarBuscador();
-            leerPaginas();
 
             document.getElementById("closeModal").click();
 
@@ -740,6 +790,8 @@ async function crearPagina() {
 
 //Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
 async function leerUnaPagina(id) {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
         accionForm("actualizar");
         //Se hace la petición axios y se evalua la respuesta
@@ -780,6 +832,8 @@ async function leerUnaPagina(id) {
                 modal.hide();
                 //Limpiamos el modal
                 limpiarForm();
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
             });
             //Llenamos los inputs del modal con su respectiva informacion
             form.value = {
@@ -790,6 +844,12 @@ async function leerUnaPagina(id) {
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
                 visibilidad_pagina: res.data.data.campos.visibilidad_pagina ? true : false,
             };
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
         });
     } catch (error) {
         //Se extrae el mensaje de error
@@ -813,6 +873,8 @@ async function leerUnaPagina(id) {
 }
 
 async function actualizarPagina() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     if (validarNumeroPagina() && validarNombrePagina()) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
@@ -833,14 +895,21 @@ async function actualizarPagina() {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
             });
 
-            //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await leerPaginas();
+
             if (buscar.value.buscador) {
                 buscarPaginas();
-            } else {
-                leerPaginas();
             }
+
             //Se cierra el modal
             document.getElementById("closeModal").click();
 
@@ -891,23 +960,32 @@ async function borrarPagina(id) {
         cancelButtonColor: "#d33",
         confirmButtonText: "Confirmar",
         cancelButtonText: "Cancelar",
+        allowOutsideClick: false,
         //Se evalua la respuesta de la alerta
     }).then(async (result) => {
         //Si el usuario selecciono "Confirmar"
         if (result.isConfirmed) {
+            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+            token.value = localStorage.getItem('token');
             try {
                 //Se realiza la petición axios
                 await axios.delete("/paginas/" + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
-                });
+                }).then(res => {
+                    //Se reinicia el timer
+                    window.dispatchEvent(EVENT);
+                    //Se actualiza el token con la respuesta del axios
+                    localStorage.setItem('token', res.data.data.token);
+                    token.value = localStorage.getItem('token');
+                });;
 
-                //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
+                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                await leerPaginas();
+
                 if (buscar.value.buscador) {
                     buscarPaginas();
-                } else {
-                    leerPaginas();
                 }
 
                 //Se lanza la alerta de éxito
@@ -951,23 +1029,32 @@ async function recuperarPagina(id) {
         cancelButtonColor: "#d33",
         confirmButtonText: "Confirmar",
         cancelButtonText: "Cancelar",
+        allowOutsideClick: false,
         //Se evalua la respuesta de la alerta
     }).then(async (result) => {
         //Si el usuario selecciono "Confirmar"
         if (result.isConfirmed) {
+            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+            token.value = localStorage.getItem('token');
             try {
                 //Se realiza la petición axios
                 await axios.delete("/paginas/" + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
-                });
+                }).then(res => {
+                    //Se reinicia el timer
+                    window.dispatchEvent(EVENT);
+                    //Se actualiza el valor del token con la respuesta del axios
+                    localStorage.setItem('token', res.data.data.token);
+                    token.value = localStorage.getItem('token');
+                });;
 
-                //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
+                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                await leerPaginas();
+
                 if (buscar.value.buscador) {
                     buscarPaginas();
-                } else {
-                    leerPaginas();
                 }
 
                 //Se lanza la alerta de éxito
@@ -994,6 +1081,9 @@ async function recuperarPagina(id) {
                     confirmButtonColor: "#3F4280",
                 });
             }
+        } else {
+            window.dispatchEvent(EVENT);
+            token.value = localStorage.getItem('token');
         }
     });
 }

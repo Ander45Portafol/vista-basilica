@@ -7,6 +7,8 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 //Importación de sweetalert
 import Swal from 'sweetalert2';
+//Importación de axios
+import axios from 'axios';
 
 //Se calculan los 5 minutos_restantes en segundos_restantes
 const segundos_restantes_totales = ref(5 * 60);
@@ -25,6 +27,11 @@ let intervalo_segundos_restantes;
 //Al montarse el componente se inicia el intervalo para restar los segundos_restantes
 onMounted(() => {
   intervalo_segundos_restantes = setInterval(CONTEO, 1000);
+
+  //Se agrega un eventListener reiniciar el timer
+  window.addEventListener('reset-timer', () => {
+    reiniciarTimer();
+  });
 });
 
 // Antes de montar se limpian ambos intervalos y se cierra el sweetalert para evitar conflictos de un intervalo ya iniciado
@@ -43,6 +50,7 @@ const CONTEO = () => {
     segundos_restantes_totales.value--;
     minutos_restantes.value = Math.floor(segundos_restantes_totales.value / 60);
     segundos_restantes.value = (segundos_restantes_totales.value % 60).toString().padStart(2, '0');
+    console.log(minutos_restantes.value + ':' + segundos_restantes.value);
 
     //Si queda menos de 1 minuto se muestra un sweetalert y se inicia el intervalo del titulo
     if (segundos_restantes_totales.value <= 60 && !alerta_1minuto) {
@@ -60,7 +68,8 @@ const CONTEO = () => {
       //Se evalua el resultado del sweetalert para que si el usuario da click en confirmar se reinicie el timer
       alerta_1minuto.then((result) => {
         if (result.isConfirmed) {
-          resetTimer();
+          refreshToken();
+          reiniciarTimer();
         }
       });
     }
@@ -90,10 +99,23 @@ const CAMBIAR_TITULO = () => {
 };
 
 //Función para reiniciar el timer
-function resetTimer() {
+function reiniciarTimer() {
   segundos_restantes_totales.value = (5 * 60);
   alerta_1minuto = null;
   clearInterval(intervalo_titulo);
+}
+
+//Función para refrescar el token cuando sea necesario
+async function refreshToken() {
+  //Se realiza la petición axios
+  const res = await axios.get('refresh/', {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  });
+
+  //Se actualiza el valor del token en el localStorage
+  localStorage.setItem('token', res.data.token);
 }
 
 </script>

@@ -30,7 +30,7 @@
             </div>
         </div>
         <!-- Se valida que las gráficas esten listas para mostrarse, si no estan listas se muestra la pantalla de carga -->
-        <div v-if="!dataListaDonaciones && !data_lista_anuncios && !data_lista_n_secciones && !data_lista_usuarios && !data_lista_eventos"
+        <div v-if="!data_lista_donaciones && !data_lista_anuncios && !data_lista_n_secciones && !data_lista_usuarios && !data_lista_eventos"
             class="mdcarga h-screen overflow-hidden flex justify-center items-center">
             <svg aria-hidden="true" class="w-20 h-20 mr-2 text-gray-300 animate-spin fill-purpleLogin" viewBox="0 0 100 101"
                 fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,7 +53,7 @@
                     <div class="grafic h-80 w-full flex justify-center items-center">
                         <!-- Se valida si el gráfico esta listo para mostrarse -->
                         <Line v-if="data_donaciones && data_donaciones.results.length > 0 && data_lista_donaciones"
-                            :data="CHART_DONACIONES" :options="OPCIONES_DONACIONES" />
+                            :data="CHART_DONACIONES" :options="OPCIONES_DONACIONES" class="px-10"/>
                         <!-- Si no esta listo se muestra un mensaje de que no hay información -->
                         <p v-else-if="data_lista_donaciones">No hay donaciones registradas en esta semana.</p>
                     </div>
@@ -101,7 +101,7 @@
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <!-- Se valida si el gráfico esta listo para mostrarse -->
                         <Bar v-if="data_eventos && data_eventos.length > 0 && data_lista_eventos" :data="CHART_EVENTOS"
-                            :options="OPCIONES_EVENTOS" />
+                            :options="OPCIONES_EVENTOS" class="px-10" />
                         <!-- Si no esta listo se muestra un mensaje de que no hay información -->
                         <p v-else-if="data_lista_eventos">No se encontro información.</p>
                     </div>
@@ -115,7 +115,7 @@
                     <div class="grafic h-2/3 w-full flex justify-center items-center">
                         <!-- Se valida si el gráfico esta listo para mostrarse -->
                         <Bar v-if="data_anuncios && data_anuncios.length > 0 && data_lista_anuncios" :data="CHART_ANUNCIOS"
-                            :options="OPCIONES_ANUNCIOS" />
+                            :options="OPCIONES_ANUNCIOS" class="px-10" />
                         <!-- Si no esta listo se muestra un mensaje de que no hay información -->
                         <p v-else-if="data_lista_anuncios">No se encontro información.</p>
                     </div>
