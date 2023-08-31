@@ -60,6 +60,34 @@
           <p class="ml-2">Cargando...</p>
         </div>
       </div>
+      <div class="flex p-4 mb-4 text-sm text-black rounded-lg bg-blue-50" role="alert">
+        <div>
+          <span class="font-medium text-base">Para garantizar la seguridad de tu cuenta, te recomendamos tener en cuenta
+            las siguientes sugerencias:</span>
+          <ul class="mt-5 ml-4 list-none">
+            <li class="mb-2 flex items-center text-[#198A39] font-semibold">
+              <svg class="mr-2" width="24px" height="24px" stroke-width="1.5" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg" color="#198A39">
+                <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#198A39"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>Al menos 8 caracteres.
+            </li>
+            <li class="mb-2 flex items-center text-[#A61D1D] font-semibold">
+              <svg class="mr-2" width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
+                <path
+                  d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                  stroke="#A61D1D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>Al menos una letra minúscula.
+            </li>
+            <li class="mb-2 flex">Al menos una letra mayúscula.</li>
+            <li class="mb-2 flex">Al menos un carácter especial, por ejemplo, ! @ # ?</li>
+            <li class="mb-2 flex">Longitud máxima de 72 caracteres.</li>
+          </ul>
+        </div>
+      </div>
     </form>
   </div>
 </template>
@@ -162,13 +190,13 @@ async function login() {
       console.log(token.data.data);
       const captoken = token.data.data.token;
       const capusuario = token.data.data.user.id_usuario;
-      const capImagen=token.data.data.user.imagen_usuario;
+      const capImagen = token.data.data.user.imagen_usuario;
       //Si retorno un token se redirige a la página principal
       if (token != null) {
         localStorage.setItem('token', captoken)
         console.log(localStorage.getItem('token'));
         localStorage.setItem('usuario', capusuario);
-        localStorage.setItem('imagen_usuario',capImagen);
+        localStorage.setItem('imagen_usuario', capImagen);
         navigateTo('/principal');
         //Si no retorno token es lanza un error
       } else {
