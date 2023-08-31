@@ -497,11 +497,11 @@ const token = ref(null);
 const data = ref(null);
 
 //Se establece una constante ref para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const pagina = ref(useRoute().query.pagina || 1);
+const pagina = ref(parseInt(useRoute().query.pagina) || 1);
 
 //Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
 function cambioDePagina(pagina_prop) {
-    pagina.value = pagina_prop;
+    pagina.value = parseInt(pagina_prop);
 }
 
 //Se crea una constante ref para el buscador
@@ -560,8 +560,8 @@ async function leerPaginas() {
             paginas.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 10) {
-                paginas.value.push(res.data.slice(i, i + 10));
+            for (let i = 0; i < res.data.length; i += 1) {
+                paginas.value.push(res.data.slice(i, i + 1));
             }
 
             //Se reinicia el timer
@@ -587,8 +587,8 @@ async function leerPaginas() {
             paginas.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 10) {
-                paginas.value.push(res.data.slice(i, i + 10));
+            for (let i = 0; i < res.data.length; i += 1) {
+                paginas.value.push(res.data.slice(i, i + 1));
             }
 
             //Se reinicia el timer
@@ -606,6 +606,10 @@ async function leerPaginas() {
         if (paginas.value.length < pagina.value) {
             //Se actualiza el valor de la constante pagina
             pagina.value = pagina.value - 1;
+        }
+
+        if(paginas.value.length == 0){
+            ceroRegistrosEncontrados.value = true;
         }
 
     } catch (error) {
@@ -637,8 +641,8 @@ async function buscarPaginas() {
                 ceroRegistrosEncontrados.value = true;
             } else {
                 //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data.value.length; i += 10) {
-                    paginas.value.push(data.value.slice(i, i + 10));
+                for (let i = 0; i < data.value.length; i += 1) {
+                    paginas.value.push(data.value.slice(i, i + 1));
                 }
                 //Se actualiza el valor de la constante de búsqueda a false
                 ceroRegistrosEncontrados.value = false;
