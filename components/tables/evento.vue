@@ -15,7 +15,7 @@
                 <label for="habilitar_consultor">Habilitar Consultor:</label>
             </div>
             <!-- Opcion de habilitar datos del consultor -->
-            <div v-if="habilitar_consultor === 'checked'">
+            <div>
                 <div class="relative z-0">
                     <input type="text" name="nombre_consultor" class="">
                     <label for="nombre_consultor" class="">Nombre - Consultor</label>
@@ -35,9 +35,9 @@
 
 <script>
 // Imports necesarios
-import { ref } from 'nuxt/dist/app/compat/capi';
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent ({
     name: "ModalEvento",
     setup() {
         // Establecer los campos
@@ -58,10 +58,6 @@ export default {
             id_zona: "",
             id_configuracion_parroquia: 1,
         });
-
-        return {
-            form,
-        }
     }
-};
+});
 </script>

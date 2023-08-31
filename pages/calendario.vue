@@ -1,3 +1,36 @@
+<template>
+  <div class='demo-app'>
+    <div class='demo-app-sidebar'>
+      <div class='demo-app-sidebar-section'>
+        <label>
+          <input type='checkbox' :checked='calendarOptions.weekends' @change='handleWeekendsToggle' />
+          toggle weekends
+        </label>
+      </div>
+      <div class='demo-app-sidebar-section mt-[-20px]'>
+        <h2>All Events <strong> ( {{ currentEvents.length }} ) </strong></h2>
+        <ul class="ml-[-20px] text-[14px]">
+          <li v-for='event in currentEvents' :key='event.id' class="flex items-center rounded-md bg-gray-200 p-5">
+            <div class="w-[100%]">
+              <b>{{ event.startStr }}</b>
+              <i>{{ event.title }}</i>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class='demo-app-main'>
+      <FullCalendar class='demo-app-calendar' :options='calendarOptions'>
+        <template v-slot:eventContent='arg'>
+          <b>{{ arg.timeText }}</b>
+          <i>{{ arg.event.title }}</i>
+        </template>
+      </FullCalendar>
+    </div>
+  </div>
+  <ModalEvento v-if="mostrarModal" @closeModal="mostrarModal = false"></ModalEvento>
+</template>
+
 <script>
 
 definePageMeta({
@@ -37,7 +70,7 @@ export default defineComponent({
       }
     ]
     return {
-      mostrarModal: false,
+      mostrarModal: true,
       calendarOptions: {
         plugins: [
           dayGridPlugin,
@@ -58,7 +91,7 @@ export default defineComponent({
         weekends: true,
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
-        eventsSet: this.handleEvents
+        eventsSet: this.handleEvents,
         /* you can update a remote database when these fire:
         eventAdd:
         eventChange:
@@ -73,21 +106,8 @@ export default defineComponent({
       this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
     },
     handleDateSelect() {
+      console.log("Mostrar modal funciona")
       this.mostrarModal = true;
-      let title = prompt('Please enter a new title for your event')
-      let calendarApi = selectInfo.view.calendar
-
-      calendarApi.unselect() // clear date selection
-
-      if (title) {
-        calendarApi.addEvent({
-          id: crearIdEvento(),
-          title,
-          start: selectInfo.startStr,
-          end: selectInfo.endStr,
-          allDay: selectInfo.allDay
-        })
-      }
     },
     handleEventClick(clickInfo) {
       if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
@@ -101,38 +121,6 @@ export default defineComponent({
 })
 
 </script>
-
-<template>
-  <div class='demo-app'>
-    <div class='demo-app-sidebar'>
-      <div class='demo-app-sidebar-section'>
-        <label>
-          <input type='checkbox' :checked='calendarOptions.weekends' @change='handleWeekendsToggle' />
-          toggle weekends
-        </label>
-      </div>
-      <div class='demo-app-sidebar-section mt-[-20px]'>
-        <h2>All Events <strong> ( {{ currentEvents.length }} ) </strong></h2>
-        <ul class="ml-[-20px] text-[14px]">
-          <li v-for='event in currentEvents' :key='event.id' class="flex items-center rounded-md bg-gray-200 p-5">
-            <div class="w-[100%]">
-              <b>{{ event.startStr }}</b>
-              <i>{{ event.title }}</i>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class='demo-app-main'>
-      <FullCalendar class='demo-app-calendar' :options='calendarOptions'>
-        <template v-slot:eventContent='arg'>
-          <b>{{ arg.timeText }}</b>
-          <i>{{ arg.event.title }}</i>
-        </template>
-      </FullCalendar>
-    </div>
-  </div>
-</template>
 
 <style lang='css'>
 h2 {
