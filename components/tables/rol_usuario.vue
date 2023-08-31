@@ -30,7 +30,7 @@
                             stroke-linejoin="round"></path>
                     </svg>
                 </button>
-                <button class="h-10 w-10 rounded-md flex items-center ml-4 justify-center editbtn max-[400px]:mx-4"
+                <button class="h-10 w-10 rounded-md flex items-center ml-4 justify-center editbtn max-[400px]:mx-4 max-[750px]:my-1 max-[750px]:ml-[-1px] max-[400px]:ml-6 max-[400px]:mr-[6px]"
                     @click="leerUnRol(rolusuario.id_rol_usuario)">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -40,7 +40,7 @@
                     </svg>
                 </button>
                 <button
-                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4 max-[750px]:mt-[1px]"
                     @click="borrarRol(rolusuario.id_rol_usuario)">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">

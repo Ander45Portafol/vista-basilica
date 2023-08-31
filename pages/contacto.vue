@@ -155,8 +155,6 @@
 import { onMounted, ref } from "vue";
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from "axios";
-//Importación del plugin de paginación de registros
-import { TailwindPagination } from "laravel-vue-pagination";
 //Importación de sweetalert
 import Swal from "sweetalert2";
 //Importación de archivo de validaciones

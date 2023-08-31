@@ -28,10 +28,19 @@ const validaciones = {
     //Evalua el sqlstate (identificador de acciones SQL) por si axios retorna un error, así se le puede enviar un mensaje personalizado al usuario
     mensajeSqlState(error) {
         //Se colocan los posibles códigos de error y su mensaje a retornar
-        if (error === '23000') {
-            return 'Violación de restricción de unicidad/integridad.';
-        } else {
-            return 'Error en la base de datos.';
+        switch (error) {
+            case "23505":
+                return 'Violación de restricción de unicidad.';
+            case "7":
+                return 'Existe un problema al conectar con el servidor.';
+            case "42703":
+                return 'Nombre de campo desconocido';
+            case "42P01":
+                return 'Nombre de tabla desconocido';
+            case "23503":
+                'Violacion de llave foránea';
+            default:
+                return 'Error en la base de datos.';
         }
     },
     //Función para extraer el sqlstate del error completo que retorna axios
@@ -83,7 +92,7 @@ const validaciones = {
         //Se valida que el texto no sea nulo
         if (texto != null && texto.trim() != "") {
             //Se valida que en la cadena de texto solo existan letras, números y guión bajo
-            var re = /^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s_]+$/;
+            var re = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s_]+$/;
             //Retorna false o true dependiendo de si cumple o no la condición
             return re.test(texto);
         } else {
@@ -96,7 +105,7 @@ const validaciones = {
         //Se valida que el texto no sea nulo
         if (texto != null && texto.trim() != "") {
             //Se valida que en la cadena de texto solo existan letras
-            var re = /^[a-zA-Z\s/]+$/;
+            var re = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s/]+$/;
             //Retorna false o true dependiendo de si cumple o no la condición
             return re.test(texto);
         } else {
