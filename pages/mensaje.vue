@@ -69,17 +69,36 @@
             </div>
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
+            <!-- Se manda a traer la longitud del array de mensajes (el que trae los registros) y así saber cuantos registros son -->
             <div class="h-screen">
-                <p v-if="mensajes" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
-                    {{ mensajes.length }}
+                <p v-if="mensajes.length > 0 && !ceroRegistrosEncontrados"
+                    class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ mensajes[pagina -
+                        1].length
+                    }}<span class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
+                <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                    -
                     <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
                 </p>
-                <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
-                    <span class="text-gray-500 font-normal ml-2">- registros encontrados!</span>
-                </p>
+                <!-- Alerta a mostrar el usuario busca algo que no coincide con ningún registro -->
+                <div class="flex-col">
+                    <div v-if="mensajes.length == 0 && ceroRegistrosEncontrados">
+                        <div class="flex items-center px-4 py-6 mt-5 mb-4 text-sm text-purpleLogin border-2 border-purpleLogin rounded-lg bg-transparent"
+                            role="alert">
+                            <svg class="flex-shrink-0 inline w-6 h-6 mr-3" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                            </svg>
+                            <div class="text-base">
+                                <span class="font-medium">No se encontraron registros, </span> la petición realizada no
+                                obtuvo resultados.
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <div v-if="!mensajes" class="loadingtable overflow-hidden h-full pr-4">
+                    <div v-if="mensajes.length == 0 && !ceroRegistrosEncontrados"
+                        class="loadingtable overflow-hidden h-full pr-4">
                         <div class="contained-data flex-col" v-for="number in 6" :key="number">
                             <div
                                 class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
@@ -106,23 +125,15 @@
                             </div>
                         </div>
                     </div>
-                    <TablesMensaje v-if="mensajes" :datos_mensajes="mensajes" :actualizar_datos="leerMensajes" />
+                    <TablesMensaje v-if="mensajes.length > 0" :datos_mensajes="mensajes" :actualizar_datos ="cargarTabla" :paginacion="pagina"/>
                 </div>
-            </div>
-            <!-- Paginación -->
-            <div class="flex justify-center mt-6">
-                <TailwindPagination v-if="data" :item-classes="[
-                    'text-gray-500',
-                    'rounded-full',
-                    'border-none',
-                    'ml-1',
-                    'hover:bg-gray-200',
-                ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="pagina = $event" />
+                <div class="flex justify-center mt-6">
+                    <Paginacion v-if="mensajes.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
+                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                </div>
             </div>
         </div>
     </div>
-    <!-- Modal  Aqui va el modal como componente-->
 </template>
 
 
@@ -179,7 +190,10 @@ onMounted(() => {
     leerMensajes();
 });
 
-
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
+//Se crea una constante ref para saber cuando el usuario realizo una búsqueda que no retorno ningún registro
+const ceroRegistrosEncontrados = ref(false);
 
 //Variable reactiva para almacenar el token del localStorage
 const token = ref(null);
