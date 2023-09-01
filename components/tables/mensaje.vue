@@ -501,39 +501,24 @@ function submitForm() {
 }
 
 async function estadoActualizar(id) {
-    //se llama la funcion  para poder acapturar la
     await leerUnMensaje(id);
-    //Constante para el modal
-    const MODAL_ID = document.getElementById("staticModal");
-    //Constante que contiene las caracteristicas del modal
-    const OPCIONES_MODAL = {
-        backdrop: "static",
-        backdropClasses:
-            "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
+    const MODAL_ELEMENT = document.getElementById('staticModal');
+    const CLOSE_BUTTON = document.getElementById('closeModal');
+    const MODAL_TEXT = document.getElementById('modalText');
+    const MODAL_OPTIONS = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
     };
-    //Instanciamos el boton para cerrar el modal
-    const CERRAR_BOTON = document.getElementById("closeModal");
-    //Constante para el titulo del modal
-    const TEXTO_MODAL = document.getElementById("modalText");
-    //Constante para el boton de actualizar dentro del modal
-    const MODAL_BOTON_ACTUALIZAR = document.getElementById("btnModalUpdate");
-    //Instanciamos el modal
-    const modal = new Modal(MODAL_ID, OPCIONES_MODAL);
-    //Le modificamos el texto del header al modal
-    TEXTO_MODAL.textContent = "Editar";
-    //Colocamos visibilidad al botón de actualizar en el modal
-    MODAL_BOTON_ACTUALIZAR.classList.remove("hidden");
-    //Abrimos el modal
+    const modal = new Modal(MODAL_ELEMENT, MODAL_OPTIONS);
+    MODAL_TEXT.textContent = "Editar";
     modal.show();
-    //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-    CERRAR_BOTON.addEventListener("click", function () {
-        //Ocultamos el modal
+    document.getElementById('btnModalAdd').classList.add('hidden');
+    document.getElementById('btnModalUpdate').classList.remove('hidden');
+    CLOSE_BUTTON.addEventListener('click', function () {
         modal.hide();
-        //Limpiamos el modal
         limpiarForm();
     });
 }
-
 
 async function leerUnMensaje(id) {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
@@ -558,7 +543,7 @@ async function leerUnMensaje(id) {
                 estado_mensaje: res.data.data.campos.estado_mensaje,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
                 visibilidad_mensaje: res.data.data.campos.visibilidad_mensaje ? true : false,
-                id_contacto: res.data.data.campos.id_contacto,
+                id_contacto: res.data.data.campos.id_contacto
             };
             //Se reinicia el timer
             window.dispatchEvent(EVENT);
@@ -594,92 +579,14 @@ async function leerUnMensaje(id) {
     }
 }
 
+
 async function actualizarMensaje() {
-    if (validarNombre() && validarApellido() && validarTelefono() && form.estado_mensaje != 0 && form.id_contacto != 0) {
-        try {
-            //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_mensaje;
-
-            //Se crea una constante FormData para almacenar los datos del modal
-            const formData = new FormData();
-            formData.append("nombre_contactante", form.value.nombre_contactante);
-            formData.append("apellido_contactante", form.value.apellido_contactante);
-            formData.append("telefono_contactante", form.value.telefono_contactante);
-            formData.append("correo_contactante", form.value.correo_contactante);
-            formData.append("asunto_mensaje", form.value.asunto_mensaje);
-            formData.append("mensaje", form.value.mensaje);
-            formData.append("fecha_mensaje", form.value.fecha_mensaje);
-            formData.append("estado_mensaje", form.value.estado_mensaje);
-            formData.append(
-                "visibilidad_mensaje",
-                form.value.visibilidad_mensaje ? 1 : 0
-            )
-            formData.append("id_contacto", form.value.id_contacto);
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/mensajes_update/" + id, formData, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-                //Se actualizan los datos con  las props esto hace que llame la actualizar_datos este hace la funcion de leer 
-            })
-            //Se manda a llamar la accion para actualizar los datos con las props
-            props.actualizar_datos();
-            //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
-            // if (buscar.value.buscador) {
-            //     buscarMensajes();
-            // } else {
-            //     leerMensajes();
-            // 
-            //Se cierra el modal
-            document.getElementById("closeModal").click();
-
-            //Se lanza la alerta de éxito
-            TOAST.fire({
-                icon: "success",
-                title: "Mensaje actualizado exitosamente",
-            });
-        } catch (error) {
-            console.log(error);
-            const mensajeError = error.response.data.message;
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: mensajeError,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
-    }
-}
-
-async function actualizarContacto() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
     if (validarNombre() && validarApellido() && validarTelefono() && form.estado_mensaje != 0 && form.id_contacto != 0) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
             var id = form.value.id_mensaje;
-            //Se crea una constante FormData para almacenar los datos del modal
-         
             //Se crea una constante FormData para almacenar los datos del modal
             const FORM_DATA = new FormData();
             FORM_DATA.append("nombre_contactante", form.value.nombre_contactante);
@@ -696,7 +603,7 @@ async function actualizarContacto() {
             );
             FORM_DATA.append("id_contacto", form.value.id_contacto);
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/contactos_update/" + id, FORM_DATA, {
+            await axios.post("/mensajes_update/" + id, FORM_DATA, {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
@@ -715,7 +622,7 @@ async function actualizarContacto() {
             //Se lanza la alerta de éxito
             TOAST.fire({
                 icon: "success",
-                title: "Contacto actualizado exitosamente",
+                title: "Mensaje actualizado exitosamente",
             });
 
         } catch (error) {

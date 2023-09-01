@@ -93,7 +93,7 @@
                                 <span class="font-medium">No se encontraron registros, </span> la petición realizada no
                                 obtuvo resultados.
                             </div>
-                        </div>
+                        </div>``
                     </div>
                 </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
@@ -203,7 +203,7 @@ const token = ref(null);
 const data = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const pagina = ref(useRoute().query.pagina || 1);
+const pagina = ref(parseInt(useRoute().query.pagina) || 1);
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
@@ -262,12 +262,10 @@ async function leerMensajes() {
             data.value = res.data;
             mensajes.value = [];
 
-
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
             for (let i = 0; i < res.data.length; i += 10) {
                 mensajes.value.push(res.data.slice(i, i + 10));
             }
-
             //Se reinicia el timer
             window.dispatchEvent(EVENT);
             //Se refresca el valor del token con la respuesta del axios
