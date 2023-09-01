@@ -6,34 +6,17 @@
     <form class="middle flex-col w-1/2 mt-12" @submit.prevent="login()">
       <div class="relative z-0">
         <input type="text" id="username" name="usuario" v-model="form.usuario" required maxlength="50"
-          @input="validarUsuario()"
           class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
           placeholder=" " autocomplete="off" />
-        <div v-if="!validarUsuario()" class="flex mt-2 mb-0 text-sm text-red-500 bg-transparent" role="alert">
-          <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-              clip-rule="evenodd"></path>
-          </svg>
-          <div>
-            El usuario solo permite caracteres <span class="font-medium">
-              alfanuméricos y el guión bajo</span>
-          </div>
-        </div>
-        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> {{ form.usuario.length
-        }} /50</span>
         <label for="username"
           class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Usuario
           <span class="text-sm ml-1"> * </span></label>
       </div>
       <div class="relative z-0 mt-10 mb-4">
-        <input type="password" id="password" name="clave_usuario" @input="validarContra" v-model="form.clave_usuario"
+        <input type="password" id="password" name="clave_usuario" v-model="form.clave_usuario"
           required minlength="8" maxlength="73"
           class="block py-2.5 px-0 w-full text-sm text-gray-200 border-gray-200 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
           placeholder=" " autocomplete="off" />
-        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> {{ form.clave_usuario.length
-        }} /73</span>
         <label for="password"
           class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Contraseña
           <span class="text-sm ml-1"> * </span></label>
@@ -42,7 +25,7 @@
         <a href="" class="btn-forgot text-white font-thin text-xs">Olvidaste tu contraseña?</a>
       </div>
       <div class="end flex mt-16 justify-center">
-        <button v-if="!enviandoLogin" type="submit" :disabled="!validarUsuario()"
+        <button v-if="!enviandoLogin" type="submit"
           class="btn-login h-16 text-white w-80 text-lg justify-center flex items-center font-semibold bg-purpleLogin rounded-lg transition-all duration-200">
           Iniciar sesión
         </button>
@@ -58,94 +41,6 @@
               fill="currentFill" />
           </svg>
           <p class="ml-2">Cargando...</p>
-        </div>
-      </div>
-      <div class="flex p-4 mb-4 text-sm text-black rounded-lg bg-blue-50" role="alert">
-        <div>
-          <span class="font-medium text-base">Para garantizar la seguridad de tu cuenta, te recomendamos tener en cuenta
-            las siguientes sugerencias:</span>
-          <ul class="mt-5 ml-4 list-none">
-            <li :class="errores_contra.clases_longitud">
-              <svg v-if="errores_contra.validar_longitud" class="mr-2" width="24px" height="24px" stroke-width="1.5"
-                viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
-                <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round"></path>
-                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#198A39"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
-              <svg v-else class="mr-2" width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
-                <path
-                  d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                  stroke="#A61D1D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
-              Al menos 8 caracteres y longitud máxima de 72 caracteres.
-            </li>
-            <li :class="errores_contra.clases_minuscula">
-              <svg v-if="errores_contra.validar_minuscula" class="mr-2" width="24px" height="24px" stroke-width="1.5"
-                viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
-                <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round"></path>
-                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#198A39"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
-              <svg v-else class="mr-2" width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
-                <path
-                  d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                  stroke="#A61D1D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
-              Al menos una letra minúscula.
-            </li>
-            <li :class="errores_contra.clases_mayuscula">
-              <svg v-if="errores_contra.validar_mayuscula" class="mr-2" width="24px" height="24px" stroke-width="1.5"
-                viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
-                <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round"></path>
-                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#198A39"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
-              <svg v-else class="mr-2" width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
-                <path
-                  d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                  stroke="#A61D1D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
-              Al menos una letra mayúscula.
-            </li>
-            <li :class="errores_contra.clases_numero">
-              <svg v-if="errores_contra.validar_numero" class="mr-2" width="24px" height="24px" stroke-width="1.5"
-                viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
-                <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round"></path>
-                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#198A39"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
-              <svg v-else class="mr-2" width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
-                <path
-                  d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                  stroke="#A61D1D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
-              Al menos un número.
-            </li>
-            <li :class="errores_contra.clases_especiales">
-              <svg v-if="errores_contra.validar_especiales" class="mr-2" width="24px" height="24px" stroke-width="1.5"
-                viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
-                <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round"></path>
-                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke="#198A39"
-                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
-              <svg v-else class="mr-2" width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
-                <path
-                  d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                  stroke="#A61D1D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              </svg>
-              Al menos un carácter especial, por ejemplo, ! @ # ?
-            </li>
-          </ul>
         </div>
       </div>
     </form>
@@ -204,8 +99,6 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 //Importación de flowbite
 import 'flowbite';
-//Importación del onMounted
-import { onMounted } from 'vue'
 //Importación de archivo de validaciones
 import validaciones from '../assets/validaciones.js';
 
@@ -236,99 +129,41 @@ const enviandoLogin = ref(false);
 
 //Función para hacer el login
 async function login() {
-  if (validarUsuario) {
-    try {
-      enviandoLogin.value = true;
-      //Se guardan los datos actuales del formulario
-      const formData = {
-        usuario: form.value.usuario,
-        clave_usuario: form.value.clave_usuario,
-      };
+  try {
+    enviandoLogin.value = true;
+    //Se guardan los datos actuales del formulario
+    const formData = {
+      usuario: form.value.usuario,
+      clave_usuario: form.value.clave_usuario,
+    };
 
-      //Se hace la petición axios y se guarda el token que retorna
-      const token = ((await axios.post("/login", formData)));
-      console.log(token.data.data);
-      const captoken = token.data.data.token;
-      const capusuario = token.data.data.user.id_usuario;
-      const capImagen = token.data.data.user.imagen_usuario;
-      //Si retorno un token se redirige a la página principal
-      if (token != null) {
-        localStorage.setItem('token', captoken)
-        console.log(localStorage.getItem('token'));
-        localStorage.setItem('usuario', capusuario);
-        localStorage.setItem('imagen_usuario', capImagen);
-        navigateTo('/principal');
-        //Si no retorno token es lanza un error
-      } else {
-        Toast.fire({
-          icon: 'error',
-          title: 'Credenciales inválidas'
-        });
-      }
-    } catch (error) {
-      //Se muestra un sweetalert con el error
-      console.log(error);
+    //Se hace la petición axios y se guarda el token que retorna
+    const token = ((await axios.post("/login", formData)));
+    console.log(token.data.data);
+    const captoken = token.data.data.token;
+    const capusuario = token.data.data.user.id_usuario;
+    const capImagen = token.data.data.user.imagen_usuario;
+    //Si retorno un token se redirige a la página principal
+    if (token != null) {
+      localStorage.setItem('token', captoken)
+      console.log(localStorage.getItem('token'));
+      localStorage.setItem('usuario', capusuario);
+      localStorage.setItem('imagen_usuario', capImagen);
+      navigateTo('/principal');
+      //Si no retorno token es lanza un error
+    } else {
       Toast.fire({
         icon: 'error',
-        title: error.response.data.error
+        title: 'Credenciales inválidas'
       });
     }
-  }
-}
-
-//Validaciones
-function validarUsuario() {
-  var res = validaciones.validarUsuario(form.value.usuario);
-  return res;
-}
-
-const errores_contra = ref({
-  validar_longitud: false,
-  clases_longitud: 'mb-2 flex items-center text-[#A61D1D] font-semibold',
-  validar_minuscula: false,
-  clases_minuscula: 'mb-2 flex items-center text-[#A61D1D] font-semibold',
-  validar_mayuscula: false,
-  clases_mayuscula: 'mb-2 flex items-center text-[#A61D1D] font-semibold',
-  validar_numero: false,
-  clases_numero: 'mb-2 flex items-center text-[#A61D1D] font-semibold',
-  validar_especiales: false,
-  clases_especiales: 'mb-2 flex items-center text-[#A61D1D] font-semibold',
-})
-
-function validarContra() {
-  errores_contra.value.validar_longitud = validaciones.validarContraLongitud(form.value.clave_usuario);
-  if (errores_contra.value.validar_longitud) {
-    errores_contra.value.clases_longitud = 'mb-2 flex items-center text-[#198A39] font-semibold';
-  } else {
-    errores_contra.value.clases_longitud = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
-  }
-
-  errores_contra.value.validar_minuscula = validaciones.validarContraLetraMinuscula(form.value.clave_usuario);
-  if (errores_contra.value.validar_minuscula) {
-    errores_contra.value.clases_minuscula = 'mb-2 flex items-center text-[#198A39] font-semibold';
-  } else {
-    errores_contra.value.clases_minuscula = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
-  }
-
-  errores_contra.value.validar_mayuscula = validaciones.validarContraLetraMayuscula(form.value.clave_usuario);
-  if (errores_contra.value.validar_mayuscula) {
-    errores_contra.value.clases_mayuscula = 'mb-2 flex items-center text-[#198A39] font-semibold';
-  } else {
-    errores_contra.value.clases_mayuscula = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
-  }
-
-  errores_contra.value.validar_especiales = validaciones.validarContraEspeciales(form.value.clave_usuario);
-  if (errores_contra.value.validar_especiales) {
-    errores_contra.value.clases_especiales = 'mb-2 flex items-center text-[#198A39] font-semibold';
-  } else {
-    errores_contra.value.clases_especiales = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
-  }
-
-  errores_contra.value.validar_numero = validaciones.validarContraNumeros(form.value.clave_usuario);
-  if (errores_contra.value.validar_numero) {
-    errores_contra.value.clases_numero = 'mb-2 flex items-center text-[#198A39] font-semibold';
-  } else {
-    errores_contra.value.clases_numero = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+  } catch (error) {
+    //Se muestra un sweetalert con el error
+    console.log(error);
+    Toast.fire({
+      icon: 'error',
+      title: error.response.data.error
+    });
   }
 }
 
