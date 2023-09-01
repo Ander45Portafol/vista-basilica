@@ -125,7 +125,8 @@
                             </div>
                         </div>
                     </div>
-                    <TablesMensaje v-if="mensajes.length > 0" :datos_mensajes="mensajes" :actualizar_datos ="cargarTabla" :paginacion="pagina"/>
+                    <TablesMensaje v-if="mensajes.length > 0" :datos_mensajes="mensajes" :actualizar_datos="cargarTabla"
+                        :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="mensajes.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
@@ -209,21 +210,24 @@ const buscar = ref({
     buscador: "",
 });
 
-/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
-y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let mensajes = computed(() => data.value?.data);
+//Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
+function cambioDePagina(pagina_prop) {
+    pagina.value = pagina_prop;
+}
+
+function cargarTabla() {
+    leerMensajes();
+    if (buscar.value.texto_buscador) {
+        buscarMensajes();
+    }
+}
+/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano).*/
+let mensajes = ref([]);
+
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
 watch(pagina, async () => {
-    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
-    if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarMensajes();
-    } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerMensajes();
-    }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
     useRouter().push({ query: { pagina: pagina.value } });
 });
@@ -246,96 +250,156 @@ function visibilidadRegistros() {
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerMensajes() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
-        //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
-            //Se realiza la petición axios para leer los registros visibles
-            const { data: res } = await axios.get(`/mensajes?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/mensajes', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
+            data.value = res.data;
+            mensajes.value = [];
+
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                mensajes.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         } else {
-            //Se realiza la petición axios para leer los registros no visibles
-            const { data: res } = await axios.get(`/mensajes_ocultos?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/mensajes_ocultos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
+            data.value = res.data;
+            mensajes.value = [];
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                mensajes.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
+        }
+        if (mensajes.value.length < pagina.value) {
+            //Se actualiza el valor de la constante pagina
+            pagina.value = pagina.value - 1;
+        }
+
+        if (mensajes.value.length == 0) {
+            ceroRegistrosEncontrados.value = true;
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: RES,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: MENSAJE_ERROR,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
+
 
 //Función para buscar registros dependiendo del valor del buscador
 async function buscarMensajes() {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
-            //Se evalua si se quieren mostrar los registros visibles o no visibles
-            if (registros_visibles.value) {
-                // Se realiza la petición axios para mostrar los registros visibles
-                const { data: res } = await axios.get(
-                    `/mensajes_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
+
+            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
+            useRouter().push({ query: { buscador: buscar.value.buscador } });
+
+            //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
+            data.value = data.value.filter(mensaje =>
+                mensaje.campos.nombre_contactante.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+                mensaje.campos.correo_contactante.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+            );
+
+            //Se limpia el array de registros paginados
+            mensajes.value = [];
+
+            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+            if (data.value.length == 0) {
+                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+                ceroRegistrosEncontrados.value = true;
             } else {
-                // Se realiza la petición axios para mostrar los registros no visibles
-                const { data: res } = await axios.get(
-                    `/mensajes_search_ocultos?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
+                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+                for (let i = 0; i < data.value.length; i += 1) {
+                    mensajes.value.push(data.value.slice(i, i + 1));
                 }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
             }
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: pagina.value } });
+
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
             pagina.value = 1;
             leerMensajes();
+            useRouter().push({ query: { pagina: pagina.value } });
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: RES,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: MENSAJE_ERROR,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 

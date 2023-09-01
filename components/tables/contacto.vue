@@ -597,7 +597,7 @@ async function actualizarContacto() {
 }
 
 //Codigo para cambiar el estado del usuarios a inactivo
-async function borrarContacto(id, ) {
+async function borrarContacto(id,) {
     console.log(id);
     Swal.fire({
         title: 'Confirmación',
@@ -670,69 +670,69 @@ async function borrarContacto(id, ) {
 //Función para cambiar un usuario a activo
 async function recuperarUnContacto(id) {
 
-Swal.fire({
-    title: 'Confirmación',
-    text: "¿¿Desea recuperar el registro",
-    icon: 'warning',
-    reverseButtons: true,
-    showCancelButton: true,
-    confirmButtonColor: '#3F4280',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Confirmar',
-    cancelButtonText: 'Cancelar',
-    allowOutsideClick: false,
-}).then(async (result) => {
-    if (result.isConfirmed) {
-        try {
-            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-            token.value = localStorage.getItem('token');
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿¿Desea recuperar el registro",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        allowOutsideClick: false,
+    }).then(async (result) => {
+        if (result.isConfirmed) {
             try {
-                //Se realiza la petición axios
-                await axios.delete("/contactos/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }).then(res => {
-                    //Se reinicia el timer
-                    window.dispatchEvent(EVENT);
-                    //Se actualiza el valor del token con la respuesta del axios
-                    localStorage.setItem('token', res.data.data.token);
-                    token.value = localStorage.getItem('token');
-                });;
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/contactos/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el valor del token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+                    });;
 
-                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-                await props.actualizar_datos();
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
 
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Contacto recuperado exitosamente",
+                    //Se lanza la alerta de éxito
+                    Toast.fire({
+                        icon: "success",
+                        title: "Contacto recuperado exitosamente",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById("closeModal").click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res,
+                    confirmButtonColor: "#3F4280",
                 });
-            } catch (error) {
-                console.log(error);
             }
         }
-        catch (error) {
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
-            document.getElementById("closeModal").click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: res,
-                confirmButtonColor: "#3F4280",
-            });
-        }
-    }
-});
+    });
 }
 
 

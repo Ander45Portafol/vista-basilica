@@ -68,7 +68,7 @@
                     </button>
                 </div>
             </div>
-            
+
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
@@ -127,7 +127,8 @@
                             </div>
                         </div>
                     </div>
-                    <TablesContacto v-if="contactos.length > 0" :datos_contactos="contactos" :actualizar_datos ="cargarTabla" :paginacion="pagina"/>
+                    <TablesContacto v-if="contactos.length > 0" :datos_contactos="contactos" :actualizar_datos="cargarTabla"
+                        :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="contactos.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
@@ -176,6 +177,8 @@ import { onMounted, ref } from "vue";
 import axios from "axios";
 //Importación de sweetalert
 import Swal from "sweetalert2";
+//Importación de archivo de validaciones
+import validaciones from "../assets/validaciones.js";
 
 /*definePageMeta es un macro compilador (Se ejecuta mientras el programa se compila) para los componentes que se 
 encuentran en /pages, este permite establecer/transformar las propiedades de los componentes de nuxt*/
@@ -191,7 +194,7 @@ definePageMeta({
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
-    token.value = localStorage.getItem('token');  
+    token.value = localStorage.getItem('token');
     //Se leen los contactos al montarse la página para evitar problemas del setup y el localStorage
     leerContactos();
 });
@@ -332,8 +335,8 @@ async function buscarContactos() {
 
             //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
             data.value = data.value.filter(contacto =>
-             contacto.campos.nombre_contacto.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
-            contacto.campos.correo_contacto.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+                contacto.campos.nombre_contacto.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+                contacto.campos.correo_contacto.toLowerCase().includes(buscar.value.buscador.toLowerCase())
             );
 
             //Se limpia el array de registros paginados

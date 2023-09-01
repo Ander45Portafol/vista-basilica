@@ -1,7 +1,7 @@
 <!-- SCRUD como componente -->
 <template>
     <!-- Tabla como componente -->
-    <div class="contained-data flex-col" v-for="mensaje in datos_mensajes" :key="mensaje.id">
+    <div class="contained-data flex-col" v-for="mensaje in datos_mensajes[paginacion - 1]" :key="mensaje.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -377,6 +377,7 @@ import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
     datos_mensajes: Array,
     actualizar_datos: Function,
+    paginacion: Number,
 });
 onMounted(() => {
     console.log(props.datos_mensajes);
@@ -444,20 +445,30 @@ async function llenarSelectContactos() {
         //Lo que devuelve la petición axios se le asigna a "contactos"
         contactos.value = res;
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: RES,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: MENSAJE_ERROR,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -503,15 +514,15 @@ async function estadoActualizar(id) {
     //Instanciamos el boton para cerrar el modal
     const CERRAR_BOTON = document.getElementById("closeModal");
     //Constante para el titulo del modal
-    const modalText = document.getElementById("modalText");
+    const TEXTO_MODAL = document.getElementById("modalText");
     //Constante para el boton de actualizar dentro del modal
-    const modalBtnUpdate = document.getElementById("btnModalUpdate");
+    const MODAL_BOTON_ACTUALIZAR = document.getElementById("btnModalUpdate");
     //Instanciamos el modal
     const modal = new Modal(MODAL_ID, OPCIONES_MODAL);
     //Le modificamos el texto del header al modal
-    modalText.textContent = "Editar";
+    TEXTO_MODAL.textContent = "Editar";
     //Colocamos visibilidad al botón de actualizar en el modal
-    modalBtnUpdate.classList.remove("hidden");
+    MODAL_BOTON_ACTUALIZAR.classList.remove("hidden");
     //Abrimos el modal
     modal.show();
     //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
@@ -524,9 +535,9 @@ async function estadoActualizar(id) {
 }
 
 
-
-//Metodo para capturar el id del usuario y buscar la respectiva informacion
 async function leerUnMensaje(id) {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token')
     try {
         accionForm("actualizar");
         await axios.get('/mensajes/' + id, {
@@ -549,10 +560,37 @@ async function leerUnMensaje(id) {
                 visibilidad_mensaje: res.data.data.campos.visibilidad_mensaje ? true : false,
                 id_contacto: res.data.data.campos.id_contacto,
             };
-
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
         });
     } catch (error) {
         console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (!error.response.data.errors) {
+            //Se extrae el sqlstate (identificador de acciones SQL)
+            const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+            const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: RES,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: MENSAJE_ERROR,
+                confirmButtonColor: '#3F4280'
+            });
+        }
     }
 }
 
@@ -633,6 +671,81 @@ async function actualizarMensaje() {
     }
 }
 
+async function actualizarContacto() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
+    if (validarNombre() && validarApellido() && validarTelefono() && form.estado_mensaje != 0 && form.id_contacto != 0) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_mensaje;
+            //Se crea una constante FormData para almacenar los datos del modal
+         
+            //Se crea una constante FormData para almacenar los datos del modal
+            const FORM_DATA = new FormData();
+            FORM_DATA.append("nombre_contactante", form.value.nombre_contactante);
+            FORM_DATA.append("apellido_contactante", form.value.apellido_contactante);
+            FORM_DATA.append("telefono_contactante", form.value.telefono_contactante);
+            FORM_DATA.append("correo_contactante", form.value.correo_contactante);
+            FORM_DATA.append("asunto_mensaje", form.value.asunto_mensaje);
+            FORM_DATA.append("mensaje", form.value.mensaje);
+            FORM_DATA.append("fecha_mensaje", form.value.fecha_mensaje);
+            FORM_DATA.append("estado_mensaje", form.value.estado_mensaje);
+            FORM_DATA.append(
+                "visibilidad_mensaje",
+                form.value.visibilidad_mensaje ? 1 : 0
+            );
+            FORM_DATA.append("id_contacto", form.value.id_contacto);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/contactos_update/" + id, FORM_DATA, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
+            //Se manda a llamar la accion para actualizar los datos con las props
+            await props.actualizar_datos();
+
+            document.getElementById("closeModal").click();
+
+            //Se lanza la alerta de éxito
+            TOAST.fire({
+                icon: "success",
+                title: "Contacto actualizado exitosamente",
+            });
+
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
+}
 
 //Función para cambiar la visibilidad de una página para ocultarla
 async function borrarMensaje(id) {
