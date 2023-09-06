@@ -116,7 +116,6 @@
             </div>
         </div>
     </div>
-    <TimerToken />
 </template>
 
 <style scoped>

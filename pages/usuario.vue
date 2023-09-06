@@ -1,4 +1,5 @@
-<template>    <div class="principal mt-4">
+<template>
+    <div class="principal mt-4">
         <!--Componente para cargar el menu superior del formulario-->
         <MenuUsuarioDashboard class="mr-8" />
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
@@ -119,16 +120,16 @@
                             </div>
                         </div>
                     </div>
-                    <TablesUsuarios v-if="usuarios.length > 0" :datos_usuarios="usuarios" :actualizar_datos="cargarTabla" :paginacion="pagina" />
+                    <TablesUsuarios v-if="usuarios.length > 0" :datos_usuarios="usuarios" :actualizar_datos="cargarTabla"
+                        :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="usuarios.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                        @cambioDePagina="cambioDePagina" :items_totales="usuarios.length" />
                 </div>
             </div>
         </div>
     </div>
-    <TimerToken />
 </template>
 <script setup>
 import { onMounted } from 'vue';
@@ -196,6 +197,8 @@ const buscar = ref({
 })
 
 function cargarTabla() {
+    token.value = localStorage.getItem('token');
+    console.log(token.value);
     leerUsuarios();
     if (buscar.value.texto_buscador) {
         buscarUsuarios();
@@ -206,6 +209,7 @@ function cargarTabla() {
 async function leerUsuarios() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
+    console.log(token.value);
     try {
         if (registros_visibles.value) {
             const { data: res } = await axios.get('/usuarios', {
@@ -218,8 +222,8 @@ async function leerUsuarios() {
 
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i +=2) {
-                usuarios.value.push(res.data.slice(i, i + 2));
+            for (let i = 0; i < res.data.length; i += 10) {
+                usuarios.value.push(res.data.slice(i, i + 10));
             }
 
             //Se reinicia el timer
@@ -240,8 +244,8 @@ async function leerUsuarios() {
             usuarios.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 2) {
-                usuarios.value.push(res.data.slice(i, i + 2));
+            for (let i = 0; i < res.data.length; i += 10) {
+                usuarios.value.push(res.data.slice(i, i + 10));
             }
 
             //Se reinicia el timer
