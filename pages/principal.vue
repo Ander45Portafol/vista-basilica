@@ -1,9 +1,15 @@
 <script setup>
 import 'flowbite';
-import Iconoir from 'iconoir/icons/iconoir.svg'
+import axios from 'axios';
 
 definePageMeta({
     layout: "principal",
+})
+
+const datos_dashboard = ref({
+    n_usuarios: '',
+    n_proyectos: '',
+    n_donaciones: '',
 })
 
 // Aqui ira la condicion de si existen mas de 3 optiones dentro del menu de navegacion, entonces mostrar el icono de barra de navegacion
@@ -14,6 +20,47 @@ definePageMeta({
 onMounted(() => {
     token.value = localStorage.getItem('token');
     id.value = localStorage.getItem('usuario');
+
+    try {
+        axios.get('/cargar-dashboard', {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        }).then(res => {
+            datos_dashboard.value.n_usuarios = res.data.n_usuarios;
+            datos_dashboard.value.n_proyectos = res.data.n_proyectos;
+            datos_dashboard.value.n_donaciones = res.data.n_donaciones;
+        });
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
 });
 const token = ref(null);
 const id = ref(null);
@@ -81,7 +128,7 @@ async function generarReportePersonal() {
                 <div class="top flex justify-between">
                     <div class="text">
                         <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Usuarios</p>
-                        <p class="subtitule  font-semibold mt-0 pt-0 max-[720px]:text-[13px]">En Línea</p>
+                        <p class="subtitule  font-semibold mt-0 pt-0 max-[720px]:text-[13px]">Registrados</p>
                     </div>
                     <svg width="38px" height="38px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -94,15 +141,17 @@ async function generarReportePersonal() {
                     </svg>
                 </div>
                 <div class="number h-20 flex items-end">
-                    <p class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">122</p>
+                    <p v-if="datos_dashboard.n_usuarios" class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">
+                        {{ datos_dashboard.n_usuarios }}</p>
+                    <p v-else class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">-</p>
                 </div>
             </div>
             <div class="text-white sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 min-w-[200px] max-[1400px]:max-w-[30%] max-[550px]:max-w-full max-[550px]:my-2"
-                id="citas">
+                id="proyectos">
                 <div class="top flex justify-between">
                     <div class="text">
-                        <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Citas</p>
-                        <p class="subtitule font-semibold mt-0 pt-0 max-[720px]:text-[13px]">Pendientes</p>
+                        <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Proyectos</p>
+                        <p class="subtitule font-semibold mt-0 pt-0 max-[720px]:text-[13px]">Publicados</p>
                     </div>
                     <svg width="38px" height="38px" viewBox="0 0 24 24" stroke-width="2.5" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -112,15 +161,18 @@ async function generarReportePersonal() {
                     </svg>
                 </div>
                 <div class="number h-20 flex items-end">
-                    <p class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">12</p>
+                    <p v-if="datos_dashboard.n_proyectos"
+                        class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">{{ datos_dashboard.n_proyectos }}
+                    </p>
+                    <p v-else class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">-</p>
                 </div>
             </div>
             <div class="text-white sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 p-4 min-w-[200px] max-[1400px]:max-w-[30%] max-[550px]:max-w-full"
-                id="proyectos">
+                id="donaciones">
                 <div class="top flex justify-between">
                     <div class="text">
-                        <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Proyectos</p>
-                        <p class="subtitule font-semibold mt-0 pt-0 max-[720px]:text-[13px]">Publicados</p>
+                        <p class="titule text-2xl font-extrabold mb-0 max-[720px]:text-[16px]">Donaciones</p>
+                        <p class="subtitule font-semibold mt-0 pt-0 max-[720px]:text-[13px]">Obtenidas</p>
                     </div>
                     <svg width="38px" height="38px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -141,7 +193,10 @@ async function generarReportePersonal() {
                     </svg>
                 </div>
                 <div class="number h-20 flex items-end">
-                    <p class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">15</p>
+                    <p v-if="datos_dashboard.n_donaciones"
+                        class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">{{ datos_dashboard.n_donaciones
+                        }}</p>
+                    <p v-else class="text-white font-extrabold text-4xl max-[720px]:text-[28px]">-</p>
                 </div>
             </div>
         </div>
@@ -188,7 +243,8 @@ async function generarReportePersonal() {
                         </div>
                         <div class="textinterac flex-col ml-16">
                             <p class="titule_interac font-semibold">Donaciones</p>
-                            <p class="section_change font-normal">Listado general de donaciones realizadas por proyecto publicado.</p>
+                            <p class="section_change font-normal">Listado general de donaciones realizadas por proyecto
+                                publicado.</p>
                         </div>
                     </div>
                     <button class="right flex justify-center items-center mr-4 max-[400px]:hidden"
@@ -214,12 +270,14 @@ async function generarReportePersonal() {
                         </div>
                         <div class="textinterac flex-col ml-16">
                             <p class="titule_interac font-semibold">Eventos</p>
-                            <p class="section_change font-normal">Listado general de eventos agendados y zonas de desarrollo correspondientes.</p>
+                            <p class="section_change font-normal">Listado general de eventos agendados y zonas de desarrollo
+                                correspondientes.</p>
                         </div>
                     </div>
-                    <button class="right flex justify-center items-center mr-4 max-[400px]:hidden" @click="generarReporteEvento">
-                        <svg width="32px" height="32px" stroke-width="2.5"
-                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                    <button class="right flex justify-center items-center mr-4 max-[400px]:hidden"
+                        @click="generarReporteEvento">
+                        <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path
                                 d="M9 17h6M12 6v7m0 0l3.5-3.5M12 13L8.5 9.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                                 stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -239,12 +297,14 @@ async function generarReportePersonal() {
                         </div>
                         <div class="textinterac flex-col ml-16">
                             <p class="titule_interac font-semibold">Personal</p>
-                            <p class="section_change font-normal">Listado general del personal y el respectivo cargo que desempeñan.</p>
+                            <p class="section_change font-normal">Listado general del personal y el respectivo cargo que
+                                desempeñan.</p>
                         </div>
                     </div>
-                    <button class="right flex justify-center items-center mr-4 max-[400px]:hidden" @click="generarReportePersonal">
-                        <svg width="32px" height="32px" stroke-width="2.5"
-                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                    <button class="right flex justify-center items-center mr-4 max-[400px]:hidden"
+                        @click="generarReportePersonal">
+                        <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path
                                 d="M9 17h6M12 6v7m0 0l3.5-3.5M12 13L8.5 9.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                                 stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -264,12 +324,14 @@ async function generarReportePersonal() {
                         </div>
                         <div class="textinterac flex-col ml-16">
                             <p class="titule_interac font-semibold">Grupos parroquiales</p>
-                            <p class="section_change font-normal">Listado general de grupos parroquiales separados por categorías.</p>
+                            <p class="section_change font-normal">Listado general de grupos parroquiales separados por
+                                categorías.</p>
                         </div>
                     </div>
-                    <button class="right flex justify-center items-center mr-4 max-[400px]:hidden" @click="generarReporteGrupos">
-                        <svg width="32px" height="32px" stroke-width="2.5"
-                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                    <button class="right flex justify-center items-center mr-4 max-[400px]:hidden"
+                        @click="generarReporteGrupos">
+                        <svg width="32px" height="32px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path
                                 d="M9 17h6M12 6v7m0 0l3.5-3.5M12 13L8.5 9.5M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                                 stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -297,14 +359,14 @@ body {
     border-radius: 1.2rem;
 }
 
-#citas {
+#proyectos {
     background-color: #f7886d;
     height: 175px;
     width: 425px;
     border-radius: 1.2rem;
 }
 
-#proyectos {
+#donaciones {
     background-color: #b33630;
     height: 175px;
     width: 425px;
@@ -313,4 +375,5 @@ body {
 
 .interraccion {
     background: #ebeff8;
-}</style>
+}
+</style>

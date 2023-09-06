@@ -164,7 +164,7 @@
                             </button>
                         </div>
                     </div>
-                </div>  
+                </div>
                 <!-- Paginación -->
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="paginas.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
@@ -559,8 +559,8 @@ async function leerPaginas() {
             paginas.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 1) {
-                paginas.value.push(res.data.slice(i, i + 1));
+            for (let i = 0; i < res.data.length; i += 10) {
+                paginas.value.push(res.data.slice(i, i + 10));
             }
 
             //Se reinicia el timer
@@ -586,8 +586,8 @@ async function leerPaginas() {
             paginas.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 1) {
-                paginas.value.push(res.data.slice(i, i + 1));
+            for (let i = 0; i < res.data.length; i += 10) {
+                paginas.value.push(res.data.slice(i, i + 10));
             }
 
             //Se reinicia el timer
@@ -607,12 +607,39 @@ async function leerPaginas() {
             pagina.value = pagina.value - 1;
         }
 
-        if(paginas.value.length == 0){
+        if (paginas.value.length == 0) {
             ceroRegistrosEncontrados.value = true;
         }
 
     } catch (error) {
         console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
 
@@ -640,8 +667,8 @@ async function buscarPaginas() {
                 ceroRegistrosEncontrados.value = true;
             } else {
                 //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data.value.length; i += 1) {
-                    paginas.value.push(data.value.slice(i, i + 1));
+                for (let i = 0; i < data.value.length; i += 10) {
+                    paginas.value.push(data.value.slice(i, i + 10));
                 }
                 //Se actualiza el valor de la constante de búsqueda a false
                 ceroRegistrosEncontrados.value = false;
@@ -657,7 +684,6 @@ async function buscarPaginas() {
         }
     } catch (error) {
         console.log(error);
-
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
             icon: "error",

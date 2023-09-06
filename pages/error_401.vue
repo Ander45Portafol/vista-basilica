@@ -5,9 +5,9 @@
                 <div class="flex items-center justify-center">
                     <img src="/img/logo_sin_letras.png" alt="" class="h-56">
                 </div>
-                <p class="mt-8 text-white text-8xl">{{ error.statusCode }}</p>
-                <p class="mt-8 text-white text-2xl">La página a la que intentas acceder</p>
-                <p class="text-white text-2xl">no existe en esta galaxia.</p>
+                <p class="mt-8 text-white text-8xl">401</p>
+                <p class="mt-8 text-white text-2xl">Parece que no estás autorizado para</p>
+                <p class="text-white text-2xl">realizar esta acción.</p>
                 <button @click="volverAlInicio" class="mt-12 py-4 px-8 text-white text-lg rounded-lg bg-[#393B69]">Volver al
                     inicio</button>
             </div>
@@ -23,34 +23,33 @@
 }
 </style>
 <script setup>
+
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from "axios";
 
-const { error } = defineProps(['error']);
-
-async function volverAlInicio() {
+onMounted(async () => {
     if (localStorage.getItem('token')) {
         try {
-            await axios.post('/verificar-token/', localStorage.getItem('token'), {
+            await axios.post("/logout", localStorage.getItem('token'), {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
-            }).then(res => {
-                if (res.data.message == 'El token de acceso es valido.') {
-                    clearError();
-                    navigateTo('/principal');
-                } else {
-                    clearError();
-                    localStorage.removeItem('token');
-                    navigateTo('/');
-                }
             });
         } catch (error) {
+
         }
-    } else {
-        clearError();
         localStorage.removeItem('token');
-        navigateTo('/');
     }
+});
+
+definePageMeta({
+    //Se le establece el layout principal
+    layout: "",
+});
+
+function volverAlInicio() {
+    clearError();
+    navigateTo('/');
 }
+
 </script>
