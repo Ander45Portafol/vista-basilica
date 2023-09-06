@@ -1,5 +1,5 @@
 <template>
-    <div class="contained-data flex-col" v-for="usuario in datos_usuarios[datos_usuarios.length - 1]" :key="usuario.id">
+    <div class="contained-data flex-col" v-for="usuario in datos_usuarios[paginacion - 1]" :key="usuario.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -379,8 +379,9 @@ const props = defineProps({
     datos_usuarios: Array,
     //Prop que recibe la funcion de leerUsuarios, para recargar la tabla, cada vez de finalizar alguna acción
     actualizar_datos: Function,
+    paginacion: Number,
 });
-console.log(props.datos_usuarios);
+console.log(props.paginacion);
 //Evento para reiniciar el tiempo del componente del timer
 const EVENT = new Event('reset-timer');
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
@@ -554,6 +555,7 @@ function submitForm() {
 async function crearUsuario() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
+    console.log(token.value);
     try {
         const FORMDATA = new FormData();
         FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
@@ -572,7 +574,7 @@ async function crearUsuario() {
         );
         FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
         //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/usuarios/", FORMDATA, {
+        await axios.post("/usuarios", FORMDATA, {
             headers: {
                 "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${token.value}`,
@@ -583,18 +585,18 @@ async function crearUsuario() {
             //Se actualiza el token con la respuesta del axios
             localStorage.setItem('token', res.data.data.token);
             token.value = localStorage.getItem('token');
+            console.log(token.value);
         });
-
         //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
         await props.actualizar_datos();
 
         document.getElementById('closeModal').click();
-        //Se lanza la alerta con el mensaje de éxito
         // props.actualizar_datos();
         Toast.fire({
             icon: 'success',
             title: 'Usuario creado exitosamente'
         });
+
     } catch (error) {
         console.log(error);
         const mensajeError = error.response.data.message;

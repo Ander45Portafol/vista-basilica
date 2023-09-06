@@ -120,16 +120,16 @@
                             </div>
                         </div>
                     </div>
-                    <TablesUsuarios v-if="usuarios.length > 0" :datos_usuarios="usuarios" :actualizar_datos="cargarTabla" />
+                    <TablesUsuarios v-if="usuarios.length > 0" :datos_usuarios="usuarios" :actualizar_datos="cargarTabla"
+                        :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="usuarios.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                        @cambioDePagina="cambioDePagina" :items_totales="usuarios.length" />
                 </div>
             </div>
         </div>
     </div>
-    <TimerToken />
 </template>
 <script setup>
 import { onMounted } from 'vue';
@@ -184,11 +184,11 @@ const id = ref(null);
 const data = ref(null);
 
 //Se establece una constante ref para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const pagina = ref(useRoute().query.pagina || 1);
+const pagina = ref(parseInt(useRoute().query.pagina || 1));
 
 //Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
 function cambioDePagina(pagina_prop) {
-    pagina.value = pagina_prop;
+    pagina.value = parseInt(pagina_prop);
 }
 
 let usuarios = ref([]);
@@ -197,6 +197,8 @@ const buscar = ref({
 })
 
 function cargarTabla() {
+    token.value = localStorage.getItem('token');
+    console.log(token.value);
     leerUsuarios();
     if (buscar.value.texto_buscador) {
         buscarUsuarios();
@@ -207,6 +209,7 @@ function cargarTabla() {
 async function leerUsuarios() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
+    console.log(token.value);
     try {
         if (registros_visibles.value) {
             const { data: res } = await axios.get('/usuarios', {
@@ -219,8 +222,8 @@ async function leerUsuarios() {
 
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 1) {
-                usuarios.value.push(res.data.slice(i, i + 1));
+            for (let i = 0; i < res.data.length; i += 10) {
+                usuarios.value.push(res.data.slice(i, i + 10));
             }
 
             //Se reinicia el timer
@@ -241,8 +244,8 @@ async function leerUsuarios() {
             usuarios.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 1) {
-                usuarios.value.push(res.data.slice(i, i + 1));
+            for (let i = 0; i < res.data.length; i += 10) {
+                usuarios.value.push(res.data.slice(i, i + 10));
             }
 
             //Se reinicia el timer
@@ -293,8 +296,8 @@ async function buscarUsuarios() {
                 ceroRegistrosEncontrados.value = true;
             } else {
                 //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data.value.length; i += 1) {
-                    usuarios.value.push(data.value.slice(i, i + 1));
+                for (let i = 0; i < data.value.length; i += 10) {
+                    usuarios.value.push(data.value.slice(i, i + 10));
                 }
                 //Se actualiza el valor de la constante de búsqueda a false
                 ceroRegistrosEncontrados.value = false;
