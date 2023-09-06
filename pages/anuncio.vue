@@ -71,14 +71,15 @@
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de anuncios (el que trae los registros) y así saber cuantos registros son -->
             <div class="h-screen">
-                <p v-if="anuncios" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ anuncios.length
-                }}<span class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
+                <p v-if="anuncios.length > 0 && !ceroRegistrosEncontrados"
+                    class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ anuncios[pagina - 1].length
+                    }}<span class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
                 <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
                     -
                     <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
                 </p>
-                <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <div v-if="!anuncios" class="loadingtable overflow-hidden h-full pr-4">
+                <div class=" tables overflow-y-scroll h-3/5 pr-4">
+                    <div v-if="anuncios == 0 && !ceroRegistrosEncontrados" class="loadingtable overflow-hidden h-full pr-4">
                         <div class="contained-data flex-col" v-for="number in 6" :key="number">
                             <div
                                 class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
@@ -105,13 +106,12 @@
                             </div>
                         </div>
                     </div>
-                    <TablesAnuncio v-if="anuncios" :datosAnuncio="anuncios" :actualizarDatos="leerAnuncios" />
+                    <TablesAnuncio v-if="anuncios.length > 0" :datos_anuncios="anuncios" :actualizar_datos="cargarTabla"
+                        :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
-                    <TailwindPagination v-if="anuncios"
-                        :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
-                        :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                        :data="data" @pagination-change-page="pagina = $event" />
+                    <Paginacion v-if="anuncios.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
+                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
                 </div>
             </div>
         </div>
@@ -184,27 +184,26 @@ const data = ref(null);
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
 const pagina = ref(useRoute().query.pagina || 1);
 
+function cambioDePagina(pagina_prop) {
+    pagina.value = pagina_prop;
+}
+
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
     buscador: "",
 });
 
-
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
+//Se crea una constante ref para saber cuando el usuario realizo una búsqueda que no retorno ningún registro
+const ceroRegistrosEncontrados = ref(false);
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let anuncios = computed(() => data.value?.data);
+let anuncios = ref([]);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
 watch(pagina, async () => {
-    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
-    if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarAnuncios();
-    } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerAnuncios();
-    }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
     useRouter().push({ query: { pagina: pagina.value } });
 });
@@ -216,38 +215,82 @@ const registros_visibles = ref(true);
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se evalua el buscador para realizar leerAnuncios o buscarAnuncios 
+    //Se establece el número de página a 1
+    pagina.value = 1;
+    //Se leen todas las páginas
+    leerAnuncios();
+    //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
         buscarAnuncios();
-    } else {
-        leerAnuncios();
     }
 }
-
+function cargarTabla() {
+    leerAnuncios();
+    if (buscar.value.texto_buscador) {
+        buscarAnuncios();
+    }
+}
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerAnuncios() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
         //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
-            //Se realiza la petición axios para leer los registros visibles
-            const { data: res } = await axios.get(`/anuncios?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/anuncios', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
-            console.log(res);
+            data.value = res.data;
+            anuncios.value = [];
+
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                anuncios.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         } else {
-            //Se realiza la petición axios para leer los registros no visibles
-            const { data: res } = await axios.get(`/anuncios_ocultos?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/anuncios_ocultos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
+            data.value = res.data;
+            anuncios.value = [];
+
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                anuncios.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
+        }
+        if (anuncios.value.length < pagina.value) {
+            //Se actualiza el valor de la constante pagina
+            pagina.value = pagina.value - 1;
+        }
+
+        if (anuncios.value.length == 0) {
+            ceroRegistrosEncontrados.value = true;
         }
     } catch (error) {
         //Se extrae el mensaje de error
@@ -272,51 +315,47 @@ async function buscarAnuncios() {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
-            //Se evalua si se quieren mostrar los registros visibles o no visibles
-            if (registros_visibles.value) {
-                // Se realiza la petición axios para mostrar los registros visibles
-                const { data: res } = await axios.get(
-                    `/anuncios_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
-                console.log(res);
+
+            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
+            useRouter().push({ query: { buscador: buscar.value.buscador } });
+
+            //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
+            data.value = data.value.filter(anuncio =>
+                anuncio.campos.titulo_anuncio.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+            );
+
+            //Se limpia el array de registros paginados
+            anuncios.value = [];
+
+            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+            if (data.value.length == 0) {
+                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+                ceroRegistrosEncontrados.value = true;
             } else {
-                // Se realiza la petición axios para mostrar los registros no visibles
-                const { data: res } = await axios.get(
-                    `/anuncios_search_ocultos?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
+                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+                for (let i = 0; i < data.value.length; i += 10) {
+                    anuncios.value.push(data.value.slice(i, i + 10));
                 }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
             }
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: pagina.value } });
+
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
             pagina.value = 1;
             leerAnuncios();
+            useRouter().push({ query: { pagina: pagina.value } });
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        console.log(error);
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
             icon: "error",
             title: "Error",
-            text: res,
+            text: error,
             confirmButtonColor: "#3F4280",
         });
     }

@@ -1,5 +1,5 @@
 <template>
-    <div class="contained-data flex-col" v-for="donacion in dataDonacion" :key="donacion.id">
+    <div class="contained-data flex-col" v-for="donacion in datos_donacion[paginacion - 1]" :key="donacion.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -249,8 +249,13 @@ import Swal from 'sweetalert2';
 //Importación de archivo de validaciones
 import validaciones from '../../assets/validaciones.js';
 const props = defineProps({
-    dataDonacion: Array,
+    datos_donacion: Array,
+    actualizar_datos: Function,
+    paginacion: Number,
 });
+console.log(props.datos_donacion);
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
 
 onMounted(() => {
     token.value = localStorage.getItem('token');
@@ -283,6 +288,19 @@ onMounted(() => {
     llenarSelectProyectos();
 });
 
+//Metodo para mostrar las alertas
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+})
+
 const token = ref(null);
 
 const form = ref({
@@ -312,6 +330,7 @@ async function estadoActualizar(id) {
 }
 
 async function leerUnaDonacion(id_donacion) {
+    token.value = localStorage.getItem('token');
     try {
         await axios.get('/donaciones/' + id_donacion, {
             headers: {
@@ -328,13 +347,21 @@ async function leerUnaDonacion(id_donacion) {
                 id_proyecto_donacion: res.data.data.campos.id_proyecto_donacion,
                 id_donante: res.data.data.campos.id_donante,
             };
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
         });
     } catch (error) {
         console.log(error);
     }
 }
 const donantes = ref(null);
+
 async function llenarSelectDonantes() {
+    token.value = localStorage.getItem('token');
     try {
         //Se realiza la petición axios
         const { data: res } = await axios.get('/donantes-select', {
@@ -367,6 +394,7 @@ const proyectos = ref(null);
 
 //Función para llenar el select
 async function llenarSelectProyectos() {
+    token.value = localStorage.getItem('token');
     try {
         //Se realiza la petición axios
         const { data: res } = await axios.get('/p_donaciones-select', {
@@ -394,9 +422,49 @@ async function llenarSelectProyectos() {
     }
 }
 
+async function actualizarDonacion() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
+    try {
+        var id = form.value.id_donacion;
+        const FORMDATA = new FormData();
+        FORMDATA.append("cantidad_donada", form.value.cantidad_donada);
+        FORMDATA.append("fecha_donacion", form.value.fecha_donacion);
+        FORMDATA.append("mensaje_donacion", form.value.mensaje_donacion);
+        FORMDATA.append("codigo_comprobante", form.value.codigo_comprobante);
+        FORMDATA.append("id_proyecto_donacion", form.value.id_proyecto_donacion);
+        FORMDATA.append("id_donante", form.value.id_donante);
+        FORMDATA.append("visibilidad_donacion", form.value.visibilidad_donacion ? 1 : 0);
+        await axios.post("/donaciones_update/" + id, FORMDATA, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            }
+        }).then(res => {
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+        });
+
+        //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+        await props.actualizar_datos();
+
+        document.getElementById('closeModal').click();
+        // props.actualizar_datos();
+        Toast.fire({
+            icon: 'success',
+            title: 'Donacion actualizada exitosamente'
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
 
 //Función para cambiar la visibilidad de una página para ocultarla
 async function borrarDonacion(id) {
+    token.value = localStorage.getItem('token');
     //Se lanza una alerta de confirmación
     Swal.fire({
         title: "Confirmación",
@@ -413,25 +481,35 @@ async function borrarDonacion(id) {
         //Si el usuario selecciono "Confirmar"
         if (result.isConfirmed) {
             try {
-                //Se realiza la petición axios
-                await axios.delete("/mensajes/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                });
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/donaciones/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el valor del token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+                    });;
 
-                //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
-                if (buscar.value.buscador) {
-                    buscarMensajes();
-                } else {
-                    leerMensajes();
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
+
+                    //Se lanza la alerta de éxito
+                    Toast.fire({
+                        icon: "success",
+                        title: "Donacion Eliminada exitosamente",
+                    });
+                } catch (error) {
+                    console.log(error);
                 }
 
                 //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Mensaje ocultado exitosamente",
-                });
             } catch (error) {
                 //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
@@ -440,8 +518,74 @@ async function borrarDonacion(id) {
                 //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
                 const res = validaciones.mensajeSqlState(sqlState);
 
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res,
+                    confirmButtonColor: "#3F4280",
+                });
+            }
+        }
+    });
+}
+
+
+//Función para cambiar la visibilidad de una página para mostrarla
+async function recuperarDonacion(id) {
+    token.value = localStorage.getItem('token');
+    //Se lanza una alerta de confirmación
+    Swal.fire({
+        title: "Confirmación",
+        text: "¿Desea recuperar el registro?",
+        icon: "warning",
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: "#3F4280",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Confirmar",
+        cancelButtonText: "Cancelar",
+        //Se evalua la respuesta de la alerta
+    }).then(async (result) => {
+        //Si el usuario selecciono "Confirmar"
+        if (result.isConfirmed) {
+            try {
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/donaciones/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el valor del token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+                    });;
+
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
+
+                    //Se lanza la alerta de éxito
+                    Toast.fire({
+                        icon: "success",
+                        title: "Donacion recuperada exitosamente",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+
+                //Se lanza la alerta de éxito
+            } catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
 
                 //Se muestra un sweetalert con el mensaje
                 Swal.fire({
