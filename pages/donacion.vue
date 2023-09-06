@@ -162,8 +162,13 @@ definePageMeta({
 
 //Se usa el onMounted para añadir el max y min del input de fecha al crear el componente
 onMounted(() => {
+//Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
-    id.value = localStorage.getItem('usuario');
+
+    //Se evalua el usuario que ha iniciado session para el reporte 
+    id.value=localStorage.getItem('usuario');
+  
+
 
     leerDonaciones();
 });
