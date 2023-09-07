@@ -62,6 +62,12 @@ onMounted(() => {
 
 const ocultar = ref(false);
 
+async function VerificarUsuario() {
+  const res = await axios.get(`/primer_uso`);
+  existencia_usuario.value = res.data.usuarios;
+  if (existencia_usuario.value==false) {
+    navigateTo('/bienvenido');
+  }
 function ocultarDivs() {
   ocultar.value = !ocultar.value;
 }
