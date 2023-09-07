@@ -1,10 +1,11 @@
 <template>
     <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-    <div class="contained-data flex-col" v-for="enlace in datosEnlace" :key="enlace.id">
+    <div class="contained-data flex-col" v-for="enlace in datos_enlaces[paginacion - 1]" :key="enlace.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                <img src="" class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+                <img :src="api_url + enlace.campos.imagen_enlace"
+                    class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
@@ -155,9 +156,31 @@
                             </div>
                         </div>
                         <div class="flex-col w-64">
-                            <div class="flex-col">
+                            <div class="">
                                 <p class="mb-4 text-center text-gray-200">Imagen - Enlace</p>
-                                <img src="" class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg" />
+                                <div class="flex-col m-auto">
+                                    <div class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative max-[630px]:m-auto"
+                                        @click="seleccionarArchivo" @mouseover="iconoBorrarTrue"
+                                        @mouseleave="iconoBorrarFalse">
+                                        <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
+                                        <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
+                                        <div v-if="mostrarIconoBorrar"
+                                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
+                                                viewBox="0 0 24 24"
+                                                style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                                                <path
+                                                    d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="m-auto max-[630px]:text-center max-[630px]:ml-[-58px]">
+                                        <button type="button"
+                                            class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300 text-center"
+                                            @click="seleccionarArchivo">Seleccionar Imagen</button>
+                                    </div>
+                                </div>
                             </div>
                             <!-- Modal botones -->
                             <div class="modal-buttons mt-24 flex justify-end items-end">
@@ -246,45 +269,96 @@
 //Importación de archivo de validaciones
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
 
 const props = defineProps({
-    datosEnlace: Array,
-    actualizarDatos: Function,
+    //Prop que se utiliza para cargar los datos de la tabla
+    datos_enlaces: Array,
+    //Prop que recibe la funcion de leerEnlace, para recargar la tabla, cada vez de finalizar alguna acción
+    actualizar_datos: Function,
+    paginacion: Number,
 
 });
+
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
 
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
     //Codigo para abrir el modal, con el boton de crear
-    const buttonElement = document.getElementById('btnadd');
-    const modalElement = document.getElementById('staticModal');
-    const closeButton = document.getElementById('closeModal');
-    const modalText = document.getElementById('modalText');
-    const modalOptions = {
+    const AGREGAR_BOTON = document.getElementById('btnadd');
+    const MODAL_ID = document.getElementById('staticModal');
+    const CERRAR_BOTON = document.getElementById('closeModal');
+    const TITULO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
         backdrop: 'static',
         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
     };
 
-    if (modalElement) {
-        const modal = new Modal(modalElement, modalOptions);
-        buttonElement.addEventListener('click', function () {
-            modalText.textContent = "Registrar";
+    if (MODAL_ID) {
+        const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+        AGREGAR_BOTON.addEventListener('click', function () {
+            TITULO_MODAL.textContent = "Registrar";
             document.getElementById('btnModalAdd').classList.remove('hidden');
             document.getElementById('btnModalUpdate').classList.add('hidden');
             accionForm('crear');
-            modal.show();
+            MODAL.show();
         });
-        closeButton.addEventListener('click', function () {
-            modal.hide();
+        CERRAR_BOTON.addEventListener('click', function () {
+            MODAL.hide();
         });
     }
-    //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
+    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
 });
 //Variable reactiva para almacenar el token del localStorag
 const token = ref(null);
+
+//Variable para poder concectar con el storage de la api y asi poder buscar imagenes
+var api_url = "http://localhost:8000/storage/enlacesAmigos/images/";
+
+//Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
+const mostrarIconoBorrar = ref(false);
+//Metodo para hacer visible el icono de borrar una imagen
+function iconoBorrarTrue() {
+    if (imagenPreview.value) {
+        mostrarIconoBorrar.value = true;
+    }
+}
+//Metodo para no mostrar el icono de borrar una imagen
+function iconoBorrarFalse() {
+    if (imagenPreview.value) {
+        mostrarIconoBorrar.value = false;
+    }
+}
+//Variable reactiva para mostrar la imagen capturada
+const imagenPreview = ref(null);
+//Metodo para seleccionar una imagen para el registro
+const seleccionarArchivo = () => {
+    if (mostrarIconoBorrar.value == false) {
+        inputImagen.value.click();
+    } else {
+        limpiarImagen();
+    }
+};
+//Variable reactiva para caputar el valor de la imagen
+const inputImagen = ref(null);
+//Metodo para cambiar la imagen de un registro
+const cambiarImagen = () => {
+    const input = inputImagen.value;
+    const file = input.files;
+    if (file && file[0]) {
+        form.value.imagen_enlace = file[0];
+        console.log(form.value.imagen_enlace);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagenPreview.value = e.target.result;
+        };
+        reader.readAsDataURL(file[0]);
+        return file[0];
+    }
+};
+
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
@@ -303,19 +377,29 @@ function limpiarForm() {
     form.value.enlace_amigo = "";
     form.value.descripcion_enlace = "";
     form.value.visibilidad_enlace = false;
+    limpiarImagen();
+}
+
+//Metodo para limpiar el campo de la imagen
+function limpiarImagen() {
+    //Limpiar imagen
+    inputImagen.value.value = '';
+    imagenPreview.value = null;
+    form.value.imagen_enlace = "";
+    mostrarIconoBorrar.value = false;
 }
 
 //Funciones para manejo del modal
 //Toast del sweetalert
-const Toast = Swal.mixin({
+const TOAST = Swal.mixin({
     toast: true,
     position: "top-end",
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener("mouseenter", Swal.stopTimer);
-        toast.addEventListener("mouseleave", Swal.resumeTimer);
+    didOpen: (TOAST) => {
+        TOAST.addEventListener("mouseenter", Swal.stopTimer);
+        TOAST.addEventListener("mouseleave", Swal.resumeTimer);
     },
 });
 
@@ -327,6 +411,7 @@ function accionForm(accion) {
     formAccion = accion;
 }
 
+
 //Función para crear/actualizar un registro cuando se ejecuta el submit del form
 function submitForm() {
     if (formAccion == "crear") {
@@ -336,165 +421,147 @@ function submitForm() {
     }
 }
 
-//Función para crear un Enlace
+//Metodo para agregar un nuevo enlace
 async function crearEnlace() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     if (validarTitulo()) {
         try {
-            const formData = new FormData();
-            formData.append("titulo_enlace", form.value.titulo_enlace);
-            formData.append("enlace_amigo", form.value.enlace_amigo);
-            formData.append("descripcion_enlace", form.value.descripcion_enlace);
-            formData.append(
-                "visibilidad_enlace",
-                form.value.visibilidad_enlace ? 1 : 0
-            );
+            const FORMDATA = new FormData();
+            FORMDATA.append("titulo_enlace", form.value.titulo_enlace);
+            FORMDATA.append("enlace_amigo", form.value.enlace_amigo);
+            FORMDATA.append("descripcion_enlace", form.value.descripcion_enlace);
+            FORMDATA.append("visibilidad_enlace", form.value.visibilidad_enlace ? 1 : 0);
+            FORMDATA.append("imagen_enlace", form.value.imagen_enlace);
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/enlaces_amigos/", formData, {
+            await axios.post("/enlaces_amigos", FORMDATA, {
                 headers: {
+                    "Content-Type": "multipart/form-data",
                     Authorization: `Bearer ${token.value}`,
                 },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+                console.log(token.value);
+                limpiarForm();
             });
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await props.actualizar_datos();
+
             document.getElementById('closeModal').click();
-            //Se lanza la alerta con el mensaje de éxito
-            props.actualizarDatos();
-            Toast.fire({
+            // props.actualizar_datos();
+            TOAST.fire({
                 icon: 'success',
                 title: 'Enlace creado exitosamente'
             });
+
         } catch (error) {
             console.log(error);
-            const mensajeError = error.response.data.message;
-            if (!error.response.data.errors) {
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                const res = validaciones.mensajeSqlState(sqlState);
-
-
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
             } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: mensajeError,
-                    confirmButtonColor: '#3F4280'
-                });
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     }
 }
 
-function estadoActualizar(id) {
-    const modalElement = document.getElementById('staticModal');
-    const closeButton = document.getElementById('closeModal');
-    const modalText = document.getElementById('modalText');
-    const modalOptions = {
+//Metodo para configurar el modal y enviar el id 
+async function estadoActualizar(id) {
+    await leerUnEnlace(id);
+    const MODAL_ID = document.getElementById('staticModal');
+    const CERRAR_BOTON = document.getElementById('closeModal');
+    const TITULO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
         backdrop: 'static',
         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
     };
-    const modal = new Modal(modalElement, modalOptions);
-    modalText.textContent = "Editar";
-    modal.show();
+    const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+    TITULO_MODAL.textContent = "Editar";
+    MODAL.show();
+    accionForm('actualizar');
     document.getElementById('btnModalAdd').classList.add('hidden');
     document.getElementById('btnModalUpdate').classList.remove('hidden');
-    closeButton.addEventListener('click', function () {
-        modal.hide();
+    CERRAR_BOTON.addEventListener('click', function () {
+        MODAL.hide();
         limpiarForm();
     });
-    leerUnEnlace(id);
 }
 
 
+//Metodo para capturar el id del enlace y buscar la respectiva informacion
 async function leerUnEnlace(id) {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
-        accionForm("actualizar");
         await axios.get('/enlaces_amigos/' + id, {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
         }).then(res => {
             console.log(res.data);
-            console.log(res.data.data.campos.enlace_amigo);
             form.value = {
                 id_enlace_amigo: res.data.data.id,
                 titulo_enlace: res.data.data.campos.titulo_enlace,
                 enlace_amigo: res.data.data.campos.enlace_amigo,
                 descripcion_enlace: res.data.data.campos.descripcion_enlace,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_enlace: res.data.data.campos.visibilidad_enlace  ? true : false
+                visibilidad_enlace: res.data.data.campos.visibilidad_enlace ? true : false
             };
-
+            if (res.data.data.campos.imagen_enlace != null) {
+                form.value.imagen_enlace = res.data.data.campos.imagen_enlace;
+                imagenPreview.value = api_url + form.value.imagen_enlace;
+            } else {
+                form.value.imagen_enlace = "";
+            }
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
         });
     } catch (error) {
         console.log(error);
-    }
-}
-
-
-async function actualizarEnlace() {
-    if (validarTitulo()) {
-        try {
-            //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_enlace_amigo;
-
-            //Se crea una constante FormData para almacenar los datos del modal
-            const formData = new FormData();
-            formData.append("titulo_enlace", form.value.titulo_enlace);
-            formData.append("enlace_amigo", form.value.enlace_amigo);
-            formData.append("descripcion_enlace", form.value.descripcion_enlace);
-            formData.append(
-                "visibilidad_enlace",
-                form.value.visibilidad_enlace ? 1 : 0
-            );
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/enlaces_amigos_update/" + id, formData, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-            }),
-               //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
-
-            document.getElementById("closeModal").click();
-
-            //Se lanza la alerta de éxito
-            Toast.fire({
-                icon: "success",
-                title: "Enlace actualizado exitosamente",
-            });
-
-            //Se evalua el buscador para realizar leerContactos o buscarContactos
-            // if (buscar.value.buscador) {
-            //     buscarContactos();
-            // } else {
-            //     leerContactos();
-            // }
-            //Se cierra el modal
-
-        } catch (error) {
-            console.log(error);
-            const mensajeError = error.response.data.message;
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
             if (!error.response.data.errors) {
                 //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
                 //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
 
                 //Se muestra un sweetalert con el mensaje
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: res,
+                    text: RES,
                     confirmButtonColor: '#3F4280'
                 });
             } else {
@@ -502,7 +569,7 @@ async function actualizarEnlace() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: mensajeError,
+                    text: MENSAJE_ERROR,
                     confirmButtonColor: '#3F4280'
                 });
             }
@@ -511,104 +578,231 @@ async function actualizarEnlace() {
 }
 
 
-//Función para cambiar la visibilidad de una página para ocultarla
-async function borrarEnlace(id) {
+//Metodo para actualizar la informacion de un enlace
+async function actualizarEnlace() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
+    if (validarTitulo()) {
+        try {
+            var id = form.value.id_enlace_amigo;
+            const FORMDATA = new FormData();
+            FORMDATA.append("titulo_enlace", form.value.titulo_enlace);
+            FORMDATA.append("enlace_amigo", form.value.enlace_amigo);
+            FORMDATA.append("descripcion_enlace", form.value.descripcion_enlace);
+            FORMDATA.append("visibilidad_enlace", form.value.visibilidad_enlace ? 1 : 0);
+            FORMDATA.append("imagen_enlace", form.value.imagen_enlace);
+            console.log(FORMDATA);
+            await axios.post("/enlaces_amigos_update/" + id, FORMDATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                }
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
+
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await props.actualizar_datos();
+
+            document.getElementById('closeModal').click();
+            // props.actualizar_datos();
+            TOAST.fire({
+                icon: 'success',
+                title: 'Enlace actualizado exitosamente'
+            });
+        }
+        catch (error) {
+            console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+        }
+    }
+}
+
+//Codigo para cambiar el estado del enlace a inactivo
+async function borrarEnlace(id,) {
     console.log(id);
     Swal.fire({
         title: 'Confirmación',
-        text: "¿Desea ocultar el registro? ",
+        text: "¿Desea ocultar el registro",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
         confirmButtonColor: '#3F4280',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Confirmar',
+        allowOutsideClick: false,
         cancelButtonText: 'Cancelar'
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await axios.delete('/enlaces_amigos/' + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    }
-                }),
-                    //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Enlace desactivado exitosamente",
-                });
-            } catch (error) {
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/enlaces_amigos/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer  
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+
+                        //Se lanza la alerta de éxito
+                        TOAST.fire({
+                            icon: "success",
+                            title: "Enlace ocultado exitosamente",
+                        });
+                    });
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            catch (error) {
                 console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
             }
         }
     });
 }
 
-//Función para cambiar la visibilidad de una página para recuperarla
+//Función para cambiar un enlace a activo
 async function recuperarUnEnlace(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: "Confirmación",
-        text: "¿Desea recuperar el registro?",
-        icon: "warning",
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: "#3F4280",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
+
+Swal.fire({
+    title: 'Confirmación',
+    text: "¿¿Desea recuperar el registro",
+    icon: 'warning',
+    reverseButtons: true,
+    showCancelButton: true,
+    confirmButtonColor: '#3F4280',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Confirmar',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false,
+}).then(async (result) => {
+    if (result.isConfirmed) {
+        try {
+            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+            token.value = localStorage.getItem('token');
             try {
                 //Se realiza la petición axios
                 await axios.delete("/enlaces_amigos/" + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
-                }),
-                    //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
+                }).then(res => {
+                    //Se reinicia el timer
+                    window.dispatchEvent(EVENT);
+                    //Se actualiza el valor del token con la respuesta del axios
+                    localStorage.setItem('token', res.data.data.token);
+                    token.value = localStorage.getItem('token');
+                });;
+
+                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                await props.actualizar_datos();
+
                 //Se lanza la alerta de éxito
-                Toast.fire({
+                TOAST.fire({
                     icon: "success",
                     title: "Enlace recuperado exitosamente",
                 });
-
-                
-                //Se evalua el buscador para realizar leerContactos o buscarContactos 
-                // if (buscar.value.buscador) {
-                //     buscarContactos();
-                // } else {
-                //     leerContactos();
-                // } 
-
-                //Se lanza la alerta de éxito
-
             } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
+                console.log(error);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
                 //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
                 //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
 
                 //Se muestra un sweetalert con el mensaje
                 Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
                 });
             }
         }
-    });
+        }
+    }
+});
 }
 
 //Validaciones
