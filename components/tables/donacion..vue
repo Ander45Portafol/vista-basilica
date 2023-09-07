@@ -359,6 +359,7 @@ async function leerUnaDonacion(id_donacion) {
     }
 }
 const donantes = ref(null);
+
 async function llenarSelectDonantes() {
     token.value = localStorage.getItem('token');
     try {
@@ -461,23 +462,21 @@ async function actualizarDonacion() {
     }
 }
 
-//Función para cambiar la visibilidad de una página para ocultarla
-async function borrarDonacion(id) {
-    token.value = localStorage.getItem('token');
-    //Se lanza una alerta de confirmación
+//Codigo para cambiar el estado del usuarios a inactivo
+async function borrarDonacion(id,) {
+    console.log(id);
     Swal.fire({
-        title: "Confirmación",
-        text: "¿Desea ocultar el registro?",
-        icon: "warning",
+        title: 'Confirmación',
+        text: "¿Desea ocultar el registro",
+        icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
-        confirmButtonColor: "#3F4280",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        //Se evalua la respuesta de la alerta
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        allowOutsideClick: false,
+        cancelButtonText: 'Cancelar'
     }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
         if (result.isConfirmed) {
             try {
                 //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
@@ -489,33 +488,34 @@ async function borrarDonacion(id) {
                             Authorization: `Bearer ${token.value}`,
                         },
                     }).then(res => {
-                        //Se reinicia el timer
+                        //Se reinicia el timer  
                         window.dispatchEvent(EVENT);
-                        //Se actualiza el valor del token con la respuesta del axios
+                        //Se actualiza el token con la respuesta del axios
                         localStorage.setItem('token', res.data.data.token);
                         token.value = localStorage.getItem('token');
-                    });;
 
+                        //Se lanza la alerta de éxito
+                        Toast.fire({
+                            icon: "success",
+                            title: "Donación ocultado exitosamente",
+                        });
+                    });
                     //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
                     await props.actualizar_datos();
-
-                    //Se lanza la alerta de éxito
-                    Toast.fire({
-                        icon: "success",
-                        title: "Donacion Eliminada exitosamente",
-                    });
                 } catch (error) {
                     console.log(error);
                 }
-
-                //Se lanza la alerta de éxito
-            } catch (error) {
+            }
+            catch (error) {
                 //Se extrae el mensaje de error
                 const mensajeError = error.response.data.message;
                 //Se extrae el sqlstate (identificador de acciones SQL)
                 const sqlState = validaciones.extraerSqlState(mensajeError);
                 //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
                 const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById("closeModal").click();
 
                 //Se muestra un sweetalert con el mensaje
                 Swal.fire({

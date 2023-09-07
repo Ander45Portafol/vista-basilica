@@ -3,17 +3,18 @@
     <div class="principal mt-4">
         <MenuDonacionDashboard class="mr-8" />
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
+            <!-- Sección del buscador -->
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
+                <!-- Sección del buscador -->
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
-                    <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarSecciones en el keyup -->
+                    <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre donante/nombre proyecto)" v-model="buscar.buscador"
-                        @keyup="buscarDonaciones()">
+                        placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarDonaciones()" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
-                        <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
-                                stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                color="#000000">
+                        <button class="absolute mr-4" @click="limpiarBuscador()">
+                            <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
@@ -162,8 +163,13 @@ definePageMeta({
 
 //Se usa el onMounted para añadir el max y min del input de fecha al crear el componente
 onMounted(() => {
+//Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
-    id.value = localStorage.getItem('usuario');
+
+    //Se evalua el usuario que ha iniciado session para el reporte 
+    id.value=localStorage.getItem('usuario');
+  
+
 
     leerDonaciones();
 });
@@ -201,13 +207,11 @@ const registros_visibles = ref(true);
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se establece el número de página a 1
-    pagina.value = 1;
-    //Se leen todas las páginas
-    leerDonaciones();
-    //Se evalua el buscador para filtrar los registros
+    //Se evalua el buscador para realizar leerContactos o buscarContactos 
     if (buscar.value.buscador) {
         buscarDonaciones();
+    } else {
+        leerDonaciones();
     }
 }
 

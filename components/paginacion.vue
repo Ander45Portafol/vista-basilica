@@ -1,6 +1,6 @@
 <script setup>
 //Importaciones de vue
-import { defineProps, defineEmits, ref, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 
 //Se definen las props
 const props = defineProps({
