@@ -234,8 +234,6 @@ function cargarTabla() {
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano).*/
 let contactos = ref([]);
 
-
-
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
 watch(pagina, async () => {

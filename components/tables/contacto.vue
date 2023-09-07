@@ -663,10 +663,6 @@ async function borrarContacto(id,) {
     });
 }
 
-
-//Función para cambiar un usuario a activo
-
-
 //Función para cambiar un usuario a activo
 async function recuperarUnContacto(id) {
 
