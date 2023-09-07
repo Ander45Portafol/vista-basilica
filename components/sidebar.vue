@@ -20,7 +20,7 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </li>
-        <li class="item">
+        <li :class="clases_permisos.parroquia">
           <NuxtLink to="/enlace_amigo" data-tooltip-target="tooltip-parroquia" data-tooltip-placement="right"
             class="flex items-center justify-center rounded-lg p-2 hover:bg-gray-700">
             <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -36,8 +36,8 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </li>
-        <li class="item">
-          <NuxtLink to="/usuario" data-tooltip-target="tooltip-usuarios" data-tooltip-placement="right"
+        <li :class="clases_permisos.usuarios">
+          <NuxtLink to="/usuario" id="btn-usuarios" data-tooltip-target="tooltip-usuarios" data-tooltip-placement="right"
             class="flex items-center p-2 rounded-lg justify-center hover:bg-gray-700">
             <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
               xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -55,8 +55,9 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </li>
-        <li class="item">
-          <NuxtLink to="/pagina" data-tooltip-target="tooltip-paginas" data-tooltip-placement="right" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
+        <li :class="clases_permisos.navegabilidad">
+          <NuxtLink to="/pagina" data-tooltip-target="tooltip-paginas" data-tooltip-placement="right"
+            class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
             <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
               xmlns="http://www.w3.org/2000/svg" color="#000000">
               <path d="M3 17V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="#fff"
@@ -70,7 +71,7 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </li>
-        <li class="item">
+        <li :class="clases_permisos.anuncios">
           <NuxtLink to="/anuncio" data-tooltip-target="tooltip-anuncios" data-tooltip-placement="right"
             class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
             <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -86,7 +87,7 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </li>
-        <li class="item">
+        <li :class="clases_permisos.mensajes">
           <NuxtLink to="/contacto" data-tooltip-target="tooltip-mensajes" data-tooltip-placement="right"
             class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
             <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -103,7 +104,7 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </li>
-        <li class="item">
+        <li :class="clases_permisos.donaciones">
           <NuxtLink to="/donacion" data-tooltip-target="tooltip-donaciones" data-tooltip-placement="right"
             class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
             <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -127,7 +128,7 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </li>
-        <li class="item">
+        <li :class="clases_permisos.donantes">
           <NuxtLink to="/donante" data-tooltip-target="tooltip-donantes" data-tooltip-placement="right"
             class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
             <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -146,7 +147,7 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </li>
-        <li class="item">
+        <li :class="clases_permisos.calendario">
           <NuxtLink to="/calendario" data-tooltip-target="tooltip-calendario" data-tooltip-placement="right"
             class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
             <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -162,7 +163,7 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </li>
-        <li class="item">
+        <li :class="clases_permisos.personal">
           <NuxtLink to="/personal" data-tooltip-target="tooltip-personal" data-tooltip-placement="right"
             class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700">
             <svg width="28px" stroke-width="2.5" height="28px" viewBox="0 0 24 24" fill="none"
@@ -184,54 +185,95 @@
         </li>
         <div class="flex justify-center items-end h-24">
           <li class="item">
-            <button @click="deshabilitarToken" type="button" data-tooltip-target="tooltip-logout" data-tooltip-placement="right" class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700"><svg width="28px"
-                height="28px" stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                color="#000000">
+            <button @click="deshabilitarToken" type="button" data-tooltip-target="tooltip-logout"
+              data-tooltip-placement="right"
+              class="flex items-center p-2 justify-center rounded-lg hover:bg-gray-700"><svg width="28px" height="28px"
+                stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                 <path d="M12 12h7m0 0l-3 3m3-3l-3-3M19 6V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2v-1"
                   stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
             </button>
             <div id="tooltip-logout" role="tooltip"
-            class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-red-500 transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip">
-            Cerrar Sesión
-            <div class="tooltip-arrow" data-popper-arrow></div>
-          </div>
+              class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white bg-red-500 transition-opacity duration-300 rounded-lg shadow-sm opacity-0 tooltip">
+              Cerrar Sesión
+              <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
           </li>
         </div>
       </ul>
-  </div>
-</aside>
+    </div>
+  </aside>
 </template>
 <style>
-
 aside {
   background-color: #1b1c30;
 }
 </style>
 
 <script setup>
-  import { onMounted, ref } from 'vue';
-  import { initTooltips } from 'flowbite'
-  import axios from "axios";
+import { onMounted, ref } from 'vue';
+import { initTooltips } from 'flowbite'
+import axios from "axios";
 
-  onMounted(() => {
-    initTooltips();
-  });
+onMounted(async () => {
+  initTooltips();
+  await permisosUsuario();
+});
 
-  const token = ref(null);
+const token = ref(null);
+const id_usuario = ref(null);
 
-  async function deshabilitarToken() {
-    token.value = localStorage.getItem('token');
-    try {
-        await axios.post("/logout", token.value, {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            },
-        });
-        localStorage.removeItem('token');
-        navigateTo('/');
-    }catch(error){
-        console.log(error);
+const permisos = ref();
+
+const clases_permisos = ref({
+  parroquia: 'hidden',
+  usuarios: 'hidden',
+  navegabilidad: 'hidden',
+  anuncios: 'hidden',
+  mensajes: 'hidden',
+  donaciones: 'hidden',
+  donantes: 'hidden',
+  calendario: 'hidden',
+  personal: 'hidden',
+})
+
+async function permisosUsuario() {
+  token.value = localStorage.getItem('token');
+  id_usuario.value = localStorage.getItem('usuario');
+  try {
+    const res = await axios.post("/accesos-usuario", token.value, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+
+    permisos.value = res.data.data.data[0];
+
+    for (const PERMISO in clases_permisos.value) {
+      if (permisos.value[`acceso_${PERMISO}`]) {
+        clases_permisos.value[PERMISO] = '';
+      } else {
+        clases_permisos.value[PERMISO] = 'hidden';
+      }
     }
+
+  } catch (error) {
+
+  }
+}
+
+async function deshabilitarToken() {
+  token.value = localStorage.getItem('token');
+  try {
+    await axios.post("/logout", token.value, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    localStorage.removeItem('token');
+    navigateTo('/');
+  } catch (error) {
+    console.log(error);
+  }
 }
 </script>
