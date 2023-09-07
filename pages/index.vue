@@ -1,4 +1,4 @@
-<template>
+<template v-slot:contenido-login>
   <div class="w-full grid place-items-center">
     <div class="top flex items-center">
       <img src="/img/logo_con_letras.svg" alt="logo_login" class="h-[20vh]">
@@ -63,6 +63,8 @@
     </form>
   </div>
 </template>
+
+
 <style>
 .end .btn-login {
   background-color: #3F4280;
@@ -120,11 +122,9 @@ import 'flowbite';
 import { onMounted } from 'vue'
 //Importación de archivo de validaciones
 import validaciones from '../assets/validaciones.js';
-
 definePageMeta({
-  layout: "default",
+    layout: "default",
 });
-
 //Toast de sweetalert 
 const Toast = Swal.mixin({
   toast: true,
@@ -162,13 +162,13 @@ async function login() {
       console.log(token.data.data);
       const captoken = token.data.data.token;
       const capusuario = token.data.data.user.id_usuario;
-      const capImagen=token.data.data.user.imagen_usuario;
+      const capImagen = token.data.data.user.imagen_usuario;
       //Si retorno un token se redirige a la página principal
       if (token != null) {
         localStorage.setItem('token', captoken)
         console.log(localStorage.getItem('token'));
         localStorage.setItem('usuario', capusuario);
-        localStorage.setItem('imagen_usuario',capImagen);
+        localStorage.setItem('imagen_usuario', capImagen);
         navigateTo('/principal');
         //Si no retorno token es lanza un error
       } else {
