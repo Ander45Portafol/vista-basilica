@@ -18,9 +18,10 @@
                 </div>
             </div>
             <!-- Al darle clic al evento borrarDonante ejecuta la funcion -->
-            <div class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-                v-if="donante.campos.visibilidad_donante == 1">
-                <button id="graphbtn" @click="abrirModalGrafica(donante.id)"
+           
+            <div
+                class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2" >
+                <button id="graphbtn" @click="abrirModalGrafica(donante.id)" v-if="donante.campos.visibilidad_donante == 1"
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 graphbtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
                     <svg width="64px" height="64px" stroke-width="1.5" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#45a0b4">
@@ -39,9 +40,8 @@
                         </path>
                     </svg>
                 </button>
-                <button @click="recuperarDonante(donante.id)"
-                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    v-else>
+                <button v-else @click="recuperarDonante(donante.id)"
+                    class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
@@ -54,7 +54,6 @@
                     </svg>
                 </button>
             </div>
-
         </div>
     </div>
     <!-- Main modal -->
@@ -414,7 +413,7 @@ Swal.fire({
             token.value = localStorage.getItem('token');
             try {
                 //Se realiza la petición axios
-                await axios.delete("/contactos/" + id, {
+                await axios.delete("/donantes/" + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
@@ -460,4 +459,5 @@ Swal.fire({
     }
 });
 }
+
 </script>
