@@ -70,7 +70,7 @@ onMounted(() => {
 const existencia_usuario = ref(false);
 
 async function VerificarUsuario() {
-  const res = await axios.get(`/primer-uso`);
+  const res = await axios.get(`/primer_uso`);
   existencia_usuario.value = res.data.usuarios;
   if (existencia_usuario.value==false) {
     navigateTo('/bienvenido');
