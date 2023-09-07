@@ -68,6 +68,8 @@ async function VerificarUsuario() {
   if (existencia_usuario.value==false) {
     navigateTo('/bienvenido');
   }
+}
+
 function ocultarDivs() {
   ocultar.value = !ocultar.value;
 }

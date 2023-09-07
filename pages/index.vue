@@ -218,6 +218,4 @@ async function login() {
   }
 }
 
-
-
 </script>
