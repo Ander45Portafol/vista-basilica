@@ -1,13 +1,13 @@
 <template>
   <div class="overflow-hidden h-screen w-screen bg-gradient">
-    <main class="contained h-full w-full flex">
+    <div class="contained h-full w-full flex">
       <div class="container-left w-1/2 flex items-center justify-center border-r border-gray-500">
-        <slot/>
+        <slot />
       </div>
       <div class="container-right w-1/2 relative flex items-center justify-center">
-        <img src="/img/cohete_login.svg" alt="cohete_login" class="w-full">
+        <img v-if="!ocultar" src="/img/cohete_login.svg" alt="cohete_login" class="w-full">
       </div>
-    </main>
+    </div>
   </div>
 </template>
 
@@ -43,7 +43,7 @@
   .container-right {
     display: none;
   }
-    
+
   .container-left {
     border: none;
     width: 100%;
@@ -51,3 +51,19 @@
   }
 }
 </style>
+<script setup>
+
+onMounted(() => {
+  //Se agrega un eventListener reiniciar el timer
+  window.addEventListener('ocultar-divs', () => {
+    ocultarDivs();
+  });
+});
+
+const ocultar = ref(false);
+
+function ocultarDivs() {
+  ocultar.value = !ocultar.value;
+}
+
+</script>
