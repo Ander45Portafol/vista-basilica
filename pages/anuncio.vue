@@ -215,13 +215,11 @@ const registros_visibles = ref(true);
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se establece el número de página a 1
-    pagina.value = 1;
-    //Se leen todas las páginas
-    leerAnuncios();
-    //Se evalua el buscador para filtrar los registros
+    //Se evalua el buscador para realizar leerAnuncios o buscarAnuncios 
     if (buscar.value.buscador) {
         buscarAnuncios();
+    } else {
+        leerAnuncios();
     }
 }
 function cargarTabla() {
@@ -269,6 +267,7 @@ async function leerAnuncios() {
             data.value = res.data;
             anuncios.value = [];
 
+            
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
             for (let i = 0; i < res.data.length; i += 10) {

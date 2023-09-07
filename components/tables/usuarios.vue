@@ -372,7 +372,9 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import validaciones from '../../assets/validaciones.js';
-
+definePageMeta({
+    layout: "default",
+});
 //Definimos las props donde se reciben los datos desde el componente principal
 const props = defineProps({
     //Prop que se utiliza para cargar los datos de la tabla
