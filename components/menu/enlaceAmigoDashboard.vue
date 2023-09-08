@@ -3,7 +3,7 @@
         <div class="options">
             <NuxtLink class="active ml-4">Enlaces Amigos</NuxtLink>
             <NuxtLink class="ml-4" to="/misa">Misas Online</NuxtLink>
-            <NuxtLink class="ml-4" to="/grupos_parroquiales">Grupos</NuxtLink>
+            <NuxtLink class="ml-4" to="/grupo_parroquial">Grupos</NuxtLink>
             <NuxtLink class="ml-4" to="/configuracion_parroquia">Configuracion</NuxtLink>
         </div>
         <div class="endtop flex justify-between w-20">
