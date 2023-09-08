@@ -279,60 +279,64 @@ definePageMeta({
 })
 
 const data_usuario = ref(null);
-const token=ref(null);
-const id_usuario=ref(0);
+const token = ref(null);
+const id_usuario = ref(0);
+const EVENT = new Event('reset-timer');
+
 
 onMounted(() => {
     //Variable para capturar el id del usuario que se almacena en el localStorage
-    var id_usuario;
-    const data = ref(null);
-    //Se valida si hay un token en el localStorage y si no te regresa al login
-    function validarToken() {
-        if (!localStorage.getItem('token')) {
-
-        } else {
-            console.log(localStorage.getItem('token'));
-            id_usuario = localStorage.getItem('usuario');
-            console.log(id_usuario);
-        }
-    }
-    cargando_datos();
-
-    async function cargando_datos() {
-        validarToken();
-        await axios.get('/profile/' + id_usuario).then(res => {
-            form.value = {
-                id_usuario: res.data.id_usuario,
-                nombre_usuario: res.data.nombre_usuario,
-                apellido_usuario: res.data.apellido_usuario,
-                clave_usuario: res.data.clave_usuario,
-                tipo_documento: res.data.tipo_documento,
-                numero_documento_usuario: res.data.numero_documento_usuario,
-                usuario: res.data.usuario,
-                idioma: "Español (ES)",
-                tema: "Claro",
-                telefono_usuario: res.data.telefono_usuario,
-                correo_usuario: res.data.correo_usuario,
-                visibilidad_usuario: true,
-                id_rol_usuario: res.data.roles.id_rol_usuario
-            };
-            data_usuario.value=res.data;
-            if (res.data.imagen_usuario != null) {
-                form.value.imagen_usuario = res.data.imagen_usuario;
-                imagenPreview.value = api_url + form.value.imagen_usuario;
-            } else {
-                form.value.imagen_usuario = "";
-            }
-            var cortarnombre = res.data.nombre_usuario.split(" ");
-            var nombrecortado = cortarnombre[0];
-            var cortarapellido = res.data.apellido_usuario.split(" ");
-            var apellidocortado = cortarapellido[0];
-            var nombrecompleto = nombrecortado + " " + apellidocortado;
-            document.getElementById('nombre_usuario').textContent = nombrecompleto;
-            document.getElementById('rol_usuario').textContent = res.data.roles.rol_usuario;
-        });
-    }
+    id_usuario.value = localStorage.getItem('usuario');
+    token.value = localStorage.getItem('token');
+    cargando_datos(id_usuario.value);
 });
+
+async function cargando_datos(id_usuario) {
+    token.value = localStorage.getItem('token');
+    await axios.get('/profile/' + id_usuario, {
+        headers: {
+            Authorization: `Bearer ${token.value}`,
+        },
+    }).then(res => {
+        form.value = {
+            id_usuario: res.data.data.user.id_usuario,
+            nombre_usuario: res.data.data.user.nombre_usuario,
+            apellido_usuario: res.data.data.user.apellido_usuario,
+            clave_usuario: res.data.data.user.clave_usuario,
+            tipo_documento: res.data.data.user.tipo_documento,
+            numero_documento_usuario: res.data.data.user.numero_documento_usuario,
+            usuario: res.data.data.user.usuario,
+            idioma: "Español (ES)",
+            tema: "Claro",
+            telefono_usuario: res.data.data.user.telefono_usuario,
+            correo_usuario: res.data.data.user.correo_usuario,
+            visibilidad_usuario: true,
+            id_rol_usuario: res.data.data.user.roles.id_rol_usuario
+        };
+        data_usuario.value = res.data.data.user;
+        console.log(data_usuario.value);
+        if (res.data.data.user.imagen_usuario != null) {
+            form.value.imagen_usuario = res.data.data.user.imagen_usuario;
+            imagenPreview.value = api_url + form.value.imagen_usuario;
+        } else {
+            form.value.imagen_usuario = "";
+        }
+        var cortarnombre = res.data.data.user.nombre_usuario.split(" ");
+        var nombrecortado = cortarnombre[0];
+        var cortarapellido = res.data.data.user.apellido_usuario.split(" ");
+        var apellidocortado = cortarapellido[0];
+        var nombrecompleto = nombrecortado + " " + apellidocortado;
+        document.getElementById('nombre_usuario').textContent = nombrecompleto;
+        document.getElementById('rol_usuario').textContent = res.data.data.user.roles.rol_usuario;
+        console.log(res); 
+    });
+    //Se reinicia el timer
+    // window.dispatchEvent(EVENT);
+    // //Se refresca el valor del token con la respuesta del axios
+    // localStorage.setItem('token', res.token);
+    // token.value = localStorage.getItem('token');
+    // console.log(token.value);  
+}
 
 const mostrarIconoBorrar = ref(false);
 

@@ -218,6 +218,7 @@ async function leerUsuarios() {
                 },
             });
             data.value = res.data;
+            console.log(res);
             usuarios.value = [];
 
 
