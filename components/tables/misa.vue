@@ -256,6 +256,8 @@ const props = defineProps({
     paginacion: Number,
 
 });
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
 console.log(props.datos_misas);
 
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
@@ -447,7 +449,7 @@ async function estadoActualizar(id) {;
 
 async function leerUnaMisa(id) {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-    token.value = localStorage.getItem('token')
+    token.value = localStorage.getItem('token');
     try {
         accionForm("actualizar");
         await axios.get('/misas/' + id, {

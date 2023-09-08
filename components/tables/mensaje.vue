@@ -394,6 +394,9 @@ onMounted(() => {
     llenarSelectContactos();
 });
 
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
+
 //Variable reactiva para almacenar el token del localStorag
 const token = ref(null);
 
