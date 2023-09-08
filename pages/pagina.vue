@@ -164,7 +164,7 @@
                             </button>
                         </div>
                     </div>
-                </div>  
+                </div>
                 <!-- Paginación -->
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="paginas.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
@@ -496,11 +496,11 @@ const token = ref(null);
 const data = ref(null);
 
 //Se establece una constante ref para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const pagina = ref(useRoute().query.pagina || 1);
+const pagina = ref(parseInt(useRoute().query.pagina) || 1);
 
 //Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
 function cambioDePagina(pagina_prop) {
-    pagina.value = pagina_prop;
+    pagina.value = parseInt(pagina_prop);
 }
 
 //Se crea una constante ref para el buscador
@@ -607,8 +607,39 @@ async function leerPaginas() {
             pagina.value = pagina.value - 1;
         }
 
+        if (paginas.value.length == 0) {
+            ceroRegistrosEncontrados.value = true;
+        }
+
     } catch (error) {
         console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
 
@@ -653,7 +684,6 @@ async function buscarPaginas() {
         }
     } catch (error) {
         console.log(error);
-
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
             icon: "error",
