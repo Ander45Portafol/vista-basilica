@@ -2,7 +2,7 @@
 import axios from "axios";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    if ((!to.fullPath.includes('buscador') && !from.fullPath.includes('buscador'))) {
+    if ((!to.fullPath.includes('?buscador') && !from.fullPath.includes('?buscador')) && (!to.fullPath.includes('?pagina') && !from.fullPath.includes('?pagina'))) {
         //Constante para guardar los permisos del usuario
         const PERMISOS_TRUE = [];
         if (process.client) {
