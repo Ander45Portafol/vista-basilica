@@ -1,7 +1,7 @@
 <template>
     <div class="principal mt-6">
         <!-- Menu de navegación superior -->
-        <MenuGruposParroquialesDashboard class="mr-8" />
+        <MenuGrupoParroquialDashboard class="mr-8" />
         <!-- Contendor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <!-- Sección del buscador -->
