@@ -160,7 +160,74 @@ const validaciones = {
         } else {
             return false;
         }
-    }
+    },
+
+    //Validaciones de contraseña:
+
+    //Validar que la contraseña ingresada tenga 8 caracteres como minimo y 72 como maximo
+    validarContraLongitud(texto) {
+        if (texto != null && texto.trim() != "") {
+            if (texto.length < 8 || texto.length > 72) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    },
+
+    //Validar que la contraseña ingresada contenga una letra minuscula
+    validarContraLetraMinuscula(texto) {
+        if (texto != null && texto.trim() != "") {
+            if (!/[a-záéíóúñ]/.test(texto)) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    },
+
+    //Validar que la contraseña ingresada contenga una letra mayuscula
+    validarContraLetraMayuscula(texto) {
+        if (texto != null && texto.trim() != "") {
+            if (!/[A-ZÁÉÍÓÚÑ]/.test(texto)) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    },
+
+    //Validar que la contraseña ingresada contenga un caracter especial
+    validarContraEspeciales(texto) {
+        if (texto != null && texto.trim() != "") {
+            if (!/[¡!@#¿?*_+-/]/.test(texto)) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    },
+
+    //Validar que la contraseña ingresada contenga un número
+    validarContraNumeros(texto) {
+        if (texto != null && texto.trim() != "") {
+            if (!/[0-9]/.test(texto)) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    },
 }
 
 export default validaciones;
