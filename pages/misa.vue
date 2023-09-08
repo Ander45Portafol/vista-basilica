@@ -124,7 +124,7 @@
                             </div>
                         </div>
                     </div>
-                    <TablesContacto v-if="misas.length > 0" :datos_misas="misas" :actualizar_datos="cargarTabla"
+                    <TablesMisa v-if="misas.length > 0" :datos_misas="misas" :actualizar_datos="cargarTabla"
                         :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
@@ -252,49 +252,6 @@ function visibilidadRegistros() {
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerMisas() {
-    try {
-        //Se evalua si se quieren mostrar los registros visibles o invisibles
-        if (registros_visibles.value) {
-            //Se realiza la petición axios para leer los registros visibles
-            const { data: res } = await axios.get(`/misas?page=${pagina.value}`, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-            });
-            //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
-            console.log(res);
-        } else {
-            //Se realiza la petición axios para leer los registros no visibles
-            const { data: res } = await axios.get(`/misas_ocultas?page=${pagina.value}`, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-            });
-            //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
-        }
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
-    }
-}
-
-/*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
-?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
-async function leerMisas() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
     try {
@@ -385,56 +342,52 @@ async function leerMisas() {
 }
 
 
-//Función para buscar registros dependiendo del valor del buscador
+
 async function buscarMisas() {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
-            //Se evalua si se quieren mostrar los registros visibles o no visibles
-            if (registros_visibles.value) {
-                // Se realiza la petición axios para mostrar los registros visibles
-                const { data: res } = await axios.get(
-                    `/misas_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
-                console.log(res);
+
+            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
+            useRouter().push({ query: { buscador: buscar.value.buscador } });
+
+            //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
+            data.value = data.value.filter(misa =>
+            misa.campos.titulo_misa.toLowerCase().includes(buscar.value.buscador.toLowerCase()) 
+            );
+
+            //Se limpia el array de registros paginados
+            misas.value = [];
+
+            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+            if (data.value.length == 0) {
+                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+                ceroRegistrosEncontrados.value = true;
             } else {
-                // Se realiza la petición axios para mostrar los registros no visibles
-                const { data: res } = await axios.get(
-                    `/misas_search_ocultas?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
+                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+                for (let i = 0; i < data.value.length; i += 1) {
+                    misas.value.push(data.value.slice(i, i + 1));
                 }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
             }
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: pagina.value } });
+
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
             pagina.value = 1;
             leerMisas();
+            useRouter().push({ query: { pagina: pagina.value } });
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        console.log(error);
 
         //Se muestra un sweetalert con el mensaje
         Swal.fire({
             icon: "error",
             title: "Error",
-            text: res,
+            text: error,
             confirmButtonColor: "#3F4280",
         });
     }
