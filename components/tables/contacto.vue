@@ -459,19 +459,19 @@ async function crearContacto() {
 
 async function estadoActualizar(id) {
     await leerUnContacto(id);
-    const MODAL_ELEMENT = document.getElementById('staticModal');
-    const CLOSE_BUTTON = document.getElementById('closeModal');
-    const MODAL_TEXT = document.getElementById('modalText');
-    const MODAL_OPTIONS = {
+    const  MODAL_ID= document.getElementById('staticModal');
+    const BOTON_CERRAR = document.getElementById('closeModal');
+    const TEXTO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
         backdrop: 'static',
         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
     };
-    const modal = new Modal(MODAL_ELEMENT, MODAL_OPTIONS);
-    MODAL_TEXT.textContent = "Editar";
+    const modal = new Modal(MODAL_ID, OPCIONES_MODAL);
+    TEXTO_MODAL.textContent = "Editar";
     modal.show();
     document.getElementById('btnModalAdd').classList.add('hidden');
     document.getElementById('btnModalUpdate').classList.remove('hidden');
-    CLOSE_BUTTON.addEventListener('click', function () {
+    BOTON_CERRAR.addEventListener('click', function () {
         modal.hide();
         limpiarForm();
     });
