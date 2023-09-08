@@ -20,6 +20,9 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </li>
+        <li v-if="cargando" class="flex items-center p-2 justify-center rounded-lg">
+          <div class="momentum"></div>
+        </li>
         <li :class="clases_permisos.parroquia">
           <NuxtLink to="/enlace_amigo" data-tooltip-target="tooltip-parroquia" data-tooltip-placement="right"
             class="flex items-center justify-center rounded-lg p-2 hover:bg-gray-700">
@@ -183,7 +186,7 @@
             <div class="tooltip-arrow" data-popper-arrow></div>
           </div>
         </li>
-        <div class="flex justify-center items-end h-24">
+        <div class="flex justify-center items-end h-20">
           <li class="item">
             <button @click="deshabilitarToken" type="button" data-tooltip-target="tooltip-logout"
               data-tooltip-placement="right"
@@ -208,23 +211,101 @@
 aside {
   background-color: #1b1c30;
 }
+
+.momentum {
+  --uib-size: 25px;
+  --uib-speed: 1.1s;
+  --uib-color: white;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--uib-size);
+  width: var(--uib-size);
+  animation: rotate var(--uib-speed) linear infinite;
+}
+
+.momentum::before,
+.momentum::after {
+  content: '';
+  height: 25%;
+  width: 25%;
+  border-radius: 50%;
+  background-color: var(--uib-color);
+}
+
+.momentum::before {
+  animation: wobble2 calc(var(--uib-speed) * 1.25) ease-in-out infinite;
+}
+
+.momentum::after {
+  animation: wobble calc(var(--uib-speed) * 1.25) ease-in-out infinite;
+}
+
+.momentum::before {
+  margin-right: 10%;
+}
+
+@keyframes wobble {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(calc(var(--uib-size) * 0.2)) scale(1.1);
+  }
+}
+
+@keyframes wobble2 {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(calc(var(--uib-size) * -0.2)) scale(1.1);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>
 
 <script setup>
+//Importaciones de vue
 import { onMounted, ref } from 'vue';
+//Importación de la funcionalidad de los tooltips
 import { initTooltips } from 'flowbite'
+//Importación de axios para las peticiones
 import axios from "axios";
 
+//Cuando se monta el componente se inician los tooltips y se leen los permisos del usuario activo
 onMounted(async () => {
   initTooltips();
   await permisosUsuario();
 });
 
-const token = ref(null);
-const id_usuario = ref(null);
+//Constante ref para controlar el simbolo de cargando en el menú
+const cargando = ref(true);
 
+//Constante ref para manejar el token
+const token = ref(null);
+
+//Constante ref para guardar los permisos del usuario
 const permisos = ref();
 
+//Constante ref para controlar cuales opciones de menú se van a mostrar y cuales no
 const clases_permisos = ref({
   parroquia: 'hidden',
   usuarios: 'hidden',
@@ -237,18 +318,21 @@ const clases_permisos = ref({
   personal: 'hidden',
 })
 
+//Función para leer los permisos del usuario activo
 async function permisosUsuario() {
   token.value = localStorage.getItem('token');
-  id_usuario.value = localStorage.getItem('usuario');
   try {
+    //Se realiza la petición axios
     const res = await axios.post("/accesos-usuario", token.value, {
       headers: {
         Authorization: `Bearer ${token.value}`,
       },
     });
 
+    //Se almacenan los permisos del usuario en la constante ref
     permisos.value = res.data.data.data[0];
 
+    //Se recorre el objeto de permisos para ver cuales permisos mostrar y cuales no
     for (const PERMISO in clases_permisos.value) {
       if (permisos.value[`acceso_${PERMISO}`]) {
         clases_permisos.value[PERMISO] = '';
@@ -257,23 +341,16 @@ async function permisosUsuario() {
       }
     }
 
-  } catch (error) {
-
-  }
-}
-
-async function deshabilitarToken() {
-  token.value = localStorage.getItem('token');
-  try {
-    await axios.post("/logout", token.value, {
-      headers: {
-        Authorization: `Bearer ${token.value}`,
-      },
-    });
-    localStorage.removeItem('token');
-    navigateTo('/');
+    //Se oculta el simbolo de cargando
+    cargando.value = false;
   } catch (error) {
     console.log(error);
   }
 }
+
+//Función para que cuando el usuario cierre sesión, sea enviado al login
+async function deshabilitarToken() {
+  navigateTo('/');
+}
+
 </script>
