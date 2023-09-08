@@ -26,8 +26,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                         }
                     }
 
-                    if (to.path === '/pagina' && trueValuesArray.includes('acceso_navegabilidad')) {
-                        window.location.href = '/principal';
+                    if ((to.path === '/pagina' || to.path === '/seccion') && trueValuesArray.includes('acceso_navegabilidad')) {
+                        return navigateTo('/');
+                    }else if((to.path === '/enlace_amigo' || to.path === '/misa' || to.path === '/grupos_parroquiales' || to.path === '/categoria_grupos' || to.path === '/configuracion_parroquia')){
+
                     }
                 } else {
                     return navigateTo('/');
