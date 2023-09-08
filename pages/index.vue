@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!enviandoLogin" class="w-full grid place-items-center">
+  <div v-if="!enviando_login" class="w-full grid place-items-center">
     <div class="top flex items-center">
       <img src="/img/logo_con_letras.svg" alt="logo_login" class="h-[20vh]">
     </div>
@@ -33,7 +33,8 @@
       </div>
     </form>
   </div>
-  <div v-if="enviandoLogin" class="h-[100vh] w-screen bg-[#1A1B27] flex flex-col justify-center items-center absolute bottom-0 left-0">
+  <div v-if="enviando_login"
+    class="h-[100vh] w-screen bg-[#1A1B27] flex flex-col justify-center items-center absolute bottom-0 left-0">
     <img class="h-1/3" src="/img/logo_sin_letras.png" alt="logo_cargando">
     <p class="loading_text mt-8 text-white min-[500px]:text-6xl max-[500px]:text-5xl">Cargando...</p>
     <div class="race-by min-[850px]:w-2/5 max-[850px]:w-2/3 mt-5"></div>
@@ -151,6 +152,31 @@ definePageMeta({
   layout: "default",
 });
 
+onMounted(async () => {
+  //Cuando la página se monta se verifica si el usuario tiene un token
+  if (localStorage.getItem('token')) {
+    //Si el usuario tiene un token válido, se cierra la sesión y se elimina el token
+    try {
+      const res = await axios.post('/verificar-token/', localStorage.getItem('token'), {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+
+      if (res.data.message == 'El token de acceso es valido.') {
+        await axios.post("/logout", localStorage.getItem('token'), {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+      }
+      localStorage.removeItem('token');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+});
+
 //Toast de sweetalert 
 const Toast = Swal.mixin({
   toast: true,
@@ -170,34 +196,36 @@ const form = ref({
   clave_usuario: "",
 })
 
-const enviandoLogin = ref(false);
+//Constante ref para controlar la pantalla de cargando
+const enviando_login = ref(false);
 
-//Evento para reiniciar el tiempo del componente del timer
+//Evento para controlar la pantalla de cargando
 const EVENTO = new Event('ocultar-divs');
 
 //Función para hacer el login
 async function login() {
   try {
+    //Se lanza el evento para controlar la pantalla de cargando y tambien se establece enviando_login a true
     window.dispatchEvent(EVENTO);
-    enviandoLogin.value = true;
+    enviando_login.value = true;
     //Se guardan los datos actuales del formulario
-    const formData = {
+    const form_data = {
       usuario: form.value.usuario,
       clave_usuario: form.value.clave_usuario,
     };
 
     //Se hace la petición axios y se guarda el token que retorna
-    const token = ((await axios.post("/login", formData)));
+    const token = ((await axios.post("/login", form_data)));
     console.log(token.data.data);
-    const captoken = token.data.data.token;
-    const capusuario = token.data.data.user.id_usuario;
-    const capImagen = token.data.data.user.imagen_usuario;
+    const cap_token = token.data.data.token;
+    const cap_usuario = token.data.data.user.id_usuario;
+    const cap_imagen = token.data.data.user.imagen_usuario;
     //Si retorno un token se redirige a la página principal
     if (token != null) {
-      localStorage.setItem('token', captoken)
+      localStorage.setItem('token', cap_token)
       console.log(localStorage.getItem('token'));
-      localStorage.setItem('usuario', capusuario);
-      localStorage.setItem('imagen_usuario', capImagen);
+      localStorage.setItem('usuario', cap_usuario);
+      localStorage.setItem('imagen_usuario', cap_imagen);
       navigateTo('/principal');
       //Si no retorno token es lanza un error
     } else {
@@ -207,8 +235,9 @@ async function login() {
       });
     }
   } catch (error) {
+    //Se lanza el evento para controlar la pantalla de cargando y tambien se establece enviando_login a false, así vuelve al login normal
     window.dispatchEvent(EVENTO);
-    enviandoLogin.value = false;
+    enviando_login.value = false;
     //Se muestra un sweetalert con el error
     console.log(error);
     Toast.fire({
