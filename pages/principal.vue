@@ -27,6 +27,7 @@ onMounted(() => {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         }).then(res => {
+            localStorage.setItem('token', res.data.token);
             datos_dashboard.value.n_usuarios = res.data.n_usuarios;
             datos_dashboard.value.n_proyectos = res.data.n_proyectos;
             datos_dashboard.value.n_donaciones = res.data.n_donaciones;
