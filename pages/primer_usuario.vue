@@ -108,6 +108,6 @@
 </style>
 <script setup>
 definePageMeta({
-    layout: "primer",
+    layout: "default",
 });
 </script>

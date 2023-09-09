@@ -2,8 +2,9 @@
     <div class="flex ml-16 h-full w-full">
         <div class="w-3/4 flex-col mt-20">
             <p class="text-white font-semibold text-6xl">Parroquia</p>
-            <div class="flex mr-8 mt-20 justify-between items-center">
+            <form class="flex mr-8 mt-20 justify-between items-center">
                 <div class="flex-col">
+                    <input type="hidden">
                     <div class="relative z-0 mt-6 w-64">
                         <input type="text" id="telefono_usuario" name="telefono_usuario" required maxlength="9"
                             class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
@@ -99,7 +100,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
             <div class="flex justify-start items-end h-56">
                 <div class="flex-col">
                     <p class="font-extralight text-base text-gray-400">Llena los campos establecidos con la información solicitada
@@ -123,7 +124,7 @@
                             </path>
                         </svg>
                     </NuxtLink>
-                    <NuxtLink to="bienvenido"
+                    <NuxtLink to="/"
                         class="bg-transparent h-14 w-64 text-white rounded-lg mt-8 text-lg font-semibold flex justify-center items-center">
                         Volver</NuxtLink>
                 </div>
@@ -138,6 +139,21 @@
 </style>
 <script setup>
 definePageMeta({
-    layout: "primer",
+    layout: "default",
 });
+
+const form=ref({
+    id_configuracion_parroquia:"",
+    nombre_parroquia:"",
+    pagina_web:"",
+    ruc_parroquia:"",
+    direccion_parroquia:"",
+    nombre_representante:"",
+    apellido_representante:"",
+    documento_representante:"",
+    tipo_documento:"",
+    telefono_parroquia:"",
+    identificador_parroquia:"",
+    logo_parroquia:""
+})
 </script>
