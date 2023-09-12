@@ -100,7 +100,7 @@
                     </div>
                 </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <div v-if="congrupos_parroquialestactos.length == 0 && !ceroRegistrosEncontrados"
+                    <div v-if="grupos_parroquiales.length == 0 && !ceroRegistrosEncontrados"
                         class="loadingtable overflow-hidden h-full pr-4">
                         <div class="contained-data flex-col" v-for="number in 6" :key="number">
                             <div
@@ -128,8 +128,7 @@
                             </div>
                         </div>
                     </div>
-                    <TablesContacto v-if="grupos_parroquiales.length > 0" :datos_grupos="grupos_parroquiales" :actualizar_datos="cargarTabla"
-                        :paginacion="pagina" />
+                    <TablesGruposParroquiales v-if="grupos_parroquiales.length > 0" :datos_grupos="grupos_parroquiales" :actualizar_datos="cargarTabla" :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="grupos_parroquiales.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
@@ -191,12 +190,16 @@ definePageMeta({
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
-    token.value = localStorage.getItem('token');  
-    //Se leen los grupos_parroquiales al montarse la página para evitar problemas del setup y el localStorage
+    token.value = localStorage.getItem('token');
+    //Se leen los grupos al montarse la página para evitar problemas del setup y el localStorage
     leerGruposParroquiales();
 });
 
-//Operaciones SCRUD
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
+//Se crea una constante ref para saber cuando el usuario realizo una búsqueda que no retorno ningún registro
+const ceroRegistrosEncontrados = ref(false);
+
 //Variable reactiva para almacenar el token del localStorage
 const token = ref(null);
 
@@ -204,28 +207,33 @@ const token = ref(null);
 const data = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const pagina = ref(useRoute().query.pagina || 1);
+const pagina = ref(parseInt(useRoute().query.pagina) || 1);
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
     buscador: "",
 });
 
-/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
-y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let grupos_parroquiales = computed(() => data.value?.data);
+//Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
+function cambioDePagina(pagina_prop) {
+    pagina.value = pagina_prop;
+}
+
+
+function cargarTabla() {
+    leerGruposParroquiales();
+    if (buscar.value.texto_buscador) {
+        buscarGruposParroquiales();
+    }
+}
+
+
+/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano).*/
+let grupos_parroquiales = ref([]);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
 watch(pagina, async () => {
-    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
-    if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar secciones si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarGruposParroquiales();
-    } else {
-        //Se ejecuta el leer secciones para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerGruposParroquiales();
-    }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
     useRouter().push({ query: { pagina: pagina.value } });
 });
@@ -245,103 +253,172 @@ function visibilidadRegistros() {
     }
 }
 
+
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerGruposParroquiales() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
-        //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
-            //Se realiza la petición axios para leer los registros visibles
-            const { data: res } = await axios.get(`/grupos_parroquia?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/grupos_parroquia', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
-            console.log(res);
+            data.value = res.data;
+            grupos_parroquiales.value = [];
+
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                grupos_parroquiales.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         } else {
-            //Se realiza la petición axios para leer los registros no visibles
-            const { data: res } = await axios.get(`/grupos_parroquia_ocultos?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/grupos_parroquia_ocultos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
+            data.value = res.data;
+            grupos_parroquiales.value = [];
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                grupos_parroquiales.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
+        }
+        if (grupos_parroquiales.value.length < pagina.value) {
+            //Se actualiza el valor de la constante pagina
+            pagina.value = pagina.value - 1;
+        }
+
+        if (grupos_parroquiales.value.length == 0) {
+            ceroRegistrosEncontrados.value = true;
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
+
 
 //Función para buscar registros dependiendo del valor del buscador
 async function buscarGruposParroquiales() {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
-            //Se evalua si se quieren mostrar los registros visibles o no visibles
-            if (registros_visibles.value) {
-                // Se realiza la petición axios para mostrar los registros visibles
-                const { data: res } = await axios.get(
-                    `/grupos_parroquia_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
-                console.log(res);
+
+            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
+            useRouter().push({ query: { buscador: buscar.value.buscador } });
+
+            //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
+            data.value = data.value.filter(grupos =>
+            grupos.campos.nombre_grupo.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+            grupos.campos.nombre_encargado.toLowerCase().includes(buscar.value.buscador.toLowerCase())||
+            grupos.campos.apellido_encargado.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+            );
+
+            //Se limpia el array de registros paginados
+            grupos_parroquiales.value = [];
+
+            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+            if (data.value.length == 0) {
+                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+                ceroRegistrosEncontrados.value = true;
             } else {
-                // Se realiza la petición axios para mostrar los registros no visibles
-                const { data: res } = await axios.get(
-                    `/grupos_parroquia_search_ocultos?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
+                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+                for (let i = 0; i < data.value.length; i += 1) {
+                    grupos_parroquiales.value.push(data.value.slice(i, i + 1));
                 }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
             }
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: pagina.value } });
+
         } else {
             //Se regresa a la página 1 y se cargan todos los registros
             pagina.value = 1;
             leerGruposParroquiales();
+            useRouter().push({ query: { pagina: pagina.value } });
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
+
 
 //Función para limpiar el buscador
 function limpiarBuscador() {
