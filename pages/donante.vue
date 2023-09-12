@@ -9,7 +9,7 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup=" buscarDonantes()" />
+                        placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup=" buscarDonantes($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -232,19 +232,20 @@ watch(pagina, async () => {
     //Se cambia la url para agregar en que pagina se encuentra el usuario
     useRouter().push({ query: { pagina: pagina.value } });
 });
-
-//Variable reactiva para poder intercambiar los registros entre visibles y no visibles
+//Constante ref para poder intercambiar los registros entre visibles y no visibles
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se evalua el buscador para realizar leerDonantes o buscarDonantes 
+    //Se establece el número de página a 1
+    pagina.value = 1;
+    //Se leen todas las páginas
+    leerDonantes();
+    //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
         buscarDonantes();
-    } else {
-        leerDonantes();
     }
 }
 
