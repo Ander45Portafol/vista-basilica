@@ -20,10 +20,18 @@ onMounted(()=>{
     verificarUsuario();
 });
 const existencia_usuario=ref(null);
+const existencia_parroquia=ref(null);
 async function verificarUsuario() {
     const res = await axios.get(`/primer_uso`);
     existencia_usuario.value = res.data.usuarios;
-    if (existencia_usuario.value == true) {
+    existencia_parroquia.value=res.data.parroquias;
+    if (existencia_parroquia.value==false&&existencia_usuario.value==false) {
+        navigateTo('/');
+    }
+    else if (existencia_parroquia.value==true&&existencia_usuario.value==false) {
+        navigateTo('primer_usuario');
+    }
+    else if (existencia_usuario.value == true) {
         navigateTo('/login');
     }
 }
