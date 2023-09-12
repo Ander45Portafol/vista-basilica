@@ -723,7 +723,7 @@ async function recuperarUnContacto(id) {
                     await props.actualizar_datos();
 
                     //Se lanza la alerta de éxito
-                    Toast.fire({
+                    TOAST.fire({
                         icon: "success",
                         title: "Contacto recuperado exitosamente",
                     });
