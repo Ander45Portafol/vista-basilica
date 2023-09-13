@@ -288,18 +288,19 @@ onMounted(() => {
     llenarSelectProyectos();
 });
 
-//Metodo para mostrar las alertas
-const Toast = Swal.mixin({
+//Funciones para manejo del modal
+//Toast del sweetalert
+const TOAST = Swal.mixin({
     toast: true,
-    position: 'top-end',
+    position: "top-end",
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
-})
+    didOpen: (TOAST) => {
+        TOAST.addEventListener("mouseenter", Swal.stopTimer);
+        TOAST.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+});
 
 const token = ref(null);
 
@@ -436,9 +437,9 @@ async function actualizarDonacion() {
             FORM_DATA.append("fecha_donacion", form.value.fecha_donacion);
             FORM_DATA.append("mensaje_donacion", form.value.mensaje_donacion);
             FORM_DATA.append("codigo_comprobante", form.value.codigo_comprobante);
+            FORM_DATA.append("visibilidad_donacion", form.value.visibilidad_donacion ? 1 : 0);
             FORM_DATA.append("id_proyecto_donacion", form.value.id_proyecto_donacion);
             FORM_DATA.append("id_donante", form.value.id_donante);
-            FORM_DATA.append("visibilidad_donacion", form.value.visibilidad_donacion ? 1 : 0);
 
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.post("/donaciones_update/" + id, FORM_DATA, {
@@ -529,7 +530,7 @@ async function borrarDonacion(id,) {
                         token.value = localStorage.getItem('token');
 
                         //Se lanza la alerta de éxito
-                        Toast.fire({
+                        TOAST.fire({
                             icon: "success",
                             title: "Donación ocultado exitosamente",
                         });
@@ -603,7 +604,7 @@ async function recuperarDonacion(id) {
                     await props.actualizar_datos();
 
                     //Se lanza la alerta de éxito
-                    Toast.fire({
+                    TOAST.fire({
                         icon: "success",
                         title: "Donacion recuperada exitosamente",
                     });
