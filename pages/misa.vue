@@ -1,14 +1,16 @@
 <template>
-    <div class="principal mt-6">
-           <!-- Menu de navegación superior -->
-    <MenuMisaDashboard class="mr-8" />
-        <!-- Contendor principal -->
+   <div class="principal mt-6">
+        <!-- Menu de navegación superior -->
+        <MenuMisaDashboard class="mr-8" />
+        <!-- Contenerdor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
+            <!-- Sección del buscador -->
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
-                <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
-                    <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
+                <!-- Sección del buscador -->
+                <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                    <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (título/enlace)" v-model="buscar.buscador" @keyup="buscarMisas($event)" />
+                        placeholder="Buscar... (titulo misa)" v-model="buscar.buscador" @keyup="buscarMisas($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -20,8 +22,8 @@
                         </button>
                     </div>
                 </div>
-               <!-- Sección de botones a la derecha del buscador -->
-               <div
+                <!-- Sección de botones a la derecha del buscador -->
+                <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
@@ -65,11 +67,10 @@
                     </button>
                 </div>
             </div>
-             
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
             <!-- Se manda a traer la longitud del array de misas (el que trae los registros) y así saber cuantos registros son -->
-       <div class="h-screen">
+            <div class="h-screen">
                 <p v-if="misas.length > 0 && !ceroRegistrosEncontrados"
                     class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ misas[pagina -
                         1].length
@@ -96,34 +97,7 @@
                     </div>
                 </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <div v-if="misas.length == 0 && !ceroRegistrosEncontrados"
-                        class="loadingtable overflow-hidden h-full pr-4">
-                        <div class="contained-data flex-col" v-for="number in 6" :key="number">
-                            <div
-                                class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
-                                <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                                    <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
-                                    <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
-                                        <div
-                                            class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4">
-                                        </div>
-                                        <div
-                                            class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                                    <div
-                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
-                                    </div>
-                                    <div
-                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <TablaCargando v-if="misas.length == 0 && !ceroRegistrosEncontrados"/>
                     <TablesMisa v-if="misas.length > 0" :datos_misas="misas" :actualizar_datos="cargarTabla"
                         :paginacion="pagina" />
                 </div>
@@ -344,50 +318,27 @@ async function leerMisas() {
     }
 }
 
-
-
 //Constante ref para controlar que no se pueda spamear el delete en el buscador y bugear el token
 const ejecutado_despues_borrar = ref(false);
 
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarMisas(event) {
+function buscarMisas(event) {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
 
+            //Se regresa a la página 1
+            pagina.value = 1;
+
             //Se coloca como false para que si se pueda presionar el borrar
             ejecutado_despues_borrar.value = false;
 
-            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
-            useRouter().push({ query: { buscador: buscar.value.buscador } });
-
-            //Se filtran los registros de data según los parámetros del buscador (titulo_misa )
-            const data_filtrada = ref();
-            
-            data_filtrada.value = data.value.filter(misa =>
-            misa.campos.titulo_misa.toLowerCase().includes(buscar.value.buscador.toLowerCase()) 
-            );
-
-            //Se limpia el array de registros paginados
-            misas.value = [];
-
-            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
-            if (data_filtrada.value.length == 0) {
-                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
-                ceroRegistrosEncontrados.value = true;
-            } else {
-                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data_filtrada.value.length; i += 10) {
-                    misas.value.push(data_filtrada.value.slice(i, i + 10));
-                }
-                //Se actualiza el valor de la constante de búsqueda a false
-                ceroRegistrosEncontrados.value = false;
-            }
+            filtrarPaginas();
 
         } else {
             //Se valida las teclas que el usuario puede presionar para bugear el buscador
             if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
-                 //Se coloca como true para que no se pueda presionar el borrar
+                //Se coloca como true para que no se pueda presionar el borrar
                 ejecutado_despues_borrar.value = true;
                 //Se regresa a la página 1 y se cargan todos los registros
                 limpiarBuscador();
@@ -407,6 +358,39 @@ async function buscarMisas(event) {
     }
 }
 
+function filtrarPaginas() {
+    //Se filtran los registros de data según los parámetros del buscador (titulo_misa)
+    const data_filtrada = ref();
+
+    data_filtrada.value = data.value.filter(misa =>
+    misa.campos.titulo_misa.toLowerCase().includes(buscar.value.buscador.toLowerCase()) 
+    );
+
+    //Se limpia el array de registros paginados
+    misas.value = [];
+
+    //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+    if (data_filtrada.value.length == 0) {
+        //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+        ceroRegistrosEncontrados.value = true;
+    } else {
+        //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+        for (let i = 0; i < data_filtrada.value.length; i += 10) {
+            misas.value.push(data_filtrada.value.slice(i, i + 10));
+        }
+        //Se actualiza el valor de la constante de búsqueda a false
+        ceroRegistrosEncontrados.value = false;
+    }
+
+    console.log(misas.value);
+    
+    //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+    //y que se bugee la paginación
+    if (misas.value.length < pagina.value) {
+        //Se actualiza el valor de la constante pagina
+        pagina.value = misas.value.length;
+    }
+}
 
 
 //Función para limpiar el buscador
