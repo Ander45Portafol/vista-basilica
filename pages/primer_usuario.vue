@@ -6,7 +6,7 @@
                 <div class="flex-col">
                     <div class="relative z-0 mt-9 w-72">
                         <input type="text" id="nombre_persona" name="nombre_persona" required maxlength="100"
-                            v-model="form.nombre_persona"
+                            v-model="form.nombre_usuario"
                             class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                             placeholder=" " autocomplete="off" />
                         <label for="nombre_persona"
@@ -15,7 +15,7 @@
                     </div>
                     <div class="relative z-0 mt-16 w-72">
                         <input type="text" id="correo_electronico" name="correo_electronico" required maxlength="100"
-                            v-model="form.correo_electronico"
+                            v-model="form.correo_usuario"
                             class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                             placeholder=" " autocomplete="off" />
                         <label for="correo_electronico"
@@ -37,7 +37,7 @@
                 <div class="flex-col">
                     <div class="relative z-0 mt-9 w-72">
                         <input type="text" id="apellido_persona" name="apellido_persona" required maxlength="100"
-                            v-model="form.apellido_persona"
+                            v-model="form.apellido_usuario"
                             class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                             placeholder=" " autocomplete="off" />
                         <label for="apellido_persona"
@@ -62,7 +62,7 @@
                             class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento
                             <span class="text-sm ml-1"> * </span></label>
                     </div>
-                </div>
+                </div>  
                 <div class="flex-col">
                     <div class="">
                         <p class="mb-4 text-center text-gray-200">Imagen - Usuario</p>
@@ -177,19 +177,21 @@ const cambiarImagen = () => {
 };
 
 const form = ref({
-    nombre_persona: "",
-    apellido_persona: "",
+    id_usuario: "",
+    nombre_usuario: "",
+    apellido_usuario: "",
     usuario: "",
-    numero_documento_usuario: "",
     imagen_usuario: "",
+    numero_documento_usuario: "",
     tipo_documento: 0,
-    correo_electronico: "",
+    correo_usuario: "",
     telefono_usuario: "",
     idioma: "Español (ES)",
     tema: "Claro",
-    intentos_disponibles: 3,
-    autenticable: "",
-    visibilidad_usuario: false,
+    fecha_cambio:"",
+    fecha_bloqueo:"",
+    autenticable:"",
+    visibilidad_usuario: true,
     id_rol_usuario: 'fcef4da2-9aa2-431a-903d-f8a6ce4e597e',
 })
 
@@ -207,18 +209,23 @@ const Toast = Swal.mixin({
 })
 
 async function crearPrimerUsuario() {
-    var usuario = form.value.nombre_persona + "" + form.value.apellido_persona;
+    form.value.usuario = form.value.nombre_usuario + "" + form.value.apellido_usuario;
     try {
         const FORMDATA = new FormData();
-        FORMDATA.append("nombre_usuario", form.value.nombre_persona);
-        FORMDATA.append("apellido_usuario", form.value.apellido_persona);
-        FORMDATA.append("usuario", usuario);
+        FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
+        FORMDATA.append("apellido_usuario", form.value.apellido_usuario);
+        FORMDATA.append("usuario", form.value.usuario);
         FORMDATA.append("numero_documento_usuario", form.value.numero_documento_usuario);
         FORMDATA.append("tipo_documento", form.value.tipo_documento);
-        FORMDATA.append("correo_usuario", form.value.correo_electronico);
+        FORMDATA.append("correo_usuario", form.value.correo_usuario);
         FORMDATA.append("telefono_usuario", form.value.telefono_usuario);
-        FORMDATA.append("visibilidad_usuario", form.value.visibilidad_usuario);
-        FORMDATA.append('id_rol_usuario'), form.value.id_rol_usuario;
+        FORMDATA.append("tema", form.value.tema);
+        FORMDATA.append("idioma", form.value.idioma);
+        FORMDATA.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
+        FORMDATA.append(
+            "id_rol_usuario",
+            form.value.id_rol_usuario
+        );
         FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
 
         await axios.post('/primer_usuario', FORMDATA).then(() => {
