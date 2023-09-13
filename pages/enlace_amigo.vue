@@ -374,5 +374,7 @@ function limpiarBuscador() {
     leerEnlaces();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
+    //Se limpia la ruta
+    useRouter().push({ query: '' });
 }
 </script>
