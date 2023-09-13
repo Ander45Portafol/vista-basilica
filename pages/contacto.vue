@@ -158,7 +158,7 @@
     width: 7px;
 }
 
-.tables::-webkit-scrollbar-thumb {
+.tables::-webkit-scrollbar {
     background: #32345A;
 }
 </style>
