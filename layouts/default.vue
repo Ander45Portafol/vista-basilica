@@ -1,11 +1,11 @@
 <template>
   <div class="overflow-hidden h-screen w-screen bg-gradient">
     <div class="contained h-full w-full flex">
-      <div class="container-left w-1/2 flex items-center justify-center border-r border-gray-500">
+      <div :class="clases_slot">
         <slot />
       </div>
-      <div class="container-right w-1/2 relative flex items-center justify-center">
-        <img v-if="!ocultar" src="/img/cohete_login.svg" alt="cohete_login" class="w-full">
+      <div v-if="!ocultar" class="container-right w-1/2 relative flex items-center justify-center">
+        <img src="/img/cohete_login.svg" alt="cohete_login" class="w-full">
       </div>
     </div>
   </div>
@@ -19,12 +19,6 @@
 .container-left,
 .container-right {
   font-family: 'Poppins', sans-serif;
-}
-
-/* Separador */
-.container-left {
-  border-right-width: 4px;
-  border-right-color: #808080;
 }
 
 /* Centrar imagen */
@@ -60,6 +54,8 @@ onMounted(() => {
   });
 });
 
+const clases_slot = ref('container-left w-1/2 flex items-center justify-center border-r border-gray-500');
+
 const ocultar = ref(false);
 
 async function VerificarUsuario() {
@@ -72,6 +68,11 @@ async function VerificarUsuario() {
 
 function ocultarDivs() {
   ocultar.value = !ocultar.value;
+  if(ocultar.value){
+    clases_slot.value = 'container-left w-1/2 flex items-center justify-center';
+  }else{
+    clases_slot.value = 'container-left w-1/2 flex items-center justify-center border-r border-gray-500';
+  }
 }
 
 </script>
