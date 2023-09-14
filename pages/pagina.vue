@@ -559,8 +559,8 @@ async function leerPaginas() {
             paginas.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 10) {
-                paginas.value.push(res.data.slice(i, i + 10));
+            for (let i = 0; i < res.data.length; i += 1) {
+                paginas.value.push(res.data.slice(i, i + 1));
             }
 
             //Se reinicia el timer
@@ -586,8 +586,8 @@ async function leerPaginas() {
             paginas.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
-            for (let i = 0; i < res.data.length; i += 10) {
-                paginas.value.push(res.data.slice(i, i + 10));
+            for (let i = 0; i < res.data.length; i += 1) {
+                paginas.value.push(res.data.slice(i, i + 1));
             }
 
             //Se reinicia el timer
@@ -647,20 +647,18 @@ async function leerPaginas() {
 const ejecutado_despues_borrar = ref(false);
 
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarPaginas(event) {
+function buscarPaginas(event) {
     try {
+        pagina.value = 1;
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
 
             //Se coloca como false para que si se pueda presionar el borrar
             ejecutado_despues_borrar.value = false;
 
-            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
-            useRouter().push({ query: { buscador: buscar.value.buscador } });
-
             //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
             const data_filtrada = ref();
-            
+
             data_filtrada.value = data.value.filter(pagina =>
                 pagina.campos.nombre_pagina.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
                 pagina.campos.numero_pagina.toString().includes(buscar.value.buscador)
@@ -675,8 +673,8 @@ async function buscarPaginas(event) {
                 ceroRegistrosEncontrados.value = true;
             } else {
                 //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data_filtrada.value.length; i += 10) {
-                    paginas.value.push(data_filtrada.value.slice(i, i + 10));
+                for (let i = 0; i < data_filtrada.value.length; i += 1) {
+                    paginas.value.push(data_filtrada.value.slice(i, i + 1));
                 }
                 //Se actualiza el valor de la constante de búsqueda a false
                 ceroRegistrosEncontrados.value = false;
@@ -685,7 +683,7 @@ async function buscarPaginas(event) {
         } else {
             //Se valida las teclas que el usuario puede presionar para bugear el buscador
             if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
-                 //Se coloca como true para que no se pueda presionar el borrar
+                //Se coloca como true para que no se pueda presionar el borrar
                 ejecutado_despues_borrar.value = true;
                 //Se regresa a la página 1 y se cargan todos los registros
                 limpiarBuscador();
