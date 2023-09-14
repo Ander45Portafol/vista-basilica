@@ -649,9 +649,12 @@ const ejecutado_despues_borrar = ref(false);
 //Función para buscar registros dependiendo del valor del buscador
 function buscarPaginas(event) {
     try {
-        pagina.value = 1;
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
+
+            if(buscar.value.buscador.length == 1){
+                pagina.value = 1;
+            }
 
             //Se coloca como false para que si se pueda presionar el borrar
             ejecutado_despues_borrar.value = false;

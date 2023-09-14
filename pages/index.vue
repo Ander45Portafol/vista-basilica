@@ -39,7 +39,7 @@
     <p class="loading_text mt-8 text-white min-[500px]:text-6xl max-[500px]:text-5xl">Cargando...</p>
     <div class="race-by min-[850px]:w-2/5 max-[850px]:w-2/3 mt-5"></div>
   </div>
-  <form v-if="doble_factor" class="h-screen w-screen flex flex-col justify-center items-center absolute bottom-0 left-0">
+  <form v-if="doble_factor" @submit.prevent="verificarPin" class="h-screen w-screen flex flex-col justify-center items-center absolute bottom-0 left-0">
     <div class="min-[480px]:flex max-[480px]:flex-wrap items-center">
       <p class="t-roboto text-white font-bold text-center text-6xl mr-5">¡Un paso más!
       </p>
@@ -61,7 +61,7 @@
     <div class="flex-wrap items-center mx-5 max-[480px]:mt-5">
       <input :id="'input' + (number + 1)" v-for="(item, number) in inputs" :key="number" v-model="inputs[number]"
         @keyup="moveFocus(number)" @keyup.delete="moveFocusBack(number)" @paste="handlePaste($event)" type="text"
-        minlength="1" maxlength="1"
+        maxlength="1" required
         class="mr-3 bg-transparent text-white text-center text-2xl border-4 border-white focus:border-lightPurpleLogin w-12 h-12 mt-5">
     </div>
     <div v-if="inputs_error"
@@ -274,13 +274,13 @@ async function login() {
     };
 
     //Se hace la petición axios y se guarda el token que retorna
-    const token = ((await axios.post("/login", form_data)));
+    const res = ((await axios.post("/login", form_data)));
     //Si retorno un token se redirige a la página principal
-    if (token != null) {
-      if (!token.data.data.doble_factor) {
-        const cap_token = token.data.data.token;
-        const cap_usuario = token.data.data.user.id_usuario;
-        const cap_imagen = token.data.data.user.imagen_usuario;
+    if (res != null) {
+      if (!res.data.data.doble_factor) {
+        const cap_token = res.data.data.token;
+        const cap_usuario = res.data.data.user.id_usuario;
+        const cap_imagen = res.data.data.user.imagen_usuario;
         localStorage.setItem('token', cap_token)
         console.log(localStorage.getItem('token'));
         localStorage.setItem('usuario', cap_usuario);
@@ -290,7 +290,8 @@ async function login() {
       } else {
         enviando_login.value = false;
         doble_factor.value = true;
-        correo_doble_factor.value = token.data.data.correo;
+        correo_doble_factor.value = res.data.data.correo;
+        localStorage.setItem('token', res.data.data.token);
       }
       //Si no retorno token es lanza un error
     } else {
@@ -339,7 +340,7 @@ function handlePaste(event) {
       // Si el input existe, establecer su valor y mover el enfoque al siguiente input
       let inputElement = document.getElementById('input' + (i + 1));
       if (inputElement !== null) {
-        inputElement.value = pastedData.charAt(i);
+        inputs.value[i] = pastedData.charAt(i);
         if (i < pastedData.length - 1) {
           document.getElementById('input' + (i + 2)).focus();
         }
@@ -348,23 +349,33 @@ function handlePaste(event) {
   }
 };
 
+async function verificarPin() {
+  var pin_formateado = inputs.value[0].toString() + inputs.value[1].toString() + inputs.value[2].toString() + inputs.value[3].toString() + inputs.value[4].toString();
+  console.log(pin_formateado);
+
+  await axios.post("/verificar-pin", pin_formateado, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    },
+  });
+}
+
 function validarNumeros() {
-  if(inputs.value[0] == null || isNaN(inputs.value[0])){
+  if (inputs.value[0] == undefined || isNaN(inputs.value[0])) {
     inputs_error.value = true;
-  }else if(inputs.value[1] == null || isNaN(inputs.value[1])){
+  } else if (inputs.value[1] == undefined || isNaN(inputs.value[1])) {
     inputs_error.value = true;
-  }else if(inputs.value[2] == null || isNaN(inputs.value[2])){
+  } else if (inputs.value[2] == undefined || isNaN(inputs.value[2])) {
     inputs_error.value = true;
-  }else if(inputs.value[3] == null || isNaN(inputs.value[3])){
+  } else if (inputs.value[3] == undefined || isNaN(inputs.value[3])) {
     inputs_error.value = true;
-  }else if(inputs.value[4] == null || isNaN(inputs.value[4])){
+  } else if (inputs.value[4] == undefined || isNaN(inputs.value[4])) {
     inputs_error.value = true;
-  }else if(inputs.value[5] == null || isNaN(inputs.value[5])){
+  } else if (inputs.value[5] == undefined || isNaN(inputs.value[5])) {
     inputs_error.value = true;
-  }else{
+  } else {
     inputs_error.value = false;
   }
-  console.log(inputs_error.value);
 }
 
 </script>
