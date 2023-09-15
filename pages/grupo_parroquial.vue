@@ -9,7 +9,8 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre grupo / nombre completo)" v-model="buscar.buscador" @keyup="buscarGruposParroquiales($event)" />
+                        placeholder="Buscar... (nombre grupo / nombre completo)" v-model="buscar.buscador"
+                        @keyup="buscarGruposParroquiales($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -25,8 +26,8 @@
                     </button>
                 </div>
                 <!-- Sección de botones a la derecha del buscador -->
-                 <!-- Sección de botones a la derecha del buscador -->
-                 <div
+                <!-- Sección de botones a la derecha del buscador -->
+                <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
@@ -70,10 +71,10 @@
                     </button>
                 </div>
             </div>
-             <!-- Línea divisora -->
-             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-         <!-- Se manda a traer la longitud del array de grupos_parroquiales (el que trae los registros) y así saber cuantos registros son -->
-         <div class="h-screen">
+            <!-- Línea divisora -->
+            <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
+            <!-- Se manda a traer la longitud del array de grupos_parroquiales (el que trae los registros) y así saber cuantos registros son -->
+            <div class="h-screen">
                 <p v-if="grupos_parroquiales.length > 0 && !ceroRegistrosEncontrados"
                     class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ grupos_parroquiales[pagina -
                         1].length
@@ -128,11 +129,12 @@
                             </div>
                         </div>
                     </div>
-                    <TablesGruposParroquiales v-if="grupos_parroquiales.length > 0" :datos_grupos="grupos_parroquiales" :actualizar_datos="cargarTabla" :paginacion="pagina" />
+                    <TablesGruposParroquiales v-if="grupos_parroquiales.length > 0" :datos_grupos="grupos_parroquiales"
+                        :actualizar_datos="cargarTabla" :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
-                    <Paginacion v-if="grupos_parroquiales.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                    <Paginacion v-if="grupos_parroquiales.length > 1 && !ceroRegistrosEncontrados"
+                        v-model:pagina_actual="pagina" @cambioDePagina="cambioDePagina" :items_totales="data.length" />
                 </div>
             </div>
         </div>
@@ -245,11 +247,13 @@ const registros_visibles = ref(true);
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se evalua el buscador para realizar leerGruposParroquiales o buscarGruposParroquiales 
+    //Se establece el número de página a 1
+    pagina.value = 1;
+    //Se leen todas las páginas
+    leerGruposParroquiales();
+    //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
         buscarGruposParroquiales();
-    } else {
-        leerGruposParroquiales();
     }
 }
 
@@ -284,7 +288,7 @@ async function leerGruposParroquiales() {
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
         } else {
-            const { data: res } = await axios.get('/grupos_parroquia_ocultos', {
+            const { data: res } = await axios.get('/g_parroquiales_ocultos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
@@ -361,13 +365,13 @@ async function buscarGruposParroquiales(event) {
             //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
             useRouter().push({ query: { buscador: buscar.value.buscador } });
 
-            //Se filtran los registros de data según los parámetros del buscador (nombre_contacto / correo_contacto)
+            //Se filtran los registros de data según los parámetros del buscador (nombre_grupo / nombre_encargado  / apellido_encargado)
             const data_filtrada = ref();
-            
+
             data_filtrada.value = data.value.filter(grupo =>
-            grupo.campos.nombre_grupo.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
-            grupo.campos.nombre_encargado.toString().includes(buscar.value.buscador)||
-            grupo.campos.apellido_encargado.toString().includes(buscar.value.buscador)
+                grupo.campos.nombre_grupo.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+                grupo.campos.nombre_encargado.toString().includes(buscar.value.buscador) ||
+                grupo.campos.apellido_encargado.toString().includes(buscar.value.buscador)
             );
 
             //Se limpia el array de registros paginados
@@ -389,7 +393,7 @@ async function buscarGruposParroquiales(event) {
         } else {
             //Se valida las teclas que el usuario puede presionar para bugear el buscador
             if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
-                 //Se coloca como true para que no se pueda presionar el borrar
+                //Se coloca como true para que no se pueda presionar el borrar
                 ejecutado_despues_borrar.value = true;
                 //Se regresa a la página 1 y se cargan todos los registros
                 limpiarBuscador();

@@ -413,7 +413,7 @@ const form = ref({
     fecha_mensaje: "",
     estado_mensaje: "",
     visibilidad_mensaje: false,
-    id_contacto: "",
+    id_contacto: 0,
 })
 
 
