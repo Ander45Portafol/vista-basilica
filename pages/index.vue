@@ -39,7 +39,8 @@
     <p class="loading_text mt-8 text-white min-[500px]:text-6xl max-[500px]:text-5xl">Cargando...</p>
     <div class="race-by min-[850px]:w-2/5 max-[850px]:w-2/3 mt-5"></div>
   </div>
-  <form v-if="doble_factor" @submit.prevent="verificarPin" class="h-screen w-screen flex flex-col justify-center items-center absolute bottom-0 left-0">
+  <form v-if="doble_factor" @submit.prevent="verificarPin"
+    class="h-screen w-screen flex flex-col justify-center items-center absolute bottom-0 left-0">
     <div class="min-[480px]:flex max-[480px]:flex-wrap items-center">
       <p class="t-roboto text-white font-bold text-center text-6xl mr-5">¡Un paso más!
       </p>
@@ -60,7 +61,7 @@
       continuar con tu inicio de sesión.</p>
     <div class="flex-wrap items-center mx-5 max-[480px]:mt-5">
       <input :id="'input' + (number + 1)" v-for="(item, number) in inputs" :key="number" v-model="inputs[number]"
-        @keyup="moveFocus(number)" @keyup.delete="moveFocusBack(number)" @paste="handlePaste($event)" type="text"
+        @keyup="moverFocusAdelante(number)" @keyup.delete="moverFocusAtras(number)" @paste="pegarPin($event)" type="text"
         maxlength="1" required
         class="mr-3 bg-transparent text-white text-center text-2xl border-4 border-white focus:border-lightPurpleLogin w-12 h-12 mt-5">
     </div>
@@ -218,6 +219,8 @@ onMounted(async () => {
         });
       }
       localStorage.removeItem('token');
+      localStorage.removeItem('usuario');
+      localStorage.removeItem('imagen_usuario');
     } catch (error) {
       console.log(error);
     }
@@ -300,6 +303,10 @@ async function login() {
         title: 'Credenciales inválidas'
       });
     }
+
+    form.value.clave_usuario = '';
+    form.value.usuario = '';
+
   } catch (error) {
     //Se lanza el evento para controlar la pantalla de cargando y tambien se establece enviando_login a false, así vuelve al login normal
     window.dispatchEvent(EVENTO);
@@ -308,58 +315,113 @@ async function login() {
     console.log(error);
     Toast.fire({
       icon: 'error',
-      title: error.response.data.error
+      title: error.response.data.message
     });
   }
 }
 
-function moveFocus(num) {
+//Función para que cuando el usuario escribe en los inputs del PIN del doble factor, el focus de los inputs vaya cambiando
+function moverFocusAdelante(num) {
   if (inputs.value[num].length === 1 && num < inputs.value.length - 1) {
     document.getElementById('input' + (num + 2)).focus();
   }
   validarNumeros();
 };
 
-function moveFocusBack(num) {
+//Función para que cuando el usuario borreo en los inputs del PIN del doble factor se regrese al input anterior
+function moverFocusAtras(num) {
   if (num > 0) {
     document.getElementById('input' + num).focus();
   }
 };
 
-function handlePaste(event) {
-  // Prevenir la acción de pegado predeterminada
+//Función para que cuando el usuario pegue un texto de 6 digitos en los inputs del PIN, estos se llenen
+function pegarPin(event) {
+  //Prevenir el default del evento de pegar
   event.preventDefault();
 
   // Obtener el texto del portapapeles
-  const pastedData = event.clipboardData.getData('text');
+  const TEXTO_PEGADO = event.clipboardData.getData('text');
 
   // Verificar si el texto pegado tiene 6 dígitos
-  if (pastedData.length == 6) {
+  if (TEXTO_PEGADO.length == 6) {
     // Recorrer cada carácter del texto pegado
-    for (let i = 0; i < pastedData.length; i++) {
+    for (let i = 0; i <= TEXTO_PEGADO.length; i++) {
       // Si el input existe, establecer su valor y mover el enfoque al siguiente input
       let inputElement = document.getElementById('input' + (i + 1));
       if (inputElement !== null) {
-        inputs.value[i] = pastedData.charAt(i);
-        if (i < pastedData.length - 1) {
-          document.getElementById('input' + (i + 2)).focus();
-        }
+        inputs.value[i] = TEXTO_PEGADO.charAt(i);
       }
     }
+    document.getElementById('input6').focus();
   }
 };
 
+//Función para verificar el PIN ingresado
 async function verificarPin() {
-  var pin_formateado = inputs.value[0].toString() + inputs.value[1].toString() + inputs.value[2].toString() + inputs.value[3].toString() + inputs.value[4].toString();
-  console.log(pin_formateado);
+  //Se muestra la pantalla de cargando
+  enviando_login.value = true;
+  doble_factor.value = false;
 
-  await axios.post("/verificar-pin", pin_formateado, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    },
-  });
+  try {
+
+    //Se formatea el PIN con los 6 inputs
+    var pin = inputs.value[0].toString() + inputs.value[1].toString() + inputs.value[2].toString() + inputs.value[3].toString() + inputs.value[4].toString() + inputs.value[5].toString();
+
+    // Se crea un objeto FormData
+    const FORM_DATA = new FormData();
+
+    // Se agrega el valor del PIN al campo "pin"
+    FORM_DATA.append('pin', pin);
+
+    //Se realiza la petición axios
+    const res = await axios.post("/verificar-pin", FORM_DATA, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+
+    //Se guarda la información necesaria del usuario y se envía a la página principal
+    localStorage.setItem('token', res.data.data.token);
+    localStorage.setItem('usuario', res.data.data.usuario.id_usuario);
+    localStorage.setItem('usuario', res.data.data.usuario.imagen_usuario);
+    navigateTo('/principal');
+  } catch (error) {
+    console.log(error);
+
+    //Se limpia el valor de los inputs
+    inputs.value[0] = '';
+    inputs.value[1] = '';
+    inputs.value[2] = '';
+    inputs.value[3] = '';
+    inputs.value[4] = '';
+    inputs.value[5] = '';
+
+    //Se quita la pantalla de cargando
+    enviando_login.value = false;
+    doble_factor.value = true;
+
+    //Se evalua si el pin o el token han caducado
+    if (error.response.data.error == 'El PIN ha caducado.' || error.response.data.message == "Token has expired") {
+      //Se envía al login normal y se muestra un mensaje de error
+      doble_factor.value = false;
+      window.dispatchEvent(EVENTO);
+
+      Toast.fire({
+        icon: 'error',
+        title: 'El PIN ha caducado.'
+      });
+    } else {
+      //Se muestra el error
+      Toast.fire({
+        icon: 'error',
+        title: error.response.data.error
+      });
+    }
+  }
 }
 
+//Función para validar el PIN ingresado
 function validarNumeros() {
   if (inputs.value[0] == undefined || isNaN(inputs.value[0])) {
     inputs_error.value = true;

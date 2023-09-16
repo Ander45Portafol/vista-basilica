@@ -168,7 +168,7 @@
                 <!-- Paginación -->
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="paginas.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                        @cambioDePagina="cambioDePagina" :items_totales="paginas.length" />
                 </div>
             </div>
             <!-- Alerta a mostrar el usuario busca algo que no coincide con ningún registro -->
@@ -604,7 +604,7 @@ async function leerPaginas() {
         //y que se bugee la paginación
         if (paginas.value.length < pagina.value) {
             //Se actualiza el valor de la constante pagina
-            pagina.value = pagina.value - 1;
+            pagina.value = paginas.value.length;
         }
 
         if (paginas.value.length == 0) {
@@ -652,36 +652,13 @@ function buscarPaginas(event) {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
 
-            if(buscar.value.buscador.length == 1){
-                pagina.value = 1;
-            }
+            //Se regresa a la página 1
+            pagina.value = 1;
 
             //Se coloca como false para que si se pueda presionar el borrar
             ejecutado_despues_borrar.value = false;
 
-            //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
-            const data_filtrada = ref();
-
-            data_filtrada.value = data.value.filter(pagina =>
-                pagina.campos.nombre_pagina.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
-                pagina.campos.numero_pagina.toString().includes(buscar.value.buscador)
-            );
-
-            //Se limpia el array de registros paginados
-            paginas.value = [];
-
-            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
-            if (data_filtrada.value.length == 0) {
-                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
-                ceroRegistrosEncontrados.value = true;
-            } else {
-                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data_filtrada.value.length; i += 1) {
-                    paginas.value.push(data_filtrada.value.slice(i, i + 1));
-                }
-                //Se actualiza el valor de la constante de búsqueda a false
-                ceroRegistrosEncontrados.value = false;
-            }
+            filtrarPaginas();
 
         } else {
             //Se valida las teclas que el usuario puede presionar para bugear el buscador
@@ -706,7 +683,40 @@ function buscarPaginas(event) {
     }
 }
 
+function filtrarPaginas() {
+    //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
+    const data_filtrada = ref();
 
+    data_filtrada.value = data.value.filter(pagina =>
+        pagina.campos.nombre_pagina.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+        pagina.campos.numero_pagina.toString().includes(buscar.value.buscador)
+    );
+
+    //Se limpia el array de registros paginados
+    paginas.value = [];
+
+    //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+    if (data_filtrada.value.length == 0) {
+        //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+        ceroRegistrosEncontrados.value = true;
+    } else {
+        //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+        for (let i = 0; i < data_filtrada.value.length; i += 1) {
+            paginas.value.push(data_filtrada.value.slice(i, i + 1));
+        }
+        //Se actualiza el valor de la constante de búsqueda a false
+        ceroRegistrosEncontrados.value = false;
+    }
+
+    console.log(paginas.value);
+    
+    //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+    //y que se bugee la paginación
+    if (paginas.value.length < pagina.value) {
+        //Se actualiza el valor de la constante pagina
+        pagina.value = paginas.value.length;
+    }
+}
 
 //Función para limpiar el buscador
 function limpiarBuscador() {
@@ -952,7 +962,7 @@ async function actualizarPagina() {
             await leerPaginas();
 
             if (buscar.value.buscador) {
-                buscarPaginas();
+                filtrarPaginas();
             }
 
             //Se cierra el modal
@@ -1030,7 +1040,7 @@ async function borrarPagina(id) {
                 await leerPaginas();
 
                 if (buscar.value.buscador) {
-                    buscarPaginas();
+                    filtrarPaginas();
                 }
 
                 //Se lanza la alerta de éxito
@@ -1099,7 +1109,7 @@ async function recuperarPagina(id) {
                 await leerPaginas();
 
                 if (buscar.value.buscador) {
-                    buscarPaginas();
+                    filtrarPaginas();
                 }
 
                 //Se lanza la alerta de éxito
