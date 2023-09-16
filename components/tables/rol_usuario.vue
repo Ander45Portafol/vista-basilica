@@ -8,7 +8,14 @@
                     <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]"> {{
                         rolusuario.campos.rol_usuario }} </p>
-
+                    <p v-if=" rolusuario.campos.visibilidad_rol_usuario"
+                        class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]">
+                        Habilitado
+                    </p>
+                    <p v-else
+                        class="font-normal text-sm mt-1 text-gray-500 max-[750px]:text-[12px]">
+                        Inhabilitado
+                    </p>
                 </div>
             </div>
             <div

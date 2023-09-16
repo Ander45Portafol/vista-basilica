@@ -1,7 +1,33 @@
 //Importación de axios para las peticiones
 import axios from "axios";
 
+// Variable para almacenar las promesas de las peticiones pendientes
+let axios_pendientes = [];
+
+// Agregar un interceptor de solicitud para añadir la promesa de la petición al array
+axios.interceptors.request.use(config => {
+    const PETICION = new Promise((resolve, reject) => {
+        config.metadata = { resolve, reject };
+    });
+    axios_pendientes.push(PETICION);
+    return config;
+});
+
+// Agregar un interceptor de respuesta para resolver la promesa cuando se completa la petición
+axios.interceptors.response.use(response => {
+    response.config.metadata.resolve();
+    axios_pendientes = axios_pendientes.filter(p => p !== response.config.metadata.promise);
+    return response;
+}, error => {
+    error.config.metadata.reject();
+    axios_pendientes = axios_pendientes.filter(p => p !== error.config.metadata.promise);
+    return Promise.reject(error);
+});
+
 export default defineNuxtRouteMiddleware(async (to, from) => {
+    // Esperar hasta que todas las peticiones axios se hayan completado
+    await Promise.all(axios_pendientes);
+
     //Constante para guardar los permisos del usuario
     const PERMISOS_TRUE = [];
     if (process.client) {
