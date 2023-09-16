@@ -1,6 +1,7 @@
 <template>
     <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-    <div class="contained-data flex-col" v-for="misa in datos_misas[paginacion - 1]" :key="misa.id">
+    <div class="contained-data flex-col" v-for="tipos_personale in datos_tipo_personal[paginacion - 1]"
+        :key="tipos_personale.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -8,17 +9,14 @@
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]"> {{
-                        misa.campos.titulo_misa }} </p>
-                    <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> {{
-                        misa.campos.fecha_misa }}</p>
-                    <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> {{
-                        misa.campos.descripcion_misa }}</p>
+                        tipos_personale.campos.tipo_personal }} </p>
                 </div>
             </div>
-            <!-- Al darle clic al evento leerUnContacto ejecuta la funcion -->
+            <!-- Al darle clic al evento leerUnTipoPersonal ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                 <button v-if="misa.campos.visibilidad_misa == 1" @click.prevent="estadoActualizar(misa.id)"
+                <button v-if="tipos_personale.campos.visibilidad_tipo_personal == 1"
+                    @click.prevent="estadoActualizar(tipos_personale.id)"
                     class="h-10 w-10 rounded-md flex items-center ml-4 justify-center editbtn max-[400px]:mx-4">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -30,7 +28,8 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="borrarMisa(misa.id)" v-if="misa.campos.visibilidad_misa == 1">
+                    @click="borrarTipoPersonal(tipos_personale.id)"
+                    v-if="tipos_personale.campos.visibilidad_tipo_personal == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -39,7 +38,7 @@
                         </path>
                     </svg>
                 </button>
-                <button @click="recuperarUnaMisa(misa.id)"
+                <button @click="recuperarTipoPersonal(tipos_personale.id)"
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                     v-else>
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
@@ -57,7 +56,6 @@
         </div>
     </div> <!--contained data -->
 
-    
     <!-- Modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -68,7 +66,7 @@
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
                         <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
-                        <p class="text-base font-medium text-gray-400">Misa online</p>
+                        <p class="text-base font-medium text-gray-400">Tipo - Personal</p>
                     </div>
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -80,43 +78,28 @@
                         </svg>
                     </button>
                 </div>
-                <!-- Modal body  -->
+                <!-- Cuerpo de  -->
                 <div class="p-6 space-y-6 pb-10">
-                    <form id="modalForm" class="flex justify-center" @submit.prevent="submitForm()">
+                    <form action="" @submit.prevent="submitForm()" class="flex justify-evenly">
                         <div class="flex-col w-64">
-                            <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
-                            <input type="hidden" name="id_misa" id="id_misa" v-model="form.id_misa" />
-                            <div class="relative z-0">
-                                <input type="text" id="enlace_misa" name="enlace_misa" v-model="form.enlace_misa" required
-                                    maxlength="250"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="enlace-misa"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Enlace
-                                    - Misa<span class="text-sm ml-1"> * </span></label>
-                            </div>
+                            <input type="hidden" name="id_tipo_personal" id="id_tipo_personal" v-model="form.id_tipo_personal">
                             <div class="relative z-0 mt-6">
-                                <input type="date" id="fecha_misa" name="fecha_misa" v-model="form.fecha_misa" required
+                                <input type="text" id="tipo_personal" name="tipo_personal" required maxlength="100"
+                                    @input="validarTipoPersonal()" v-model="form.tipo_personal"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <label for="fecha-misa"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
-                                    - Misa<span class="text-sm ml-1"> * </span></label>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.tipo_personal">
+                                    {{
+                                        form.tipo_personal.length
+                                    }} /50
+                                </span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>0 /50</span>
+                                <label for="tipo_personal"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Tipo
+                                    - Personal<span class="text-sm ml-1"> *
+                                    </span></label>
                             </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" id="titulo_misa" name="titulo_misa" v-model="form.titulo_misa" required
-                                    @input="validarTituloMisa()" maxlength="150"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.titulo_misa">
-                                    {{ form.titulo_misa.length }} /150</span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>
-                                    0 /150</span>
-                                <label for="titulo-misa"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
-                                    - Misa<span class="text-sm ml-1"> * </span></label>
-                            </div>
-                            <div v-if="!validarTituloMisa()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                            <div v-if="!validarTipoPersonal()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
                                 role="alert">
                                 <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
                                     viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -125,41 +108,27 @@
                                         clip-rule="evenodd"></path>
                                 </svg>
                                 <div>
-                                    El titulo de la misa solo permite caracteres
-                                    <span class="font-medium">
+                                    El nombre del tipo personal solo permite caracteres <span class="font-medium">
                                         alfanuméricos y algunos especiales (- / |).</span>
                                 </div>
                             </div>
-                            <div class="relative z-0 mt-6">
-                                <textarea id="descripcion_misa" name="descripcion_misa" v-model="form.descripcion_misa"
-                                    maxlength="1000"
-                                    class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
-                                    v-if="form.descripcion_misa">
-                                    {{ form.descripcion_misa.length }} /1000</span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else>
-                                    0 /1000</span>
-                                <label for="descripcion-misa"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
-                                    - Misa</label>
-                            </div>
-                            <div class="flex-col mt-6">
-                                <label for="visibilidad-misa" class="text-gray-200">Visibilidad - Misa</label>
+                            <div class="flex-col mt-10">
+                                <label for="" class="text-gray-200">Visibilidad - Tipo Personal</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input id="visibilidad_misa" type="checkbox" value="1" name="visibilidad_misa"
-                                            v-model="form.visibilidad_misa" class="sr-only peer" />
+                                        <input type="checkbox" value="" class="sr-only peer"
+                                            v-model="form.visibilidad_tipo_personal">
                                         <div
                                             class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                         </div>
                                     </label>
                                 </div>
                             </div>
-                            <div class="modal-buttons mt-4 flex justify-end items-end">
+                            <div
+                                class="modal-buttons mt-4 flex justify-end items-end max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                                 <!-- Se le coloca la función para limpiar el form al botón -->
                                 <button type="button" id="btnModalClear" @click="limpiarForm()"
-                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4 ">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
@@ -176,9 +145,10 @@
                                             stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </button>
-                                <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalAdd" type="submit" :disabled="!validarTituloMisa()"
-                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                <!-- Se le coloca la función para crear al botón -->
+                                <button id="btnModalAdd" type="submit"
+                                    :disabled=" !validarTipoPersonal()"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[400px]:mx-4 max-[750px]:my-1 max-[750px]:ml-[-1px] max-[400px]:ml-6 max-[400px]:mr-[6px]">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -189,9 +159,10 @@
                                             stroke="#23B7A0" stroke-width="2"></path>
                                     </svg>
                                 </button>
-                                <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                <button id="btnModalUpdate" type="submit" :disabled="!validarTituloMisa()"
-                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                <!-- Se le coloca la función para actualizar al botón -->
+                                <button id="btnModalUpdate" type="submit"
+                                    :disabled=" !validarTipoPersonal()"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[750px]:ml-0 = max-[400px]:mt-0 max-[400px]:mx-4 max-[750px]:mt-[1px]">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -210,6 +181,8 @@
         </div>
     </div>
 </template>
+
+
 
 <style scoped>
 .buttons-data .changebtn {
@@ -239,18 +212,18 @@
 .modal-buttons button {
     background-color: #32345a;
 }
+
 </style>
 
 <script setup>
 //Importación de archivo de validaciones
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
 
 const props = defineProps({
     //Prop que se utiliza para cargar los datos de la tabla
-    datos_misas: Array,
+    datos_tipo_personal: Array,
     //Prop que recibe la funcion de leerUsuarios, para recargar la tabla, cada vez de finalizar alguna acción
     actualizar_datos: Function,
     paginacion: Number,
@@ -258,16 +231,9 @@ const props = defineProps({
 });
 //Evento para reiniciar el tiempo del componente del timer
 const EVENT = new Event('reset-timer');
-console.log(props.datos_misas);
 
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
-    function validarFechas() {
-        var res = validaciones.validarFecha(0, 0, 5);
-        document.getElementById("fecha_misa").min = res.min;
-        document.getElementById("fecha_misa").max = res.max;
-    }
-    validarFechas();
     //Codigo para abrir el modal, con el boton de crear
     const AGREGAR_BOTON = document.getElementById('btnadd');
     const MODAL_ID = document.getElementById('staticModal');
@@ -300,26 +266,17 @@ const token = ref(null);
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
-    id_misa: "",
-    enlace_misa: "",
-    fecha_misa: "",
-    titulo_misa: "",
-    descripcion_misa: "",
-    visibilidad_misa: false,
-    
+    id_tipo_personal: "",
+    tipo_personal: "",
+    visibilidad_tipo_personal: false,
 });
-
-//Funciones para manejo del modal
 
 //Función para limpiar todos los campos del form
 function limpiarForm() {
     //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_misa = "";
-    form.value.enlace_misa = "";
-    form.value.fecha_misa = "";
-    form.value.titulo_misa = "";
-    form.value.descripcion_misa = "";
-    form.value.visibilidad_misa = false;
+    form.value.id_tipo_personal = "";
+    form.value.tipo_personal = "";
+    form.value.visibilidad_tipo_personal = false;
 }
 
 //Funciones para manejo del modal
@@ -337,6 +294,7 @@ const TOAST = Swal.mixin({
 });
 
 
+
 //Variable para validar que acción se quiere hacer cuando se hace un submit al form
 var formAccion = null;
 
@@ -348,29 +306,25 @@ function accionForm(accion) {
 //Función para crear/actualizar un registro cuando se ejecuta el submit del form
 function submitForm() {
     if (formAccion == "crear") {
-        crearMisa();
+         crearTiposPersonales();
     } else {
-        actualizarMisa();
+        actualizarTiposPersonales();
     }
 }
 
-
-//Función para crear una misa
-async function crearMisa() {
+//Función para crear un tipo personal
+async function crearTiposPersonales () {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
     try {
         const FORM_DATA = new FormData();
-        FORM_DATA.append("enlace_misa", form.value.enlace_misa);
-        FORM_DATA.append("fecha_misa", form.value.fecha_misa);
-        FORM_DATA.append("titulo_misa", form.value.titulo_misa);
-        FORM_DATA.append("descripcion_misa", form.value.descripcion_misa);
+        FORM_DATA.append("tipo_personal", form.value.tipo_personal);
         FORM_DATA.append(
-            "visibilidad_misa",
-            form.value.visibilidad_misa ? 1 : 0
+            "visibilidad_tipo_personal",
+            form.value.visibilidad_tipo_personal ? 1 : 0
         );
         //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/misas/", FORM_DATA, {
+        await axios.post("/tipos_personales/", FORM_DATA, {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
@@ -390,7 +344,7 @@ async function crearMisa() {
         // props.actualizar_datos();
         TOAST.fire({
             icon: 'success',
-            title: 'Misa creada exitosamente'
+            title: 'Tipo personal creado exitosamente'
         });
     } catch (error) {
         console.log(error);
@@ -424,8 +378,8 @@ async function crearMisa() {
     }
 }
 
-async function estadoActualizar(id) {;
-    await leerUnaMisa(id);
+async function estadoActualizar(id) {
+    await leerUnTipoPersonal(id);
     const  MODAL_ID= document.getElementById('staticModal');
     const BOTON_CERRAR = document.getElementById('closeModal');
     const TEXTO_MODAL = document.getElementById('modalText');
@@ -441,31 +395,26 @@ async function estadoActualizar(id) {;
     BOTON_CERRAR.addEventListener('click', function () {
         modal.hide();
         limpiarForm();
-   
     });
 }
 
 
-
-async function leerUnaMisa(id) {
+async function leerUnTipoPersonal(id) {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-    token.value = localStorage.getItem('token');
+    token.value = localStorage.getItem('token')
     try {
         accionForm("actualizar");
-        await axios.get('/misas/' + id, {
+        await axios.get('/tipos_personales/' + id, {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
         }).then(res => {
             console.log(res.data);
             form.value = {
-                id_misa: res.data.data.id,
-                enlace_misa: res.data.data.campos.enlace_misa,
-                fecha_misa: res.data.data.campos.fecha_misa,
-                titulo_misa: res.data.data.campos.titulo_misa,
-                descripcion_misa: res.data.data.campos.descripcion_misa,
+                id_tipo_personal: res.data.data.id,
+                tipo_personal: res.data.data.campos.tipo_personal,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_misa: res.data.data.campos.visibilidad_misa ? true : false
+                visibilidad_tipo_personal: res.data.data.campos.visibilidad_tipo_personal ? true : false
             };
             //Se reinicia el timer
             window.dispatchEvent(EVENT);
@@ -506,28 +455,24 @@ async function leerUnaMisa(id) {
 }
 
 
-async function actualizarMisa() {
+async function actualizarTiposPersonales() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if (validarTituloMisa()) {
+    if ( validarTipoPersonal()) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_misa;
+            var id = form.value.id_tipo_personal;
 
             //Se crea una constante FormData para almacenar los datos del modal
             const FORM_DATA = new FormData();
-            FORM_DATA.append("enlace_misa", form.value.enlace_misa);
-            FORM_DATA.append("fecha_misa", form.value.fecha_misa);
-            FORM_DATA.append("titulo_misa", form.value.titulo_misa);
-            FORM_DATA.append("descripcion_misa", form.value.descripcion_misa);
+            FORM_DATA.append("tipo_personal", form.value.tipo_personal);
             FORM_DATA.append(
-                "visibilidad_misa",
-                form.value.visibilidad_misa ? 1 : 0
+                "visibilidad_tipo_personal",
+                form.value.visibilidad_tipo_personal ? 1 : 0
             );
 
-
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/misas_update/" + id, FORM_DATA, {
+            await axios.post("/tipos_personales_update/" + id, FORM_DATA, {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
@@ -546,7 +491,7 @@ async function actualizarMisa() {
             //Se lanza la alerta de éxito
             TOAST.fire({
                 icon: "success",
-                title: "Misa actualizada exitosamente",
+                title: "Tipo personal actualizado exitosamente",
             });
 
         } catch (error) {
@@ -582,10 +527,8 @@ async function actualizarMisa() {
     }
 }
 
-
-
 //Codigo para cambiar el estado del usuarios a inactivo
-async function borrarMisa(id,) {
+async function borrarTipoPersonal(id,) {
     console.log(id);
     Swal.fire({
         title: 'Confirmación',
@@ -605,7 +548,7 @@ async function borrarMisa(id,) {
                 token.value = localStorage.getItem('token');
                 try {
                     //Se realiza la petición axios
-                    await axios.delete("/misas/" + id, {
+                    await axios.delete("/tipos_personales/" + id, {
                         headers: {
                             Authorization: `Bearer ${token.value}`,
                         },
@@ -619,7 +562,7 @@ async function borrarMisa(id,) {
                         //Se lanza la alerta de éxito
                         TOAST.fire({
                             icon: "success",
-                            title: "Misa ocultada exitosamente",
+                            title: "Tipo personal ocultado exitosamente",
                         });
                     });
                     //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
@@ -662,10 +605,8 @@ async function borrarMisa(id,) {
     });
 }
 
-
-
 //Función para cambiar un usuario a activo
-async function recuperarUnaMisa(id) {
+async function recuperarTipoPersonal(id) {
 
 Swal.fire({
     title: 'Confirmación',
@@ -685,7 +626,7 @@ Swal.fire({
             token.value = localStorage.getItem('token');
             try {
                 //Se realiza la petición axios
-                await axios.delete("/misas/" + id, {
+                await axios.delete("/tipos_personales/" + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
@@ -703,7 +644,7 @@ Swal.fire({
                 //Se lanza la alerta de éxito
                 TOAST.fire({
                     icon: "success",
-                    title: "Misa recuperada  exitosamente",
+                    title: "Tipo personal recuperado exitosamente",
                 });
             } catch (error) {
                 console.log(error);
@@ -746,9 +687,9 @@ Swal.fire({
 
 //Validaciones
 
-function validarTituloMisa() {
-    var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_misa);
+//Función para validar el tipo contacto
+function validarTipoPersonal() {
+    var res = validaciones.validarSoloLetrasYNumeros(form.value.tipo_personal);
     return res;
 }
-
 </script>

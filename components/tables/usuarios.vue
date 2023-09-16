@@ -487,13 +487,16 @@ const form = ref({
     nombre_usuario: "",
     apellido_usuario: "",
     usuario: "",
+    imagen_usuario: "",
     numero_documento_usuario: "",
     tipo_documento: 0,
     correo_usuario: "",
-    imagen_usuario: "",
     telefono_usuario: "",
     idioma: "Español (ES)",
     tema: "Claro",
+    fecha_cambio:"",
+    fecha_bloqueo:"",
+    autenticable:"",
     visibilidad_usuario: false,
     id_rol_usuario: 0,
 });
@@ -584,7 +587,7 @@ async function crearUsuario() {
         }).then(res => {
             //Se reinicia el timer
             window.dispatchEvent(EVENT);
-            //Se actualiza el token con la respuesta del axios
+            // //Se actualiza el token con la respuesta del axios
             localStorage.setItem('token', res.data.data.token);
             token.value = localStorage.getItem('token');
             console.log(token.value);

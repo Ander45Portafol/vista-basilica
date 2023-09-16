@@ -4,6 +4,8 @@
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                <img :src="api_url + anuncio.campos.imagen_anuncio"
+                    class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
@@ -355,8 +357,8 @@ const cambiarImagen = () => {
     const input = inputImagen.value;
     const file = input.files;
     if (file && file[0]) {
-        form.value.imagen_usuario = file[0];
-        console.log(form.value.imagen_usuario);
+        form.value.imagen_anuncio = file[0];
+        console.log(form.value.imagen_anuncio);
         const reader = new FileReader();
         reader.onload = (e) => {
             imagenPreview.value = e.target.result;
@@ -372,7 +374,6 @@ const form = ref({
     titulo_anuncio: "",
     contenido_anuncio: "",
     fecha_anuncio: "",
-    imagen_anuncio: "",
     enlace_externo: "",
     visibilidad_anuncio: false
 });
@@ -386,6 +387,7 @@ function limpiarForm() {
     form.value.fecha_anuncio = "";
     form.value.enlace_externo = "";
     form.value.visibilidad_anuncio = false;
+    limpiarImagen();
 }
 //Metodo para limpiar el campo de la imagen
 function limpiarImagen() {
@@ -442,7 +444,7 @@ async function crearAnuncio() {
             "visibilidad_anuncio",
             form.value.visibilidad_anuncio ? 1 : 0
         );
-        formData.append("imagen_usuario", form.value.imagen_anuncio);
+        formData.append("imagen_anuncio", form.value.imagen_anuncio);
         //Se realiza la petición axios mandando la ruta y el formData
         await axios.post("/anuncios/", formData, {
             headers: {
@@ -539,7 +541,7 @@ async function leerUnAnuncio(id) {
                 form.value.imagen_anuncio = res.data.data.campos.imagen_anuncio;
                 imagenPreview.value = api_url + form.value.imagen_anuncio;
             } else {
-                form.value.imagen_usuario = "";
+                form.value.imagen_anuncio = "";
             }
             //Se reinicia el timer
             window.dispatchEvent(EVENT);

@@ -11,7 +11,8 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarContactos()" />
+                        placeholder="Buscar... (nombre contacto / correo contacto)" v-model="buscar.buscador"
+                        @keyup="buscarContactos($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -137,8 +138,6 @@
             </div>
         </div>
     </div>
-    <!-- Llama el componente del timer-->
-    <TimerToken />
 </template>
 
 
@@ -160,7 +159,7 @@
     width: 7px;
 }
 
-.tables::-webkit-scrollbar-thumb {
+.tables::-webkit-scrollbar {
     background: #32345A;
 }
 </style>
@@ -241,21 +240,22 @@ watch(pagina, async () => {
     useRouter().push({ query: { pagina: pagina.value } });
 });
 
-//Variable reactiva para poder intercambiar los registros entre visibles y no visibles
+//Constante ref para poder intercambiar los registros entre visibles y no visibles
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se evalua el buscador para realizar leerContactos o buscarContactos 
+    //Se establece el número de página a 1
+    pagina.value = 1;
+    //Se leen todas las páginas
+    leerContactos();
+    //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
         buscarContactos();
-    } else {
-        leerContactos();
     }
 }
-
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerContactos() {
@@ -318,53 +318,90 @@ async function leerContactos() {
         }
     } catch (error) {
         console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
 
 
+//Constante ref para controlar que no se pueda spamear el delete en el buscador y bugear el token
+const ejecutado_despues_borrar = ref(false);
 
-async function buscarContactos() {
+//Función para buscar registros dependiendo del valor del buscador
+async function buscarContactos(event) {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
 
+            //Se coloca como false para que si se pueda presionar el borrar
+            ejecutado_despues_borrar.value = false;
+
             //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
             useRouter().push({ query: { buscador: buscar.value.buscador } });
 
-            //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
-            data.value = data.value.filter(contacto =>
+            //Se filtran los registros de data según los parámetros del buscador (nombre_contacto / correo_contacto)
+            const data_filtrada = ref();
+
+            data_filtrada.value = data.value.filter(contacto =>
                 contacto.campos.nombre_contacto.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
-                contacto.campos.correo_contacto.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+                contacto.campos.correo_contacto.toString().includes(buscar.value.buscador)
             );
 
             //Se limpia el array de registros paginados
             contactos.value = [];
 
             //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
-            if (data.value.length == 0) {
+            if (data_filtrada.value.length == 0) {
                 //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
                 ceroRegistrosEncontrados.value = true;
             } else {
                 //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data.value.length; i += 1) {
-                    contactos.value.push(data.value.slice(i, i + 1));
+                for (let i = 0; i < data_filtrada.value.length; i += 10) {
+                    contactos.value.push(data_filtrada.value.slice(i, i + 10));
                 }
                 //Se actualiza el valor de la constante de búsqueda a false
                 ceroRegistrosEncontrados.value = false;
             }
 
         } else {
-            //Se regresa a la página 1 y se cargan todos los registros
-            pagina.value = 1;
-            leerContactos();
-            useRouter().push({ query: { pagina: pagina.value } });
-            //Se actualiza el valor de la constante de búsqueda a false
-            ceroRegistrosEncontrados.value = false;
+            //Se valida las teclas que el usuario puede presionar para bugear el buscador
+            if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
+                //Se coloca como true para que no se pueda presionar el borrar
+                ejecutado_despues_borrar.value = true;
+                //Se regresa a la página 1 y se cargan todos los registros
+                limpiarBuscador();
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
+            }
         }
     } catch (error) {
         console.log(error);
-
-        //Se muestra un sweetalert con el mensaje
+        //Se muestra un sweetalert con el mensaje   
         Swal.fire({
             icon: "error",
             title: "Error",
@@ -374,6 +411,8 @@ async function buscarContactos() {
     }
 }
 
+
+
 //Función para limpiar el buscador
 function limpiarBuscador() {
     //Se coloca la constante pagina 1 para que salga la primera pagina de registros
@@ -382,7 +421,8 @@ function limpiarBuscador() {
     leerContactos();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
+    //Se limpia la ruta
+    useRouter().push({ query: '' });
 }
-
 
 </script>
