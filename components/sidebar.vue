@@ -289,6 +289,8 @@ import { onMounted, ref } from 'vue';
 import { initTooltips } from 'flowbite'
 //Importación de axios para las peticiones
 import axios from "axios";
+//Importación de sweetalert
+import Swal from 'sweetalert2';
 
 //Cuando se monta el componente se inician los tooltips y se leen los permisos del usuario activo
 onMounted(async () => {
@@ -350,7 +352,25 @@ async function permisosUsuario() {
 
 //Función para que cuando el usuario cierre sesión, sea enviado al login
 async function deshabilitarToken() {
-  navigateTo('/');
+  //Se lanza una alerta de confirmación
+  Swal.fire({
+    title: "Confirmación",
+    text: "¿Desea cerrar la sesión?",
+    icon: "warning",
+    reverseButtons: true,
+    showCancelButton: true,
+    confirmButtonColor: "#3F4280",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Confirmar",
+    cancelButtonText: "Cancelar",
+    allowOutsideClick: false,
+    //Se evalua la respuesta de la alerta
+  }).then(async (result) => {
+    //Si el usuario selecciono "Confirmar"
+    if (result.isConfirmed) {
+      navigateTo('/');
+    }
+  });
 }
 
 </script>
