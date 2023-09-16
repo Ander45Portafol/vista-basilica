@@ -413,7 +413,7 @@ const form = ref({
     fecha_mensaje: "",
     estado_mensaje: "",
     visibilidad_mensaje: false,
-    id_contacto: "",
+    id_contacto: 0,
 })
 
 
@@ -515,7 +515,6 @@ async function estadoActualizar(id) {
     const modal = new Modal(MODAL_ELEMENT, MODAL_OPTIONS);
     MODAL_TEXT.textContent = "Editar";
     modal.show();
-    document.getElementById('btnModalAdd').classList.add('hidden');
     document.getElementById('btnModalUpdate').classList.remove('hidden');
     CLOSE_BUTTON.addEventListener('click', function () {
         modal.hide();

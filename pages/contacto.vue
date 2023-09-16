@@ -11,7 +11,8 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarContactos($event)" />
+                        placeholder="Buscar... (nombre contacto / correo contacto)" v-model="buscar.buscador"
+                        @keyup="buscarContactos($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -158,7 +159,7 @@
     width: 7px;
 }
 
-.tables::-webkit-scrollbar-thumb {
+.tables::-webkit-scrollbar {
     background: #32345A;
 }
 </style>
@@ -365,10 +366,10 @@ async function buscarContactos(event) {
 
             //Se filtran los registros de data según los parámetros del buscador (nombre_contacto / correo_contacto)
             const data_filtrada = ref();
-            
+
             data_filtrada.value = data.value.filter(contacto =>
-            contacto.campos.nombre_contacto.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
-            contacto.campos.correo_contacto.toString().includes(buscar.value.buscador)
+                contacto.campos.nombre_contacto.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+                contacto.campos.correo_contacto.toString().includes(buscar.value.buscador)
             );
 
             //Se limpia el array de registros paginados
@@ -390,7 +391,7 @@ async function buscarContactos(event) {
         } else {
             //Se valida las teclas que el usuario puede presionar para bugear el buscador
             if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
-                 //Se coloca como true para que no se pueda presionar el borrar
+                //Se coloca como true para que no se pueda presionar el borrar
                 ejecutado_despues_borrar.value = true;
                 //Se regresa a la página 1 y se cargan todos los registros
                 limpiarBuscador();

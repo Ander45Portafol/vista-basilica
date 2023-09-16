@@ -9,7 +9,8 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarGruposParroquiales()" />
+                        placeholder="Buscar... (nombre grupo / nombre completo)" v-model="buscar.buscador"
+                        @keyup="buscarGruposParroquiales($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -25,8 +26,8 @@
                     </button>
                 </div>
                 <!-- Sección de botones a la derecha del buscador -->
-                 <!-- Sección de botones a la derecha del buscador -->
-                 <div
+                <!-- Sección de botones a la derecha del buscador -->
+                <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
@@ -70,10 +71,10 @@
                     </button>
                 </div>
             </div>
-             <!-- Línea divisora -->
-             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-         <!-- Se manda a traer la longitud del array de grupos_parroquiales (el que trae los registros) y así saber cuantos registros son -->
-         <div class="h-screen">
+            <!-- Línea divisora -->
+            <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
+            <!-- Se manda a traer la longitud del array de grupos_parroquiales (el que trae los registros) y así saber cuantos registros son -->
+            <div class="h-screen">
                 <p v-if="grupos_parroquiales.length > 0 && !ceroRegistrosEncontrados"
                     class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ grupos_parroquiales[pagina -
                         1].length
@@ -128,11 +129,12 @@
                             </div>
                         </div>
                     </div>
-                    <TablesGruposParroquiales v-if="grupos_parroquiales.length > 0" :datos_grupos="grupos_parroquiales" :actualizar_datos="cargarTabla" :paginacion="pagina" />
+                    <TablesGruposParroquiales v-if="grupos_parroquiales.length > 0" :datos_grupos="grupos_parroquiales"
+                        :actualizar_datos="cargarTabla" :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
-                    <Paginacion v-if="grupos_parroquiales.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                    <Paginacion v-if="grupos_parroquiales.length > 1 && !ceroRegistrosEncontrados"
+                        v-model:pagina_actual="pagina" @cambioDePagina="cambioDePagina" :items_totales="data.length" />
                 </div>
             </div>
         </div>
@@ -245,11 +247,13 @@ const registros_visibles = ref(true);
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se evalua el buscador para realizar leerGruposParroquiales o buscarGruposParroquiales 
+    //Se establece el número de página a 1
+    pagina.value = 1;
+    //Se leen todas las páginas
+    leerGruposParroquiales();
+    //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
         buscarGruposParroquiales();
-    } else {
-        leerGruposParroquiales();
     }
 }
 
@@ -284,7 +288,7 @@ async function leerGruposParroquiales() {
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
         } else {
-            const { data: res } = await axios.get('/grupos_parroquia_ocultos', {
+            const { data: res } = await axios.get('/g_parroquiales_ocultos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
@@ -346,78 +350,69 @@ async function leerGruposParroquiales() {
     }
 }
 
+//Constante ref para controlar que no se pueda spamear el delete en el buscador y bugear el token
+const ejecutado_despues_borrar = ref(false);
 
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarGruposParroquiales() {
+async function buscarGruposParroquiales(event) {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
 
+            //Se coloca como false para que si se pueda presionar el borrar
+            ejecutado_despues_borrar.value = false;
+
             //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
             useRouter().push({ query: { buscador: buscar.value.buscador } });
 
-            //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
-            data.value = data.value.filter(grupos =>
-            grupos.campos.nombre_grupo.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
-            grupos.campos.nombre_encargado.toLowerCase().includes(buscar.value.buscador.toLowerCase())||
-            grupos.campos.apellido_encargado.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+            //Se filtran los registros de data según los parámetros del buscador (nombre_grupo / nombre_encargado  / apellido_encargado)
+            const data_filtrada = ref();
+
+            data_filtrada.value = data.value.filter(grupo =>
+                grupo.campos.nombre_grupo.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+                grupo.campos.nombre_encargado.toString().includes(buscar.value.buscador) ||
+                grupo.campos.apellido_encargado.toString().includes(buscar.value.buscador)
             );
 
             //Se limpia el array de registros paginados
             grupos_parroquiales.value = [];
 
             //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
-            if (data.value.length == 0) {
+            if (data_filtrada.value.length == 0) {
                 //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
                 ceroRegistrosEncontrados.value = true;
             } else {
                 //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data.value.length; i += 1) {
-                    grupos_parroquiales.value.push(data.value.slice(i, i + 1));
+                for (let i = 0; i < data_filtrada.value.length; i += 10) {
+                    grupos_parroquiales.value.push(data_filtrada.value.slice(i, i + 10));
                 }
                 //Se actualiza el valor de la constante de búsqueda a false
                 ceroRegistrosEncontrados.value = false;
             }
 
         } else {
-            //Se regresa a la página 1 y se cargan todos los registros
-            pagina.value = 1;
-            leerGruposParroquiales();
-            useRouter().push({ query: { pagina: pagina.value } });
-            //Se actualiza el valor de la constante de búsqueda a false
-            ceroRegistrosEncontrados.value = false;
+            //Se valida las teclas que el usuario puede presionar para bugear el buscador
+            if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
+                //Se coloca como true para que no se pueda presionar el borrar
+                ejecutado_despues_borrar.value = true;
+                //Se regresa a la página 1 y se cargan todos los registros
+                limpiarBuscador();
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
+            }
         }
     } catch (error) {
         console.log(error);
-        const MENSAJE_ERROR = error.response.data.message;
-        if (error.response.status == 401) {
-            navigateTo('/error_401');
-        } else {
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: RES,
-                    confirmButtonColor: '#3F4280'
-                });
-            } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: MENSAJE_ERROR,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
+        //Se muestra un sweetalert con el mensaje   
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error,
+            confirmButtonColor: "#3F4280",
+        });
     }
 }
+
 
 
 //Función para limpiar el buscador

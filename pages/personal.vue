@@ -1,7 +1,7 @@
 <template>
     <div class="principal mt-6">
         <!-- Menu de navegación superior -->
-        <MenuPersonalDashboard />
+        <MenuPersonalDashboard class="mr-8" />
         <!-- Contendor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <!-- Sección del buscador -->
@@ -10,7 +10,8 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre personal/correo personal)" v-model="buscar.buscador" @keyup="buscarPersonal()" />
+                        placeholder="Buscar... (nombre contacto / correo contacto)" v-model="buscar.buscador"
+                        @keyup="buscarPersonal($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -67,281 +68,77 @@
                     </button>
                 </div>
             </div>
+
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
-        <!-- Se manda a traer la longitud del array de contactos (el que trae los registros) y así saber cuantos registros son -->
-        <p v-if="personales" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
-                {{ personales.length }}
-                <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
-            </p>
-            <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
-                -
-                <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
-            </p>
-            <!-- Cargando la tabla preview loading -->
-            <div class="loadingtable overflow-hidden h-4/6 pr-4">
-                <div class="contained-data flex-col" v-for="number in 6" :key="number">
-                    <div v-if="!personales"
-                        class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
-                        <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                            <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
-                            <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
-                                <div class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4"></div>
-                                <div class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full"></div>
-                            </div>
-                        </div>
-                        <div
-                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                            <div
-                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
-                            </div>
-                            <div
-                                class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
+            <!-- Se manda a traer la longitud del array de personales (el que trae los registros) y así saber cuantos registros son -->
+            <div class="h-screen">
+                <p v-if="personales.length > 0 && !ceroRegistrosEncontrados"
+                    class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ personales[pagina -
+                        1].length
+                    }}<span class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
+                <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                    -
+                    <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+                </p>
+                <!-- Alerta a mostrar el usuario busca algo que no coincide con ningún registro -->
+                <div class="flex-col">
+                    <div v-if="personales.length == 0 && ceroRegistrosEncontrados">
+                        <div class="flex items-center px-4 py-6 mt-5 mb-4 text-sm text-purpleLogin border-2 border-purpleLogin rounded-lg bg-transparent"
+                            role="alert">
+                            <svg class="flex-shrink-0 inline w-6 h-6 mr-3" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                            </svg>
+                            <div class="text-base">
+                                <span class="font-medium">No se encontraron registros, </span> la petición realizada no
+                                obtuvo resultados.
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div id="sectionPage" v-for="personal in personales" :key="personal.id">
-                <div class="contained-data flex-col">
-                    <div v-if="personales"
-                        class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
-                        <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                <div class="tables overflow-y-scroll h-3/5 pr-4">
+                    <div v-if="personales.length == 0 && !ceroRegistrosEncontrados"
+                        class="loadingtable overflow-hidden h-full pr-4">
+                        <div class="contained-data flex-col" v-for="number in 6" :key="number">
                             <div
-                                class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                                <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{
-                                    personal.campos.nombre_personal }} {{personal.campos.apellido_personal }}
-                                </p>
-                                <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]">
-                                    {{ personal.campos.telefono_personal }}</p>
-                                <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
-                                    {{ personal.campos.correo_personal }}
-                                </p>
-                            </div>
-                        </div>
-                        <!-- Boton para leer un mensaje -->
-                        <div
-                            class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                            <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
-                                id="btnedit" @click="leerUnPersonal(personal.id)"
-                                v-if="personal.campos.visibilidad_personal == 1">
-                                <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path
-                                        d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
-                                        stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                </svg>
-                            </button>
-                            <button
-                                class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                                @click="borrarPersonal(personal.id)" v-if="personal.campos.visibilidad_personal == 1">
-                                <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path
-                                        d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
-                                        stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                </svg>
-                            </button>
-                            <button @click="recuperarUnPersonal(personal.id)"
-                                class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                                v-else>
-                                <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280"
-                                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path
-                                        d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
-                                        stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                    <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3"
-                                        stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-               <!--contained data -->
-            </div>
-            <!-- Se crea el componente de tailwind pagination para manejar los registros, se le enlaza a la constante data. Además, se le crea el evento de pagination change page y
-            este se enlaza a la variable pagina para evaluar a que página se esta moviendo el usuario -->
-            <!-- Paginación -->
-            <div class="flex justify-center mt-6">
-                <TailwindPagination v-if="data" :item-classes="[
-                    'text-gray-500',
-                    'rounded-full',
-                    'border-none',
-                    'ml-1',
-                    'hover:bg-gray-200',
-                ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                    :data="data" @pagination-change-page="pagina = $event" />
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
-        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-3xl max-h-full">
-            <!-- Modal content -->
-            <div class="relative rounded-lg shadow modal">
-                <!-- Modal header -->
-                <div class="flex items-start justify-between p-4 rounded-t">
-                    <div class="flex-col ml-4 pt-4">
-                        <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
-                        <p class="text-base font-medium text-gray-400">Personal</p>
-                    </div>
-                    <button type="button" id="closeModal"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                        data-modal-hide="staticModal">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                    </button>
-                </div>
-                <!-- Cuerpo de  -->
-                <div class="p-6 space-y-6 pb-10">
-                    <form action="" id="formModal" @submit.prevent="submitForm()" class="flex justify-evenly">
-                        <div class="flex-col w-64">
-                            <input type="hidden" id="id_personal" v-model="form.id_personal">
-                            <div class="relative z-0">
-                                <input type="text" v-model="form.nombre_personal" id="nombre_personal"
-                                    name="nombre_personal"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="nombre_personal"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Personal</label>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <input type="text" v-model="form.telefono_personal" id="telefono_personal"
-                                    name="telefono_personal"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="telefono_personal"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
-                                    - Personal</label>
-                            </div>
-                            <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="absolute text-gray-200 text-sm">Tipo Personal<span class="text-sm ml-1"> *
-                                    </span></label>
-                                <select id="underline_select" v-model="form.id_tipo_personal"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="0" class="bg-gray-700 text-white"> Seleccione una opción </option>
-                                    <option class="bg-gray-700" v-for="tipo_personal in tipo_personales" :key="tipo_personal.id_tipo_personal"
-                                        :value="tipo_personal.id_tipo_personal">
-                                        {{ tipo_personal.tipo_personal }}</option>
-                                </select>
-                                <div v-if="form.id_tipo_personal == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                                    role="alert">
-                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <div>
-                                        Seleccione <span class="font-medium"> una opción. </span>
+                                class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
+                                <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                                    <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
+                                    <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
+                                        <div
+                                            class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4">
+                                        </div>
+                                        <div
+                                            class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="flex-col w-64">
-                            <div class="relative z-0">
-                                <input type="text" v-model="form.apellido_personal" id="apellido_personal"
-                                    name="apellido_personal"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="apellido_personal"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
-                                    - Personal</label>
-                            </div>
-                        </div>
-                        <div class="relative z-0">
-                                <input type="text" v-model="form.correo_personal" id="correo_personal"
-                                    name="correo_personal"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="correo_personal"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                    - Personal</label>
-                            </div>
-                        <div class="flex-col mt-8">
-                            <label for="" class="text-gray-200">Visibilidad - Personal</label>
-                            <div class="flex justify-start mt-2">
-                                <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                    <input type="checkbox" value="" class="sr-only peer"
-                                        v-model="form.visibilidad_personal">
+                                <div
+                                    class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                                     <div
-                                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
                                     </div>
-                                </label>
+                                    <div
+                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="modal-buttons mt-4 flex justify-end items-end">
-                                    <!-- Se le coloca la función para limpiar el form al botón -->
-                                    <button type="button" id="btnModalClear" @click="limpiarForm()"
-                                        class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
-                                        <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                            <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
-                                                stroke-width="2" stroke-linecap="round"></path>
-                                            <path
-                                                d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
-                                                stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round"></path>
-                                            <path
-                                                d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
-                                                stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round"></path>
-                                            <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </svg>
-                                    </button>
-                                    <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                    <button id="btnModalAdd" type="submit"
-                                        class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
-                                        <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                            <path
-                                                d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                                stroke="#23B7A0" stroke-width="2"></path>
-                                            <path
-                                                d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                                stroke="#23B7A0" stroke-width="2"></path>
-                                        </svg>
-                                    </button>
-                                    <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                                    <button id="btnModalUpdate" type="submit"
-                                        class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
-                                        <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                            <path
-                                                d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                                stroke="#23B7A0" stroke-width="2"></path>
-                                            <path
-                                                d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                                stroke="#23B7A0" stroke-width="2"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                    </form>
+                    </div>
+                    <TablesPersonal v-if="personales.length > 0" :datos_personal="personales"
+                        :actualizar_datos="cargarTabla" :paginacion="pagina" />
+                </div>
+                <div class="flex justify-center mt-6">
+                    <Paginacion v-if="personales.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
+                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
                 </div>
             </div>
         </div>
     </div>
 </template>
-<style scoped>
-.topprincipal .active {
-    color: #c99856;
-    border-bottom: 3px solid #c99856;
-}
-
-.content-buttons input {
+<style scoped>.content-buttons input {
     border: 3px solid #1b1c30;
 }
 
@@ -353,27 +150,12 @@
     background-color: #1b1c30;
 }
 
-.data-contained {
-    border: 3px solid #1b1c30;
+.tables::-webkit-scrollbar {
+    width: 7px;
 }
 
-.buttons-data .editbtn {
-    border: 3px solid #c99856;
-}
-
-.buttons-data .deletebtn {
-    border: 3px solid #872727;
-}
-
-.modal {
-    background: linear-gradient(180deg,
-            rgba(63, 66, 128, 0.6241) 0%,
-            rgba(49, 50, 71, 0.5609) 100%);
-    background-color: #1e1e1e;
-}
-
-.modal-buttons button {
-    background-color: #32345a;
+.tables::-webkit-scrollbar-thumb {
+    background: #32345A;
 }
 </style>
 
@@ -384,8 +166,6 @@
 
 //Importacion para usar el hook de onMounted
 import { onMounted, ref } from "vue";
-//Importación del modal de flowbite
-import { Modal } from "flowbite";
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from "axios";
 //Importación de sweetalert
@@ -401,102 +181,22 @@ definePageMeta({
     //Se le establece un middleware a la página
     middleware: "middleware-paginas"
 });
+;
 
 //onMounted es un hook (en vue los hooks se usan para hacer tareas especificas con los componentes)
 /*En este hook se crean todas las funciones relacionadas al manejo del modal, se crean en este onMounted para que se
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
-
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
-
-    //Constantes para manejar el modal
-    //Constante para el botón de agregar un registro
-    const buttonElement = document.getElementById("btnadd");
-    //Constante para el modal
-    const modalElement = document.getElementById("staticModal");
-    //Constante para el botón de cerrar en el modal
-    const closeButton = document.getElementById("closeModal");
-    //Constante para el titulo del modal
-    const modalText = document.getElementById("modalText");
-    //Constante para el boton de actualizar dentro del modal
-    const modalBtnUpdate = document.getElementById("btnModalUpdate");
-    //Constante para el boton de agregar dentro del modal
-    const modalBtnAdd = document.getElementById("btnModalAdd");
-
-    /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
-      aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
-    const modalOptions = {
-        backdrop: "static",
-        backdropClasses:
-            "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-    };
-
-    //Se evalua si existe un modal y en caso de que si se ejecuta todo lo relacionado a su funcionamiento
-    if (modalElement) {
-        //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
-        const modal = new Modal(modalElement, modalOptions);
-
-        /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
-            del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
-        buttonElement.addEventListener("click", function () {
-            //Se limpia el form al abrir el modal de agregar
-            accionForm("crear");
-            limpiarForm();
-            modalBtnAdd.classList.remove("hidden");
-            modalText.textContent = "Registrar";
-            modalBtnUpdate.classList.add("hidden");
-            modal.show();
-        });
-
-        //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
-        closeButton.addEventListener("click", function () {
-            modal.hide();
-            limpiarForm();
-        });
-    }
-
-    //Se lee el tipo personal al montarse la página para evitar problemas del setup y el localStorage
+    //Se lee el personal al montarse la página para evitar problemas del setup y el localStorage
     leerPersonal();
-    // Select
-    llenarSelectTipoPersonal();
 });
 
-
-// aqui va el select 
-//Variable reactiva para llenar el select
-var tipo_personales = ref(null);
-
-//Función para llenar el select
-
-async function llenarSelectTipoPersonal() { 
-    try {
-        //Se realiza la petición axios
-        const { data: res } = await axios.get('t_personal-select', {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            },
-        });
-        console.log(res); 
-        //Lo que devuelve la petición axios se le asigna a "tipo_personal"
-        tipo_personales.value = res;
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
-    }
-}
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
+//Se crea una constante ref para saber cuando el usuario realizo una búsqueda que no retorno ningún registro
+const ceroRegistrosEncontrados = ref(false);
 
 //Variable reactiva para almacenar el token del localStorage
 const token = ref(null);
@@ -505,142 +205,206 @@ const token = ref(null);
 const data = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const pagina = ref(useRoute().query.pagina || 1);
+const pagina = ref(parseInt(useRoute().query.pagina) || 1);
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
     buscador: "",
 });
+//Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
+function cambioDePagina(pagina_prop) {
+    pagina.value = pagina_prop;
+}
 
+
+function cargarTabla() {
+    leerPersonal();
+    if (buscar.value.texto_buscador) {
+        buscarPersonal();
+    }
+}
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
 y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let personales = computed(() => data.value?.data);
+let personales  = ref([]);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
 watch(pagina, async () => {
-    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
-    if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarPersonal();
-    } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerPersonal();
-    }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
     useRouter().push({ query: { pagina: pagina.value } });
 });
 
-//Variable reactiva para poder intercambiar los registros entre visibles y no visibles
 const registros_visibles = ref(true);
-
 //Función para evaluar registros según la visibilidad que quiera el usuario
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se evalua el buscador para realizar leerPersonal o buscarPersonal 
+    //Se establece el número de página a 1
+    pagina.value = 1;
+    //Se leen todas las páginas
+    leerPersonal();
+    //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
         buscarPersonal();
-    } else {
-        leerPersonal();
     }
 }
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerPersonal() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
-        //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
-            //Se realiza la petición axios para leer los registros visibles
-            const { data: res } = await axios.get(`/personal?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/personal', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
+            data.value = res.data;
+            personales.value = [];
+
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                personales.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         } else {
-            //Se realiza la petición axios para leer los registros no visibles
-            const { data: res } = await axios.get(`/personal_oculto?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/personal_oculto', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
+            data.value = res.data;
+            personales.value = [];
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                personales.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
+        }
+        if (personales.value.length < pagina.value) {
+            //Se actualiza el valor de la constante pagina
+            pagina.value = pagina.value - 1;
+        }
+
+        if (personales.value.length == 0) {
+            ceroRegistrosEncontrados.value = true;
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
 
+//Constante ref para controlar que no se pueda spamear el delete en el buscador y bugear el token
+const ejecutado_despues_borrar = ref(false);
+
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarPersonal() {
+async function buscarPersonal(event) {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
-            //Se evalua si se quieren mostrar los registros visibles o no visibles
-            if (registros_visibles.value) {
-                // Se realiza la petición axios para mostrar los registros visibles
-                const { data: res } = await axios.get(
-                    `/personal_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
+
+            //Se coloca como false para que si se pueda presionar el borrar
+            ejecutado_despues_borrar.value = false;
+
+            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
+            useRouter().push({ query: { buscador: buscar.value.buscador } });
+
+            //Se filtran los registros de data según los parámetros del buscador (nombre_contacto / correo_contacto)
+            const data_filtrada = ref();
+            
+            data_filtrada.value = data.value.filter(personal =>
+            personal.campos.nombre_personal.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+            personal.campos.apellido_personal.toString().includes(buscar.value.buscador)||
+            personal.campos.correo_personal.toString().includes(buscar.value.buscador)
+            );
+
+            //Se limpia el array de registros paginados
+            personales.value = [];
+
+            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+            if (data_filtrada.value.length == 0) {
+                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+                ceroRegistrosEncontrados.value = true;
             } else {
-                // Se realiza la petición axios para mostrar los registros no visibles
-                const { data: res } = await axios.get(
-                    `/personal_search_ocultos?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
+                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+                for (let i = 0; i < data_filtrada.value.length; i += 10) {
+                    personales.value.push(data_filtrada.value.slice(i, i + 10));
                 }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
             }
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: pagina.value } });
+
         } else {
-            //Se regresa a la página 1 y se cargan todos los registros
-            pagina.value = 1;
-            leerPersonal();
+            //Se valida las teclas que el usuario puede presionar para bugear el buscador
+            if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
+                 //Se coloca como true para que no se pueda presionar el borrar
+                ejecutado_despues_borrar.value = true;
+                //Se regresa a la página 1 y se cargan todos los registros
+                limpiarBuscador();
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
+            }
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se muestra un sweetalert con el mensaje
+        console.log(error);
+        //Se muestra un sweetalert con el mensaje   
         Swal.fire({
             icon: "error",
             title: "Error",
-            text: res,
+            text: error,
             confirmButtonColor: "#3F4280",
         });
     }
 }
+
+
 
 //Función para limpiar el buscador
 function limpiarBuscador() {
@@ -650,405 +414,7 @@ function limpiarBuscador() {
     leerPersonal();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
+    //Se limpia la ruta
+    useRouter().push({ query: '' });
 }
-
-//Funciones para manejo del modal
-
-//Se crea una variable reactiva para manejar la información del modal
-const form = ref({
-    id_personal: "",
-    nombre_personal: "",
-    apellido_personal: "",
-    telefono_personal: "",
-    correo_personal: "",
-    visibilidad_personal: false,
-    id_tipo_personal: "",
-});
-
-//Función para limpiar todos los campos del form
-function limpiarForm() {
-    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_personal = "";
-    form.value.nombre_personal = "";
-    form.value.apellido_personal = "";
-    form.value.telefono_personal = "";
-    form.value.correo_personal = "";
-    form.value.visibilidad_personal = false;
-    form.value.id_tipo_personal = 0;
-}
-
-//Toast del sweetalert
-const Toast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener("mouseenter", Swal.stopTimer);
-        toast.addEventListener("mouseleave", Swal.resumeTimer);
-    },
-});
-
-//Variable para validar que acción se quiere hacer cuando se hace un submit al form
-var formAccion = null;
-
-//Función para evaluar que acción se va a hacer al hacer submit en el form
-function accionForm(accion) {
-    formAccion = accion;
-}
-
-//Función para crear/actualizar un registro cuando se ejecuta el submit del form
-function submitForm() {
-    if (formAccion == "crear") {
-        crearPersonal();
-    } else {
-        actualizarPersonal();
-    }
-}
-
-//Función para crear una página
-async function crearPersonal() {
-    if (validarNombrePersonal() && validarApellidoPersonal() && validarTelefono() && form.id_tipo_personal != 0) {
-        try {
-            //Se crea una constante FormData para almacenar los datos del modal
-            const formData = new FormData();
-            formData.append("nombre_personal", form.value.nombre_personal);
-            formData.append("apellido_personal", form.value.apellido_personal);
-            formData.append("telefono_personal", form.value.telefono_personal);
-            formData.append("correo_personal", form.value.correo_personal);
-            formData.append(
-                "visibilidad_personal",
-                form.value.visibilidad_personal ? 1 : 0
-            );
-            formData.append("id_tipo_personal", form.value.id_tipo_personal);
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/personal", formData, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-            });
-
-            //Se cargan todas las páginas y se cierra el modal
-            pagina.value = 1;
-            limpiarBuscador();
-            leerPersonal();
-
-            document.getElementById("closeModal").click();
-
-            //Se lanza la alerta con el mensaje de éxito
-            Toast.fire({
-                icon: "success",
-                title: "Personal creado exitosamente",
-            });
-        } catch (error) {
-            console.log(error);
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
-            document.getElementById("closeModal").click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: res,
-                confirmButtonColor: "#3F4280",
-            });
-        }
-    }
-}
-
-//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
-async function leerUnPersonal(id) {
-    try {
-        accionForm("actualizar");
-        //Se hace la petición axios y se evalua la respuesta
-        await axios.get("/personal/" + id, {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            },
-        }).then((res) => {
-            //Constante para el modal
-            const modalElement = document.getElementById("staticModal");
-            //Constante que contiene las caracteristicas del modal
-            const modalOptions = {
-                backdrop: "static",
-                backdropClasses:
-                    "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-            };
-            //Instanciamos el boton para cerrar el modal
-            const closeButton = document.getElementById("closeModal");
-            //Constante para el titulo del modal
-            const modalText = document.getElementById("modalText");
-            //Constante para el boton de agregar dentro del modal
-            const modalBtnAdd = document.getElementById("btnModalAdd");
-            //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById("btnModalUpdate");
-            //Instanciamos el modal
-            const modal = new Modal(modalElement, modalOptions);
-            //Le modificamos el texto del header al modal
-            modalText.textContent = "Editar";
-            //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove("hidden");
-            //Ocultamos el botón de agregar en el modal
-            modalBtnAdd.classList.add("hidden");
-            //Abrimos el modal
-            modal.show();
-            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-            closeButton.addEventListener("click", function () {
-                //Ocultamos el modal
-                modal.hide();
-                //Limpiamos el modal
-                limpiarForm();
-            });
-            //Llenamos los inputs del modal con su respectiva informacion
-            form.value = {
-                id_personal: res.data.data.id,
-                nombre_personal: res.data.data.campos.nombre_personal,
-                apellido_personal: res.data.data.campos.apellido_personal,
-                telefono_personal: res.data.data.campos.telefono_personal,
-                correo_personal: res.data.data.campos.correo_personal,
-                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_personal: res.data.data.campos.visibilidad_personal ? true : false,
-                id_tipo_personal: res.data.data.campos.id_tipo_personal
-            };
-        });
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se cierra el modal
-        document.getElementById("closeModal").click();
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
-    }
-}
-
-async function actualizarPersonal() {
-    if (validarNombrePersonal() && validarApellidoPersonal() && validarTelefono() && form.id_tipo_personal != 0) {
-        try {
-            //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_personal;
-
-            //Se crea una constante FormData para almacenar los datos del modal
-            //Se crea una constante FormData para almacenar los datos del modal
-            const formData = new FormData();
-            formData.append("nombre_personal", form.value.nombre_personal);
-            formData.append("apellido_personal", form.value.apellido_personal);
-            formData.append("telefono_personal", form.value.telefono_personal)
-            formData.append("correo_personal", form.value.correo_personal);
-            formData.append(
-                "visibilidad_personal",
-                form.value.visibilidad_personal ? 1 : 0
-            );
-            formData.append("id_tipo_personal", form.value.id_tipo_personal);
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/personal_update/" + id, formData, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-            });
-
-            //Se evalua el buscador para realizar leerPersonal o buscarPersonal
-            if (buscar.value.buscador) {
-                buscarPersonal();
-            } else {
-                leerPersonal();
-            }
-            //Se cierra el modal
-            document.getElementById("closeModal").click();
-
-            //Se lanza la alerta de éxito
-            Toast.fire({
-                icon: "success",
-                title: "Personal actualizado exitosamente",
-            });
-        } catch (error) {
-            console.log(error);
-            const mensajeError = error.response.data.message;
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: mensajeError,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
-    }
-}
-
-//Función para cambiar la visibilidad de una página para ocultarla
-async function borrarPersonal(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: "Confirmación",
-        text: "¿Desea ocultar el registro?",
-        icon: "warning",
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: "#3F4280",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete("/personal/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                });
-
-                //Se evalua el buscador para realizar leerPersonal o buscarPersonal 
-                if (buscar.value.buscador) {
-                    buscarPersonal();
-                } else {
-                    leerPersonal();
-                }
-
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Personal ocultado exitosamente",
-                });
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
-                });
-            }
-        }
-    });
-}
-
-//Función para cambiar la visibilidad de una página para recuperarla
-async function recuperarUnPersonal(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: "Confirmación",
-        text: "¿Desea recuperar el registro?",
-        icon: "warning",
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: "#3F4280",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete("/personal/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                });
-
-                //Se evalua el buscador para realizar leerPersonal o buscarPersonal 
-                if (buscar.value.buscador) {
-                    buscarPersonal();
-                } else {
-                    leerPersonal();
-                }
-
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Personal recuperado exitosamente",
-                });
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
-                });
-            }
-        }
-    });
-}
-
-//Validaciones
-
-//Función para validar el nombre del personal
-function validarNombrePersonal() {
-    var res = validaciones.validarSoloLetrasYNumeros(form.value.nombre_personal);
-    return res;
-}
-
-function validarApellidoPersonal() {
-    var res = validaciones.validarSoloLetrasYNumeros(form.value.apellido_personal);
-    return res;
-}
-
-function validarTelefono() {
-    var res = validaciones.validarNumeroTelefono(form.value.telefono_personal);
-    return res;
-}
-
 </script>
