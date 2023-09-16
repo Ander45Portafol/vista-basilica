@@ -23,7 +23,7 @@
           <span class="text-sm ml-1"> * </span></label>
       </div>
       <div class="ml-auto text-right">
-        <a href="" class="btn-forgot text-white font-thin text-xs">Olvidaste tu contraseña?</a>
+        <NuxtLink to="recuperacion" class="btn-forgot text-white font-thin text-xs">Olvidaste tu contraseña?</NuxtLink>
       </div>
       <div class="end flex mt-16 justify-center">
         <button type="submit"
