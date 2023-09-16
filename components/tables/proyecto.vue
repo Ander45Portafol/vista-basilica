@@ -1,5 +1,5 @@
 <template>
-    <div class="contained-data flex-col" v-for="proyecto in dataProyectos" :key="proyecto.id">
+    <div class="contained-data flex-col" v-for="proyecto in datos_proyectos[paginacion - 1]" :key="proyecto.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -60,7 +60,7 @@
                     </button>
                     <button
                         class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:ml-2"
-                        @click="borrarProyecto(proyecto.id, proyecto.campos.nombre_proyecto)"
+                        @click="borrarProyecto(proyecto.id)"
                         v-if="proyecto.campos.visibilidad_proyecto == 1">
                         <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -479,17 +479,49 @@ import validaciones from '../../assets/validaciones.js';
 import { initTooltips } from 'flowbite'
 
 const props = defineProps({
-    dataProyectos: Array,
+    //Prop que se utiliza para cargar los datos de la tabla
+    datos_proyectos: Array,
+    //Prop que recibe la funcion de leerEnlace, para recargar la tabla, cada vez de finalizar alguna acción
+    actualizar_datos: Function,
+    paginacion: Number,
+
 });
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
 
 onMounted(() => {
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
     id.value = localStorage.getItem('usuario');
+     //Codigo para abrir el modal, con el boton de crear
+     const AGREGAR_BOTON = document.getElementById('btnadd');
+    const MODAL_ID = document.getElementById('staticModal');
+    const CERRAR_BOTON = document.getElementById('closeModal');
+    const TITULO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+
+    if (MODAL_ID) {
+        const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+        AGREGAR_BOTON.addEventListener('click', function () {
+            TITULO_MODAL.textContent = "Registrar";
+            document.getElementById('btnModalAdd').classList.remove('hidden');
+            document.getElementById('btnModalUpdate').classList.add('hidden');
+            accionForm('crear');
+            MODAL.show();
+        });
+        CERRAR_BOTON.addEventListener('click', function () {
+            MODAL.hide();
+        });
+    }
     initTooltips();
 });
 
+//Variable reactiva para almacenar el token del localStorag
 const token = ref(null);
+
 const id = ref(null);
 
 async function generarReporteProyecto(id_proyecto) {
@@ -503,17 +535,18 @@ async function generarReporteProyecto(id_proyecto) {
     window.open(ruta.href);
 }
 
+//Funciones para manejo del modal
 //Toast del sweetalert
-const Toast = Swal.mixin({
+const TOAST = Swal.mixin({
     toast: true,
-    position: 'top-end',
+    position: "top-end",
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer)
-        toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
+    didOpen: (TOAST) => {
+        TOAST.addEventListener("mouseenter", Swal.stopTimer);
+        TOAST.addEventListener("mouseleave", Swal.resumeTimer);
+    },
 });
 
 const formPorcentaje = ref({
@@ -549,13 +582,16 @@ function limpiarForm() {
     limpiarIcono();
     formPorcentajeLimpiar();
 }
-//Procesos del CRUD
+//Variable para validar que acción se quiere hacer cuando se hace un submit al form
 var formAccion = null;
 
+//Función para evaluar que acción se va a hacer al hacer submit en el form
 function accionForm(accion) {
     formAccion = accion;
 }
 
+
+//Función para crear/actualizar un registro cuando se ejecuta el submit del form
 function submitForm() {
     if (formAccion == "crear") {
         crearProyecto();
@@ -563,90 +599,113 @@ function submitForm() {
         actualizarProyecto();
     }
 }
-//Funcion para crear un proyecto
+
+//Metodo para agregar un nuevo enlace
 async function crearProyecto() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     if (validarNombreProyecto() && form.estado_proyecto != 0) {
         try {
-            //Se crea una constante para guardar el valor actual que tienen  todos los campos del form
-            const formData = new FormData();
-            formData.append('nombre_proyecto', form.value.nombre_proyecto);
-            formData.append('descripcion_proyecto', form.value.descripcion_proyecto);
-            formData.append('meta_monetaria', form.value.meta_monetaria);
-            formData.append('estado_proyecto', form.value.estado_proyecto);
-            formData.append('visibilidad_proyecto', form.value.visibilidad_proyecto ? 1 : 0);
-            formData.append('imagen_principal', form.value.imagen_principal);
-            formData.append('icono_proyecto', form.value.icono_proyecto);
-
+            const FORMDATA = new FormData();
+            FORMDATA.append("nombre_proyecto", form.value.nombre_proyecto);
+            FORMDATA.append("descripcion_proyecto", form.value.descripcion_proyecto);
+            FORMDATA.append("meta_monetaria", form.value.meta_monetaria);
+            FORMDATA.append("visibilidad_proyecto", form.value.visibilidad_proyecto ? 1 : 0);
+            FORMDATA.append("estado_proyecto", form.value.estado_proyecto);
+            FORMDATA.append("imagen_principal", form.value.imagen_principal);
+            FORMDATA.append("icono_proyecto", form.value.icono_proyecto);
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/proyectos", formData, {
+            await axios.post("/proyectos", FORMDATA, {
                 headers: {
-                    Authorization: `Bearer ${token.value}`,
                     "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
                 },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+                console.log(token.value);
+                limpiarForm();
             });
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await props.actualizar_datos();
 
-            //Se cargan todas las páginas y se cierra el modal
             document.getElementById('closeModal').click();
-
-            //Se lanza la alerta con el mensaje de éxito
-            Toast.fire({
+            TOAST.fire({
                 icon: 'success',
                 title: 'Proyecto creado exitosamente'
-            }).then((result) => {
-                if (result.dismiss === Toast.DismissReason.timer) {
-                    location.reload();
-                }
             });
 
         } catch (error) {
             console.log(error);
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-            //Se cierra el modal
-            document.getElementById('closeModal').click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
         }
     }
 }
+
+
+
+//Metodo para configurar el modal y enviar el id 
 async function estadoActualizar(id) {
     await leerUnProyecto(id);
-    const modalElement = document.getElementById('staticModal');
-    const closeButton = document.getElementById('closeModal');
-    const modalText = document.getElementById('modalText');
-    const modalOptions = {
+    const MODAL_ID = document.getElementById('staticModal');
+    const CERRAR_BOTON = document.getElementById('closeModal');
+    const TITULO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
         backdrop: 'static',
         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
     };
-    const modal = new Modal(modalElement, modalOptions);
-    modalText.textContent = "Editar";
-    modal.show();
+    const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+    TITULO_MODAL.textContent = "Editar";
+    MODAL.show();
+    accionForm('actualizar');
     document.getElementById('btnModalAdd').classList.add('hidden');
     document.getElementById('btnModalUpdate').classList.remove('hidden');
-    closeButton.addEventListener('click', function () {
-        modal.hide();
+    CERRAR_BOTON.addEventListener('click', function () {
+        MODAL.hide();
         limpiarForm();
     });
 }
 
-async function leerUnProyecto(id_proyecto) {
+//Metodo para capturar el id del enlace y buscar la respectiva informacion
+async function leerUnProyecto(id) {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
-        await axios.get('/proyectos/' + id_proyecto, {
+        await axios.get('/proyectos/' + id, {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
         }).then(res => {
+            console.log(res.data);
             form.value = {
                 id_proyecto_donacion: res.data.data.id,
                 nombre_proyecto: res.data.data.campos.nombre_proyecto,
@@ -654,7 +713,7 @@ async function leerUnProyecto(id_proyecto) {
                 meta_monetaria: res.data.data.campos.meta_monetaria,
                 estado_proyecto: res.data.data.campos.estado_proyecto,
                 visibilidad_proyecto: res.data.data.campos.visibilidad_proyecto ? true : false,
-            }
+            };
             if (res.data.porcentaje_proyecto) {
                 formPorcentaje.value.cantidad_total = res.data.porcentaje_proyecto.cantidad_total;
                 if (res.data.porcentaje_proyecto.porcentaje_logro <= 100) {
@@ -682,132 +741,273 @@ async function leerUnProyecto(id_proyecto) {
             } else {
                 form.value.imagen_principal = "";
             }
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
         });
     } catch (error) {
         console.log(error);
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-        //Se cierra el modal
-        document.getElementById('closeModal').click();
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
+
+//Metodo para actualizar la informacion de un enlace
 async function actualizarProyecto() {
-    var id = form.value.id_proyecto_donacion;
-    try {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
+        try {
+            var id = form.value.id_proyecto_donacion;
+            const FORMDATA = new FormData();
+            FORMDATA.append("nombre_proyecto", form.value.nombre_proyecto);
+            FORMDATA.append("descripcion_proyecto", form.value.descripcion_proyecto);
+            FORMDATA.append("meta_monetaria", form.value.meta_monetaria);
+            FORMDATA.append("visibilidad_proyecto", form.value.visibilidad_proyecto ? 1 : 0);
+            FORMDATA.append("estado_proyecto", form.value.estado_proyecto);
+            FORMDATA.append("imagen_principal", form.value.imagen_principal);
+            FORMDATA.append("icono_proyecto", form.value.icono_proyecto);
+            console.log(FORMDATA);
+            await axios.post("/proyectos_update/" + id, FORMDATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                }
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
 
-        const formData = new FormData();
-        formData.append('nombre_proyecto', form.value.nombre_proyecto);
-        formData.append('descripcion_proyecto', form.value.descripcion_proyecto);
-        formData.append('meta_monetaria', form.value.meta_monetaria);
-        formData.append('estado_proyecto', form.value.estado_proyecto);
-        formData.append('visibilidad_proyecto', form.value.visibilidad_proyecto ? 1 : 0);
-        formData.append('imagen_principal', form.value.imagen_principal);
-        formData.append('icono_proyecto', form.value.icono_proyecto);
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await props.actualizar_datos();
 
-        await axios.post("/proyectos_update/" + id, formData, {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-                "Content-Type": "multipart/form-data",
-            },
-        });
+            document.getElementById('closeModal').click();
+            TOAST.fire({
+                icon: 'success',
+                title: 'Proyecto actualizado exitosamente'
+            });
+        }
+        catch (error) {
+            console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-
-        document.getElementById('closeModal').click();
-        Toast.fire({
-            icon: 'success',
-            title: 'Proyecto actualizado exitosamente'
-        }).then((result) => {
-            if (result.dismiss === Toast.DismissReason.timer) {
-                location.reload();
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
             }
-        });
+        }
+        }
     }
-    catch (error) {
-        console.log(error);
-    }
-}
+
+
+
+
+
 //Codigo para cambiar el estado del proyecto a inactivo
-async function borrarProyecto(id, nombre_proyecto) {
+async function borrarProyecto(id,) {
+    console.log(id);
     Swal.fire({
         title: 'Confirmación',
-        text: "¿Desea ocultar el proyecto " + nombre_proyecto + "?",
+        text: "¿Desea ocultar el registro",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
         confirmButtonColor: '#3F4280',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Confirmar',
+        allowOutsideClick: false,
         cancelButtonText: 'Cancelar'
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await axios.delete('/proyectos/' + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }).then(
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Proyecto desactivado exitosamente'
-                    }).then((result) => {
-                        if (result.dismiss === Toast.DismissReason.timer) {
-                            location.reload();
-                        }
-                    }));
-            } catch (error) {
-                console.log(error);
-            }
-        }
-    });
-}
-//Función para cambiar un proyecto a activo
-async function recuperarProyecto(id, nombre_proyecto) {
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/proyectos/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer  
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
 
-    Swal.fire({
-        title: 'Confirmación',
-        text: "¿Desea hacer activar el proyecto " + nombre_proyecto + "?",
-        icon: 'warning',
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: '#3F4280',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Confirmar',
-        cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-        if (result.isConfirmed) {
+                        //Se lanza la alerta de éxito
+                        TOAST.fire({
+                            icon: "success",
+                            title: "Proyecto ocultado exitosamente",
+                        });
+                    });
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            catch (error) {
+                console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+            }
+        }
+    });
+}
+//Función para cambiar un enlace a activo
+async function recuperarProyecto(id) {
+
+Swal.fire({
+    title: 'Confirmación',
+    text: "¿¿Desea recuperar el registro",
+    icon: 'warning',
+    reverseButtons: true,
+    showCancelButton: true,
+    confirmButtonColor: '#3F4280',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Confirmar',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false,
+}).then(async (result) => {
+    if (result.isConfirmed) {
+        try {
+            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+            token.value = localStorage.getItem('token');
             try {
-                await axios.delete('/proyectos/' + id, {
+                //Se realiza la petición axios
+                await axios.delete("/proyectos/" + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
-                });
-                Toast.fire({
-                    icon: 'success',
-                    title: 'Proyecto activo'
-                }).then((result) => {
-                    if (result.dismiss === Toast.DismissReason.timer) {
-                        location.reload();
-                    }
+                }).then(res => {
+                    //Se reinicia el timer
+                    window.dispatchEvent(EVENT);
+                    //Se actualiza el valor del token con la respuesta del axios
+                    localStorage.setItem('token', res.data.data.token);
+                    token.value = localStorage.getItem('token');
+                });;
+
+                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                await props.actualizar_datos();
+
+                //Se lanza la alerta de éxito
+                TOAST.fire({
+                    icon: "success",
+                    title: "Proyecto recuperado exitosamente",
                 });
             } catch (error) {
                 console.log(error);
             }
         }
-    });
+        catch (error) {
+            console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+        }
+    }
+});
 }
+
 //Validaciones
 //Función para validar que la meta monetaria lleve 2 decimales
 function convertirDecimales() {
