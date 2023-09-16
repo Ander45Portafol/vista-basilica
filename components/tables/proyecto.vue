@@ -481,7 +481,7 @@ import { initTooltips } from 'flowbite'
 const props = defineProps({
     //Prop que se utiliza para cargar los datos de la tabla
     datos_proyectos: Array,
-    //Prop que recibe la funcion de leerEnlace, para recargar la tabla, cada vez de finalizar alguna acción
+    //Prop que recibe la funcion de leerProyecto, para recargar la tabla, cada vez de finalizar alguna acción
     actualizar_datos: Function,
     paginacion: Number,
 
@@ -600,7 +600,7 @@ function submitForm() {
     }
 }
 
-//Metodo para agregar un nuevo enlace
+//Metodo para agregar un nuevo proyecto
 async function crearProyecto() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
@@ -695,7 +695,7 @@ async function estadoActualizar(id) {
     });
 }
 
-//Metodo para capturar el id del enlace y buscar la respectiva informacion
+//Metodo para capturar el id del proyecto y buscar la respectiva informacion
 async function leerUnProyecto(id) {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
@@ -779,7 +779,7 @@ async function leerUnProyecto(id) {
     }
 }
 
-//Metodo para actualizar la informacion de un enlace
+//Metodo para actualizar la informacion de un proyecto
 async function actualizarProyecto() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
@@ -847,10 +847,6 @@ async function actualizarProyecto() {
         }
         }
     }
-
-
-
-
 
 //Codigo para cambiar el estado del proyecto a inactivo
 async function borrarProyecto(id,) {
@@ -929,7 +925,8 @@ async function borrarProyecto(id,) {
         }
     });
 }
-//Función para cambiar un enlace a activo
+
+//Función para cambiar un proyecto a activo
 async function recuperarProyecto(id) {
 
 Swal.fire({
