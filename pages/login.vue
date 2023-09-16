@@ -296,12 +296,6 @@ async function login() {
         correo_doble_factor.value = res.data.data.correo;
         localStorage.setItem('token', res.data.data.token);
       }
-      //Si no retorno token es lanza un error
-    } else {
-      Toast.fire({
-        icon: 'error',
-        title: 'Credenciales inválidas'
-      });
     }
 
     form.value.clave_usuario = '';
@@ -313,10 +307,17 @@ async function login() {
     enviando_login.value = false;
     //Se muestra un sweetalert con el error
     console.log(error);
-    Toast.fire({
-      icon: 'error',
-      title: error.response.data.message
-    });
+    if (error.response.data.error) {
+      Toast.fire({
+        icon: 'error',
+        title: error.response.data.error
+      });
+    } else {
+      Toast.fire({
+        icon: 'error',
+        title: error.response.data.message
+      });
+    }
   }
 }
 
@@ -384,7 +385,7 @@ async function verificarPin() {
     //Se guarda la información necesaria del usuario y se envía a la página principal
     localStorage.setItem('token', res.data.data.token);
     localStorage.setItem('usuario', res.data.data.usuario.id_usuario);
-    localStorage.setItem('usuario', res.data.data.usuario.imagen_usuario);
+    localStorage.setItem('imagen_usuario', res.data.data.usuario.imagen_usuario);
     navigateTo('/principal');
   } catch (error) {
     console.log(error);

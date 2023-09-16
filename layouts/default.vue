@@ -63,19 +63,16 @@
 import axios from 'axios';
 onMounted(() => {
   verificarUsuario();
+
+  //Se agrega un eventListener reiniciar el timer
+  window.addEventListener('ocultar-divs', () => {
+    ocultarDivs();
+  });
 });
 
 const clases_slot = ref('container-left w-1/2 flex items-center justify-center border-r border-gray-500');
 
 const ocultar = ref(false);
-
-async function VerificarUsuario() {
-  const res = await axios.get(`/primer_uso`);
-  existencia_usuario.value = res.data.usuarios;
-  if (existencia_usuario.value == false) {
-    navigateTo('/bienvenido');
-  }
-}
 
 function ocultarDivs() {
   ocultar.value = !ocultar.value;
