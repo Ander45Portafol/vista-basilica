@@ -49,8 +49,8 @@
         </div>
         <div class="flex h-screen w-full ml-36 items-center">
             <div class=" h-96 w-1/6 mb-24 bg-space opacity-95 mt-40 rounded-lg p-4 text-white flex-col">
-                <div class="flex justify-center relative" @click="seleccionarArchivo" @mouseover="iconoBorrarTrue"
-                    @mouseleave="iconoBorrarFalse">
+                <div class="flex justify-center relative h-44 w-40 border-2 border-slate-900 ml-12 rounded-lg cursor-pointer"
+                    @click="seleccionarArchivo" @mouseover="iconoBorrarTrue" @mouseleave="iconoBorrarFalse">
                     <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
                     <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
                     <div v-if="mostrarIconoBorrar"
@@ -67,7 +67,8 @@
                     <p class="text-2xl font-bold" id="nombre_usuario"></p>
                     <p id="rol_usuario"></p>
                     <div class="flex justify-center mt-10">
-                        <button class="bg-darkSpace flex gap-4 p-2 items-center text-white w-44 h-10 rounded-lg">
+                        <button id="cambiarClave" type="button"
+                            class="bg-darkSpace flex gap-4 p-2 items-center text-white w-44 h-10 rounded-lg">
                             <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M21 13V8a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h7" stroke="#FFF"
@@ -261,16 +262,111 @@
             </div>
         </div>
     </div>
+    <!-- Main modal -->
+    <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
+        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative w-full max-w-lg max-h-full">
+            <!-- Modal content -->
+            <div class="relative rounded-lg shadow modal">
+                <!-- Modal header -->
+                <div class="flex items-start justify-between p-4 rounded-t">
+                    <div class="flex-col ml-4 pt-4">
+                        <p class="text-3xl font-bold text-gray-100">Cambiar contraseña</p>
+                        <p class="text-lg font-medium text-gray-400">Usuario</p>
+                    </div>
+                    <button type="button" id="closeModal"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-hide="staticModal">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <form class="p-2 space-y-6 pb-8" @submit.prevent="cambiarClave">
+                    <div class="flex justify-center">
+                        <div class="flex-col">
+                            <div class="relative z-0 mt-6 w-64">
+                                <input type="password" id="contraseña_actual" name="contraseña_actual" required
+                                    maxlength="250" v-model="form2.contrasenia_actual"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="contraseña_actual"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    Contraseña - actual<span class="text-sm ml-1"> * </span></label>
+                            </div>
+                            <div class="relative z-0 mt-6 w-64">
+                                <input type="password" id="contraseña_nueva" name="contraseña_nueva" required
+                                    maxlength="250" v-model="form2.contrasenia_nueva"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="contraseña_nueva"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    Contraseña - Nueva<span class="text-sm ml-1"> * </span></label>
+                            </div>
+                            <div class="relative z-0 mt-6 w-64">
+                                <input type="password" id="confirmar" name="confirmar" required
+                                    @input="validarContrasenias()" maxlength="250" v-model="form2.confirmar_contrasenia"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="confirmar"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    Confirmar - contraseña<span class="text-sm ml-1"> * </span></label>
+                            </div>
+                            <div v-if="!validarContrasenias()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div class="w-2/4">
+                                    Contraseña invalida <span class="font-medium">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-buttons flex items-end justify-end pr-6 pt-10">
+                        <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
+                            type="submit">
+                            <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                    stroke="#23B7A0" stroke-width="2"></path>
+                                <path
+                                    d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                    stroke="#23B7A0" stroke-width="2"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </template>
 <style scoped>
 .topprincipal .active {
     color: #c99856;
     border-bottom: 3px solid #c99856;
 }
+
+.modal {
+    background: linear-gradient(180deg,
+            rgba(63, 66, 128, 0.6241) 0%,
+            rgba(49, 50, 71, 0.5609) 100%);
+    background-color: #1e1e1e;
+}
+
+.modal-buttons button {
+    background-color: #32345a;
+}
 </style>
 <script setup>
-import 'flowbite';
-import { onMounted } from 'vue'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import validaciones from '../assets/validaciones.js';
@@ -282,7 +378,6 @@ const data_usuario = ref(null);
 const token = ref(null);
 const id_usuario = ref(0);
 const EVENT = new Event('reset-timer');
-
 
 onMounted(() => {
     //Variable para capturar el id del usuario que se almacena en el localStorage
@@ -338,6 +433,24 @@ async function cargando_datos(id_usuario) {
     });
     document.getElementById('nombre_usuario').textContent = nombrecompleto;
     document.getElementById('rol_usuario').textContent = rolusuario;
+    const AGREGAR_BOTON = document.getElementById('cambiarClave');
+    const CERRAR_BOTON = document.getElementById('closeModal');
+    const MODAL_ID = document.getElementById('staticModal');
+    const OPCIONES_MODAL = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+
+    if (MODAL_ID) {
+        const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+        //programando el evento click del boton para abrir el modal
+        AGREGAR_BOTON.addEventListener('click', function () {
+            MODAL.show();
+        });
+        CERRAR_BOTON.addEventListener('click', function () {
+            MODAL.hide();
+        });
+    }
 
 }
 
@@ -381,7 +494,62 @@ const cambiarImagen = () => {
 };
 var api_url = "http://localhost:8000/storage/usuarios/images/";
 
-//Se crea una variable reactiva para manejar la información del modal
+//Se crea una variable reactiva para cmabiar la contraseñá del usuario
+const form2 = ref({
+    contrasenia_actual: "",
+    contrasenia_nueva: "",
+    confirmar_contrasenia: "",
+});
+//Cambiar contraseña
+async function cambiarClave() {
+    token.value = localStorage.getItem('token');
+    try {
+        const FORMDATA = new FormData();
+        FORMDATA.append('clave_actual', form2.value.contrasenia_actual);
+        FORMDATA.append('nueva_clave', form2.value.contrasenia_nueva);
+        FORMDATA.append('nueva_clave_confirmation', form2.value.confirmar_contrasenia);
+
+        await axios.post('/cambio_clave-perfil', FORMDATA, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            }
+        }).then(res => {
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+        });
+        Toast.fire({
+            icon: 'success',
+            title: 'Informacion actualizada exitosamente'
+        })
+    } catch (error) {
+        console.log(error);
+        const mensajeError = error.response.data.message;
+        if (!error.response.data.errors) {
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            const res = validaciones.mensajeSqlState(sqlState);
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
+    }
+}
+//Se crea una variable reactiva para manejar la información del perfil
 const form = ref({
     id_usuario: "",
     nombre_usuario: "",
@@ -411,29 +579,43 @@ const Toast = Swal.mixin({
     }
 })
 async function actualizarPerfil() {
+    token.value = localStorage.getItem('token');
     try {
         //Se establece una variable de id con el valor que tiene guardado la variable form
         var id = form.value.id_usuario;
         console.log(id);
         //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const formData = {
-            nombre_usuario: form.value.nombre_usuario,
-            apellido_usuario: form.value.apellido_usuario,
-            usuario: form.value.usuario,
-            clave_usuario: form.value.clave_usuario,
-            numero_documento_usuario: form.value.numero_documento_usuario,
-            tipo_documento: form.value.tipo_documento,
-            correo_usuario: form.value.correo_usuario,
-            telefono_usuario: form.value.telefono_usuario,
-            tema: form.value.tema,
-            idioma: form.value.idioma,
-            visibilidad_usuario: form.value.visibilidad_usuario,
-            id_rol_usuario: form.value.id_rol_usuario,
-        };
-        console.log(formData);
+        const FORMDATA = new FormData();
+        FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
+        FORMDATA.append("apellido_usuario", form.value.apellido_usuario);
+        FORMDATA.append("usuario", form.value.usuario);
+        FORMDATA.append("numero_documento_usuario", form.value.numero_documento_usuario);
+        FORMDATA.append("tipo_documento", form.value.tipo_documento);
+        FORMDATA.append("correo_usuario", form.value.correo_usuario);
+        FORMDATA.append("telefono_usuario", form.value.telefono_usuario);
+        FORMDATA.append("tema", form.value.tema);
+        FORMDATA.append("idioma", form.value.idioma);
+        FORMDATA.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
+        FORMDATA.append(
+            "id_rol_usuario",
+            form.value.id_rol_usuario
+        );
+        FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
+        console.log(FORMDATA);
 
         //Se realiza la petición axios mandando la ruta y el formData
-        await axios.put("/usuarios/" + id, formData);
+        await axios.post("/usuarios_update/" + id, FORMDATA, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token.value}`,
+            }
+        }).then(res => {
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+        });
         //cargando_datos();
         //Se lanza la alerta de éxito
         Toast.fire({
@@ -445,9 +627,25 @@ async function actualizarPerfil() {
         console.log(error);
     }
 }
-
+//Metodo para limpiar el campo de la imagen
+function limpiarImagen() {
+    //Limpiar imagen
+    inputImagen.value.value = '';
+    imagenPreview.value = null;
+    form.value.imagen_usuario = "";
+    mostrarIconoBorrar.value = false;
+}
 
 //Validaciones
+function validarContrasenias() {
+    console.log(form2.value.contrasenia_nueva);
+    console.log(form2.value.confirmar_contrasenia);
+    if (form2.value.contrasenia_nueva !== form2.value.confirmar_contrasenia) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
 function validarNombre() {
     var res = validaciones.validarSoloLetras(form.value.nombre_usuario);

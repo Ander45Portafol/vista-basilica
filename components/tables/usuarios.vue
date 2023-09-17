@@ -587,7 +587,7 @@ async function crearUsuario() {
         }).then(res => {
             //Se reinicia el timer
             window.dispatchEvent(EVENT);
-            //Se actualiza el token con la respuesta del axios
+            // //Se actualiza el token con la respuesta del axios
             localStorage.setItem('token', res.data.data.token);
             token.value = localStorage.getItem('token');
             console.log(token.value);
