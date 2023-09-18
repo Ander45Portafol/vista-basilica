@@ -206,7 +206,7 @@ const validaciones = {
     //Validar que la contraseña ingresada contenga un caracter especial
     validarContraEspeciales(texto) {
         if (texto != null && texto.trim() != "") {
-            if (!/[¡!@#¿?*_+-/]/.test(texto)) {
+            if (!/[¡!@#¿?*_+-/:]/.test(texto)) {
                 return false;
             } else {
                 return true;
