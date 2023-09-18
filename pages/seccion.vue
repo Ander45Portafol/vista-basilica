@@ -1,14 +1,17 @@
 <template>
-    <div class="principal mt-4">
+  <div class="principal mt-6">
         <!-- Menu de navegación superior -->
         <MenuSeccionDashboard class="mr-8" />
+        <!-- Contendor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
+            <!-- Sección del buscador -->
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <!-- Sección del buscador -->
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre página)" v-model="buscar.buscador" @keyup="buscarSecciones()" />
+                        placeholder="Buscar... (titulo seccion)" v-model="buscar.buscador"
+                        @keyup="buscarSecciones($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -65,20 +68,39 @@
                     </button>
                 </div>
             </div>
+
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
+            <!-- Se manda a traer la longitud del array de secciones (el que trae los registros) y así saber cuantos registros son -->
             <div class="h-screen">
-                <!-- Según la longitud de "secciones" se coloca el número de registros -->
-                <p v-if="secciones" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
-                    {{ secciones.length }}
-                    <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
-                </p>
+                <p v-if="secciones.length > 0 && !ceroRegistrosEncontrados"
+                    class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ secciones[pagina -
+                        1].length
+                    }}<span class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
                 <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
                     -
                     <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
                 </p>
-                <div class="tables overflow-y-scroll h-4/6 pr-4">
-                    <div v-if="!secciones" class="loadingtable overflow-hidden h-full pr-4">
+                <!-- Alerta a mostrar el usuario busca algo que no coincide con ningún registro -->
+                <div class="flex-col">
+                    <div v-if="secciones.length == 0 && ceroRegistrosEncontrados">
+                        <div class="flex items-center px-4 py-6 mt-5 mb-4 text-sm text-purpleLogin border-2 border-purpleLogin rounded-lg bg-transparent"
+                            role="alert">
+                            <svg class="flex-shrink-0 inline w-6 h-6 mr-3" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                            </svg>
+                            <div class="text-base">
+                                <span class="font-medium">No se encontraron registros, </span> la petición realizada no
+                                obtuvo resultados.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tables overflow-y-scroll h-3/5 pr-4">
+                    <div v-if="secciones.length == 0 && !ceroRegistrosEncontrados"
+                        class="loadingtable overflow-hidden h-full pr-4">
                         <div class="contained-data flex-col" v-for="number in 6" :key="number">
                             <div
                                 class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
@@ -105,18 +127,12 @@
                             </div>
                         </div>
                     </div>
-                    <TablesSeccion v-if="secciones" :data_secciones="secciones" :actualizar_datos="leerSecciones" />
+                    <TablesSeccion v-if="secciones.length > 0" :datos_secciones="secciones" :actualizar_datos="cargarTabla"
+                        :paginacion="pagina" />
                 </div>
-                <!-- Paginación -->
                 <div class="flex justify-center mt-6">
-                    <TailwindPagination v-if="data" :item-classes="[
-                        'text-gray-500',
-                        'rounded-full',
-                        'border-none',
-                        'ml-1',
-                        'hover:bg-gray-200',
-                    ]" :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                        :data="data" @pagination-change-page="pagina = $event" />
+                    <Paginacion v-if="secciones.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
+                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
                 </div>
             </div>
         </div>
@@ -136,11 +152,12 @@
     background-color: #1b1c30;
 }
 
+
 .tables::-webkit-scrollbar {
     width: 7px;
 }
 
-.tables::-webkit-scrollbar-thumb {
+.tables::-webkit-scrollbar {
     background: #32345A;
 }
 </style>
@@ -155,6 +172,10 @@
 import { onMounted, ref } from "vue";
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
 import axios from "axios";
+//Importación de sweetalert
+import Swal from "sweetalert2";
+//Importación de archivo de validaciones
+import validaciones from "../assets/validaciones.js";
 
 /*definePageMeta es un macro compilador (Se ejecuta mientras el programa se compila) para los componentes que se 
 encuentran en /pages, este permite establecer/transformar las propiedades de los componentes de nuxt*/
@@ -169,15 +190,17 @@ definePageMeta({
 /*En este hook se crean todas las funciones relacionadas al manejo del modal, se crean en este onMounted para que se
 realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
-
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
-
-    //Se lee el tipo secion al montarse la página para evitar problemas del setup y el localStorage
+    //Se leen las secciones al montarse la página para evitar problemas del setup y el localStorage
     leerSecciones();
 });
 
 
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
+//Se crea una constante ref para saber cuando el usuario realizo una búsqueda que no retorno ningún registro
+const ceroRegistrosEncontrados = ref(false);
 
 //Variable reactiva para almacenar el token del localStorage
 const token = ref(null);
@@ -186,140 +209,231 @@ const token = ref(null);
 const data = ref(null);
 
 //Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const pagina = ref(useRoute().query.pagina || 1);
+const pagina = ref(parseInt(useRoute().query.pagina) || 1);
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
     buscador: "",
 });
 
-/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
-y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let secciones = computed(() => data.value?.data);
+//Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
+function cambioDePagina(pagina_prop) {
+    pagina.value = pagina_prop;
+}
+
+
+function cargarTabla() {
+    leerSecciones();
+    if (buscar.value.texto_buscador) {
+        buscarSecciones();
+    }
+}
+
+
+/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano).*/
+let secciones = ref([]);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
 watch(pagina, async () => {
-    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
-    if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarSecciones();
-    } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerSecciones();
-    }
     //Se cambia la url para agregar en que pagina se encuentra el usuario
     useRouter().push({ query: { pagina: pagina.value } });
 });
 
-//Variable reactiva para poder intercambiar los registros entre visibles y no visibles
+//Constante ref para poder intercambiar los registros entre visibles y no visibles
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se evalua el buscador para realizar leerSecciones o buscarSecciones 
+    //Se establece el número de página a 1
+    pagina.value = 1;
+    //Se leen todas las páginas
+    leerSecciones();
+    //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
         buscarSecciones();
-    } else {
-        leerSecciones();
     }
 }
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerSecciones() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
         //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
             //Se realiza la petición axios para leer los registros visibles
-            const { data: res } = await axios.get(`/secciones?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/secciones', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
+
             //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
+            data.value = res.data;
+
+            //Se limpia el array de registros paginados
+            secciones.value = [];
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                secciones.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
+
         } else {
             //Se realiza la petición axios para leer los registros no visibles
-            const { data: res } = await axios.get(`/secciones_ocultas?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/grupos_ocultos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
             //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
+            data.value = res.data;
+
+            //Se limpia el array de registros paginados
+            secciones.value = [];
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                secciones.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
+        }
+
+        //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+        //y que se bugee la paginación
+        if (secciones.value.length < pagina.value) {
+            //Se actualiza el valor de la constante pagina
+            pagina.value = secciones.value.length;
+        }
+
+        if (secciones.value.length == 0) {
+            ceroRegistrosEncontrados.value = true;
+        }
+
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
+}
+
+//Constante ref para controlar que no se pueda spamear el delete en el buscador y bugear el token
+const ejecutado_despues_borrar = ref(false);
+
+//Función para buscar registros dependiendo del valor del buscador
+function buscarSecciones(event) {
+    try {
+        //Se evalua que el buscador no este vacio
+        if (buscar.value.buscador != "") {
+
+            //Se regresa a la página 1
+            pagina.value = 1;
+
+            //Se coloca como false para que si se pueda presionar el borrar
+            ejecutado_despues_borrar.value = false;
+
+            filtrarPaginas();
+
+        } else {
+            //Se valida las teclas que el usuario puede presionar para bugear el buscador
+            if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
+                //Se coloca como true para que no se pueda presionar el borrar
+                ejecutado_despues_borrar.value = true;
+                //Se regresa a la página 1 y se cargan todos los registros
+                limpiarBuscador();
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
+            }
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se muestra un sweetalert con el mensaje
+        console.log(error);
+        //Se muestra un sweetalert con el mensaje   
         Swal.fire({
             icon: "error",
             title: "Error",
-            text: res,
+            text: error,
             confirmButtonColor: "#3F4280",
         });
     }
 }
 
-//Función para buscar registros dependiendo del valor del buscador
-async function buscarSecciones() {
-    try {
-        //Se evalua que el buscador no este vacio
-        if (buscar.value.buscador != "") {
-            //Se evalua si se quieren mostrar los registros visibles o no visibles
-            if (registros_visibles.value) {
-                // Se realiza la petición axios para mostrar los registros visibles
-                const { data: res } = await axios.get(
-                    `/secciones_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
-            } else {
-                // Se realiza la petición axios para mostrar los registros no visibles
-                const { data: res } = await axios.get(
-                    `/secciones_search_ocultos?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }
-                );
-                // Actualiza los datos en la constante data
-                data.value = res;
-            }
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: pagina.value } });
-        } else {
-            //Se regresa a la página 1 y se cargan todos los registros
-            pagina.value = 1;
-            leerSecciones();
-        }
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
+function filtrarPaginas() {
+    //Se filtran los registros de data según los parámetros del buscador (nombre_pagina)
+    const data_filtrada = ref();
 
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
+    data_filtrada.value = data.value.filter(categoria =>
+    categoria.campos.nombre_categoria_grupo.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+    );
+
+    //Se limpia el array de registros paginados
+    secciones.value = [];
+
+    //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+    if (data_filtrada.value.length == 0) {
+        //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+        ceroRegistrosEncontrados.value = true;
+    } else {
+        //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+        for (let i = 0; i < data_filtrada.value.length; i += 10) {
+            secciones.value.push(data_filtrada.value.slice(i, i + 10));
+        }
+        //Se actualiza el valor de la constante de búsqueda a false
+        ceroRegistrosEncontrados.value = false;
+    }
+
+    console.log(secciones.value);
+    
+    //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+    //y que se bugee la paginación
+    if (secciones.value.length < pagina.value) {
+        //Se actualiza el valor de la constante pagina
+        pagina.value = secciones.value.length;
     }
 }
 
@@ -331,22 +445,11 @@ function limpiarBuscador() {
     leerSecciones();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
+    //Se limpia la ruta
+    useRouter().push({ query: '' });
 }
 
-//Funciones para manejo del modal
 
-
-//Función para limpiar todos los campos del form
-function limpiarForm() {
-    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_seccion = "";
-    form.value.titulo_seccion = "";
-    form.value.subtitulo_seccion = "";
-    form.value.descripcion_seccion = "";
-    form.value.id_pagina = "0";
-    form.value.visibilidad_seccion = false;
-    form.value.editable = false;
-}
 
 
 //Función para crear una página
@@ -558,125 +661,5 @@ async function actualizarSeccion() {
             }
         }
     }
-}
-
-//Función para cambiar la visibilidad de una página para ocultarla
-async function borrarSeccion(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: "Confirmación",
-        text: "¿Desea ocultar el registro?",
-        icon: "warning",
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: "#3F4280",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete("/secciones/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                });
-
-                //Se evalua el buscador para realizar leerSecciones o buscarSecciones 
-                if (buscar.value.buscador) {
-                    buscarSecciones();
-                } else {
-                    leerSecciones();
-                }
-
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Sección ocultada exitosamente",
-                });
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
-                });
-            }
-        }
-    });
-}
-
-//Función para cambiar la visibilidad de una página para recuperarla
-async function recuperarUnaSeccion(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: "Confirmación",
-        text: "¿Desea recuperar el registro?",
-        icon: "warning",
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: "#3F4280",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
-            try {
-                //Se realiza la petición axios
-                await axios.delete("/secciones/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                });
-
-                //Se evalua el buscador para realizar leerSecciones o buscarSecciones 
-                if (buscar.value.buscador) {
-                    buscarSecciones();
-                } else {
-                    leerSecciones();
-                }
-
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Sección recuperada exitosamente",
-                });
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
-                });
-            }
-        }
-    });
 }
 </script>
