@@ -419,8 +419,8 @@ function filtrarPaginas() {
         ceroRegistrosEncontrados.value = true;
     } else {
         //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-        for (let i = 0; i < data_filtrada.value.length; i += 1) {
-            categoria_grupos.value.push(data_filtrada.value.slice(i, i + 1));
+        for (let i = 0; i < data_filtrada.value.length; i += 10) {
+            categoria_grupos.value.push(data_filtrada.value.slice(i, i + 10));
         }
         //Se actualiza el valor de la constante de búsqueda a false
         ceroRegistrosEncontrados.value = false;
