@@ -108,8 +108,6 @@
             </div>
         </div>
     </div>
-    <!-- Llama el componente del timer-->
-    <TimerToken />
 </template>
 
 
