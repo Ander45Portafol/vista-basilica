@@ -46,20 +46,29 @@
             </div>
             <div class="card bg-space h-64 w-11/12 mt-10" id="cardPIN">
                 <div class="flex justify-between">
-                    <div class="flex-col text-white w-96 h-8 p-8">
-                        <p class="font-bold text-2xl mt-4">Ingresar PIN de seguridad: </p>
-                        <p class="font-normal text-base mt-4">Ingresar el PIN de seguridad que se ha enviado a su correo
-                            electronico, para poder recuperar la cuenta y reestablecer la contraseña.
+                    <div class="flex-col text-white w-96 h-8 p-6">
+                        <p class="font-bold text-2xl mt-4">Nueva contraseña:</p>
+                        <p class="font-normal text-base mt-4">El usuario debera ingresar la nueva contraseña que desea
+                            poseer, y al mismo tiempo tambien debe confirmarla, cumpliendo siempre con las recomendariones
+                            de seguridad para las contraseñas.
                         </p>
                     </div>
                     <div class="flex-col mr-20">
-                        <div class="relative z-0 mt-14 w-64">
-                            <input type="text" id="pin_seguridad" name="pin_seguridad" required maxlength="100"
+                        <div class="relative z-0 mt-6 w-64">
+                            <input type="text" id="nueva_contrasenia" name="nueva_contrasenia" required maxlength="100"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
-                            <label for="pin_seguridad"
-                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">PIN
-                                - Seguridad<span class="text-sm ml-1"> * </span></label>
+                            <label for="nueva_contrasenia"
+                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nueva
+                                Contraseña</label>
+                        </div>
+                        <div class="relative z-0 mt-6 w-64">
+                            <input type="text" id="confirm_contra" name="confirm_contra" required maxlength="100"
+                                class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                placeholder=" " autocomplete="off" />
+                            <label for="confirm_contra"
+                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Confirmar
+                                Contraseña</label>
                         </div>
                         <div class="flex justify-center">
                             <button id="btnPIN"
@@ -125,7 +134,8 @@ definePageMeta({
 onMounted(() => {
     document.getElementById('cardPIN').classList.remove('bg-space');
     document.getElementById('cardPIN').classList.add('bg-darkspace');
-    document.getElementById('pin_seguridad').disabled=true;
-    document.getElementById('btnPIN').disabled=true;
+    document.getElementById('confirm_contra').disabled = true;
+    document.getElementById('nueva_contrasenia').disabled = true;
+    document.getElementById('btnPIN').disabled = true;
 });
 </script>

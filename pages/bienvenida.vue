@@ -96,6 +96,8 @@ async function validarPantalla() {
     capturar_usuario.value = res.data.usuarios;
     if (capturar_parroquia.value==true&& capturar_usuario.value==false) {
         navigateTo('primer_usuario')
+    }else if(capturar_parroquia.value==true && capturar_usuario.value==true){
+        navigateTo('/');
     }
 }
 onMounted(()=>{
