@@ -6,7 +6,7 @@
                 <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza el buscador con la variable reactiva y se le coloca el evento buscarPaginas en el keyup -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre/estado)" v-model="buscar.buscador" @keyup="buscarProyectos()">
+                        placeholder="Buscar... (nombre/estado)" v-model="buscar.buscador" @keyup="buscarProyectos($event)">
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
@@ -62,19 +62,43 @@
                     </button>
                 </div>
             </div>
-            <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
+           <!-- Línea divisora -->
+           <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
+            <!-- Se manda a traer la longitud del array de proyectos (el que trae los registros) y así saber cuantos registros son -->
             <div class="h-screen">
-                <p v-if="proyectos" class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ proyectos.length
-                }}<span class="text-gray-500 font-normal ml-2">registros encontrados!</span></p>
-                <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">-<span class="text-gray-500 font-normal ml-2">registros encontrados!</span></p>
-                <div class="tables overflow-y-scroll h-4/6 pr-4">
-                    <TablesProyecto v-if="proyectos" :dataProyectos="proyectos" />
-                    <div class="flex justify-center mt-6">
-                        <TailwindPagination v-if="proyectos"
-                            :item-classes="['text-gray-500', 'rounded-full', 'border-none', 'ml-1', 'hover:bg-gray-200']"
-                            :active-classes="['text-white', 'rounded-full', 'bg-purpleLogin']" :limit="1" :keepLength="true"
-                            :data="data" @pagination-change-page="pagina = $event" />
+                <p v-if="proyectos.length > 0 && !ceroRegistrosEncontrados"
+                    class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ proyectos[pagina -
+                        1].length
+                    }}<span class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
+                <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
+                    -
+                    <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+                </p>
+                <!-- Alerta a mostrar el usuario busca algo que no coincide con ningún registro -->
+                <div class="flex-col">
+                    <div v-if="proyectos.length == 0 && ceroRegistrosEncontrados">
+                        <div class="flex items-center px-4 py-6 mt-5 mb-4 text-sm text-purpleLogin border-2 border-purpleLogin rounded-lg bg-transparent"
+                            role="alert">
+                            <svg class="flex-shrink-0 inline w-6 h-6 mr-3" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                            </svg>
+                            <div class="text-base">
+                                <span class="font-medium">No se encontraron registros, </span> la petición realizada no
+                                obtuvo resultados.
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div class="tables overflow-y-scroll h-3/5 pr-4">
+                    <TablaCargando v-if="proyectos.length == 0 && !ceroRegistrosEncontrados"/>
+                    <TablesProyecto v-if="proyectos.length > 0" :datos_proyectos="proyectos" :actualizar_datos="cargarTabla"
+                        :paginacion="pagina" />
+                </div>
+                <div class="flex justify-center mt-6">
+                    <Paginacion v-if="proyectos.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
+                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
                 </div>
             </div>
         </div>
@@ -102,27 +126,24 @@
 }
 </style>
 <script setup>
-//El setup se usa para manejar una sintaxis mas concisa del codigo y poder usar la reactividad de vue 3
+///El setup se usa para manejar una sintaxis mas concisa del codigo y poder usar la reactividad de vue 3
 
 //Importaciones de plugins y funciones necesarias para el funcionamiento del proyecto
 
 //Importacion para usar el hook de onMounted
-import { onMounted, ref } from 'vue'
-//Importación del modal de flowbite
-import { Modal } from 'flowbite'
+import { onMounted, ref } from "vue";
 //Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
-import axios from 'axios';
+import axios from "axios";
 //Importación de sweetalert
-import Swal from 'sweetalert2';
-//Importación de archivo de validaciones
-import validaciones from '../assets/validaciones.js';
-
+import Swal from "sweetalert2";
 /*definePageMeta es un macro compilador (Se ejecuta mientras el programa se compila) para los componentes que se 
 encuentran en /pages, este permite establecer/transformar las propiedades de los componentes de nuxt*/
 definePageMeta({
-    //En este caso se establece que este componente pertenece al layout "principal" haciendo uso del definePageMeta
+    //Se le establece el layout principal
     layout: "principal",
-})
+    //Se le establece un middleware a la página
+    middleware: "middleware-paginas"
+});
 
 //onMounted es un hook (en vue los hooks se usan para hacer tareas especificas con los componentes)
 /*En este hook se crean todas las funciones relacionadas al manejo del modal, se crean en este onMounted para que se
@@ -130,195 +151,201 @@ realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
-
-    //Constantes para manejar el modal
-    //Constante para el botón de agregar un registro
-    const buttonElement = document.getElementById('btnadd');
-    //Constante para el modal
-    const modalElement = document.getElementById('staticModal');
-    //Constante para el botón de cerrar en el modal
-    const closeButton = document.getElementById('closeModal');
-    //Constante para el titulo del modal
-    const modalText = document.getElementById('modalText');
-    //Constante para el boton de actualizar dentro del modal
-    const modalBtnUpdate = document.getElementById('btnModalUpdate');
-    //Constante para el boton de agregar dentro del modal
-    const modalBtnAdd = document.getElementById('btnModalAdd');
-
-    /*Constante para manejar el comportamiento del modal, el 'static' se usa para que el modal no se cierre 
-    aunque se de click fuera de el y el backdropClasses se usa para cambiar el fondo al abrir el modal*/
-    const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-    };
-
-    //Se evalua si existe un modal y en caso de que si se ejecuta todo lo relacionado a su funcionamiento
-    if (modalElement) {
-        //Se crea el objeto del modal con el id de la etiqueta del modal + las opciones de modalOptions
-        const modal = new Modal(modalElement, modalOptions);
-
-        /*Se le añade un evento click al botón de agregar registro para abrir el modal, a su vez cambia el titulo
-        del modal y oculta el boton de actualizar que se encuentra dentro del modal*/
-        buttonElement.addEventListener('click', function () {
-            //Se limpia el form al abrir el modal de agregar
-            modalText.textContent = "Registrar";
-            modalBtnAdd.classList.remove('hidden');
-            modalBtnUpdate.classList.add('hidden');
-            modal.show();
-        });
-
-        //Se le añade un evento click al botón de cerrar que se encuentra en el modal, esto para poder cerrar el modal después de abrirlo
-        closeButton.addEventListener('click', function () {
-            modal.hide();
-        });
-    }
-
+    //Se leen los proyectos al montarse la página para evitar problemas del setup y el localStorage
     leerProyectos();
-})
+});
 
-//Variable reactiva para poder intercambiar los registros entre visibles y no visibles
+//Función para manejar el evento de cuando se realiza un cambio de página en el componente de paginación
+function cambioDePagina(pagina_prop) {
+    pagina.value = pagina_prop;
+}
+
+
+function cargarTabla() {
+    leerProyectos();
+    if (buscar.value.texto_buscador) {
+        buscarProyectos();
+    }
+}
+
+
+//Operaciones SCRUD
+
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
+//Se crea una constante ref para saber cuando el usuario realizo una búsqueda que no retorno ningún registro
+const ceroRegistrosEncontrados = ref(false);
+
+//Variable reactiva para almacenar el token del localStorage
+const token = ref(null);
+
+//Variable reactiva para almacenar los datos de la tabla
+const data = ref(null);
+
+//Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
+const pagina = ref(parseInt(useRoute().query.pagina) || 1);
+
+//Se crea una variable reactiva para el buscador
+const buscar = ref({
+    buscador: "",
+});
+
+/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano).*/
+let proyectos = ref([]);
+
+/*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
+además muestra en la url la página actual*/
+watch(pagina, async () => {
+    //Se cambia la url para agregar en que pagina se encuentra el usuario
+    useRouter().push({ query: { pagina: pagina.value } });
+});
+
+//Constante ref para poder intercambiar los registros entre visibles y no visibles
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
 function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
-    //Se evalua el buscador para realizar leerPaginas o buscarPaginas 
+    //Se establece el número de página a 1
+    pagina.value = 1;
+    //Se leen todas las páginas
+    leerProyectos();
+    //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
         buscarProyectos();
-    } else {
-        leerProyectos();
     }
 }
-
-//Variable reactiva para almacenar el token del localStorage
-const token = ref(null);
-
-//Operaciones SCRUD
-
-/*Se establece una variable reactiva llamada data, se inicia con un valor nulo y se usará 
-para almacenar la información que traiga el axios*/
-const data = ref(null);
-
-//Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
-const pagina = ref(useRoute().query.pagina || 1);
-
-//Se crea una variable reactiva para el buscador
-const buscar = ref({
-    buscador: "",
-})
-
-/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
-y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let proyectos = computed(() => data.value?.data);
-
-/*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
-además muestra en la url la página actual*/
-watch(pagina, async () => {
-    //Se evalua si el buscador tiene algún valor para ver si se realiza el leer o el buscar
-    if (buscar.value.buscador != "") {
-        //Se ejecuta el buscar página si el buscador tiene un valor (el plugin reinicia el paginado a 1 así que no hay que cambiar el valor de la constante pagina)
-        buscarProyectos();
-    } else {
-        //Se ejecuta el leer páginas para cargar la tabla, usando la constante pagina también se busca la pagina especifica de registros
-        leerProyectos();
-    }
-    //Se cambia la url para agregar en que pagina se encuentra el usuario
-    useRouter().push({ query: { pagina: pagina.value } })
-})
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerProyectos() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
         if (registros_visibles.value) {
-            /*Se manda la petición axios para leer los proyectos (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
-            además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
-            const { data: res } = await axios.get(`/proyectos?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/proyectos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
+            data.value = res.data;
+            proyectos.value = [];
+
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                proyectos.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
         } else {
-            /*Se manda la petición axios para leer los proyectos (no se manda la ruta completa por al configuración de axios -> Para mas información vean el axiosPlugin en la carpeta plugins),
-además usando el valor de la constante "pagina" se filtra la pagina de registros que axios va a traer*/
-            const { data: res } = await axios.get(`/proyectos_ocultos?page=${pagina.value}`, {
+            const { data: res } = await axios.get('/p_donaciones_ocultos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            //Se asigna el valor de la respuesta de axios a la constante data
-            data.value = res;
+            data.value = res.data;
+            proyectos.value = [];
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                proyectos.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            ceroRegistrosEncontrados.value = false;
+        }
+        if (proyectos.value.length < pagina.value) {
+            //Se actualiza el valor de la constante pagina
+            pagina.value = pagina.value - 1;
+        }
+
+        if (proyectos.value.length == 0) {
+            ceroRegistrosEncontrados.value = true;
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
-        });
+        console.log(error);
     }
-
 }
 
+
+//Constante ref para controlar que no se pueda spamear el delete en el buscador y bugear el token
+const ejecutado_despues_borrar = ref(false);
+
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarProyectos() {
+async function buscarProyectos(event) {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
-            if (registros_visibles.value) {
-                // Realiza la petición axios para llamar a la ruta de búsqueda
-                const { data: res } = await axios.get(`/proyectos_search?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                });
-                // Actualiza los datos en la constante data
-                data.value = res;
+
+            //Se coloca como false para que si se pueda presionar el borrar
+            ejecutado_despues_borrar.value = false;
+
+            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
+            useRouter().push({ query: { buscador: buscar.value.buscador } });
+
+            //Se filtran los registros de data según los parámetros del buscador (titulo_enlace )
+            const data_filtrada = ref();
+            
+            data_filtrada.value = data.value.filter(proyecto =>
+            proyecto.campos.nombre_proyecto.toLowerCase().includes(buscar.value.buscador.toLowerCase())||
+            proyecto.campos.meta_monetaria.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+            );
+
+            //Se limpia el array de registros paginados
+            proyectos.value = [];
+
+            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+            if (data_filtrada.value.length == 0) {
+                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+                ceroRegistrosEncontrados.value = true;
             } else {
-                // Realiza la petición axios para llamar a la ruta de búsqueda
-                const { data: res } = await axios.get(`/proyectos_search_ocultos?page=${pagina.value}&buscador=${buscar.value.buscador}`, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                });
-                // Actualiza los datos en la constante data
-                data.value = res;
+                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+                for (let i = 0; i < data_filtrada.value.length; i += 10) {
+                    proyectos.value.push(data_filtrada.value.slice(i, i + 10));
+                }
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
             }
-            // Actualiza la URL con el parámetro de página
-            useRouter().push({ query: { pagina: pagina.value } });
+
         } else {
-            //Se regresa a la página 1 y se cargan todos los registros
-            pagina.value = 1;
-            leerProyectos();
+            //Se valida las teclas que el usuario puede presionar para bugear el buscador
+            if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
+                 //Se coloca como true para que no se pueda presionar el borrar
+                ejecutado_despues_borrar.value = true;
+                //Se regresa a la página 1 y se cargan todos los registros
+                limpiarBuscador();
+                //Se actualiza el valor de la constante de búsqueda a false
+                ceroRegistrosEncontrados.value = false;
+            }
         }
     } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se muestra un sweetalert con el mensaje
+        console.log(error);
+        //Se muestra un sweetalert con el mensaje   
         Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: res,
-            confirmButtonColor: '#3F4280'
+            icon: "error",
+            title: "Error",
+            text: error,
+            confirmButtonColor: "#3F4280",
         });
     }
 }
+
+
 
 //Función para limpiar el buscador
 function limpiarBuscador() {
@@ -329,5 +356,4 @@ function limpiarBuscador() {
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
 }
-
 </script>

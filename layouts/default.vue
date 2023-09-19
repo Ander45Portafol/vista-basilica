@@ -7,19 +7,12 @@
       <div class="container-right w-1/2 relative flex items-center justify-center">
         <img v-if="!ocultar" src="/img/cohete_login.svg" alt="cohete_login" class="w-full">
       </div>
-      =======
       <div :class="clases_slot">
         <slot />
       </div>
       <div v-if="!ocultar" class="container-right w-1/2 relative flex items-center justify-center">
         <img src="/img/cohete_login.svg" alt="cohete_login" class="w-full">
       </div>
-    </div>
-    <div class="primer_uso h-screen w-screen overflow-hidden">
-      <slot>
-
-      </slot>
-      >>>>>>> f719283cdc8ab9f901d5e2d5ce504a118014ee40
     </div>
   </div>
 </template>
@@ -70,7 +63,16 @@
     height: 100vh;
   }
 }
+
+.primer_uso {
+  background: linear-gradient(180deg,
+      rgba(63, 66, 128, 0.6241) 0%,
+      rgba(49, 50, 71, 0.5609) 100%);
+  background-color: #1e1e1e;
+  font-family: 'Poppins', sans-serif;
+}
 </style>
+
 <script setup>
 import axios from 'axios';
 
@@ -86,7 +88,6 @@ onMounted(() => {
 const clases_slot = ref('container-left w-1/2 flex items-center justify-center border-r border-gray-500');
 
 const ocultar = ref(false);
-
 
 function ocultarDivs() {
   ocultar.value = !ocultar.value;
@@ -111,5 +112,9 @@ async function verificarUsuario() {
   else if (existencia_usuario.value == true) {
     navigateTo('/');
   }
+
 }
+
+
+
 </script>
