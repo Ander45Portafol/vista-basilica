@@ -1,16 +1,18 @@
 <template>
     <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-    <div class="contained-data flex-col" v-for="grupo in datosGrupos" :key="grupo.id">
+    <div class="contained-data flex-col" v-for="grupo in datos_grupos[paginacion - 1]" :key="grupo.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                <img :src="api_url + grupo.campos.logo_grupo"
+                    class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]"> {{
                         grupo.campos.nombre_grupo }} </p>
                     <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> {{
-                        grupo.campos.nombre_encargado }} {{grupo.campos.apellido_encargado }}</p>
+                        grupo.campos.nombre_encargado }} {{ grupo.campos.apellido_encargado }}</p>
                     <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> {{
                         grupo.campos.descripcion_grupo }}</p>
                 </div>
@@ -56,6 +58,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -163,7 +166,8 @@
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                     <option value="0" class="bg-gray-700 text-white"> Seleccione una opción </option>
                                     <option class="bg-gray-700" v-for="categoria_grupo in roles"
-                                        :key="categoria_grupo.id_categoria_grupo_parroquial" :value="categoria_grupo.id_categoria_grupo_parroquial">
+                                        :key="categoria_grupo.id_categoria_grupo_parroquial"
+                                        :value="categoria_grupo.id_categoria_grupo_parroquial">
                                         {{ categoria_grupo.nombre_categoria_grupo }}</option>
                                 </select>
                                 <div v-if="form.id_categoria_grupo_parroquial == 0"
@@ -180,19 +184,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
                         </div>
                         <div class="flex-col w-64">
                             <div class="relative z-0">
@@ -282,24 +273,31 @@
                             </div>
                         </div>
                         <div class="flex-col w-64">
-                            <p class="mb-4 text-center text-gray-200">Logo - Grupo</p>
-                            <div class="flex-col">
-                                <div class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative">
-                                    <img class="h-44 w-40 rounded-lg" />
-                                    <input type="file" ref="inputImagen" class="hidden" />
-                                    <div
-                                        class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
-                                            viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
-                                            <path
-                                                d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
-                                            </path>
-                                        </svg>
+                            <div class="">
+                                <p class="mb-4 text-center text-gray-200">Logo - Grupo </p>
+                                <div class="flex-col m-auto">
+                                    <div class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative max-[630px]:m-auto"
+                                        @click="seleccionarArchivo" @mouseover="iconoBorrarTrue"
+                                        @mouseleave="iconoBorrarFalse">
+                                        <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
+                                        <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
+                                        <div v-if="mostrarIconoBorrar"
+                                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
+                                                viewBox="0 0 24 24"
+                                                style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                                                <path
+                                                    d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="m-auto max-[630px]:text-center max-[630px]:ml-[-58px]">
+                                        <button type="button"
+                                            class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300 text-center"
+                                            @click="seleccionarArchivo">Seleccionar Imagen</button>
                                     </div>
                                 </div>
-                                <button type="button"
-                                    class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300">Seleccionar
-                                    Imagen</button>
                             </div>
                             <div class="modal-buttons mt-6 flex justify-end items-end">
                                 <!-- Se le coloca la función para limpiar el form al botón -->
@@ -401,62 +399,145 @@
 //Importación de archivo de validaciones
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
 
 const props = defineProps({
-    datosGrupos: Array,
-    actualizarDatos: Function,
+    //Prop que se utiliza para cargar los datos de la tabla
+    datos_grupos: Array,
+    //Prop que recibe la funcion de leerUsuarios, para recargar la tabla, cada vez de finalizar alguna acción
+    actualizar_datos: Function,
+    paginacion: Number,
 
 });
+
+//Evento para reiniciar el tiempo del componente del timer
+const EVENT = new Event('reset-timer');
 
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
 onMounted(() => {
     //Codigo para abrir el modal, con el boton de crear
-    const buttonElement = document.getElementById('btnadd');
-    const modalElement = document.getElementById('staticModal');
-    const closeButton = document.getElementById('closeModal');
-    const modalText = document.getElementById('modalText');
-    const modalOptions = {
+    const AGREGAR_BOTON = document.getElementById('btnadd');
+    const MODAL_ID = document.getElementById('staticModal');
+    const CERRAR_BOTON = document.getElementById('closeModal');
+    const TITULO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
         backdrop: 'static',
         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
     };
 
-    if (modalElement) {
-        const modal = new Modal(modalElement, modalOptions);
-        buttonElement.addEventListener('click', function () {
-            modalText.textContent = "Registrar";
+    if (MODAL_ID) {
+        const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+        AGREGAR_BOTON.addEventListener('click', function () {
+            TITULO_MODAL.textContent = "Registrar";
             document.getElementById('btnModalAdd').classList.remove('hidden');
             document.getElementById('btnModalUpdate').classList.add('hidden');
             accionForm('crear');
-            modal.show();
+            MODAL.show();
         });
-        closeButton.addEventListener('click', function () {
-            modal.hide();
+        CERRAR_BOTON.addEventListener('click', function () {
+            MODAL.hide();
         });
     }
-    //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
+    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
     llenarSelectCategoriaGrupos();
 });
 //Variable reactiva para almacenar el token del localStorag
 const token = ref(null);
 
-
-//Variable reactiva para llenar el select
-const categoria_grupos = ref(null);
-
 //Función para llenar el select
 var roles = ref(null);
+
 //Funcion para agregarle el valor de los roles a la variable reactiva
 async function llenarSelectCategoriaGrupos() {
-    const { data: res } = await axios.get('c_grupos-select', {
-        headers: {
-            Authorization: `Bearer ${token.value}`,
-        },
-    });
-    roles.value = res;
+    try {
+        //Se realiza la petición axios
+        const { data: res } = await axios.get('c_grupos-select', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+        //Lo que devuelve la petición axios se le asigna a "contactos"
+        roles.value = res;
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
 }
+
+//Variable para poder concectar con el storage de la api y asi poder buscar imagenes
+var api_url = "http://localhost:8000/storage/gruposParroquiales/images/";
+
+//Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
+const mostrarIconoBorrar = ref(false);
+//Metodo para hacer visible el icono de borrar una imagen
+function iconoBorrarTrue() {
+    if (imagenPreview.value) {
+        mostrarIconoBorrar.value = true;
+    }
+}
+//Metodo para no mostrar el icono de borrar una imagen
+function iconoBorrarFalse() {
+    if (imagenPreview.value) {
+        mostrarIconoBorrar.value = false;
+    }
+}
+//Variable reactiva para mostrar la imagen capturada
+const imagenPreview = ref(null);
+//Metodo para seleccionar una imagen para el registro
+const seleccionarArchivo = () => {
+    if (mostrarIconoBorrar.value == false) {
+        inputImagen.value.click();
+    } else {
+        limpiarImagen();
+    }
+};
+//Variable reactiva para caputar el valor de la imagen
+const inputImagen = ref(null);
+//Metodo para cambiar la imagen de un registro
+const cambiarImagen = () => {
+    const input = inputImagen.value;
+    const file = input.files;
+    if (file && file[0]) {
+        form.value.logo_grupo = file[0];
+        console.log(form.value.logo_grupo);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagenPreview.value = e.target.result;
+        };
+        reader.readAsDataURL(file[0]);
+        return file[0];
+    }
+};
+
+
+
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
@@ -484,20 +565,29 @@ function limpiarForm() {
     form.value.descripcion_grupo = "";
     form.value.visibilidad_grupo = false;
     form.value.id_categoria_grupo_parroquial = "0";
+    limpiarImagen();
+}
+
+//Metodo para limpiar el campo de la imagen
+function limpiarImagen() {
+    //Limpiar imagen
+    inputImagen.value.value = '';
+    imagenPreview.value = null;
+    form.value.logo_grupo = "";
+    mostrarIconoBorrar.value = false;
 }
 
 //Funciones para manejo del modal
-
 //Toast del sweetalert
-const Toast = Swal.mixin({
+const TOAST = Swal.mixin({
     toast: true,
     position: "top-end",
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.addEventListener("mouseenter", Swal.stopTimer);
-        toast.addEventListener("mouseleave", Swal.resumeTimer);
+    didOpen: (TOAST) => {
+        TOAST.addEventListener("mouseenter", Swal.stopTimer);
+        TOAST.addEventListener("mouseleave", Swal.resumeTimer);
     },
 });
 
@@ -519,93 +609,119 @@ function submitForm() {
     }
 }
 
-//Función para crear un Contacto
+//Metodo para agregar un nuevo enlace
 async function crearGrupoParroquial() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    
+    token.value = localStorage.getItem('token');
     if (validarNombreGrupo() && validarNombreEncargado() && validarApellidoEncargado() && form.id_categoria_grupo_parroquial != 0 &&
         validarTelefono()
     ) {
         try {
-            const formData = new FormData();
-            formData.append("nombre_grupo", form.value.nombre_grupo);
-            formData.append("nombre_encargado", form.value.nombre_encargado);
-            formData.append("apellido_encargado", form.value.apellido_encargado);
-            formData.append("correo_encargado", form.value.correo_encargado);
-            formData.append("telefono_encargado", form.value.telefono_encargado);
-            formData.append("descripcion_grupo", form.value.descripcion_grupo);
-            formData.append(
+            const FORMDATA = new FormData();
+            FORMDATA.append("nombre_grupo", form.value.nombre_grupo);
+            FORMDATA.append("nombre_encargado", form.value.nombre_encargado);
+            FORMDATA.append("apellido_encargado", form.value.apellido_encargado);
+            FORMDATA.append("correo_encargado", form.value.correo_encargado);
+            FORMDATA.append("telefono_encargado", form.value.telefono_encargado);
+            FORMDATA.append("descripcion_grupo", form.value.descripcion_grupo);
+            FORMDATA.append("logo_grupo", form.value.logo_grupo);
+            FORMDATA.append(
                 "visibilidad_grupo",
                 form.value.visibilidad_grupo ? 1 : 0
             );
-            formData.append(
+            FORMDATA.append(
                 "id_categoria_grupo_parroquial",
                 form.value.id_categoria_grupo_parroquial
             );
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/grupos_parroquia/", formData, {
+            await axios.post("/grupos_parroquia", FORMDATA, {
                 headers: {
+                    "Content-Type": "multipart/form-data",
                     Authorization: `Bearer ${token.value}`,
                 },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+                console.log(token.value);
+                limpiarForm();
             });
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await props.actualizar_datos();
+
             document.getElementById('closeModal').click();
-            //Se lanza la alerta con el mensaje de éxito
-            props.actualizarDatos();
-            Toast.fire({
+            // props.actualizar_datos();
+            TOAST.fire({
                 icon: 'success',
                 title: 'Grupo Parroquial creado exitosamente'
             });
+
         } catch (error) {
             console.log(error);
-            const mensajeError = error.response.data.message;
-            if (!error.response.data.errors) {
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                const res = validaciones.mensajeSqlState(sqlState);
-
-
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
             } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: mensajeError,
-                    confirmButtonColor: '#3F4280'
-                });
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     }
 }
 
-function estadoActualizar(id) {
-    const modalElement = document.getElementById('staticModal');
-    const closeButton = document.getElementById('closeModal');
-    const modalText = document.getElementById('modalText');
-    const modalOptions = {
+
+
+//Metodo para configurar el modal y enviar el id 
+async function estadoActualizar(id) {
+    await leerUnGrupoParroquial(id);
+    const MODAL_ID = document.getElementById('staticModal');
+    const CERRAR_BOTON = document.getElementById('closeModal');
+    const TITULO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
         backdrop: 'static',
         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
     };
-    const modal = new Modal(modalElement, modalOptions);
-    modalText.textContent = "Editar";
-    modal.show();
+    const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+    TITULO_MODAL.textContent = "Editar";
+    MODAL.show();
+    accionForm('actualizar');
     document.getElementById('btnModalAdd').classList.add('hidden');
     document.getElementById('btnModalUpdate').classList.remove('hidden');
-    closeButton.addEventListener('click', function () {
-        modal.hide();
+    CERRAR_BOTON.addEventListener('click', function () {
+        MODAL.hide();
         limpiarForm();
     });
-    leerUnGrupoParroquial(id);
 }
 
-//Metodo para capturar el id del usuario y buscar la respectiva informacion
+
+//Metodo para capturar el id del enlace y buscar la respectiva informacion
 async function leerUnGrupoParroquial(id) {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
     try {
-        accionForm("actualizar");
         await axios.get('/grupos_parroquia/' + id, {
             headers: {
                 Authorization: `Bearer ${token.value}`,
@@ -624,74 +740,35 @@ async function leerUnGrupoParroquial(id) {
                 visibilidad_grupo: res.data.data.campos.visibilidad_grupo ? true : false,
                 id_categoria_grupo_parroquial: res.data.data.campos.id_categoria_grupo_parroquial,
             };
-
+            if (res.data.data.campos.logo_grupo != null) {
+                form.value.logo_grupo = res.data.data.campos.logo_grupo;
+                imagenPreview.value = api_url + form.value.logo_grupo;
+            } else {
+                form.value.logo_grupo = "";
+            }
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
         });
     } catch (error) {
         console.log(error);
-    }
-}
-async function actualizarGrupoParroquial() {
-    if (validarNombreGrupo() && validarNombreEncargado() && validarApellidoEncargado() && form.id_categoria_grupo_parroquial != 0 &&
-        validarTelefono()) {
-        try {
-            //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_grupo_parroquial;
-
-            //Se crea una constante FormData para almacenar los datos del modal
-            const formData = new FormData();
-            formData.append("nombre_grupo", form.value.nombre_grupo);
-            formData.append("nombre_encargado", form.value.nombre_encargado);
-            formData.append("apellido_encargado", form.value.apellido_encargado);
-            formData.append("correo_encargado", form.value.correo_encargado);
-            formData.append("telefono_encargado", form.value.telefono_encargado);
-            formData.append("descripcion_grupo", form.value.descripcion_grupo);
-            formData.append(
-                "visibilidad_grupo",
-                form.value.visibilidad_grupo ? 1 : 0
-            );
-            formData.append("id_categoria_grupo_parroquial", form.value.id_categoria_grupo_parroquial);
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/grupos_parroquia_update/" + id, formData, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-            }),
-                //Se manda a llamar la accion para actualizar los datos con las props
-                props.actualizarDatos();
-
-            document.getElementById("closeModal").click();
-
-            //Se lanza la alerta de éxito
-            Toast.fire({
-                icon: "success",
-                title: "Grupo parroquial actualizado exitosamente",
-            });
-
-            //Se evalua el buscador para realizar leerContactos o buscarContactos
-            // if (buscar.value.buscador) {
-            //     buscarContactos();
-            // } else {
-            //     leerContactos();
-            // }
-            //Se cierra el modal
-
-        } catch (error) {
-            console.log(error);
-            const mensajeError = error.response.data.message;
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
             if (!error.response.data.errors) {
                 //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
                 //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
 
                 //Se muestra un sweetalert con el mensaje
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: res,
+                    text: RES,
                     confirmButtonColor: '#3F4280'
                 });
             } else {
@@ -699,7 +776,7 @@ async function actualizarGrupoParroquial() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: mensajeError,
+                    text: MENSAJE_ERROR,
                     confirmButtonColor: '#3F4280'
                 });
             }
@@ -707,105 +784,247 @@ async function actualizarGrupoParroquial() {
     }
 }
 
-//Función para cambiar la visibilidad de una página para ocultarla
-async function borrarGrupoParroquial(id) {
+
+//Metodo para actualizar la informacion de un enlace
+async function actualizarGrupoParroquial() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
+    if (validarNombreGrupo() && validarNombreEncargado() && validarApellidoEncargado() && form.id_categoria_grupo_parroquial != 0 &&
+        validarTelefono()) {
+        try {
+            var id = form.value.id_grupo_parroquial;
+            const FORMDATA = new FormData();
+            FORMDATA.append("nombre_grupo", form.value.nombre_grupo);
+            FORMDATA.append("nombre_encargado", form.value.nombre_encargado);
+            FORMDATA.append("apellido_encargado", form.value.apellido_encargado);
+            FORMDATA.append("correo_encargado", form.value.correo_encargado);
+            FORMDATA.append("telefono_encargado", form.value.telefono_encargado);
+            FORMDATA.append("descripcion_grupo", form.value.descripcion_grupo);
+            FORMDATA.append("logo_grupo", form.value.logo_grupo);
+            FORMDATA.append(
+                "visibilidad_grupo",
+                form.value.visibilidad_grupo ? 1 : 0
+            );
+            FORMDATA.append("id_categoria_grupo_parroquial", form.value.id_categoria_grupo_parroquial);
+            await axios.post("/grupos_parroquia_update/" + id, FORMDATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                }
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
+
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await props.actualizar_datos();
+
+            document.getElementById('closeModal').click();
+            // props.actualizar_datos();
+            TOAST.fire({
+                icon: 'success',
+                title: 'Grupo parroquial actualizado exitosamente'
+            });
+        }
+        catch (error) {
+            console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+//Codigo para cambiar el estado del enlace a inactivo
+async function borrarGrupoParroquial(id,) {
     console.log(id);
     Swal.fire({
         title: 'Confirmación',
-        text: "¿Desea ocultar el registro? ",
+        text: "¿Desea ocultar el registro",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
         confirmButtonColor: '#3F4280',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Confirmar',
+        allowOutsideClick: false,
         cancelButtonText: 'Cancelar'
     }).then(async (result) => {
         if (result.isConfirmed) {
             try {
-                await axios.delete('/grupos_parroquia/' + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    }
-                }),
-                    //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Grupo parroquial ocultado exitosamente",
-                });
-            } catch (error) {
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/grupos_parroquia/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer  
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+
+                        //Se lanza la alerta de éxito
+                        TOAST.fire({
+                            icon: "success",
+                            title: "Grupo parroquial ocultado exitosamente",
+                        });
+                    });
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            catch (error) {
                 console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
             }
         }
     });
 }
 
-//Función para cambiar la visibilidad de una página para recuperarla
+//Función para cambiar un enlace a activo
 async function recuperarGrupoParroquial(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: "Confirmación",
-        text: "¿Desea recuperar el registro?",
-        icon: "warning",
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: "#3F4280",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
+
+Swal.fire({
+    title: 'Confirmación',
+    text: "¿¿Desea recuperar el registro",
+    icon: 'warning',
+    reverseButtons: true,
+    showCancelButton: true,
+    confirmButtonColor: '#3F4280',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Confirmar',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false,
+}).then(async (result) => {
+    if (result.isConfirmed) {
+        try {
+            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+            token.value = localStorage.getItem('token');
             try {
                 //Se realiza la petición axios
                 await axios.delete("/grupos_parroquia/" + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
-                }),
-                    //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizarDatos();
+                }).then(res => {
+                    //Se reinicia el timer
+                    window.dispatchEvent(EVENT);
+                    //Se actualiza el valor del token con la respuesta del axios
+                    localStorage.setItem('token', res.data.data.token);
+                    token.value = localStorage.getItem('token');
+                });;
+
+                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                await props.actualizar_datos();
+
                 //Se lanza la alerta de éxito
-                Toast.fire({
+                TOAST.fire({
                     icon: "success",
-                    title: "Grupo Parroquial recuperada exitosamente",
+                    title: "Grupo parroquial recuperado exitosamente",
                 });
-
-                //Se evalua el buscador para realizar leerContactos o buscarContactos 
-                // if (buscar.value.buscador) {
-                //     buscarContactos();
-                // } else {
-                //     leerContactos();
-                // } 
-
-                //Se lanza la alerta de éxito
-
             } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
+                console.log(error);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
                 //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
                 //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
 
                 //Se muestra un sweetalert con el mensaje
                 Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
                 });
             }
         }
-    });
+        }
+    }
+});
 }
-
 
 //Validaciones
 

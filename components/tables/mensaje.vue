@@ -413,7 +413,7 @@ const form = ref({
     fecha_mensaje: "",
     estado_mensaje: "",
     visibilidad_mensaje: false,
-    id_contacto: "",
+    id_contacto: 0,
 })
 
 
@@ -515,7 +515,6 @@ async function estadoActualizar(id) {
     const modal = new Modal(MODAL_ELEMENT, MODAL_OPTIONS);
     MODAL_TEXT.textContent = "Editar";
     modal.show();
-    document.getElementById('btnModalAdd').classList.add('hidden');
     document.getElementById('btnModalUpdate').classList.remove('hidden');
     CLOSE_BUTTON.addEventListener('click', function () {
         modal.hide();
@@ -657,128 +656,164 @@ async function actualizarMensaje() {
     }
 }
 
-//Función para cambiar la visibilidad de una página para ocultarla
-async function borrarMensaje(id) {
-    //Se lanza una alerta de confirmación
+//Codigo para cambiar el estado del usuarios a inactivo
+async function borrarMensaje(id,) {
+    console.log(id);
     Swal.fire({
-        title: "Confirmación",
-        text: "¿Desea ocultar el registro?",
-        icon: "warning",
+        title: 'Confirmación',
+        text: "¿Desea ocultar el registro",
+        icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
-        confirmButtonColor: "#3F4280",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        //Se evalua la respuesta de la alerta
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        allowOutsideClick: false,
+        cancelButtonText: 'Cancelar'
     }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
         if (result.isConfirmed) {
             try {
-                //Se realiza la petición axios
-                await axios.delete("/mensajes/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                })
-                //Se manda a llamar la accion para actualizar los datos con las props
-                props.actualizar_datos();
-                //Se lanza la alerta de éxito
-                TOAST.fire({
-                    icon: "success",
-                    title: "Mensaje ocultado exitosamente",
-                });
-                //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
-                // if (buscar.value.buscador) {
-                //     buscarMensajes();
-                // } else {
-                //     leerMensajes();
-                // }
-            } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/mensajes/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer  
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
 
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
+                        //Se lanza la alerta de éxito
+                        TOAST.fire({
+                            icon: "success",
+                            title: "Mensaje ocultado exitosamente",
+                        });
+                    });
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            catch (error) {
+                console.log(error);
+                const MENSAJE_ERROR = error.response.data.message;
+                if (error.response.status == 401) {
+                    navigateTo('/error_401');
+                } else {
+                    if (!error.response.data.errors) {
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
-                });
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: RES,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    } else {
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: MENSAJE_ERROR,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
+                }
             }
         }
     });
 }
 
 
-//Función para cambiar la visibilidad de una página para recuperarla
+//Función para cambiar un usuario a activo
 async function recuperarMensaje(id) {
-    //Se lanza una alerta de confirmación
-    Swal.fire({
-        title: "Confirmación",
-        text: "¿Desea recuperar el registro?",
-        icon: "warning",
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: "#3F4280",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Confirmar",
-        cancelButtonText: "Cancelar",
-        //Se evalua la respuesta de la alerta
-    }).then(async (result) => {
-        //Si el usuario selecciono "Confirmar"
-        if (result.isConfirmed) {
+
+Swal.fire({
+    title: 'Confirmación',
+    text: "¿¿Desea recuperar el registro",
+    icon: 'warning',
+    reverseButtons: true,
+    showCancelButton: true,
+    confirmButtonColor: '#3F4280',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Confirmar',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false,
+}).then(async (result) => {
+    if (result.isConfirmed) {
+        try {
+            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+            token.value = localStorage.getItem('token');
             try {
                 //Se realiza la petición axios
                 await axios.delete("/mensajes/" + id, {
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
-                }),
-                    //Se manda a llamar la accion para actualizar los datos con las props
-                    props.actualizar_datos();
+                }).then(res => {
+                    //Se reinicia el timer
+                    window.dispatchEvent(EVENT);
+                    //Se actualiza el valor del token con la respuesta del axios
+                    localStorage.setItem('token', res.data.data.token);
+                    token.value = localStorage.getItem('token');
+                });;
+
+                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                await props.actualizar_datos();
+
                 //Se lanza la alerta de éxito
                 TOAST.fire({
                     icon: "success",
                     title: "Mensaje recuperado exitosamente",
                 });
-
-
-                //Se evalua el buscador para realizar leerMensajes o buscarMensajes 
-                // if (buscar.value.buscador) {
-                //     buscarMensajes();
-                // } else {
-                //     leerMensajes();
-                // }
             } catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
-                });
+                console.log(error);
             }
         }
-    });
+        catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        }
+    }
+});
 }
+
 
 //Validaciones
 
