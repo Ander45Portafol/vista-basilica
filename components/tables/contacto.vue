@@ -457,6 +457,7 @@ async function crearContacto() {
     }
 }
 
+//Metodo para configurar el modal y enviar el id del usuario
 async function estadoActualizar(id) {
     await leerUnContacto(id);
     const  MODAL_ID= document.getElementById('staticModal');
