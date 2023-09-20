@@ -242,7 +242,7 @@ async function leerRolesUsuarios() {
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
         } else {
-            const { data: res } = await axios.get('/contactos_ocultos', {
+            const { data: res } = await axios.get('/roles_ocultos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
