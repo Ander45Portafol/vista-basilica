@@ -132,7 +132,7 @@
                 </div>
             </div>
             <form class="min-[1201px]:w-1/4 max-[1200px]:w-1/2 max-[700px]:w-full max-[700px]:mb-24"
-                @submit.prevent="cambioContra">
+                @submit.prevent="cambiarContra">
                 <div class="relative z-0 mt-10 mb-4 mx-12">
                     <input type="password" id="nueva_clave" name="nueva_clave" required minlength="8" maxlength="72"
                         v-model="form_contras.nueva_clave" @input="validarContra"
@@ -278,7 +278,8 @@ async function cambiarContra(){
     FORM_DATA.append('nueva_clave', form_contras.value.nueva_clave);
     FORM_DATA.append('nueva_clave_confirmation', form_contras.value.confirmar_clave);
 
-    axios.post('/recuperar_contra/' + token.value, FORM_DATA);
+    const res = axios.post('/recuperacion_contra/' + token.value, FORM_DATA);
+    console.log(res);
 }
 
 </script>
