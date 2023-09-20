@@ -10,7 +10,7 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre contacto / correo contacto)" v-model="buscar.buscador"
+                        placeholder="Buscar... (nombre de la categoria)" v-model="buscar.buscador"
                         @keyup="buscarCategoriaGrupos($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
@@ -419,8 +419,8 @@ function filtrarPaginas() {
         ceroRegistrosEncontrados.value = true;
     } else {
         //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-        for (let i = 0; i < data_filtrada.value.length; i += 1) {
-            categoria_grupos.value.push(data_filtrada.value.slice(i, i + 1));
+        for (let i = 0; i < data_filtrada.value.length; i += 10) {
+            categoria_grupos.value.push(data_filtrada.value.slice(i, i + 10));
         }
         //Se actualiza el valor de la constante de búsqueda a false
         ceroRegistrosEncontrados.value = false;
