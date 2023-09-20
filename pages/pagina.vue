@@ -128,7 +128,7 @@
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="paginas.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                        @cambioDePagina="cambioDePagina" :items_totales="paginas.length" />
                 </div>
             </div>
         </div>
@@ -214,10 +214,10 @@ function cambioDePagina(pagina_prop) {
 }
 
 
-function cargarTabla() {
-    leerPaginas();
-    if (buscar.value.texto_buscador) {
-        buscarPaginas();
+async function cargarTabla() {
+    await leerPaginas();
+    if (buscar.value.buscador) {
+        filtrarPaginas();
     }
 }
 /*Se crea una constante ref que se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
@@ -233,16 +233,16 @@ watch(pagina, async () => {
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
-function visibilidadRegistros() {
+async function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
     //Se establece el número de página a 1
     pagina.value = 1;
     //Se leen todas las páginas
-    leerPaginas();
+    await leerPaginas();
     //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
-        buscarPaginas();
+        filtrarPaginas();
     }
 }
 
@@ -311,7 +311,7 @@ async function leerPaginas() {
 
         //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
         //y que se bugee la paginación
-        if (paginas.value.length < pagina.value) {
+        if ((paginas.value.length < pagina.value) && pagina.value != 1) {
             //Se actualiza el valor de la constante pagina
             pagina.value = paginas.value.length;
         }
@@ -408,6 +408,7 @@ function filtrarPaginas() {
     if (data_filtrada.value.length == 0) {
         //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
         ceroRegistrosEncontrados.value = true;
+        pagina.value = 1;
     } else {
         //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
         for (let i = 0; i < data_filtrada.value.length; i += 10) {
@@ -416,12 +417,10 @@ function filtrarPaginas() {
         //Se actualiza el valor de la constante de búsqueda a false
         ceroRegistrosEncontrados.value = false;
     }
-
-    console.log(paginas.value);
     
     //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
     //y que se bugee la paginación
-    if (paginas.value.length < pagina.value) {
+    if ((paginas.value.length < pagina.value) && pagina.value != 1) {
         //Se actualiza el valor de la constante pagina
         pagina.value = paginas.value.length;
     }

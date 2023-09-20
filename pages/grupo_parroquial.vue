@@ -22,7 +22,11 @@
                             </svg>
                         </button>
                     </div>
+                    <button class="ml-10 bg-space text-white w-48 h-12 rounded-xl">
+                        <NuxtLink to="/categoria_grupo" class="ml-4">Categorias - Grupos</NuxtLink>
+                    </button>
                 </div>
+              
                 <!-- Sección de botones a la derecha del buscador -->
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
