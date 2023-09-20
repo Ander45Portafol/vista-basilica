@@ -292,51 +292,27 @@ async function leerEnlaces() {
     }
 }
 
-
-
-
 //Constante ref para controlar que no se pueda spamear el delete en el buscador y bugear el token
 const ejecutado_despues_borrar = ref(false);
 
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarEnlaces(event) {
+function buscarEnlaces(event) {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
 
+            //Se regresa a la página 1
+            pagina.value = 1;
+
             //Se coloca como false para que si se pueda presionar el borrar
             ejecutado_despues_borrar.value = false;
 
-            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
-            useRouter().push({ query: { buscador: buscar.value.buscador } });
-
-            //Se filtran los registros de data según los parámetros del buscador (titulo_enlace )
-            const data_filtrada = ref();
-            
-            data_filtrada.value = data.value.filter(enlace =>
-            enlace.campos.titulo_enlace.toLowerCase().includes(buscar.value.buscador.toLowerCase())
-            );
-
-            //Se limpia el array de registros paginados
-            enlaces.value = [];
-
-            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
-            if (data_filtrada.value.length == 0) {
-                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
-                ceroRegistrosEncontrados.value = true;
-            } else {
-                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data_filtrada.value.length; i += 10) {
-                    enlaces.value.push(data_filtrada.value.slice(i, i + 10));
-                }
-                //Se actualiza el valor de la constante de búsqueda a false
-                ceroRegistrosEncontrados.value = false;
-            }
+            filtrarPaginas();
 
         } else {
             //Se valida las teclas que el usuario puede presionar para bugear el buscador
             if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
-                 //Se coloca como true para que no se pueda presionar el borrar
+                //Se coloca como true para que no se pueda presionar el borrar
                 ejecutado_despues_borrar.value = true;
                 //Se regresa a la página 1 y se cargan todos los registros
                 limpiarBuscador();
@@ -356,7 +332,39 @@ async function buscarEnlaces(event) {
     }
 }
 
+function filtrarPaginas() {
+    //Se filtran los registros de data según los parámetros del buscador (titulo_enlace )
+    const data_filtrada = ref();
 
+    data_filtrada.value = data.value.filter(enlace =>
+    enlace.campos.titulo_enlace.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+    );
+
+    //Se limpia el array de registros paginados
+    enlaces.value = [];
+
+    //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+    if (data_filtrada.value.length == 0) {
+        //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+        ceroRegistrosEncontrados.value = true;
+    } else {
+        //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+        for (let i = 0; i < data_filtrada.value.length; i += 10) {
+            enlaces.value.push(data_filtrada.value.slice(i, i + 10));
+        }
+        //Se actualiza el valor de la constante de búsqueda a false
+        ceroRegistrosEncontrados.value = false;
+    }
+
+    console.log(enlaces.value);
+    
+    //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+    //y que se bugee la paginación
+    if (enlaces.value.length < pagina.value) {
+        //Se actualiza el valor de la constante pagina
+        pagina.value = enlaces.value.length;
+    }
+}
 
 //Función para limpiar el buscador
 function limpiarBuscador() {
@@ -366,5 +374,7 @@ function limpiarBuscador() {
     leerEnlaces();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
+    //Se limpia la ruta
+    useRouter().push({ query: '' });
 }
 </script>
