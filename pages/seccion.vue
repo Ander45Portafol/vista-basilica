@@ -294,7 +294,7 @@ async function leerSecciones() {
 
         } else {
             //Se realiza la petición axios para leer los registros no visibles
-            const { data: res } = await axios.get('/grupos_ocultos', {
+            const { data: res } = await axios.get('/secciones_ocultas', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },

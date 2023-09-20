@@ -1,20 +1,20 @@
 <template>
-    <div class="contained-data flex-col" v-for="seccione in datos_secciones[paginacion - 1]" :key="seccione.id">
+      <div class="contained-data flex-col" v-for="seccione in datos_secciones[paginacion - 1]" :key="seccione.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{
-                        seccione.campos.titulo_seccion }}
-                    </p>
-                    <p v-if="seccione.campos.subtitulo_seccion"
+                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
+                        {{ seccione.campos.titulo_seccion }}</p>
+                        <p v-if="seccione.campos.subtitulo_seccion"
                         class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{
                             seccione.campos.subtitulo_seccion }}
                     </p>
                     <p v-else class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Esta sección no
                         tiene subtitulo</p>
-                    <p v-if="seccione.campos.descripcion_seccion"
+                        <p v-if="seccione.campos.descripcion_seccion"
                         class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{
                             seccione.campos.descripcion_seccion }}
                     </p>
@@ -22,11 +22,11 @@
                         tiene una descripción</p>
                 </div>
             </div>
-            <!-- Botones de la tabla -->
+            <!-- Al darle clic al evento leerUnEnlace ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                 <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn" id="btnedit"
-                    @click="estadoActualizar(seccione.id)" v-if="seccione.campos.visibilidad_seccion == 1">
+                    v-if="seccione.campos.visibilidad_seccion == 1" @click.prevent="estadoActualizar(seccione.id)">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -63,7 +63,6 @@
             </div>
         </div>
     </div>
-
     <!-- Main modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -119,8 +118,8 @@
                                 </div>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" v-model="form.subtitulo_seccion" id="subtitulo_seccion"
-                                    maxlength="100" name="subtitulo_seccion"
+                                <input type="text" v-model="form.subtitulo_seccion" id="subtitulo_seccion" maxlength="100"
+                                    name="subtitulo_seccion"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
@@ -338,8 +337,8 @@ onMounted(() => {
     }
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
-      //Ejecutamos este metodo, para poder llenar el select del modal con la informacion de los roles
-      llenarSelectPagina();
+    //Ejecutamos este metodo, para poder llenar el select del modal con la informacion de los roles
+    llenarSelectPagina();
 });
 //Variable reactiva para almacenar el token del localStorage
 const token = ref(null);
@@ -490,7 +489,7 @@ async function crearSeccion() {
 //Metodo para configurar el modal y enviar el id del usuario
 async function estadoActualizar(id) {
     await leerUnaSeccion(id);
-    const  MODAL_ID= document.getElementById('staticModal');
+    const MODAL_ID = document.getElementById('staticModal');
     const BOTON_CERRAR = document.getElementById('closeModal');
     const TEXTO_MODAL = document.getElementById('modalText');
     const OPCIONES_MODAL = {
@@ -731,69 +730,69 @@ async function borrarSeccion(id,) {
 //Función para cambiar un usuario a activo
 async function recuperarUnaSeccion(id) {
 
-Swal.fire({
-    title: 'Confirmación',
-    text: "¿Desea recuperar el usuario: ",
-    icon: 'warning',
-    reverseButtons: true,
-    showCancelButton: true,
-    confirmButtonColor: '#3F4280',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Confirmar',
-    cancelButtonText: 'Cancelar',
-    allowOutsideClick: false,
-}).then(async (result) => {
-    if (result.isConfirmed) {
-        try {
-            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-            token.value = localStorage.getItem('token');
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea recuperar el registro?: ",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        allowOutsideClick: false,
+    }).then(async (result) => {
+        if (result.isConfirmed) {
             try {
-                //Se realiza la petición axios
-                await axios.delete("/secciones/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }).then(res => {
-                    //Se reinicia el timer
-                    window.dispatchEvent(EVENT);
-                    //Se actualiza el valor del token con la respuesta del axios
-                    localStorage.setItem('token', res.data.data.token);
-                    token.value = localStorage.getItem('token');
-                });;
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/secciones/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el valor del token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+                    });;
 
-                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-                await props.actualizar_datos();
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
 
-                //Se lanza la alerta de éxito
-                Toast.fire({
-                    icon: "success",
-                    title: "Sección recuperada exitosamente",
+                    //Se lanza la alerta de éxito
+                    TOAST.fire({
+                        icon: "success",
+                        title: "Sección recuperada exitosamente",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            catch (error) {
+                //Se extrae el mensaje de error
+                const mensajeError = error.response.data.message;
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById("closeModal").click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: res,
+                    confirmButtonColor: "#3F4280",
                 });
-            } catch (error) {
-                console.log(error);
             }
         }
-        catch (error) {
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
-            document.getElementById("closeModal").click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: res,
-                confirmButtonColor: "#3F4280",
-            });
-        }
-    }
-});
+    });
 }
 //Validaciones
 

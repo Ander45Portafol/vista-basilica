@@ -44,7 +44,7 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="borrarContacto(contacto.id)" v-if="rolusuario.campos.visibilidad_rol_usuario == 1">
+                    @click="borrarRolUsuario(rolusuario.id)" v-if="rolusuario.campos.visibilidad_rol_usuario == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -53,7 +53,7 @@
                         </path>
                     </svg>
                 </button>
-                <button @click="recuperarUnContacto(contacto.id)"
+                <button @click="recuperarUnRolUsuario(rolusuario.id)"
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                     v-else>
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
