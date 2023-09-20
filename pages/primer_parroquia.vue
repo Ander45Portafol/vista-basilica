@@ -317,4 +317,6 @@ async function crearPrimerParroquia() {
         }
     }
 }
+//Validaciones
+
 </script>
