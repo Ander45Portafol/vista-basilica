@@ -1,32 +1,23 @@
 <template>
-      <div class="contained-data flex-col" v-for="seccione in datos_secciones[paginacion - 1]" :key="seccione.id">
+    <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
+    <div class="contained-data flex-col" v-for="categoria_grupo in datos_categoria_grupo[paginacion - 1]"
+        :key="categoria_grupo.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
-                        {{ seccione.campos.titulo_seccion }}</p>
-                        <p v-if="seccione.campos.subtitulo_seccion"
-                        class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{
-                            seccione.campos.subtitulo_seccion }}
-                    </p>
-                    <p v-else class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Esta sección no
-                        tiene subtitulo</p>
-                        <p v-if="seccione.campos.descripcion_seccion"
-                        class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{
-                            seccione.campos.descripcion_seccion }}
-                    </p>
-                    <p v-else class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Esta sección no
-                        tiene una descripción</p>
+                    <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
+                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]"> {{
+                        categoria_grupo.campos.nombre_categoria_grupo }} </p>
                 </div>
             </div>
-            <!-- Al darle clic al evento leerUnEnlace ejecuta la funcion -->
+            <!-- Al darle clic al evento leerUnaCategoria ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn" id="btnedit"
-                    v-if="seccione.campos.visibilidad_seccion == 1" @click.prevent="estadoActualizar(seccione.id)">
+                <button v-if="categoria_grupo.campos.visibilidad_categoria == 1"
+                    @click.prevent="estadoActualizar(categoria_grupo.id)"
+                    class="h-10 w-10 rounded-md flex items-center ml-4 justify-center editbtn max-[400px]:mx-4">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -37,7 +28,8 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="borrarSeccion(seccione.id)" v-if="seccione.campos.visibilidad_seccion == 1">
+                    @click="borrarCategoriaGrupo(categoria_grupo.id)"
+                    v-if="categoria_grupo.campos.visibilidad_categoria == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -46,7 +38,7 @@
                         </path>
                     </svg>
                 </button>
-                <button @click="recuperarUnaSeccion(seccione.id)"
+                <button @click="recuperarUnaCategoriaGrupo(categoria_grupo.id)"
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                     v-else>
                     <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
@@ -62,21 +54,23 @@
                 </button>
             </div>
         </div>
-    </div>
-    <!-- Main modal -->
+    </div> <!--contained data -->
+
+    <!-- Modal principal-->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-lg max-h-full">
-            <!-- Modal content -->
+        <div class="relative w-full max-w-md max-h-full">
+            <!-- Contenido del modal -->
             <div class="relative rounded-lg shadow modal">
-                <!-- Modal header -->
+                <!--Encabezado del modal -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
-                        <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
-                        <p class="text-base font-medium text-gray-400">
-                            Sección
+                        <!-- Asignamos un id al título del modal para la creación  y actualizacion de texto-->
+                        <p class="text-3xl font-bold text-gray-100" id="modalText">
                         </p>
+                        <p class="text-base font-medium text-gray-400">Categoría - Grupo - Parroquial</p>
                     </div>
+                    <!-- Boton para cerrar el modal -->
                     <button type="button" id="closeModal"
                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
                         data-modal-hide="staticModal">
@@ -87,129 +81,62 @@
                         </svg>
                     </button>
                 </div>
-                <!-- Modal body -->
-                <div class="p-6 space-y-6 pb-16">
-                    <!-- Se le añade un evento submit para evaluar que acción realizara el form -->
-                    <form id="formModal" @submit.prevent="submitForm()" class="flex justify-evenly">
+                <!-- Cuerpo del modal  -->
+                <div class="p-6 space-y-6 pb-14">
+                    <!-- Se utiliza el modificador @submit.prevent para evitar la recarga de la página al enviar el formulario. En su lugar, se llama a la función submitForm() definida en Vue.js para ejecutar la lógica personalizada del envío del formulario. -->
+                    <form action="" @submit.prevent="submitForm()" class="flex justify-center">
                         <div class="flex-col w-64">
-                            <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
-                            <input type="hidden" id="id_seccion" v-model="form.id_seccion">
-                            <div class="relative z-0">
-                                <input type="text" v-model="form.titulo_seccion" @input="validarTituloSeccion()"
-                                    maxlength="100" id="titulo_seccion" name="titulo_seccion"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" required />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> {{
-                                    form.titulo_seccion.length
-                                }} /100</span>
-                                <label for="titulo_seccion"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Titulo
-                                    - Seccion<span class="text-sm ml-1"> * </span></label>
-                                <!-- Se coloca un if que evalua si la función de validar es false, así se muestra la alerta solo cuando es false -->
-                                <div v-if="!validarTituloSeccion()"
-                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
-                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-
-                                </div>
-                            </div>
+                            <!-- Campo de entrada Nombre de la categoria-->
                             <div class="relative z-0 mt-6">
-                                <input type="text" v-model="form.subtitulo_seccion" id="subtitulo_seccion" maxlength="100"
-                                    name="subtitulo_seccion"
+                                <input type="text" id="nombre_categoria_grupo" name="nombre_categoria_grupo" required
+                                    maxlength="100" @input="validarNombreCategoriaGrupo()"
+                                    v-model="form.nombre_categoria_grupo"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
-                                    v-if="form.subtitulo_seccion"> {{
-                                        form.subtitulo_seccion.length
-                                    }} /100</span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /250</span>
-                                <label for="subtitulo_seccion"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtitulo
-                                    - Seccion</label>
-                                <!-- Se coloca un if que evalua si la función de validar es false, así se muestra la alerta solo cuando es false -->
-                                <div v-if="!validarSubtituloSeccion()"
-                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
-                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <div>
-                                        El subtitulo de la sección solo permite caracteres <span class="font-medium">
-                                            alfanuméricos y algunos especiales (- / |).</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="relative z-0 mt-6">
-                                <textarea type="text" v-model="form.descripcion_seccion" id="descripcion_seccion"
-                                    maxlength="250" name="descripcion_seccion"
-                                    class="block py-2.5 min-h-[3rem] h-[3rem] max-h-[9rem] px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
-                                    v-if="form.descripcion_seccion"> {{
-                                        form.descripcion_seccion.length }} /250</span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-5" v-else> 0 /250</span>
-                                <label for="descripcion_seccion"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
-                                    - Seccion</label>
-                            </div>
-                            <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="absolute text-gray-200">Pagina - Asignada<span class="text-sm ml-1"> *
+                                    v-if="form.nombre_categoria_grupo">
+                                    {{
+                                        form.nombre_categoria_grupo.length
+                                    }} /100
+                                </span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>0 /100</span>
+                                <label for="nombre_categoria_grupo"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
+                                    - Categoria - Grupo<span class="text-sm ml-1"> *
                                     </span></label>
-                                <select id="underline_select" v-model="form.id_pagina"
-                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="0" class="bg-gray-700"> Seleccione una opción </option>
-                                    <!-- Se usa el v-for para llenar la información del select, haciendo uso de "paginas" -->
-                                    <option v-for="pagina in paginas" :key="pagina.id_pagina" :value="pagina.id_pagina"
-                                        class="text-left bg-gray-700">
-                                        #{{ pagina.numero_pagina }} || {{ pagina.nombre_pagina }}
-                                    </option>
-                                </select>
-                                <div v-if="form.id_pagina == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                                    role="alert">
-                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <div>
-                                        Seleccione <span class="font-medium"> una opción. </span>
-                                    </div>
+                            </div>
+                            <div v-if="!validarNombreCategoriaGrupo()"
+                                class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El nombre del la categoria del grupo solo permite caracteres <span class="font-medium">
+                                        alfanuméricos y algunos especiales (- / |).</span>
                                 </div>
                             </div>
-                            <div class="flex-col mt-6">
-                                <label for="" class="text-gray-200">Visibilidad - Seccion</label>
+                            <!-- Campo de entrada Visibilidad - Categoria -->
+                            <div class="flex-col mt-10">
+                                <label for="" class="text-sm text-gray-200">Visibilidad - Categoría</label>
                                 <div class="flex justify-start mt-2">
                                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input type="checkbox" value="false" v-model="form.visibilidad_seccion"
-                                            class="sr-only peer" />
+                                        <input type="checkbox" value="" class="sr-only peer" id="visibilidad_categoria"
+                                            name="visibilidad_categoria" v-model="form.visibilidad_categoria">
                                         <div
                                             class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                         </div>
                                     </label>
                                 </div>
                             </div>
-                            <div class="flex-col mt-2">
-                                <label for="" class="text-gray-200">Seccion - Editable</label>
-                                <div class="flex justify-start mt-2">
-                                    <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                        <input type="checkbox" value="false" v-model="form.editable" class="sr-only peer" />
-                                        <div
-                                            class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="modal-buttons mt-6 flex justify-end items-end">
+                            <!-- Botones del modal -->
+                            <div
+                                class="modal-buttons mt-4 flex justify-end items-end max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                                 <!-- Se le coloca la función para limpiar el form al botón -->
                                 <button type="button" id="btnModalClear" @click="limpiarForm()"
-                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4 ">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
@@ -226,10 +153,10 @@
                                             stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </button>
-                                <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
+                                <!-- Se le coloca la función para crear al botón -->
                                 <button id="btnModalAdd" type="submit"
-                                    :disabled="!validarTituloSeccion() || !validarSubtituloSeccion() || form.id_pagina == 0"
-                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                    :disabled="!validarNombreCategoriaGrupo()"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[400px]:mx-4 max-[750px]:my-1 max-[750px]:ml-[-1px] max-[400px]:ml-6 max-[400px]:mr-[6px]">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -240,10 +167,10 @@
                                             stroke="#23B7A0" stroke-width="2"></path>
                                     </svg>
                                 </button>
-                                <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
+                                <!-- Se le coloca la función para actualizar al botón -->
                                 <button id="btnModalUpdate" type="submit"
-                                    :disabled="!validarTituloSeccion() || !validarSubtituloSeccion() || form.id_pagina == 0"
-                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                    :disabled="!validarNombreCategoriaGrupo()"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[750px]:ml-0 = max-[400px]:mt-0 max-[400px]:mx-4 max-[750px]:mt-[1px]">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -257,15 +184,17 @@
                             </div>
                         </div>
                     </form>
-                    <pre>
-                        {{ form }}
-                    </pre>
                 </div>
             </div>
         </div>
     </div>
 </template>
+
 <style scoped>
+.buttons-data .changebtn {
+    border: 3px solid #3F4280;
+}
+
 .data-contained {
     border: 3px solid #1b1c30;
 }
@@ -278,9 +207,6 @@
     border: 3px solid #872727;
 }
 
-.buttons-data .changebtn {
-    border: 3px solid #3F4280;
-}
 
 .modal {
     background: linear-gradient(180deg,
@@ -293,6 +219,7 @@
     background-color: #32345a;
 }
 </style>
+
 <script setup>
 //Importación de archivo de validaciones
 import axios from 'axios';
@@ -301,7 +228,7 @@ import validaciones from '../../assets/validaciones.js';
 
 const props = defineProps({
     //Prop que se utiliza para cargar los datos de la tabla
-    datos_secciones: Array,
+    datos_categoria_grupo: Array,
     //Prop que recibe la funcion de leerUsuarios, para recargar la tabla, cada vez de finalizar alguna acción
     actualizar_datos: Function,
     paginacion: Number,
@@ -337,49 +264,25 @@ onMounted(() => {
     }
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
-    //Ejecutamos este metodo, para poder llenar el select del modal con la informacion de los roles
-    llenarSelectPagina();
 });
 //Variable reactiva para almacenar el token del localStorage
 const token = ref(null);
 
-//Variable reativa para capturar los roles de los usuarios
-var paginas = ref(null);
 
-//Funcion para agregarle el valor de los roles a la variable reactiva
-async function llenarSelectPagina() {
-    const { data: res } = await axios.get('paginas-select', {
-        headers: {
-            Authorization: `Bearer ${token.value}`,
-        },
-    });
-    console.log(res);
-    paginas.value = res;
-}
+//Se crea una variable reactiva para manejar la información del modal
+const form = ref({
+    id_categoria_grupo_parroquial: "",
+    nombre_categoria_grupo: "",
+    visibilidad_categoria: false,
+});
 
 //Función para limpiar todos los campos del form
 function limpiarForm() {
     //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_seccion = "";
-    form.value.titulo_seccion = "";
-    form.value.subtitulo_seccion = "";
-    form.value.descripcion_seccion = "";
-    form.value.id_pagina = 0;
-    form.value.visibilidad_seccion = false;
-    form.value.editable = false;
+    form.value.id_categoria_grupo_parroquial = "";
+    form.value.nombre_categoria_grupo = "";
+    form.value.visibilidad_categoria = false;
 }
-
-
-//Se crea una variable reactiva para manejar la información del modal
-const form = ref({
-    id_seccion: "",
-    titulo_seccion: "",
-    subtitulo_seccion: "",
-    descripcion_seccion: "",
-    id_pagina: 0,
-    visibilidad_seccion: false,
-    editable: false,
-});
 
 //Funciones para manejo del modal
 //Toast del sweetalert
@@ -394,6 +297,7 @@ const TOAST = Swal.mixin({
         TOAST.addEventListener("mouseleave", Swal.resumeTimer);
     },
 });
+
 //Variable para validar que acción se quiere hacer cuando se hace un submit al form
 var formAccion = null;
 
@@ -405,32 +309,28 @@ function accionForm(accion) {
 //Función para crear/actualizar un registro cuando se ejecuta el submit del form
 function submitForm() {
     if (formAccion == "crear") {
-        crearSeccion();
+        crearCategoriaGrupo();
     } else {
-        actualizarSeccion();
+        actualizarCategoriaGrupo();
     }
 }
 
 
+
 //Función para crear una categoria de un grupo
-async function crearSeccion() {
+async function crearCategoriaGrupo() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
+    if (validarNombreCategoriaGrupo()) {
         try {
             const FORM_DATA = new FormData();
-            FORM_DATA.append("titulo_seccion", form.value.titulo_seccion);
-            FORM_DATA.append("subtitulo_seccion", form.value.subtitulo_seccion);
-            FORM_DATA.append("descripcion_seccion", form.value.descripcion_seccion);
-            FORM_DATA.append("id_pagina", form.value.id_pagina);
+            FORM_DATA.append("nombre_categoria_grupo", form.value.nombre_categoria_grupo);
             FORM_DATA.append(
-                "visibilidad_seccion",
-                form.value.visibilidad_seccion ? 1 : 0
+                "visibilidad_categoria",
+                form.value.visibilidad_categoria ? 1 : 0
             );
-            FORM_DATA.append(
-                "editable", form.value.editable ? 1 : 0);
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/secciones/", FORM_DATA, {
+            await axios.post("/categorias_grupos/", FORM_DATA, {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
@@ -447,9 +347,10 @@ async function crearSeccion() {
 
             document.getElementById('closeModal').click();
             //Se lanza la alerta con el mensaje de éxito
+            // props.actualizar_datos();
             TOAST.fire({
                 icon: 'success',
-                title: 'Sección creada exitosamente'
+                title: 'Categoria del grupo creada exitosamente'
             });
         } catch (error) {
             console.log(error);
@@ -484,12 +385,9 @@ async function crearSeccion() {
     }
 }
 
-
-
-//Metodo para configurar el modal y enviar el id del usuario
 async function estadoActualizar(id) {
-    await leerUnaSeccion(id);
-    const MODAL_ID = document.getElementById('staticModal');
+    await leerUnaCategoriaGrupos(id);
+    const  MODAL_ID= document.getElementById('staticModal');
     const BOTON_CERRAR = document.getElementById('closeModal');
     const TEXTO_MODAL = document.getElementById('modalText');
     const OPCIONES_MODAL = {
@@ -507,27 +405,22 @@ async function estadoActualizar(id) {
     });
 }
 
-
-async function leerUnaSeccion(id) {
+async function leerUnaCategoriaGrupos(id) {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token')
     try {
         accionForm("actualizar");
-        await axios.get('/secciones/' + id, {
+        await axios.get('/categorias_grupos/' + id, {
             headers: {
                 Authorization: `Bearer ${token.value}`,
             },
         }).then(res => {
             console.log(res.data);
             form.value = {
-                id_seccion: res.data.data.id,
-                titulo_seccion: res.data.data.campos.titulo_seccion,
-                subtitulo_seccion: res.data.data.campos.subtitulo_seccion,
-                descripcion_seccion: res.data.data.campos.descripcion_seccion,
-                id_pagina: res.data.data.campos.id_pagina,
+                id_categoria_grupo_parroquial: res.data.data.id,
+                nombre_categoria_grupo: res.data.data.campos.nombre_categoria_grupo,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_seccion: res.data.data.campos.visibilidad_seccion ? true : false,
-                editable: res.data.data.campos.editable ? true : false,
+                visibilidad_categoria: res.data.data.campos.visibilidad_categoria ? true : false
             };
             //Se reinicia el timer
             window.dispatchEvent(EVENT);
@@ -567,32 +460,24 @@ async function leerUnaSeccion(id) {
     }
 }
 
-
-
-async function actualizarSeccion() {
+async function actualizarCategoriaGrupo() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
+    if ( validarNombreCategoriaGrupo()) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_seccion;
+            var id = form.value.id_categoria_grupo_parroquial;
 
             //Se crea una constante FormData para almacenar los datos del modal
             const FORM_DATA = new FormData();
-            FORM_DATA.append("titulo_seccion", form.value.titulo_seccion);
-            FORM_DATA.append("subtitulo_seccion", form.value.subtitulo_seccion);
-            FORM_DATA.append("descripcion_seccion", form.value.descripcion_seccion);
-            FORM_DATA.append("id_pagina", form.value.id_pagina);
+            FORM_DATA.append("nombre_categoria_grupo", form.value.nombre_categoria_grupo);
             FORM_DATA.append(
-                "visibilidad_seccion",
-                form.value.visibilidad_seccion ? 1 : 0
+                "visibilidad_categoria",
+                form.value.visibilidad_categoria ? 1 : 0
             );
-            FORM_DATA.append(
-                "editable",
-                form.value.editable ? 1 : 0
-            );
+
             //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/secciones_update/" + id, FORM_DATA, {
+            await axios.post("/categorias_grupos/" + id, FORM_DATA, {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
@@ -611,7 +496,7 @@ async function actualizarSeccion() {
             //Se lanza la alerta de éxito
             TOAST.fire({
                 icon: "success",
-                title: "Sección actualizada exitosamente",
+                title: "Categoria del grupo actualizada exitosamente",
             });
 
         } catch (error) {
@@ -648,8 +533,9 @@ async function actualizarSeccion() {
 }
 
 
+
 //Codigo para cambiar el estado de la categoria
-async function borrarSeccion(id,) {
+async function borrarCategoriaGrupo(id,) {
     console.log(id);
     Swal.fire({
         title: 'Confirmación',
@@ -669,7 +555,7 @@ async function borrarSeccion(id,) {
                 token.value = localStorage.getItem('token');
                 try {
                     //Se realiza la petición axios
-                    await axios.delete("/secciones/" + id, {
+                    await axios.delete("/categorias_grupos/" + id, {
                         headers: {
                             Authorization: `Bearer ${token.value}`,
                         },
@@ -683,7 +569,7 @@ async function borrarSeccion(id,) {
                         //Se lanza la alerta de éxito
                         TOAST.fire({
                             icon: "success",
-                            title: "Sección ocultada exitosamente",
+                            title: "Categoria del grupo ocultada exitosamente",
                         });
                     });
                     //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
@@ -726,13 +612,12 @@ async function borrarSeccion(id,) {
     });
 }
 
-
 //Función para cambiar un usuario a activo
-async function recuperarUnaSeccion(id) {
+async function recuperarUnaCategoriaGrupo(id) {
 
     Swal.fire({
         title: 'Confirmación',
-        text: "¿Desea recuperar el registro?: ",
+        text: "¿¿Desea recuperar el registro",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
@@ -748,7 +633,7 @@ async function recuperarUnaSeccion(id) {
                 token.value = localStorage.getItem('token');
                 try {
                     //Se realiza la petición axios
-                    await axios.delete("/secciones/" + id, {
+                    await axios.delete("/categorias_grupos/" + id, {
                         headers: {
                             Authorization: `Bearer ${token.value}`,
                         },
@@ -766,46 +651,53 @@ async function recuperarUnaSeccion(id) {
                     //Se lanza la alerta de éxito
                     TOAST.fire({
                         icon: "success",
-                        title: "Sección recuperada exitosamente",
+                        title: "Categoria del grupo recuperada exitosamente",
                     });
                 } catch (error) {
                     console.log(error);
                 }
             }
             catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
+                console.log(error);
+                const MENSAJE_ERROR = error.response.data.message;
+                if (error.response.status == 401) {
+                    navigateTo('/error_401');
+                } else {
+                    if (!error.response.data.errors) {
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
-                });
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: RES,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    } else {
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: MENSAJE_ERROR,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
+                }
             }
         }
     });
 }
+
+
+
 //Validaciones
 
-//Función para validar que el titulo de la sección solo lleve letras y números
-function validarTituloSeccion() {
-    var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_seccion);
+//Función para validar el nombre de la categoria
+function validarNombreCategoriaGrupo() {
+    var res = validaciones.validarSoloLetrasYNumeros(form.value.nombre_categoria_grupo);
     return res;
 }
-
-//Función para validar que el subtitulo de la sección solo lleve letras y números
-function validarSubtituloSeccion() {
-    var res = validaciones.validarSoloLetrasYNumeros(form.value.subtitulo_seccion);
-    return res;
-}
-
 </script>

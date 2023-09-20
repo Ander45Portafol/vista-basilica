@@ -22,7 +22,7 @@
                         </button>
                     </div>
                     <button class="ml-10 bg-space text-white w-48 h-12 rounded-xl">
-                        <a href="/categoria_grupos">Categorias - Grupos</a>
+                        <NuxtLink to="/categoria_grupo" class="ml-4">Categorias - Grupos</NuxtLink>
                     </button>
                 </div>
                 <!-- Sección de botones a la derecha del buscador -->
