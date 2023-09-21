@@ -94,13 +94,16 @@ async function validarPantalla() {
     const res = await axios.get('/primer_uso');
     capturar_parroquia.value = res.data.parroquias;
     capturar_usuario.value = res.data.usuarios;
-    if (capturar_parroquia.value==true&& capturar_usuario.value==false) {
+    if (capturar_parroquia.value == false && capturar_usuario.value == false) {
+        navigateTo('bienvenida');
+    }
+    else if (capturar_parroquia.value == true && capturar_usuario.value == false) {
         navigateTo('primer_usuario')
-    }else if(capturar_parroquia.value==true && capturar_usuario.value==true){
+    } else {
         navigateTo('/');
     }
 }
-onMounted(()=>{
+onMounted(() => {
     validarPantalla();
 })
 </script>
