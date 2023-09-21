@@ -14,7 +14,7 @@
                     <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> {{
                         anuncio.campos.enlace_externo }}</p>
                     <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
-                        {{ anuncio.campos.enlace_externo }}
+                        {{ anuncio.campos.fecha_anuncio }}
                     </p>
                 </div>
             </div>
