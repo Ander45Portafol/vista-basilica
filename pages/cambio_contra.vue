@@ -297,6 +297,19 @@ async function cambiarContra() {
 
     } catch (error) {
         console.log(error);
+        errores_contra.value.validar_numero = false;
+        errores_contra.value.validar_especiales = false;
+        errores_contra.value.validar_mayuscula = false;
+        errores_contra.value.validar_minuscula = false;
+        errores_contra.value.validar_longitud = false;
+        errores_contra.value.clases_numero = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+        errores_contra.value.clases_especiales = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+        errores_contra.value.clases_mayuscula = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+        errores_contra.value.clases_minuscula = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+        errores_contra.value.clases_longitud = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+        form_contras.value.nueva_clave = '';
+        form_contras.value.confirmar_clave = '';
+
         if (!error.response.data.errors && !error.response.data.error) {
             const sqlState = validaciones.extraerSqlState(error.response.data.message);
             if (sqlState != null) {
