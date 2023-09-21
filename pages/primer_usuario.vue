@@ -290,4 +290,31 @@ async function crearPrimerUsuario() {
         }
     }
 }
+//Validaciones
+function validarNombre() {
+    var res = validaciones.validarSoloLetras(form.value.nombre_usuario);
+    return res;
+}
+function validarApellido() {
+    var res = validaciones.validarSoloLetras(form.value.apellido_usuario);
+    return res;
+}
+function validarNumeroDocumento() {
+    if (form.value.tipo_documento == 0 && form.value.numero_documento_usuario.length == 0) {
+        return true;
+    } else if (form.value.tipo_documento == 0) {
+        return false;
+    } else {
+        var res = validaciones.validarNumeroDocumento(form.value.numero_documento_usuario, form.value.tipo_documento);
+        return res;
+    }
+}
+function validarUsuario() {
+    var res = validaciones.validarUsuario(form.value.usuario);
+    return res;
+}
+function validarNumeroTelefono() {
+    var res = validaciones.validarNumeroTelefono(form.value.telefono_usuario);
+    return res;
+}
 </script>
