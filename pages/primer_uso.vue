@@ -41,6 +41,7 @@
 .botones {
     border-left: 1px solid #818181;
 }
+
 .primer_uso {
     background: linear-gradient(180deg,
             rgba(63, 66, 128, 0.6241) 0%,
@@ -50,7 +51,28 @@
 }
 </style>
 <script setup>
+import axios from 'axios';
 definePageMeta({
     layout: false,
 });
+const capturar_parroquia = ref(null);
+const capturar_usuario = ref(null);
+
+
+async function validarPantalla() {
+    const res = await axios.get('/primer_uso');
+    capturar_parroquia.value = res.data.parroquias;
+    capturar_usuario.value = res.data.usuarios;
+    if (capturar_parroquia.value == false && capturar_usuario.value == false) {
+        navigateTo('bienvenida');
+    }
+    else if (capturar_parroquia.value == true && capturar_usuario.value == false) {
+        navigateTo('primer_usuario')
+    } else {
+        navigateTo('/');
+    }
+}
+onMounted(() => {
+    validarPantalla();
+})
 </script>
