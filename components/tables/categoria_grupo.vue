@@ -1,23 +1,21 @@
 <template>
-    <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-    <div class="contained-data flex-col" v-for="categoria_grupo in datos_categoria_grupo[paginacion - 1]"
-        :key="categoria_grupo.id">
+      <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
+      <div class="contained-data flex-col" v-for="categoria_grupo in datos_categoria_grupo[paginacion - 1]" :key="categoria_grupo.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+                <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
-                    <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
-                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]"> {{
-                        categoria_grupo.campos.nombre_categoria_grupo }} </p>
+                    <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
+                        {{ categoria_grupo.campos.nombre_categoria_grupo }}</p>
                 </div>
             </div>
             <!-- Al darle clic al evento leerUnaCategoria ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                <button v-if="categoria_grupo.campos.visibilidad_categoria == 1"
-                    @click.prevent="estadoActualizar(categoria_grupo.id)"
-                    class="h-10 w-10 rounded-md flex items-center ml-4 justify-center editbtn max-[400px]:mx-4">
+                <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn" id="btnedit"
+                    v-if="categoria_grupo.campos.visibilidad_categoria == 1" @click.prevent="estadoActualizar(categoria_grupo.id)">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -28,8 +26,7 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="borrarCategoriaGrupo(categoria_grupo.id)"
-                    v-if="categoria_grupo.campos.visibilidad_categoria == 1">
+                    @click="borrarCategoriaGrupo(categoria_grupo.id)" v-if="categoria_grupo.campos.visibilidad_categoria == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -54,11 +51,11 @@
                 </button>
             </div>
         </div>
-    </div> <!--contained data -->
+    </div>
 
     <!-- Modal principal-->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
-        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-md max-h-full">
             <!-- Contenido del modal -->
             <div class="relative rounded-lg shadow modal">
@@ -340,6 +337,7 @@ async function crearCategoriaGrupo() {
                 //Se actualiza el token con la respuesta del axios
                 localStorage.setItem('token', res.data.data.token);
                 token.value = localStorage.getItem('token');
+                limpiarForm();
             });
 
             //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
