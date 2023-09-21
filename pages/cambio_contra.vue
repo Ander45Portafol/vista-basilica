@@ -1,4 +1,4 @@
-<template>
+z<template>
     <div class="h-screen w-screen flex flex-col justify-center items-center absolute left-0 bg-gradient">
         <div class="flex-col absolute top-12 left-12">
             <div class="flex items-center">
