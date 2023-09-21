@@ -1,12 +1,12 @@
 <template>
     <div class="primer_uso h-screen w-screen overflow-hidden">
         <div class="flex ml-16 h-full w-full items-center">
-            <div class="w-3/4 flex justify-start items-center">
+            <div class="w-full flex justify-start items-center">
                 <div class="flex-col w-full text-center text-white font-thin text-xl">
                     <h2 class="text-white font-bold text-6xl text-center">¡Listo!</h2>
                     <p class="mt-8">La configuración inicial se ha realizado</p>
-                    <p>con éxito, ahora puedes acceder</p>
-                    <p>a la plataforma</p>
+                    <p>con éxito, hemos enviado a tu correo</p>
+                    <p>los siguientes pasos a seguir.</p>
                     <div class="flex justify-center items-center mt-12">
                         <svg width="64px" height="64px" stroke-width="1.2" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -18,20 +18,6 @@
                                 stroke-linejoin="round"></path>
                         </svg>
                     </div>
-                </div>
-            </div>
-            <div class="botones w-1/5 h-3/5 ml-10 flex items-center">
-                <div class="flex-col ml-2">
-                    <NuxtLink to="/"
-                        class="h-14 w-64 bg-darkSpace text-white rounded-md text-lg font-semibold flex justify-center items-center">
-                        Ir al sistema
-                        <svg width="30px" height="30px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" color="#000000">
-                            <path d="M9 6l6 6-6 6" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"
-                                stroke-linejoin="round">
-                            </path>
-                        </svg>
-                    </NuxtLink>
                 </div>
             </div>
         </div>
@@ -71,6 +57,6 @@ async function validarPantalla() {
     }
 }
 onMounted(() => {
-    validarPantalla();
+    //validarPantalla();
 })
 </script>
