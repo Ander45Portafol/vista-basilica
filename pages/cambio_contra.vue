@@ -29,7 +29,8 @@
             <div
                 class="min-[1201px]:w-1/4 max-[1200px]:w-1/2  max-[1200px]:ml-[4%] min-[1065px]:mr-[10%] max-[700px]:w-[90%] max-[700px]:text-center max-[700px]:flex-col">
                 <h3 class="text-white font-bold text-xl mb-2">Nueva contraseña:</h3>
-                <p class="text-white mb-5">Si tienes alguna dificultad o necesitas asistencia adicional, no dudes en contactarnos.
+                <p class="text-white mb-5">Si tienes alguna dificultad o necesitas asistencia adicional, no dudes en
+                    contactarnos.
                     Estamos aquí para ayudarte a recuperar el acceso a tu cuenta de manera segura.</p>
                 <div class="flex p-4 mb-4 text-sm text-black rounded-lg bg-blue-50" role="alert">
                     <div>
@@ -182,7 +183,7 @@
 </style>
 <script setup>
 import axios from 'axios';
-
+import Swal from 'sweetalert2';
 //Importación de archivo de validaciones
 import axiosPlugin from '~/plugins/axiosPlugin';
 import validaciones from '../assets/validaciones.js';
@@ -273,13 +274,53 @@ function validarContra() {
 
 const token = ref(useRoute().query.token);
 
-async function cambiarContra(){
-    const FORM_DATA = new FormData();
-    FORM_DATA.append('nueva_clave', form_contras.value.nueva_clave);
-    FORM_DATA.append('nueva_clave_confirmation', form_contras.value.confirmar_clave);
+async function cambiarContra() {
+    try {
+        const FORM_DATA = new FormData();
+        FORM_DATA.append('nueva_clave', form_contras.value.nueva_clave);
+        FORM_DATA.append('nueva_clave_confirmation', form_contras.value.confirmar_clave);
 
-    const res = axios.post('/recuperacion_contra/' + token.value, FORM_DATA);
-    console.log(res);
+        axios.post('/recuperacion_contra/' + token.value, FORM_DATA).then(res => {
+            console.log(res);
+            Swal.fire({
+                title: '¡Exito!',
+                text: "Proceso completado, ahora puedes iniciar sesión con tus nuevas credenciales",
+                icon: 'info',
+                reverseButtons: true,
+                confirmButtonColor: '#3F4280',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'OK',
+                allowOutsideClick: false,
+            }).then(() => {
+                navigateTo('/');
+            });
+        });
+    } catch (error) {
+        console.log(error);
+        const mensajeError = error.response.data.message;
+        if (!error.response.data.errors) {
+            const sqlState = validaciones.extraerSqlState(mensajeError);
+            console.log(sqlState);
+            const res = validaciones.mensajeSqlState(sqlState);
+
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res,
+                confirmButtonColor: '#3F4280'
+            });
+        } else {
+            //Se muestra un sweetalert con el mensaje
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensajeError,
+                confirmButtonColor: '#3F4280'
+            });
+        }
+    }
+
 }
 
 </script>

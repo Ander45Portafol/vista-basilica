@@ -93,12 +93,13 @@ definePageMeta({
 onMounted(() => {
 
 });
-
+function limpiarForm(){
+    form.value.nombre_usuario="";
+    form.value.correo_usuario="";
+}
 const form = ref({
     nombre_usuario: "",
     correo_usuario: "",
-    nueva_clave: "",
-    confirmar_clave: ""
 });
 //Metodo para mostrar las alertas
 const Toast = Swal.mixin({
@@ -113,6 +114,7 @@ const Toast = Swal.mixin({
     }
 })
 async function validarCredenciales() {
+    console.log(form.value.nombre_usuario);
     try {
         const FORMDATA = new FormData();
         FORMDATA.append('usuario', form.value.nombre_usuario);
@@ -122,6 +124,7 @@ async function validarCredenciales() {
             icon: 'success',
             title: 'Correo enviado exitosamente'
         });
+        limpiarForm();
     } catch (error) {
         console.log(error);
         const mensajeError = error.response.data.message;
