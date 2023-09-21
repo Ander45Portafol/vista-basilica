@@ -196,7 +196,7 @@
             <span class="text-sm ml-1"> * </span></label>
         </div>
         <div class="mx-12">
-          <button type="submit"
+          <button type="submit" :disabled="mostrar_error_contra"
             class="w-full py-3 mt-10 text-center text-white font-medium text-lg bg-purpleLogin rounded-lg">Cambiar
             contraseña</button>
         </div>
@@ -701,6 +701,10 @@ function validarContra() {
   } else {
     mostrar_error_contra.value = '';
   }
+
+  if(form_contras.value.nueva_clave == '' && form_contras.value.confirmar_clave == ''){
+    mostrar_error_contra.value = '';
+  }
 }
 
 //Función para cambiar la contraseña
@@ -745,11 +749,23 @@ async function cambioContra() {
 
       console.log(error);
 
-      //Se muestra el mensaje de error en un toast
-      Toast.fire({
-        icon: 'error',
-        title: error.response.data.message
-      });
+      if (error.response.status == 401) {
+        doble_factor.value = false;
+        cambio_contra.value = false;
+        enviando_login.value = false;
+
+        //Se muestra el mensaje de error en un toast
+        Toast.fire({
+          icon: 'error',
+          title: 'El tiempo de uso válido ha terminado.'
+        });
+      } else {
+        //Se muestra el mensaje de error en un toast
+        Toast.fire({
+          icon: 'error',
+          title: error.response.data.message
+        });
+      }
     }
   }
 }
