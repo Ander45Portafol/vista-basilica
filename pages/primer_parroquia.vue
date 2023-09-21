@@ -101,7 +101,7 @@
                                 - Parroquia<span class="text-sm ml-1"> * </span></label>
                         </div>
                         <div class="relative z-0 mt-16 w-64">
-                            <input type="text" id="telefono_parroquia" name="telefono_parroquia" required maxlength="250"
+                            <input type="text" id="telefono_parroquia" name="telefono_parroquia" required maxlength="9"
                                 @input="validarTelefonoParroquia()" v-model="form.telefono_parroquia"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
@@ -310,18 +310,16 @@ async function validarPantalla() {
     const res = await axios.get('/primer_uso');
     capturar_parroquia.value = res.data.parroquias;
     capturar_usuario.value = res.data.usuarios;
-    if (capturar_parroquia.value == false && capturar_usuario.value == false) {
-        navigateTo('bienvenida');
-    }
-    else if (capturar_parroquia.value == true && capturar_usuario.value == false) {
+    if (capturar_parroquia.value == true && capturar_usuario.value == false) {
         navigateTo('primer_usuario')
-    } else {
-        navigateTo('/');
+    } else     if (capturar_parroquia.value == true && capturar_usuario.value == true) {
+        navigateTo('/')
     }
 }
 onMounted(() => {
     validarPantalla();
 })
+
 
 //Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
 const mostrarIconoBorrar = ref(false);
@@ -379,7 +377,7 @@ const Toast = Swal.mixin({
 })
 
 const form = ref({
-    id_configuracion_parroquia: "",
+    id_configuracion_parroquia: 1,
     nombre_parroquia: "",
     pagina_web: "",
     ruc_parroquia: "",
@@ -396,6 +394,7 @@ const form = ref({
 async function crearPrimerParroquia() {
     try {
         const FORMDATA = new FormData();
+        FORMDATA.append('id_configuracion_parroquia', form.value.id_configuracion_parroquia);
         FORMDATA.append("nombre_parroquia", form.value.nombre_parroquia);
         FORMDATA.append("pagina_web", form.value.pagina_web);
         FORMDATA.append("ruc_parroquia", form.value.ruc_parroquia);
