@@ -196,12 +196,13 @@ function cambioDePagina(pagina_prop) {
 }
 
 
-function cargarTabla() {
-    leerGruposParroquiales();
-    if (buscar.value.texto_buscador) {
-        buscarGruposParroquiales();
+async function cargarTabla() {
+    await leerGruposParroquiales();
+    if (buscar.value.buscador) {
+        filtrarPaginas();
     }
 }
+
 
 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano).*/
@@ -218,16 +219,16 @@ watch(pagina, async () => {
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
-function visibilidadRegistros() {
+async function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
     //Se establece el número de página a 1
     pagina.value = 1;
     //Se leen todas las páginas
-    leerGruposParroquiales();
+    await leerGruposParroquiales();
     //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
-        buscarGruposParroquiales();
+        filtrarPaginas();
     }
 }
 
@@ -238,15 +239,20 @@ async function leerGruposParroquiales() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
     try {
+        //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
+            //Se realiza la petición axios para leer los registros visibles
             const { data: res } = await axios.get('/grupos_parroquia', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            data.value = res.data;
-            grupos_parroquiales.value = [];
 
+            //Se asigna el valor de la respuesta de axios a la constante data
+            data.value = res.data;
+
+            //Se limpia el array de registros paginados
+            grupos_parroquiales.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
             for (let i = 0; i < res.data.length; i += 10) {
@@ -261,13 +267,18 @@ async function leerGruposParroquiales() {
 
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
+
         } else {
+            //Se realiza la petición axios para leer los registros no visibles
             const { data: res } = await axios.get('/g_parroquiales_ocultos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
+            //Se asigna el valor de la respuesta de axios a la constante data
             data.value = res.data;
+
+            //Se limpia el array de registros paginados
             grupos_parroquiales.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
@@ -284,14 +295,18 @@ async function leerGruposParroquiales() {
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
         }
-        if (grupos_parroquiales.value.length < pagina.value) {
+
+        //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+        //y que se bugee la paginación
+        if ((grupos_parroquiales.value.length < pagina.value) && pagina.value != 1) {
             //Se actualiza el valor de la constante pagina
-            pagina.value = pagina.value - 1;
+            pagina.value = grupos_parroquiales.value.length;
         }
 
         if (grupos_parroquiales.value.length == 0) {
             ceroRegistrosEncontrados.value = true;
         }
+
     } catch (error) {
         console.log(error);
         const MENSAJE_ERROR = error.response.data.message;
@@ -365,9 +380,10 @@ function buscarGruposParroquiales(event) {
 }
 
 function filtrarPaginas() {
-    //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
+    //Se filtran los registros de data según los parámetros del buscador (nombre_grupo  /nombre_encargado/ apellido_encargado )
     const data_filtrada = ref();
 
+ 
     data_filtrada.value = data.value.filter(grupo =>
                 grupo.campos.nombre_grupo.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
                 grupo.campos.nombre_encargado.toString().includes(buscar.value.buscador) ||
@@ -381,6 +397,7 @@ function filtrarPaginas() {
     if (data_filtrada.value.length == 0) {
         //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
         ceroRegistrosEncontrados.value = true;
+        pagina.value = 1;
     } else {
         //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
         for (let i = 0; i < data_filtrada.value.length; i += 10) {
@@ -394,13 +411,11 @@ function filtrarPaginas() {
     
     //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
     //y que se bugee la paginación
-    if (grupos_parroquiales.value.length < pagina.value) {
+    if ((grupos_parroquiales.value.length < pagina.value) && pagina.value != 1)  {
         //Se actualiza el valor de la constante pagina
         pagina.value = grupos_parroquiales.value.length;
     }
 }
-
-
 
 //Función para limpiar el buscador
 function limpiarBuscador() {

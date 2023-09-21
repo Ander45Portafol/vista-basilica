@@ -191,10 +191,10 @@ function cambioDePagina(pagina_prop) {
 }
 
 
-function cargarTabla() {
-    leerMisas();
-    if (buscar.value.texto_buscador) {
-        buscarMisas();
+async function cargarTabla() {
+    await leerMisas();
+    if (buscar.value.buscador) {
+        filtrarPaginas();
     }
 }
 
@@ -211,20 +211,21 @@ watch(pagina, async () => {
 //Constante ref para poder intercambiar los registros entre visibles y no visibles
 const registros_visibles = ref(true);
 
+
 //Función para evaluar registros según la visibilidad que quiera el usuario
-function visibilidadRegistros() {
+async function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
     //Se establece el número de página a 1
     pagina.value = 1;
     //Se leen todas las páginas
-    leerMisas();
+    await leerMisas();
     //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
-        buscarContactos();
+        filtrarPaginas();
     }
 }
-/*F
+
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
@@ -232,15 +233,20 @@ async function leerMisas() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
     try {
+        //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
+            //Se realiza la petición axios para leer los registros visibles
             const { data: res } = await axios.get('/misas', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            data.value = res.data;
-            misas.value = [];
 
+            //Se asigna el valor de la respuesta de axios a la constante data
+            data.value = res.data;
+
+            //Se limpia el array de registros paginados
+            misas.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
             for (let i = 0; i < res.data.length; i += 10) {
@@ -255,13 +261,18 @@ async function leerMisas() {
 
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
+
         } else {
+            //Se realiza la petición axios para leer los registros no visibles
             const { data: res } = await axios.get('/misas_ocultas', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
+            //Se asigna el valor de la respuesta de axios a la constante data
             data.value = res.data;
+
+            //Se limpia el array de registros paginados
             misas.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
@@ -278,14 +289,18 @@ async function leerMisas() {
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
         }
-        if (misas.value.length < pagina.value) {
+
+        //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+        //y que se bugee la paginación
+        if ((misas.value.length < pagina.value) && pagina.value != 1) {
             //Se actualiza el valor de la constante pagina
-            pagina.value = pagina.value - 1;
+            pagina.value = misas.value.length;
         }
 
         if (misas.value.length == 0) {
             ceroRegistrosEncontrados.value = true;
         }
+
     } catch (error) {
         console.log(error);
         const MENSAJE_ERROR = error.response.data.message;
@@ -359,7 +374,7 @@ function buscarMisas(event) {
 }
 
 function filtrarPaginas() {
-    //Se filtran los registros de data según los parámetros del buscador (titulo_misa)
+    //Se filtran los registros de data según los parámetros del buscador (titulo_misa )
     const data_filtrada = ref();
 
     data_filtrada.value = data.value.filter(misa =>
@@ -373,6 +388,7 @@ function filtrarPaginas() {
     if (data_filtrada.value.length == 0) {
         //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
         ceroRegistrosEncontrados.value = true;
+        pagina.value = 1;
     } else {
         //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
         for (let i = 0; i < data_filtrada.value.length; i += 10) {
@@ -386,7 +402,7 @@ function filtrarPaginas() {
     
     //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
     //y que se bugee la paginación
-    if (misas.value.length < pagina.value) {
+    if ((misas.value.length < pagina.value) && pagina.value != 1)  {
         //Se actualiza el valor de la constante pagina
         pagina.value = misas.value.length;
     }
