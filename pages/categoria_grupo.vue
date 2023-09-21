@@ -103,7 +103,7 @@
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="categoria_grupos.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                        @cambioDePagina="cambioDePagina" :items_totales="categoria_grupos.length" />
                 </div>
             </div>
         </div>
