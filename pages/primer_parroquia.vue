@@ -262,7 +262,8 @@
             <div class="h-full flex justify-center items-center w-1/6">
                 <div class="botones w-full h-3/5 ml-10 flex items-center">
                     <div class="flex-col ml-2">
-                        <button to="primer_usuario" type="submit"
+                        <button to="primer_usuario" type="submit" :disbale="!validarNombreParroquia()||!validarRucParroquia()||!validarNombreRepresentante()||!validarApellidoRepresentante()
+                        ||!validarDocumentoRepresentante()||!validarTelefonoParroquia()||!validarIdentificador()"
                             class="h-14 w-64 bg-darkSpace text-white rounded-md text-lg font-semibold flex justify-center items-center">
                             Continuar
                             <svg width="30px" height="30px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
