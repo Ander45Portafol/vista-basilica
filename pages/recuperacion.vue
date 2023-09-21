@@ -32,7 +32,7 @@
                                         class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                         placeholder=" " autocomplete="off" />
                                     <label for="correo_usuario"
-                                        class="absolute text-sm text-gray-200 duration-300 transform-translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
                                         - Usuario</label>
                                 </div>
                                 <div class="flex justify-center items-end h-28">
@@ -114,9 +114,10 @@ async function validarCredenciales() {
         });
     } catch (error) {
         console.log(error);
-        const mensajeError = error.response.data.error;
+        const mensajeError = error.response.data.message;
         if (!error.response.data.errors) {
             const sqlState = validaciones.extraerSqlState(mensajeError);
+            console.log(sqlState);
             const res = validaciones.mensajeSqlState(sqlState);
 
             //Se muestra un sweetalert con el mensaje
