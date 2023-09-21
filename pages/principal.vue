@@ -4,6 +4,8 @@ import axios from 'axios';
 
 definePageMeta({
     layout: "principal",
+    //Se le establece un middleware a la página
+    middleware: "middleware-principal"
 })
 
 const datos_dashboard = ref({

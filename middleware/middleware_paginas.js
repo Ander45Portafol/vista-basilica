@@ -32,7 +32,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const PERMISOS_TRUE = [];
     if (process.client) {
         //Si el usuario no tiene un token, es enviado a la página del login
-        if (!localStorage.getItem('token')) {
+        if (!localStorage.getItem('token') || (localStorage.getItem('token') && !localStorage.getItem('usuario'))) {
             return navigateTo('/');
         } else {
             try {

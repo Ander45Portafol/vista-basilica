@@ -238,7 +238,7 @@
     <div class="flex-wrap items-center mx-5 max-[480px]:mt-5">
       <input :id="'input' + (number + 1)" v-for="(item, number) in inputs" :key="number" v-model="inputs[number]"
         @keyup="moverFocusAdelante(number)" @keyup.delete="moverFocusAtras(number)" @paste="pegarPin($event)" type="text"
-        maxlength="1" required
+        maxlength="1" required autocomplete="off"
         class="mr-3 bg-transparent text-white text-center text-2xl border-4 border-white focus:border-lightPurpleLogin w-12 h-12 mt-5">
     </div>
     <div v-if="inputs_error"
