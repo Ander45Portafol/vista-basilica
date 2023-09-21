@@ -9,7 +9,8 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (cantidad donada)" v-model="buscar.buscador" @keyup="buscarDonaciones($event)" />
+                        placeholder="Buscar... (cantidad donada)" v-model="buscar.buscador"
+                        @keyup="buscarDonaciones($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -70,7 +71,7 @@
             </div>
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-              <!-- Se manda a traer la longitud del array de donaciones (el que trae los registros) y así saber cuantos registros son -->
+            <!-- Se manda a traer la longitud del array de donaciones (el que trae los registros) y así saber cuantos registros son -->
             <div class="h-screen">
                 <p v-if="donaciones.length > 0 && !ceroRegistrosEncontrados"
                     class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ donaciones[pagina -
@@ -98,13 +99,13 @@
                     </div>
                 </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <TablaCargando v-if="donaciones.length==0 &&!ceroRegistrosEncontrados"/>
-                    <TablesDonacion v-if="donaciones.length > 0" :datos_donacion="donaciones" :actualizar_datos="cargarTabla"
-                        :paginacion="pagina" />
+                    <TablaCargando v-if="donaciones.length == 0 && !ceroRegistrosEncontrados" />
+                    <TablesDonacion v-if="donaciones.length > 0" :datos_donacion="donaciones"
+                        :actualizar_datos="cargarTabla" :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="donaciones.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                        @cambioDePagina="cambioDePagina" :items_totales="donaciones.length" />
                 </div>
             </div>
         </div>
@@ -155,12 +156,12 @@ definePageMeta({
 
 //Se usa el onMounted para añadir el max y min del input de fecha al crear el componente
 onMounted(() => {
-//Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
+    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
 
     //Se evalua el usuario que ha iniciado session para el reporte 
-    id.value=localStorage.getItem('usuario');
-  
+    id.value = localStorage.getItem('usuario');
+
 
 
     leerDonaciones();
@@ -196,16 +197,16 @@ watch(pagina, async () => {
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
-function visibilidadRegistros() {
+async function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
     //Se establece el número de página a 1
     pagina.value = 1;
     //Se leen todas las páginas
-    leerDonaciones();
+    await leerDonaciones();
     //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
-        buscarDonaciones();
+        filtrarPaginas();
     }
 }
 
@@ -221,10 +222,10 @@ async function generarReporte() {
     window.open(ruta.href);
 }
 
-function cargarTabla() {
-    leerDonaciones();
-    if (buscar.value.texto_buscador) {
-        buscarDonaciones();
+async function cargarTabla() {
+    await leerDonaciones();
+    if (buscar.value.buscador) {
+        filtrarPaginas();
     }
 }
 
@@ -233,20 +234,30 @@ function cambioDePagina(pagina_prop) {
     pagina.value = parseInt(pagina_prop);
 }
 
+
+
+
+
+
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerDonaciones() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
     try {
         //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
             //Se realiza la petición axios para leer los registros visibles
-            const { data: res } = await axios.get(`/donaciones`, {
+            const { data: res } = await axios.get('/donaciones', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
+
+            //Se asigna el valor de la respuesta de axios a la constante data
             data.value = res.data;
+
+            //Se limpia el array de registros paginados
             donaciones.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
@@ -262,14 +273,18 @@ async function leerDonaciones() {
 
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
+
         } else {
             //Se realiza la petición axios para leer los registros no visibles
-            const { data: res } = await axios.get(`/donaciones_ocultas`, {
+            const { data: res } = await axios.get('/donaciones_ocultas', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
+            //Se asigna el valor de la respuesta de axios a la constante data
             data.value = res.data;
+
+            //Se limpia el array de registros paginados
             donaciones.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
@@ -286,18 +301,50 @@ async function leerDonaciones() {
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
         }
-        if (donaciones.value.length < pagina.value) {
+
+        //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+        //y que se bugee la paginación
+        if ((donaciones.value.length < pagina.value) && pagina.value != 1) {
             //Se actualiza el valor de la constante pagina
-            pagina.value = pagina.value - 1;
+            pagina.value = donaciones.value.length;
         }
 
         if (donaciones.value.length == 0) {
             ceroRegistrosEncontrados.value = true;
         }
+
     } catch (error) {
         console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
+
 
 //Se crea una variable reactiva para el buscador
 const buscar = ref({
@@ -309,43 +356,23 @@ const buscar = ref({
 const ejecutado_despues_borrar = ref(false);
 
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarDonaciones(event) {
+function buscarDonaciones(event) {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
 
+            //Se regresa a la página 1
+            pagina.value = 1;
+
             //Se coloca como false para que si se pueda presionar el borrar
             ejecutado_despues_borrar.value = false;
 
-            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
-            useRouter().push({ query: { buscador: buscar.value.buscador } });
-
-            //Se filtran los registros de data según los parámetros del buscador (cantidad_donada)
-            const data_filtrada = ref();
-            
-            data_filtrada.value = data.value.filter(donacion =>
-            donacion.campos.cantidad_donada.toLowerCase().includes(buscar.value.buscador.toLowerCase()));
-
-            //Se limpia el array de registros paginados
-            donaciones.value = [];
-
-            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
-            if (data_filtrada.value.length == 0) {
-                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
-                ceroRegistrosEncontrados.value = true;
-            } else {
-                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data_filtrada.value.length; i += 10) {
-                    donaciones.value.push(data_filtrada.value.slice(i, i + 10));
-                }
-                //Se actualiza el valor de la constante de búsqueda a false
-                ceroRegistrosEncontrados.value = false;
-            }
+            filtrarPaginas();
 
         } else {
             //Se valida las teclas que el usuario puede presionar para bugear el buscador
             if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
-                 //Se coloca como true para que no se pueda presionar el borrar
+                //Se coloca como true para que no se pueda presionar el borrar
                 ejecutado_despues_borrar.value = true;
                 //Se regresa a la página 1 y se cargan todos los registros
                 limpiarBuscador();
@@ -365,7 +392,38 @@ async function buscarDonaciones(event) {
     }
 }
 
+function filtrarPaginas() {
+    //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
+    const data_filtrada = ref();
 
+    data_filtrada.value = data.value.filter(donacion =>
+        donacion.campos.cantidad_donada.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+    );
+ 
+    //Se limpia el array de registros paginados
+    donaciones.value = [];
+
+    //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+    if (data_filtrada.value.length == 0) {
+        //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+        ceroRegistrosEncontrados.value = true;
+        pagina.value = 1;
+    } else {
+        //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+        for (let i = 0; i < data_filtrada.value.length; i += 10) {
+            donaciones.value.push(data_filtrada.value.slice(i, i + 10));
+        }
+        //Se actualiza el valor de la constante de búsqueda a false
+        ceroRegistrosEncontrados.value = false;
+    }
+
+    //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+    //y que se bugee la paginación
+    if ((donaciones.value.length < pagina.value) && pagina.value != 1) {
+        //Se actualiza el valor de la constante pagina
+        pagina.value = donaciones.value.length;
+    }
+}
 
 //Función para limpiar el buscador
 function limpiarBuscador() {
