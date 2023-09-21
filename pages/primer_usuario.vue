@@ -145,6 +145,27 @@ definePageMeta({
     layout: false,
 });
 
+const capturar_parroquia = ref(null);
+const capturar_usuario = ref(null);
+
+
+async function validarPantalla() {
+    const res = await axios.get('/primer_uso');
+    capturar_parroquia.value = res.data.parroquias;
+    capturar_usuario.value = res.data.usuarios;
+    if (capturar_parroquia.value == false && capturar_usuario.value == false) {
+        navigateTo('bienvenida');
+    }
+    else if (capturar_parroquia.value == true && capturar_usuario.value == false) {
+        navigateTo('primer_usuario')
+    } else {
+        navigateTo('/');
+    }
+}
+onMounted(() => {
+    validarPantalla();
+})
+
 //Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
 const mostrarIconoBorrar = ref(false);
 //Metodo para hacer visible el icono de borrar una imagen

@@ -7,90 +7,191 @@
                     <div class="flex-col">
                         <input type="hidden" v-model="form.id_configuracion_parroquia">
                         <div class="relative z-0 mt-6 w-64">
-                            <input type="text" id="telefono_usuario" name="telefono_usuario" required maxlength="150"
-                                v-model="form.nombre_parroquia"
+                            <input type="text" id="nombre_parroquia" name="nombre_parroquia" required maxlength="150"
+                                @input="validarNombreParroquia()" v-model="form.nombre_parroquia"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
-                            <label for="telefono_usuario"
+                            <label for="nombre_parroquia"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                 - Parroquia<span class="text-sm ml-1"> * </span></label>
                         </div>
+                        <div v-if="!validarNombreParroquia()"
+                            class="flex w-64 mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <div class="flex-col">
+                                    El nombre de la parroquia solo permite <span class="font-medium">
+                                        letras.</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="relative z-0 mt-12 w-64">
-                            <textarea type="text" id="telefono_usuario" name="telefono_usuario" required maxlength="250"
-                                v-model="form.direccion_parroquia"
+                            <textarea type="text" id="direccion_parroquia" name="direccion_parroquia" required
+                                maxlength="250" v-model="form.direccion_parroquia"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
-                            <label for="telefono_usuario"
+                            <label for="direccion_parroquia"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Direccion
                                 - Parroquia<span class="text-sm ml-1"> * </span></label>
                         </div>
                         <div class="relative z-0 mt-16 w-64">
-                            <input type="text" id="telefono_usuario" name="telefono_usuario" required maxlength="100"
-                                v-model="form.nombre_representante"
+                            <input type="text" id="nombre_representante" name="nombre_representante" required
+                                maxlength="100" @input="validarNombreRepresentante()" v-model="form.nombre_representante"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
-                            <label for="telefono_usuario"
+                            <label for="nombre_representante"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombres
                                 - Representante<span class="text-sm ml-1"> * </span></label>
                         </div>
+                        <div v-if="!validarNombreRepresentante()"
+                            class="flex mt-2 w-64 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <div class="flex-col">
+                                    El nombre del representante solo permite <span class="font-medium">
+                                        letras.</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="relative z-0 mt-16 w-64">
-                            <input type="text" id="telefono_usuario" name="telefono_usuario" required maxlength="10"
+                            <input type="text" id="documento_representante" name="documento_representante" required
+                                maxlength="10" @input="validarDocumentoRepresentante()"
                                 v-model="form.documento_representante"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
-                            <label for="telefono_usuario"
+                            <label for="documento_representante"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento
                                 - Representante<span class="text-sm ml-1"> * </span></label>
+                        </div>
+                        <div v-if="!validarDocumentoRepresentante()"
+                            class="flex mt-2 mb-0 w-64 text-sm text-red-400 bg-transparent" role="alert">
+                            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <div class="flex-col">
+                                    El documento ingresado <span class="font-medium">
+                                        no tiene un formato correcto.</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="flex-col">
                         <div class="relative z-0 mt-6 w-64">
-                            <input type="text" id="telefono_usuario" name="telefono_usuario" required maxlength="250"
+                            <input type="text" id="pagina_web" name="pagina_web" required maxlength="250"
                                 v-model="form.pagina_web"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
-                            <label for="telefono_usuario"
+                            <label for="pagina_web"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Pagina
                                 web
                                 - Parroquia<span class="text-sm ml-1"> * </span></label>
                         </div>
                         <div class="relative z-0 mt-16 w-64">
-                            <input type="text" id="telefono_usuario" name="telefono_usuario" required maxlength="9"
-                                v-model="form.telefono_parroquia"
+                            <input type="text" id="telefono_parroquia" name="telefono_parroquia" required maxlength="250"
+                                @input="validarTelefonoParroquia()" v-model="form.telefono_parroquia"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
-                            <label for="telefono_usuario"
+                            <label for="telefono_parroquia"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
                                 - Parroquia<span class="text-sm ml-1"> * </span></label>
                         </div>
+                        <div v-if="!validarTelefonoParroquia()"
+                            class="flex w-64 mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <div class="flex-col">
+                                    El número de teléfono ingresado <span class="font-medium">
+                                        no tiene un formato correcto.</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="relative z-0 mt-16 w-64">
-                            <input type="text" id="telefono_usuario" name="telefono_usuario" required maxlength="100"
+                            <input type="text" id="apellido_representante" name="apellido_representante" required
+                                maxlength="100" @input="validarApellidoRepresentante()"
                                 v-model="form.apellido_representante"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
-                            <label for="telefono_usuario"
+                            <label for="apellido_representante"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellidos
                                 - Representante<span class="text-sm ml-1"> * </span></label>
+                        </div>
+                        <div v-if="!validarApellidoRepresentante()"
+                            class="flex mt-2 w-64 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <div class="flex-col">
+                                    El apellido del representante solo permite <span class="font-medium">
+                                        letras.</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="flex-col">
                         <div class="relative z-0 mt-6 w-64">
-                            <input type="text" id="telefono_usuario" name="telefono_usuario" required maxlength="13"
-                                v-model="form.ruc_parroquia"
+                            <input type="text" id="ruc_parroquia" name="ruc_parroquia" required maxlength="13"
+                                @input="validarRucParroquia()" v-model="form.ruc_parroquia"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
-                            <label for="telefono_usuario"
+                            <label for="ruc_parroquia"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">RUC
                                 - Parroquia<span class="text-sm ml-1"> * </span></label>
                         </div>
+                        <div v-if="!validarRucParroquia()" class="flex w-64 mt-1 mb-0 text-sm text-red-400 bg-transparent"
+                            role="alert">
+                            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <div class="flex-col">
+                                    El RUC de la parroquia solo permite <span class="font-medium">
+                                        numeros.</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="relative z-0 mt-16 w-64">
                             <input type="text" id="telefono_usuario" name="telefono_usuario" required maxlength="100"
-                                v-model="form.identificador_parroquia"
+                                @input="validarIdentificador()" v-model="form.identificador_parroquia"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
                             <label for="telefono_usuario"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Identificador
                                 - Parroquia<span class="text-sm ml-1"> * </span></label>
+                        </div>
+                        <div v-if="!validarIdentificador()" class="flex mt-2 w-64 mb-0 text-sm text-red-400 bg-transparent"
+                            role="alert">
+                            <!-- El Código de identificador<span class="font-medium">
+                                solo permite letras y números</span> -->
+                            <div class="flex-col">
+                                El código de identificador <span class="font-medium">
+                                    solo permite letras y números.</span>
+                            </div>
                         </div>
                         <div class="pt-4 mt-8 flex-col">
                             <label for="" class="text-sm absolute text-gray-200">Tipo - Documento<span class="text-sm ml-1">
@@ -145,7 +246,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex justify-start items-end h-56">
+                <div class="flex justify-start items-end h-44">
                     <div class="flex-col">
                         <p class="font-extralight text-base text-gray-400">Llena los campos establecidos con la información
                             solicitada
@@ -184,6 +285,7 @@
 .botones {
     border-left: 1px solid #818181;
 }
+
 .primer_uso {
     background: linear-gradient(180deg,
             rgba(63, 66, 128, 0.6241) 0%,
@@ -199,6 +301,27 @@ import validaciones from '../assets/validaciones.js';
 definePageMeta({
     layout: false,
 });
+
+const capturar_parroquia = ref(null);
+const capturar_usuario = ref(null);
+
+
+async function validarPantalla() {
+    const res = await axios.get('/primer_uso');
+    capturar_parroquia.value = res.data.parroquias;
+    capturar_usuario.value = res.data.usuarios;
+    if (capturar_parroquia.value == false && capturar_usuario.value == false) {
+        navigateTo('bienvenida');
+    }
+    else if (capturar_parroquia.value == true && capturar_usuario.value == false) {
+        navigateTo('primer_usuario')
+    } else {
+        navigateTo('/');
+    }
+}
+onMounted(() => {
+    validarPantalla();
+})
 
 //Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
 const mostrarIconoBorrar = ref(false);
@@ -318,5 +441,38 @@ async function crearPrimerParroquia() {
     }
 }
 //Validaciones
-
+function validarNombreParroquia() {
+    var res = validaciones.validarSoloLetras(form.value.nombre_parroquia);
+    return res;
+}
+function validarRucParroquia() {
+    var res = validaciones.validarSoloNumero(form.value.ruc_parroquia);
+    return res;
+}
+function validarNombreRepresentante() {
+    var res = validaciones.validarSoloLetras(form.value.nombre_representante);
+    return res;
+}
+function validarApellidoRepresentante() {
+    var res = validaciones.validarSoloLetras(form.value.apellido_representante);
+    return res;
+}
+function validarDocumentoRepresentante() {
+    if (form.value.tipo_documento == 0 && form.value.documento_representante.length == 0) {
+        return true;
+    } else if (form.value.tipo_documento == 0) {
+        return false;
+    } else {
+        var res = validaciones.validarNumeroDocumento(form.value.documento_representante, form.value.tipo_documento);
+        return res;
+    }
+}
+function validarTelefonoParroquia() {
+    var res = validaciones.validarNumeroTelefono(form.value.telefono_parroquia);
+    return res;
+}
+function validarIdentificador() {
+    var res = validaciones.validarSoloLetrasYNumeros(form.value.identificador_parroquia);
+    return res;
+}
 </script>
