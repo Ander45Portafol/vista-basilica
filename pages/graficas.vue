@@ -68,7 +68,7 @@
                     </div>
                     <div class="grafic h-3/4 w-full flex justify-center items-center max-[950px]:w-full">
                         <!-- Se valida si el gráfico esta listo para mostrarse -->
-                        <PolarArea v-if="data_n_secciones && data_n_secciones.length > 0 && data_lista_n_secciones"
+                        <PolarArea v-if="data_n_secciones && data_n_secciones.results.length > 0 && data_lista_n_secciones"
                             :data="CHART_N_SECCIONES" :options="OPCIONES_N_SECCIONES" />
                         <!-- Si no esta listo se muestra un mensaje de que no hay información -->
                         <p v-else-if="data_lista_n_secciones">No se encontro información.</p>
@@ -137,16 +137,16 @@ definePageMeta({
 })
 
 //onMounted es un hook (en vue los hooks se usan para hacer tareas especificas con los componentes)
-onMounted(() => {
+onMounted(async () => {
     //Se carga el token del localStorage
     token.value = localStorage.getItem('token');
 
     //Se realizan las funciones para llenar las gráficas ya cuando el token ya tiene valor
-    leerDonaciones();
-    leerNUsuarios();
-    leerNSecciones();
-    leerEventos();
-    leerAnuncios();
+    await leerDonaciones();
+    await leerNUsuarios();
+    await leerNSecciones();
+    await leerEventos();
+    await leerAnuncios();
 });
 
 //Constante para el token
@@ -174,6 +174,8 @@ async function leerDonaciones() {
         data_donaciones.value = res;
         total_suma_donaciones = data_donaciones.value.totalSuma;
         data_lista_donaciones.value = true;
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
     } catch (error) {
         console.log(error);
     }
@@ -260,6 +262,9 @@ async function leerNUsuarios() {
         data_n_usuarios.value = res;
         total_usuarios = data_n_usuarios.value.totalUsuarios;
         data_lista_usuarios.value = true;
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
+        console.log(res);
     } catch (error) {
         console.log(error);
     }
@@ -308,6 +313,9 @@ async function leerNSecciones() {
         //Se asigna valor a todas las variables
         data_n_secciones.value = res;
         data_lista_n_secciones.value = true;
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
+        console.log(res);
     } catch (error) {
         console.log(error);
     }
@@ -317,14 +325,14 @@ async function leerNSecciones() {
 const CHART_N_SECCIONES = computed(() => {
     return {
         //Se establecen los labels que son los textos que se muestran abajo del eje x, además se usa el map para evaluar cada registro indivualmente
-        labels: data_n_secciones.value.map(item => item.nombre_pagina),
+        labels: data_n_secciones.value.results.map(item => item.nombre_pagina),
         //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
         datasets: [
             {
                 //Se le agrega un prefijo personalizado a los labels, que además muestran el valor de la data para ese registro individual
                 label: "N° de secciones",
                 //Se establece la data de la grafica con un map de los registros
-                data: data_n_secciones.value.map(item => item.n_secciones),
+                data: data_n_secciones.value.results.map(item => item.n_secciones),
                 //Se establecen todos los colores posibles para los datasets con el backgroundColor
                 backgroundColor: ["rgba(255, 202, 81, 0.5)", "rgba(192, 161, 255, 0.5)"],
                 //Se establecen todos los colores posibles para los bordes con el borderColor
@@ -358,6 +366,8 @@ async function leerEventos() {
         //Se asigna valor a todas las variables
         data_eventos.value = res;
         data_lista_eventos.value = true;
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
     } catch (error) {
         console.log(error);
     }
@@ -415,6 +425,8 @@ async function leerAnuncios() {
         //Se asigna valor a todas las variables
         data_anuncios.value = res;
         data_lista_anuncios.value = true;
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
     } catch (error) {
         console.log(error);
     }
