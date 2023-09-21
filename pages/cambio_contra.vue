@@ -280,47 +280,54 @@ async function cambiarContra() {
         FORM_DATA.append('nueva_clave', form_contras.value.nueva_clave);
         FORM_DATA.append('nueva_clave_confirmation', form_contras.value.confirmar_clave);
 
-        axios.post('/recuperacion_contra/' + token.value, FORM_DATA).then(res => {
-            console.log(res);
-            Swal.fire({
-                title: '¡Exito!',
-                text: "Proceso completado, ahora puedes iniciar sesión con tus nuevas credenciales",
-                icon: 'info',
-                reverseButtons: true,
-                confirmButtonColor: '#3F4280',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'OK',
-                allowOutsideClick: false,
-            }).then(() => {
-                navigateTo('/');
-            });
+        await axios.post('/recuperacion_contra/' + token.value, FORM_DATA);
+
+        Swal.fire({
+            title: '¡Exito!',
+            text: "Proceso completado, ahora puedes iniciar sesión con tus nuevas credenciales",
+            icon: 'info',
+            reverseButtons: true,
+            confirmButtonColor: '#3F4280',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false,
+        }).then(() => {
+            navigateTo('/');
         });
+
     } catch (error) {
         console.log(error);
-        const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            console.log(sqlState);
-            const res = validaciones.mensajeSqlState(sqlState);
+        if (!error.response.data.errors && !error.response.data.error) {
+            const sqlState = validaciones.extraerSqlState(error.response.data.message);
+            if (sqlState != null) {
+                const res = validaciones.mensajeSqlState(sqlState);
 
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.response.data.message,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
         } else {
             //Se muestra un sweetalert con el mensaje
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: mensajeError,
+                text: error.response.data.error,
                 confirmButtonColor: '#3F4280'
             });
         }
     }
-
 }
 
 </script>
