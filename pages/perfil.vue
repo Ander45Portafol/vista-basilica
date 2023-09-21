@@ -48,7 +48,7 @@
             <img src="/img/f_perfil.svg" alt="cohete_login" class="w-full">
         </div>
         <div class="flex h-screen w-full ml-36 items-center">
-            <div class=" h-96 w-1/6 mb-24 bg-space opacity-95 mt-40 rounded-lg p-4 text-white flex-col">
+            <div class=" h-[52%] w-1/6 mb-44 bg-space opacity-95 mt-40 rounded-lg p-4 text-white flex-col">
                 <div class="flex justify-center relative h-44 w-40 border-2 border-slate-900 ml-12 rounded-lg cursor-pointer"
                     @click="seleccionarArchivo" @mouseover="iconoBorrarTrue" @mouseleave="iconoBorrarFalse">
                     <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
@@ -64,12 +64,13 @@
                     </div>
                 </div>
                 <div class="text-white mt-4 text-center">
-                    <p class="text-2xl font-bold" id="nombre_usuario"></p>
-                    <p id="rol_usuario"></p>
-                    <div class="flex justify-center mt-10">
+                    <p v-if="nombre_completo_usuario" class="text-2xl font-bold" id="nombre_usuario">{{
+                        nombre_completo_usuario }}</p>
+                    <p v-if="nombre_rol_usuario" id="rol_usuario">{{ nombre_rol_usuario }}</p>
+                    <div class="flex justify-center mt-6">
                         <button id="cambiarClave" type="button"
                             class="bg-darkSpace flex gap-4 p-2 items-center text-white w-44 h-10 rounded-lg">
-                            <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                            <svg width="28px" height="28px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M21 13V8a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h7" stroke="#FFF"
                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -81,7 +82,20 @@
                             </svg> Cambiar clave
                         </button>
                     </div>
-
+                    <div class="flex justify-center mt-3" v-if="texto_autenticable">
+                        <button id="btn2FA" type="button" @click="cambiarValorAutenticable"
+                            class="bg-darkSpace flex gap-4 p-2 items-center text-white w-44 h-10 rounded-lg">
+                            <svg width="28px" height="28px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#FFFFFF">
+                                <path
+                                    d="M7 16v-4.639c0-.51.1-.999.285-1.453M17 16v-3.185m-7.778-5.08A5.506 5.506 0 0112 7c2.28 0 4.203 1.33 4.805 3.15M10 17v-2.177M14 17v-5.147C14 10.83 13.105 10 12 10s-2 .83-2 1.853v.794"
+                                    stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path
+                                    d="M21 3.6v16.8a.6.6 0 01-.6.6H3.6a.6.6 0 01-.6-.6V3.6a.6.6 0 01.6-.6h16.8a.6.6 0 01.6.6z"
+                                    stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg> {{ texto_autenticable }}
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class=" h-4/6 w-3/5 mb-12  bg-space opacity-95 mt-40 ml-12 rounded-lg p-6 text-white flex-col">
@@ -285,167 +299,175 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <div class="flex w-full">
-                    <form class="p-2 space-y-6 pb-8 w-3/4" @submit.prevent="cambiarClave">
-                        <div class="flex justify-center">
-                            <div class="flex-col">
-                                <div class="relative z-0 mt-6 w-64">
-                                    <input type="password" id="contraseña_actual" name="contraseña_actual" required
-                                        maxlength="250" v-model="form2.contrasenia_actual"
-                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                        placeholder=" " autocomplete="off" />
-                                    <label for="contraseña_actual"
-                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                        Contraseña - actual<span class="text-sm ml-1"> * </span></label>
-                                </div>
-                                <div class="relative z-0 mt-6 w-64">
-                                    <input type="password" id="contraseña_nueva" name="contraseña_nueva" required
-                                        maxlength="250" v-model="form2.contrasenia_nueva"
-                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                        placeholder=" " autocomplete="off" />
-                                    <label for="contraseña_nueva"
-                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                        Contraseña - Nueva<span class="text-sm ml-1"> * </span></label>
-                                </div>
-                                <div class="relative z-0 mt-6 w-64">
-                                    <input type="password" id="confirmar" name="confirmar" required
-                                        @input="validarContrasenias()" maxlength="250" v-model="form2.confirmar_contrasenia"
-                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                        placeholder=" " autocomplete="off" />
-                                    <label for="confirmar"
-                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                        Confirmar - contraseña<span class="text-sm ml-1"> * </span></label>
-                                </div>
-                                <div v-if="!validarContrasenias()"
-                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
-                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <div class="w-2/4">
-                                        Contraseña invalida <span class="font-medium">
-                                        </span>
-                                    </div>
+                <form class="p-2 space-y-6 pb-8" @submit.prevent="cambiarClave">
+                    <div class="flex ml-6 justify-between">
+                        <div class="flex-col">
+                            <div class="relative z-0 mt-6 w-64">
+                                <input type="password" id="contraseña_actual" name="contraseña_actual" required
+                                    maxlength="250" v-model="form_contras.clave_actual"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="contraseña_actual"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    Contraseña - actual<span class="text-sm ml-1"> * </span></label>
+                            </div>
+                            <div class="relative z-0 mt-6 w-64">
+                                <input type="password" id="contraseña_nueva" name="contraseña_nueva" required
+                                    maxlength="250" v-model="form_contras.nueva_clave" @input="validarContra"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="contraseña_nueva"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    Contraseña - Nueva<span class="text-sm ml-1"> * </span></label>
+                            </div>
+                            <div class="relative z-0 mt-6 w-64">
+                                <input type="password" id="confirmar" name="confirmar" required @input="validarContra"
+                                    maxlength="250" v-model="form_contras.confirmar_clave"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="confirmar"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                    Confirmar - contraseña<span class="text-sm ml-1"> * </span></label>
+                            </div>
+                            <div v-if="mostrar_error_contra"
+                                class="mt-10 mx-12 flex items-center justify-center p-4 mb-4 text-sm text-red-300 border border-red-300 rounded-lg"
+                                role="alert">
+                                <svg class="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                                </svg>
+                                <div class="text-center font-medium">
+                                    {{ mostrar_error_contra }}
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-buttons flex items-end justify-end pr-6 pt-10">
-                            <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
-                                type="submit">
-                                <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path
-                                        d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                        stroke="#23B7A0" stroke-width="2"></path>
-                                    <path
-                                        d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                        stroke="#23B7A0" stroke-width="2"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </form>
-                    <div class="flex p-4 mb-4 text-sm text-black rounded-lg bg-blue-50 w-1/4" role="alert">
-                        <div>
-                            <span class="font-medium text-base">Para garantizar la seguridad de tu cuenta, te recomendamos
-                                tener en cuenta
-                                las siguientes sugerencias:</span>
-                            <ul class="mt-5 ml-4 list-none">
-                                <li :class="errores_contra.clases_longitud">
-                                    <svg v-if="errores_contra.validar_longitud" class="mr-2 w-6 h-6" stroke-width="1.5"
-                                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
-                                        <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                                            stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                    </svg>
-                                    <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
-                                        <path
-                                            d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                                            stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                    </svg>
-                                    Longitud de 8 a 72 caracteres.
-                                </li>
-                                <li :class="errores_contra.clases_minuscula">
-                                    <svg v-if="errores_contra.validar_minuscula" class="mr-2 w-6 h-6" stroke-width="1.5"
-                                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
-                                        <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                                            stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                    </svg>
-                                    <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
-                                        <path
-                                            d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                                            stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                    </svg>
-                                    Al menos una letra minúscula.
-                                </li>
-                                <li :class="errores_contra.clases_mayuscula">
-                                    <svg v-if="errores_contra.validar_mayuscula" class="mr-2 w-6 h-6" stroke-width="1.5"
-                                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
-                                        <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                                            stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                    </svg>
-                                    <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
-                                        <path
-                                            d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                                            stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                    </svg>
-                                    Al menos una letra mayúscula.
-                                </li>
-                                <li :class="errores_contra.clases_numero">
-                                    <svg v-if="errores_contra.validar_numero" class="mr-2 w-6 h-6" stroke-width="1.5"
-                                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
-                                        <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                                            stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                    </svg>
-                                    <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
-                                        <path
-                                            d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                                            stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                    </svg>
-                                    Al menos un número.
-                                </li>
-                                <li :class="errores_contra.clases_especiales">
-                                    <svg v-if="errores_contra.validar_especiales" class="mr-2 w-6 h-6" stroke-width="1.5"
-                                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
-                                        <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                                            stroke="#198A39" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                    </svg>
-                                    <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
-                                        <path
-                                            d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-                                            stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                    </svg>
-                                    Al menos un carácter especial, como ! @ # ?
-                                </li>
-                            </ul>
+                        <div class="flex p-4 mb-4 text-sm text-black rounded-lg bg-blue-50" role="alert">
+                            <div>
+                                <span class="font-medium text-base">Para garantizar la seguridad de tu cuenta, te
+                                    recomendamos
+                                    tener en cuenta
+                                    las siguientes sugerencias:</span>
+                                <ul class="mt-5 ml-4 list-none">
+                                    <li :class="errores_contra.clases_longitud">
+                                        <svg v-if="errores_contra.validar_longitud" class="mr-2 w-6 h-6" stroke-width="1.5"
+                                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                            color="#198A39">
+                                            <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path
+                                                d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                                stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                        <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
+                                            <path
+                                                d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                                stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                        Longitud de 8 a 72 caracteres.
+                                    </li>
+                                    <li :class="errores_contra.clases_minuscula">
+                                        <svg v-if="errores_contra.validar_minuscula" class="mr-2 w-6 h-6" stroke-width="1.5"
+                                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                            color="#198A39">
+                                            <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path
+                                                d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                                stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                        <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
+                                            <path
+                                                d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                                stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                        Al menos una letra minúscula.
+                                    </li>
+                                    <li :class="errores_contra.clases_mayuscula">
+                                        <svg v-if="errores_contra.validar_mayuscula" class="mr-2 w-6 h-6" stroke-width="1.5"
+                                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                            color="#198A39">
+                                            <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path
+                                                d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                                stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                        <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
+                                            <path
+                                                d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                                stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                        Al menos una letra mayúscula.
+                                    </li>
+                                    <li :class="errores_contra.clases_numero">
+                                        <svg v-if="errores_contra.validar_numero" class="mr-2 w-6 h-6" stroke-width="1.5"
+                                            viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                            color="#198A39">
+                                            <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path
+                                                d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                                stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                        <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
+                                            <path
+                                                d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                                stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                        Al menos un número.
+                                    </li>
+                                    <li :class="errores_contra.clases_especiales">
+                                        <svg v-if="errores_contra.validar_especiales" class="mr-2 w-6 h-6"
+                                            stroke-width="1.5" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" color="#198A39">
+                                            <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path
+                                                d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                                stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                        <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
+                                            <path
+                                                d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                                stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round"></path>
+                                        </svg>
+                                        Al menos un carácter especial, como ! @ # ?
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <div class="modal-buttons flex items-end justify-end pr-6 pt-10">
+                        <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
+                            type="submit">
+                            <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                    stroke="#23B7A0" stroke-width="2"></path>
+                                <path
+                                    d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                    stroke="#23B7A0" stroke-width="2"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -486,10 +508,11 @@ onMounted(() => {
     cargando_datos(id_usuario.value);
 });
 
+const nombre_completo_usuario = ref();
+const nombre_rol_usuario = ref();
+
 async function cargando_datos(id_usuario) {
     token.value = localStorage.getItem('token');
-    var nombrecompleto = null;
-    var rolusuario = null;
     await axios.get('/profile/' + id_usuario, {
         headers: {
             Authorization: `Bearer ${token.value}`,
@@ -508,9 +531,9 @@ async function cargando_datos(id_usuario) {
             telefono_usuario: res.data.data.user.telefono_usuario,
             correo_usuario: res.data.data.user.correo_usuario,
             visibilidad_usuario: true,
-            id_rol_usuario: res.data.data.user.roles.id_rol_usuario
+            id_rol_usuario: res.data.data.user.roles.id_rol_usuario,
+            autenticable: res.data.data.user.autenticable
         };
-
         data_usuario.value = res.data.data.user;
         console.log(data_usuario.value);
         if (res.data.data.user.imagen_usuario != null) {
@@ -523,8 +546,14 @@ async function cargando_datos(id_usuario) {
         var nombrecortado = cortarnombre[0];
         var cortarapellido = res.data.data.user.apellido_usuario.split(" ");
         var apellidocortado = cortarapellido[0];
-        nombrecompleto = nombrecortado + " " + apellidocortado;
-        rolusuario = res.data.data.user.roles.rol_usuario;
+        nombre_completo_usuario.value = nombrecortado + " " + apellidocortado;
+        nombre_rol_usuario.value = res.data.data.user.roles.rol_usuario;
+
+        if (!form.value.autenticable) {
+            texto_autenticable.value = 'Activar 2FA';
+        } else {
+            texto_autenticable.value = 'Desactivar 2FA';
+        }
 
         //Se reinicia el timer
         window.dispatchEvent(EVENT);
@@ -532,8 +561,6 @@ async function cargando_datos(id_usuario) {
         localStorage.setItem('token', res.data.data.token);
         token.value = localStorage.getItem('token');
     });
-    document.getElementById('nombre_usuario').textContent = nombrecompleto;
-    document.getElementById('rol_usuario').textContent = rolusuario;
     const AGREGAR_BOTON = document.getElementById('cambiarClave');
     const CERRAR_BOTON = document.getElementById('closeModal');
     const MODAL_ID = document.getElementById('staticModal');
@@ -595,56 +622,54 @@ const cambiarImagen = () => {
 };
 var api_url = "http://localhost:8000/storage/usuarios/images/";
 
-//Se crea una variable reactiva para cmabiar la contraseñá del usuario
-const form2 = ref({
-    contrasenia_actual: "",
-    contrasenia_nueva: "",
-    confirmar_contrasenia: "",
-});
 //Cambiar contraseña
 async function cambiarClave() {
     token.value = localStorage.getItem('token');
-    try {
-        const FORMDATA = new FormData();
-        FORMDATA.append('clave_actual', form2.value.contrasenia_actual);
-        FORMDATA.append('nueva_clave', form2.value.contrasenia_nueva);
-        FORMDATA.append('nueva_clave_confirmation', form2.value.confirmar_contrasenia);
+    //Se evalua que no haya ningún error en las validaciones
+    if (form_contras.value.clave_actual != '' && form_contras.value.nueva_clave != '' && form_contras.value.confirmar_clave != '' && mostrar_error_contra.value == '') {
+        try {
+            const FORMDATA = new FormData();
+            FORMDATA.append('clave_actual', form_contras.value.clave_actual);
+            FORMDATA.append('nueva_clave', form_contras.value.nueva_clave);
+            FORMDATA.append('nueva_clave_confirmation', form_contras.value.confirmar_clave);
 
-        await axios.post('/cambio_clave-perfil', FORMDATA, {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            }
-        }).then(res => {
-            //Se reinicia el timer
-            window.dispatchEvent(EVENT);
-            //Se actualiza el token con la respuesta del axios
-            localStorage.setItem('token', res.data.data.token);
-            token.value = localStorage.getItem('token');
-        });
-        Toast.fire({
-            icon: 'success',
-            title: 'Informacion actualizada exitosamente'
-        })
-    } catch (error) {
-        console.log(error);
-        const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
+            await axios.post('/cambio_clave', FORMDATA, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                }
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
             });
-        } else {
+            Toast.fire({
+                icon: 'success',
+                title: 'Informacion actualizada exitosamente'
+            })
+        } catch (error) {
+            console.log(error);
+
+            errores_contra.value.validar_numero = false;
+            errores_contra.value.validar_especiales = false;
+            errores_contra.value.validar_mayuscula = false;
+            errores_contra.value.validar_minuscula = false;
+            errores_contra.value.validar_longitud = false;
+            errores_contra.value.clases_numero = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+            errores_contra.value.clases_especiales = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+            errores_contra.value.clases_mayuscula = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+            errores_contra.value.clases_minuscula = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+            errores_contra.value.clases_longitud = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+            form_contras.value.nueva_clave = '';
+            form_contras.value.confirmar_clave = '';
+            form_contras.value.clave_actual = '';
+
             //Se muestra un sweetalert con el mensaje
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: mensajeError,
+                text: error.response.data.message,
                 confirmButtonColor: '#3F4280'
             });
         }
@@ -666,7 +691,32 @@ const form = ref({
     visibilidad_usuario: true,
     id_rol_usuario: 0,
     imagen_usuario: "",
+    autenticable: "",
 })
+
+const texto_autenticable = ref();
+
+function cambiarValorAutenticable() {
+    var mensaje = form.value.autenticable ? 'Para desactivar la autenticación de dos factores (2FA) y cambiar la seguridad de su cuenta, cierre esta notificación y haga clic en “Actualizar”. ¿Desea continuar?' : 'Para activar la autenticación de dos factores (2FA) y mejorar la seguridad de su cuenta, cierre esta notificación y haga clic en “Actualizar”. ¿Desea continuar?';
+    Swal.fire({
+        title: 'Confirmación',
+        text: mensaje,
+        icon: 'info',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        allowOutsideClick: false,
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            form.value.autenticable = !form.value.autenticable;
+            texto_autenticable.value = form.value.autenticable ? 'Desactivar F2A' : 'Activar F2A';
+        }
+    });
+}
+
 //Toast del sweetalert
 const Toast = Swal.mixin({
     toast: true,
@@ -679,6 +729,7 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
+
 async function actualizarPerfil() {
     token.value = localStorage.getItem('token');
     try {
@@ -702,6 +753,7 @@ async function actualizarPerfil() {
             form.value.id_rol_usuario
         );
         FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
+        FORMDATA.append('autenticable', form.value.autenticable ? 1 : 0);
         console.log(FORMDATA);
 
         //Se realiza la petición axios mandando la ruta y el formData
@@ -737,14 +789,82 @@ function limpiarImagen() {
     mostrarIconoBorrar.value = false;
 }
 
-//Validaciones
-function validarContrasenias() {
-    console.log(form2.value.contrasenia_nueva);
-    console.log(form2.value.confirmar_contrasenia);
-    if (form2.value.contrasenia_nueva !== form2.value.confirmar_contrasenia) {
-        return false;
+//Constante ref para guardar la información necesaria para el cambio de contraseña
+const form_contras = ref({
+    nueva_clave: '',
+    confirmar_clave: '',
+    clave_actual: '',
+})
+
+//Constante ref para mostrar la guía en la validación de la contraseña nueva
+const errores_contra = ref({
+    validar_longitud: false,
+    clases_longitud: 'mb-2 flex items-center text-[#A61D1D] font-semibold',
+    validar_minuscula: false,
+    clases_minuscula: 'mb-2 flex items-center text-[#A61D1D] font-semibold',
+    validar_mayuscula: false,
+    clases_mayuscula: 'mb-2 flex items-center text-[#A61D1D] font-semibold',
+    validar_numero: false,
+    clases_numero: 'mb-2 flex items-center text-[#A61D1D] font-semibold',
+    validar_especiales: false,
+    clases_especiales: 'mb-2 flex items-center text-[#A61D1D] font-semibold',
+})
+
+//Constante para mostrar errores en la validación de la contraseña nueva
+const mostrar_error_contra = ref('');
+
+//Función para validar la contraseña
+function validarContra() {
+    //Se evalua los cada aspecto de la guía para crear una contraseña y se mira si ya se cumplió, si se cumplió cambia el texto y el icono a verde 
+    errores_contra.value.validar_longitud = validaciones.validarContraLongitud(form_contras.value.nueva_clave);
+    if (errores_contra.value.validar_longitud) {
+        errores_contra.value.clases_longitud = 'mb-2 flex items-center text-[#198A39] font-semibold';
     } else {
-        return true;
+        errores_contra.value.clases_longitud = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+    }
+
+    errores_contra.value.validar_minuscula = validaciones.validarContraLetraMinuscula(form_contras.value.nueva_clave);
+    if (errores_contra.value.validar_minuscula) {
+        errores_contra.value.clases_minuscula = 'mb-2 flex items-center text-[#198A39] font-semibold';
+    } else {
+        errores_contra.value.clases_minuscula = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+    }
+
+    errores_contra.value.validar_mayuscula = validaciones.validarContraLetraMayuscula(form_contras.value.nueva_clave);
+    if (errores_contra.value.validar_mayuscula) {
+        errores_contra.value.clases_mayuscula = 'mb-2 flex items-center text-[#198A39] font-semibold';
+    } else {
+        errores_contra.value.clases_mayuscula = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+    }
+
+    errores_contra.value.validar_especiales = validaciones.validarContraEspeciales(form_contras.value.nueva_clave);
+    if (errores_contra.value.validar_especiales) {
+        errores_contra.value.clases_especiales = 'mb-2 flex items-center text-[#198A39] font-semibold';
+    } else {
+        errores_contra.value.clases_especiales = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+    }
+
+    errores_contra.value.validar_numero = validaciones.validarContraNumeros(form_contras.value.nueva_clave);
+    if (errores_contra.value.validar_numero) {
+        errores_contra.value.clases_numero = 'mb-2 flex items-center text-[#198A39] font-semibold';
+    } else {
+        errores_contra.value.clases_numero = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+    }
+
+    //Se evaluan si alguna parte de la guía de contraseñas no se ha cumplido y se muestra un error de formato
+    if (!errores_contra.value.validar_numero || !errores_contra.value.validar_especiales || !errores_contra.value.validar_minuscula || !errores_contra.value.validar_mayuscula || !errores_contra.value.validar_longitud) {
+        mostrar_error_contra.value = 'Formato de contraseña incorrecto.'
+        //Se evalua si la contraseña nueva y la del input de confirmar contraseña coinciden, si no se muestra un error
+    } else if (form_contras.value.nueva_clave != form_contras.value.confirmar_clave) {
+        mostrar_error_contra.value = 'Las contraseñas no coinciden.'
+        //Si todo es correcto, no se muestra ningún error
+    } else {
+        mostrar_error_contra.value = '';
+    }
+
+    //Se quitan los errores si los campos estan vacios
+    if (form_contras.value.nueva_clave == '' && form_contras.value.confirmar_clave == '') {
+        mostrar_error_contra.value = '';
     }
 }
 
