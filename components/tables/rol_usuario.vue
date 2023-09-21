@@ -259,9 +259,7 @@
                             </div>
                         </div>
                     </form>
-                    <pre>
-                        {{ form }}
-                    </pre>
+                  
                 </div>
             </div>
         </div>
