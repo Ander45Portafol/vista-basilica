@@ -69,8 +69,8 @@
             </div>
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <!-- Se manda a traer la longitud del array de anuncios (el que trae los registros) y así saber cuantos registros son -->
-            <div class="h-screen">
+             <!-- Se manda a traer la longitud del array de anuncios (el que trae los registros) y así saber cuantos registros son -->
+             <div class="h-screen">
                 <p v-if="anuncios.length > 0 && !ceroRegistrosEncontrados"
                     class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ anuncios[pagina -
                         1].length
@@ -97,40 +97,13 @@
                     </div>
                 </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <div v-if="anuncios.length == 0 && !ceroRegistrosEncontrados"
-                        class="loadingtable overflow-hidden h-full pr-4">
-                        <div class="contained-data flex-col" v-for="number in 6" :key="number">
-                            <div
-                                class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
-                                <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                                    <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
-                                    <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
-                                        <div
-                                            class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4">
-                                        </div>
-                                        <div
-                                            class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                                    <div
-                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
-                                    </div>
-                                    <div
-                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <TablaCargando v-if="anuncios.length == 0 && !ceroRegistrosEncontrados" />
                     <TablesAnuncio v-if="anuncios.length > 0" :datos_anuncios="anuncios" :actualizar_datos="cargarTabla"
                         :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="anuncios.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                        @cambioDePagina="cambioDePagina" :items_totales="anuncios.length" />
                 </div>
             </div>
         </div>
@@ -231,22 +204,23 @@ watch(pagina, async () => {
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
-function visibilidadRegistros() {
+async function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
     //Se establece el número de página a 1
     pagina.value = 1;
     //Se leen todas las páginas
-    leerAnuncios();
+    await leerAnuncios();
     //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
-        buscarAnuncios();
+        filtrarPaginas();
     }
 }
-function cargarTabla() {
-    leerAnuncios();
-    if (buscar.value.texto_buscador) {
-        buscarAnuncios();
+
+async function cargarTabla() {
+   await leerAnuncios();
+    if (buscar.value.buscador) {
+        filtrarPaginas();
     }
 }
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
@@ -304,7 +278,7 @@ async function leerAnuncios() {
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
         }
-        if (anuncios.value.length < pagina.value) {
+        if ((anuncios.value.length < pagina.value) && pagina.value != 1) {
             //Se actualiza el valor de la constante pagina
             pagina.value = pagina.value - 1;
         }
@@ -330,48 +304,26 @@ async function leerAnuncios() {
     }
 }
 
-//Constante ref para controlar que no se pueda spamear el delete en el buscador y bugear el token
 const ejecutado_despues_borrar = ref(false);
 
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarAnuncios(event) {
+function buscarAnuncios(event) {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
 
+            //Se regresa a la página 1
+            pagina.value = 1;
+
             //Se coloca como false para que si se pueda presionar el borrar
             ejecutado_despues_borrar.value = false;
 
-            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
-            useRouter().push({ query: { buscador: buscar.value.buscador } });
-
-            //Se filtran los registros de data según los parámetros del buscador (titulo_anuncio )
-            const data_filtrada = ref();
-            
-            data_filtrada.value = data.value.filter(anuncio =>
-            anuncio.campos.titulo_anuncio.toLowerCase().includes(buscar.value.buscador.toLowerCase()) 
-            );
-
-            //Se limpia el array de registros paginados
-            anuncios.value = [];
-
-            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
-            if (data_filtrada.value.length == 0) {
-                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
-                ceroRegistrosEncontrados.value = true;
-            } else {
-                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data_filtrada.value.length; i += 10) {
-                    anuncios.value.push(data_filtrada.value.slice(i, i + 10));
-                }
-                //Se actualiza el valor de la constante de búsqueda a false
-                ceroRegistrosEncontrados.value = false;
-            }
+            filtrarPaginas();
 
         } else {
             //Se valida las teclas que el usuario puede presionar para bugear el buscador
             if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
-                 //Se coloca como true para que no se pueda presionar el borrar
+                //Se coloca como true para que no se pueda presionar el borrar
                 ejecutado_despues_borrar.value = true;
                 //Se regresa a la página 1 y se cargan todos los registros
                 limpiarBuscador();
@@ -388,6 +340,41 @@ async function buscarAnuncios(event) {
             text: error,
             confirmButtonColor: "#3F4280",
         });
+    }
+}
+
+function filtrarPaginas() {
+    //Se filtran los registros de data según los parámetros del buscador (titulo_anuncio )
+    const data_filtrada = ref();
+
+    data_filtrada.value = data.value.filter(anuncio =>
+            anuncio.campos.titulo_anuncio.toLowerCase().includes(buscar.value.buscador.toLowerCase()) 
+            );
+
+    //Se limpia el array de registros paginados
+    anuncios.value = [];
+
+    //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+    if (data_filtrada.value.length == 0) {
+        //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+        ceroRegistrosEncontrados.value = true;
+        pagina.value = 1;
+    } else {
+        //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+        for (let i = 0; i < data_filtrada.value.length; i += 10) {
+            anuncios.value.push(data_filtrada.value.slice(i, i + 10));
+        }
+        //Se actualiza el valor de la constante de búsqueda a false
+        ceroRegistrosEncontrados.value = false;
+    }
+
+    console.log(anuncios.value);
+    
+    //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+    //y que se bugee la paginación
+    if ((anuncios.value.length < pagina.value) && pagina.value != 1)  {
+        //Se actualiza el valor de la constante pagina
+        pagina.value = anuncios.value.length;
     }
 }
 

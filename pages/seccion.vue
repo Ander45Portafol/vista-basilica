@@ -1,8 +1,8 @@
 <template>
-  <div class="principal mt-6">
+    <div class="principal mt-6">
         <!-- Menu de navegación superior -->
         <MenuSeccionDashboard class="mr-8" />
-        <!-- Contendor principal -->
+        <!-- Contenerdor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <!-- Sección del buscador -->
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
@@ -10,8 +10,7 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (titulo seccion)" v-model="buscar.buscador"
-                        @keyup="buscarSecciones($event)" />
+                        placeholder="Buscar... (titulo seccion))" v-model="buscar.buscador" @keyup="buscarSecciones($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -68,10 +67,9 @@
                     </button>
                 </div>
             </div>
-
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <!-- Se manda a traer la longitud del array de secciones (el que trae los registros) y así saber cuantos registros son -->
+            <!-- Se manda a traer la longitud del array de seccion (el que trae los registros) y así saber cuantos registros son -->
             <div class="h-screen">
                 <p v-if="secciones.length > 0 && !ceroRegistrosEncontrados"
                     class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ secciones[pagina -
@@ -99,40 +97,13 @@
                     </div>
                 </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <div v-if="secciones.length == 0 && !ceroRegistrosEncontrados"
-                        class="loadingtable overflow-hidden h-full pr-4">
-                        <div class="contained-data flex-col" v-for="number in 6" :key="number">
-                            <div
-                                class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
-                                <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                                    <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
-                                    <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
-                                        <div
-                                            class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4">
-                                        </div>
-                                        <div
-                                            class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                                    <div
-                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
-                                    </div>
-                                    <div
-                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <TablaCargando v-if="secciones.length == 0 && !ceroRegistrosEncontrados"/>
                     <TablesSeccion v-if="secciones.length > 0" :datos_secciones="secciones" :actualizar_datos="cargarTabla"
                         :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="secciones.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                        @cambioDePagina="cambioDePagina" :items_totales="secciones.length" />
                 </div>
             </div>
         </div>
@@ -154,10 +125,10 @@
 
 
 .tables::-webkit-scrollbar {
-    width: 7px;
+    width: 6px;
 }
 
-.tables::-webkit-scrollbar {
+.tables::-webkit-scrollbar-thumb {
     background: #32345A;
 }
 </style>
@@ -222,10 +193,10 @@ function cambioDePagina(pagina_prop) {
 }
 
 
-function cargarTabla() {
-    leerSecciones();
-    if (buscar.value.texto_buscador) {
-        buscarSecciones();
+async function cargarTabla() {
+    await leerSecciones();
+    if (buscar.value.buscador) {
+        filtrarPaginas();
     }
 }
 
@@ -244,16 +215,16 @@ watch(pagina, async () => {
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
-function visibilidadRegistros() {
+async function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
     //Se establece el número de página a 1
     pagina.value = 1;
     //Se leen todas las páginas
-    leerSecciones();
+    await leerSecciones();
     //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
-        buscarSecciones();
+        filtrarPaginas();
     }
 }
 
@@ -322,7 +293,7 @@ async function leerSecciones() {
 
         //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
         //y que se bugee la paginación
-        if (secciones.value.length < pagina.value) {
+        if ((secciones.value.length < pagina.value) && pagina.value != 1) {
             //Se actualiza el valor de la constante pagina
             pagina.value = secciones.value.length;
         }
@@ -404,11 +375,12 @@ function buscarSecciones(event) {
 }
 
 function filtrarPaginas() {
-    //Se filtran los registros de data según los parámetros del buscador (nombre_pagina)
+    //Se filtran los registros de data según los parámetros del buscador (titulo_enlace )
     const data_filtrada = ref();
 
-    data_filtrada.value = data.value.filter(categoria =>
-    categoria.campos.nombre_categoria_grupo.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+    data_filtrada.value = data.value.filter(seccion =>
+    seccion.campos.titulo_seccion.toLowerCase().includes(buscar.value.buscador.toLowerCase())||
+    seccion.campos.subtitulo_seccion.toLowerCase().includes(buscar.value.buscador.toLowerCase())
     );
 
     //Se limpia el array de registros paginados
@@ -418,6 +390,7 @@ function filtrarPaginas() {
     if (data_filtrada.value.length == 0) {
         //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
         ceroRegistrosEncontrados.value = true;
+        pagina.value = 1;
     } else {
         //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
         for (let i = 0; i < data_filtrada.value.length; i += 10) {
@@ -431,7 +404,7 @@ function filtrarPaginas() {
     
     //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
     //y que se bugee la paginación
-    if (secciones.value.length < pagina.value) {
+    if ((secciones.value.length < pagina.value) && pagina.value != 1)  {
         //Se actualiza el valor de la constante pagina
         pagina.value = secciones.value.length;
     }
@@ -447,219 +420,5 @@ function limpiarBuscador() {
     buscar.value.buscador = "";
     //Se limpia la ruta
     useRouter().push({ query: '' });
-}
-
-
-
-
-//Función para crear una página
-async function crearSeccion() {
-    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
-        try {
-            //Se crea una constante FormData para almacenar los datos del modal
-            const formData = new FormData();
-            formData.append("titulo_seccion", form.value.titulo_seccion);
-            formData.append("subtitulo_seccion", form.value.subtitulo_seccion);
-            formData.append("descripcion_seccion", form.value.descripcion_seccion);
-            formData.append("id_pagina", form.value.id_pagina);
-            formData.append(
-                "visibilidad_seccion",
-                form.value.visibilidad_seccion ? 1 : 0
-            );
-            formData.append(
-                "editable", form.value.editable ? 1 : 0);
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/secciones", formData, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-            });
-
-            //Se cargan todas las páginas y se cierra el modal
-            pagina.value = 1;
-            limpiarBuscador();
-            leerSecciones();
-
-            document.getElementById("closeModal").click();
-
-            //Se lanza la alerta con el mensaje de éxito
-            Toast.fire({
-                icon: "success",
-                title: "Sección creada exitosamente",
-            });
-        } catch (error) {
-            console.log(error);
-            //Se extrae el mensaje de error
-            const mensajeError = error.response.data.message;
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
-            document.getElementById("closeModal").click();
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: res,
-                confirmButtonColor: "#3F4280",
-            });
-        }
-    }
-}
-
-//Función para traer los datos de un registro en específico, estableciendo como parámetro el id del registro
-async function leerUnaSeccion(id) {
-    try {
-        accionForm("actualizar");
-        //Se hace la petición axios y se evalua la respuesta
-        await axios.get("/secciones/" + id, {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            },
-        }).then((res) => {
-            //Constante para el modal
-            const modalElement = document.getElementById("staticModal");
-            //Constante que contiene las caracteristicas del modal
-            const modalOptions = {
-                backdrop: "static",
-                backdropClasses:
-                    "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-            };
-            //Instanciamos el boton para cerrar el modal
-            const closeButton = document.getElementById("closeModal");
-            //Constante para el titulo del modal
-            const modalText = document.getElementById("modalText");
-            //Constante para el boton de agregar dentro del modal
-            const modalBtnAdd = document.getElementById("btnModalAdd");
-            //Constante para el boton de actualizar dentro del modal
-            const modalBtnUpdate = document.getElementById("btnModalUpdate");
-            //Instanciamos el modal
-            const modal = new Modal(modalElement, modalOptions);
-            //Le modificamos el texto del header al modal
-            modalText.textContent = "Editar";
-            //Colocamos visibilidad al botón de actualizar en el modal
-            modalBtnUpdate.classList.remove("hidden");
-            //Ocultamos el botón de agregar en el modal
-            modalBtnAdd.classList.add("hidden");
-            //Abrimos el modal
-            modal.show();
-            //Creamos el evento click para cuando se cierre el modal y te cierre la instancia antes creada
-            closeButton.addEventListener("click", function () {
-                //Ocultamos el modal
-                modal.hide();
-                //Limpiamos el modal
-                limpiarForm();
-            });
-            //Llenamos los inputs del modal con su respectiva informacion
-            form.value = {
-                id_seccion: res.data.data.id,
-                titulo_seccion: res.data.data.campos.titulo_seccion,
-                subtitulo_seccion: res.data.data.campos.subtitulo_seccion,
-                descripcion_seccion: res.data.data.campos.descripcion_seccion,
-                id_pagina: res.data.data.campos.id_pagina,
-                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
-                visibilidad_seccion: res.data.data.campos.visibilidad_seccion ? true : false,
-                editable: res.data.data.campos.editable ? true : false,
-            };
-        });
-    } catch (error) {
-        //Se extrae el mensaje de error
-        const mensajeError = error.response.data.message;
-        //Se extrae el sqlstate (identificador de acciones SQL)
-        const sqlState = validaciones.extraerSqlState(mensajeError);
-        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-        const res = validaciones.mensajeSqlState(sqlState);
-
-        //Se cierra el modal
-        document.getElementById("closeModal").click();
-
-        //Se muestra un sweetalert con el mensaje
-        Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: res,
-            confirmButtonColor: "#3F4280",
-        });
-    }
-}
-
-async function actualizarSeccion() {
-    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
-        try {
-            //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_seccion;
-
-            //Se crea una constante FormData para almacenar los datos del modal
-            //Se crea una constante FormData para almacenar los datos del modal
-            const formData = new FormData();
-            formData.append("titulo_seccion", form.value.titulo_seccion);
-            formData.append("subtitulo_seccion", form.value.subtitulo_seccion);
-            formData.append("descripcion_seccion", form.value.descripcion_seccion)
-            formData.append("id_pagina", form.value.id_pagina);
-            formData.append(
-                "visibilidad_seccion",
-                form.value.visibilidad_seccion ? 1 : 0
-            );
-            formData.append(
-                "editable",
-                form.value.editable ? 1 : 0
-            );
-
-
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/secciones_update/" + id, formData, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-            });
-
-            //Se evalua el buscador para realizar leerSecciones o buscarSecciones
-            if (buscar.value.buscador) {
-                buscarSecciones();
-            } else {
-                leerSecciones();
-            }
-            //Se cierra el modal
-            document.getElementById("closeModal").click();
-
-            //Se lanza la alerta de éxito
-            Toast.fire({
-                icon: "success",
-                title: "Sección actualizada exitosamente",
-            });
-        } catch (error) {
-            console.log(error);
-            const mensajeError = error.response.data.message;
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
-
-                //Se cierra el modal
-                document.getElementById('closeModal').click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: res,
-                    confirmButtonColor: '#3F4280'
-                });
-            } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: mensajeError,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
-    }
 }
 </script>

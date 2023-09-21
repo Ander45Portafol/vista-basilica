@@ -496,7 +496,7 @@ const form = ref({
     tema: "Claro",
     fecha_cambio:"",
     fecha_bloqueo:"",
-    autenticable:"",
+    autenticable:false,
     visibilidad_usuario: false,
     id_rol_usuario: 0,
 });
