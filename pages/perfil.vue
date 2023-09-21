@@ -265,7 +265,7 @@
     <!-- Main modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-lg max-h-full">
+        <div class="relative w-full max-w-5xl max-h-full">
             <!-- Modal content -->
             <div class="relative rounded-lg shadow modal">
                 <!-- Modal header -->
@@ -285,66 +285,167 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <form class="p-2 space-y-6 pb-8" @submit.prevent="cambiarClave">
-                    <div class="flex justify-center">
-                        <div class="flex-col">
-                            <div class="relative z-0 mt-6 w-64">
-                                <input type="password" id="contraseña_actual" name="contraseña_actual" required
-                                    maxlength="250" v-model="form2.contrasenia_actual"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="contraseña_actual"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                    Contraseña - actual<span class="text-sm ml-1"> * </span></label>
-                            </div>
-                            <div class="relative z-0 mt-6 w-64">
-                                <input type="password" id="contraseña_nueva" name="contraseña_nueva" required
-                                    maxlength="250" v-model="form2.contrasenia_nueva"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="contraseña_nueva"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                    Contraseña - Nueva<span class="text-sm ml-1"> * </span></label>
-                            </div>
-                            <div class="relative z-0 mt-6 w-64">
-                                <input type="password" id="confirmar" name="confirmar" required
-                                    @input="validarContrasenias()" maxlength="250" v-model="form2.confirmar_contrasenia"
-                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                    placeholder=" " autocomplete="off" />
-                                <label for="confirmar"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
-                                    Confirmar - contraseña<span class="text-sm ml-1"> * </span></label>
-                            </div>
-                            <div v-if="!validarContrasenias()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                                role="alert">
-                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                <div class="w-2/4">
-                                    Contraseña invalida <span class="font-medium">
-                                    </span>
+                <div class="flex w-full">
+                    <form class="p-2 space-y-6 pb-8 w-3/4" @submit.prevent="cambiarClave">
+                        <div class="flex justify-center">
+                            <div class="flex-col">
+                                <div class="relative z-0 mt-6 w-64">
+                                    <input type="password" id="contraseña_actual" name="contraseña_actual" required
+                                        maxlength="250" v-model="form2.contrasenia_actual"
+                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                        placeholder=" " autocomplete="off" />
+                                    <label for="contraseña_actual"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                        Contraseña - actual<span class="text-sm ml-1"> * </span></label>
+                                </div>
+                                <div class="relative z-0 mt-6 w-64">
+                                    <input type="password" id="contraseña_nueva" name="contraseña_nueva" required
+                                        maxlength="250" v-model="form2.contrasenia_nueva"
+                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                        placeholder=" " autocomplete="off" />
+                                    <label for="contraseña_nueva"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                        Contraseña - Nueva<span class="text-sm ml-1"> * </span></label>
+                                </div>
+                                <div class="relative z-0 mt-6 w-64">
+                                    <input type="password" id="confirmar" name="confirmar" required
+                                        @input="validarContrasenias()" maxlength="250" v-model="form2.confirmar_contrasenia"
+                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                        placeholder=" " autocomplete="off" />
+                                    <label for="confirmar"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
+                                        Confirmar - contraseña<span class="text-sm ml-1"> * </span></label>
+                                </div>
+                                <div v-if="!validarContrasenias()"
+                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div class="w-2/4">
+                                        Contraseña invalida <span class="font-medium">
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="modal-buttons flex items-end justify-end pr-6 pt-10">
+                            <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
+                                type="submit">
+                                <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path
+                                        d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                        stroke="#23B7A0" stroke-width="2"></path>
+                                    <path
+                                        d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                        stroke="#23B7A0" stroke-width="2"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                    <div class="flex p-4 mb-4 text-sm text-black rounded-lg bg-blue-50 w-1/4" role="alert">
+                        <div>
+                            <span class="font-medium text-base">Para garantizar la seguridad de tu cuenta, te recomendamos
+                                tener en cuenta
+                                las siguientes sugerencias:</span>
+                            <ul class="mt-5 ml-4 list-none">
+                                <li :class="errores_contra.clases_longitud">
+                                    <svg v-if="errores_contra.validar_longitud" class="mr-2 w-6 h-6" stroke-width="1.5"
+                                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
+                                        <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                            stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
+                                        <path
+                                            d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                            stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                    Longitud de 8 a 72 caracteres.
+                                </li>
+                                <li :class="errores_contra.clases_minuscula">
+                                    <svg v-if="errores_contra.validar_minuscula" class="mr-2 w-6 h-6" stroke-width="1.5"
+                                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
+                                        <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                            stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
+                                        <path
+                                            d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                            stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                    Al menos una letra minúscula.
+                                </li>
+                                <li :class="errores_contra.clases_mayuscula">
+                                    <svg v-if="errores_contra.validar_mayuscula" class="mr-2 w-6 h-6" stroke-width="1.5"
+                                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
+                                        <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                            stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
+                                        <path
+                                            d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                            stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                    Al menos una letra mayúscula.
+                                </li>
+                                <li :class="errores_contra.clases_numero">
+                                    <svg v-if="errores_contra.validar_numero" class="mr-2 w-6 h-6" stroke-width="1.5"
+                                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
+                                        <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                            stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
+                                        <path
+                                            d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                            stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                    Al menos un número.
+                                </li>
+                                <li :class="errores_contra.clases_especiales">
+                                    <svg v-if="errores_contra.validar_especiales" class="mr-2 w-6 h-6" stroke-width="1.5"
+                                        viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#198A39">
+                                        <path d="M7 12.5l3 3 7-7" stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                            stroke="#198A39" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                    <svg v-else class="mr-2 w-6 h-6" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#A61D1D">
+                                        <path
+                                            d="M9.172 14.828L12.001 12m2.828-2.828L12.001 12m0 0L9.172 9.172M12.001 12l2.828 2.828M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
+                                            stroke="#A61D1D" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                    </svg>
+                                    Al menos un carácter especial, como ! @ # ?
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="modal-buttons flex items-end justify-end pr-6 pt-10">
-                        <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
-                            type="submit">
-                            <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path
-                                    d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                    stroke="#23B7A0" stroke-width="2"></path>
-                                <path
-                                    d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                    stroke="#23B7A0" stroke-width="2"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
