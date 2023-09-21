@@ -48,12 +48,12 @@
                     <!-- Título de la gráfica -->
                     <p class="text-2xl font-extrabold mt-5">Donaciones registradas por fecha en la semana actual</p>
                     <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal"
-                            v-if="total_suma_donaciones">${{ total_suma_donaciones }}</span><span class="text-xl font-normal"
-                            v-else>$0.00</span></p>
+                            v-if="total_suma_donaciones">${{ total_suma_donaciones }}</span><span
+                            class="text-xl font-normal" v-else>$0.00</span></p>
                     <div class="grafic h-80 w-full flex justify-center items-center">
                         <!-- Se valida si el gráfico esta listo para mostrarse -->
                         <Line v-if="data_donaciones && data_donaciones.results.length > 0 && data_lista_donaciones"
-                            :data="CHART_DONACIONES" :options="OPCIONES_DONACIONES" class="px-10"/>
+                            :data="CHART_DONACIONES" :options="OPCIONES_DONACIONES" class="px-10" />
                         <!-- Si no esta listo se muestra un mensaje de que no hay información -->
                         <p v-else-if="data_lista_donaciones">No hay donaciones registradas en esta semana.</p>
                     </div>
@@ -149,6 +149,9 @@ onMounted(async () => {
     await leerAnuncios();
 });
 
+//Evento para reiniciar el tiempo del componente del timer
+const EVENTO = new Event('reset-timer');
+
 //Constante para el token
 const token = ref(null);
 
@@ -163,6 +166,7 @@ const data_lista_donaciones = ref(false);
 
 //Función para traer los datos con los que llenar la gráfica de donaciones
 async function leerDonaciones() {
+    token.value = localStorage.getItem('token');
     try {
         //Se realiza la petición axios
         const { data: res } = await axios.get('/donaciones-graf', {
@@ -174,6 +178,8 @@ async function leerDonaciones() {
         data_donaciones.value = res;
         total_suma_donaciones = data_donaciones.value.totalSuma;
         data_lista_donaciones.value = true;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENTO);
         localStorage.setItem('token', res.token);
         token.value = localStorage.getItem('token');
     } catch (error) {
@@ -251,6 +257,7 @@ var total_usuarios = null;
 
 //Función para traer los datos con los que llenar la gráfica de usuarios
 async function leerNUsuarios() {
+    token.value = localStorage.getItem('token');
     try {
         //Se realiza la petición axios
         const { data: res } = await axios.get('/usuarios-graf', {
@@ -262,6 +269,8 @@ async function leerNUsuarios() {
         data_n_usuarios.value = res;
         total_usuarios = data_n_usuarios.value.totalUsuarios;
         data_lista_usuarios.value = true;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENTO);
         localStorage.setItem('token', res.token);
         token.value = localStorage.getItem('token');
         console.log(res);
@@ -303,6 +312,7 @@ const data_lista_n_secciones = ref(false);
 
 //Función para traer los datos con los que llenar la gráfica de secciones
 async function leerNSecciones() {
+    token.value = localStorage.getItem('token');
     try {
         //Se realiza la petición axios
         const { data: res } = await axios.get('/secciones-graf', {
@@ -313,6 +323,8 @@ async function leerNSecciones() {
         //Se asigna valor a todas las variables
         data_n_secciones.value = res;
         data_lista_n_secciones.value = true;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENTO);
         localStorage.setItem('token', res.token);
         token.value = localStorage.getItem('token');
         console.log(res);
@@ -356,6 +368,7 @@ const data_lista_eventos = ref(false);
 
 //Función para traer los datos con los que llenar la gráfica de eventos
 async function leerEventos() {
+    token.value = localStorage.getItem('token');
     try {
         //Se realiza la petición axios
         const { data: res } = await axios.get('/eventos-graf', {
@@ -366,6 +379,8 @@ async function leerEventos() {
         //Se asigna valor a todas las variables
         data_eventos.value = res;
         data_lista_eventos.value = true;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENTO);
         localStorage.setItem('token', res.token);
         token.value = localStorage.getItem('token');
     } catch (error) {
@@ -415,6 +430,7 @@ const data_lista_anuncios = ref(false);
 
 //Función para traer los datos con los que llenar la gráfica de anuncios
 async function leerAnuncios() {
+    token.value = localStorage.getItem('token');
     try {
         //Se realiza la petición axios
         const { data: res } = await axios.get('/anuncios-graf', {
@@ -425,6 +441,8 @@ async function leerAnuncios() {
         //Se asigna valor a todas las variables
         data_anuncios.value = res;
         data_lista_anuncios.value = true;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENTO);
         localStorage.setItem('token', res.token);
         token.value = localStorage.getItem('token');
     } catch (error) {

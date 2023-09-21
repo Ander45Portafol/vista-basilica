@@ -72,8 +72,8 @@
                     <form class="flex justify-between items-center flex-wrap mt-6" @submit.prevent="cargarDatos">
                         <div class="flex">
                             <div class="relative z-0 w-64 max-[1200px]:w-full" id="input_fechai">
-                                <input v-model="form_fechas.fecha_inicial" @change="validarFechas" type="date" min="2023-01-01"
-                                    id="fecha_inicial" :max="form_fechas.fecha_final" name="fecha_inicial"
+                                <input v-model="form_fechas.fecha_inicial" @change="validarFechas" type="date"
+                                    min="2023-01-01" id="fecha_inicial" :max="form_fechas.fecha_final" name="fecha_inicial"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="fecha_inicial"
@@ -81,8 +81,8 @@
                                     inicial</label>
                             </div>
                             <div class="relative z-0 w-64 ml-14 max-[1200px]:w-full" id="input_fechaf">
-                                <input v-model="form_fechas.fecha_final" @change="validarFechas" type="date" id="fecha_final" :max="fecha_actual"
-                                    name="fecha_final" :min="form_fechas.fecha_inicial"
+                                <input v-model="form_fechas.fecha_final" @change="validarFechas" type="date"
+                                    id="fecha_final" :max="fecha_actual" name="fecha_final" :min="form_fechas.fecha_inicial"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder="" autocomplete="off" />
                                 <label for="fecha_final"
@@ -99,7 +99,9 @@
                                 </label>
                             </div>
                         </div>
-                        <button type="submit" class="w-32 h-10 bg-space text-white mt-4 rounded-lg max-[1200px]:w-24 max-[1200px]:text-sm" :disabled="texto_error">
+                        <button type="submit"
+                            class="w-32 h-10 bg-space text-white mt-4 rounded-lg max-[1200px]:w-24 max-[1200px]:text-sm"
+                            :disabled="texto_error">
                             Generar
                         </button>
                     </form>
@@ -227,6 +229,9 @@ function llenarFechas() {
 //Se ejecuta la función en el setup (Antes que se cargue el DOM)
 llenarFechas();
 
+//Evento para reiniciar el tiempo del componente del timer
+const EVENTO = new Event('reset-timer');
+
 //Constante ref para almacenar los registros de la gráfica
 const data_donaciones = ref(null);
 //Constante ref para almacenar la suma de donaciones que se mostrará en el título de la gráfica
@@ -238,6 +243,7 @@ const data_lista_donaciones = ref(false);
 async function cargarDatos() {
     //Se evalua que los datos ingresados sean validos
     if (!texto_error.value) {
+        token.value = localStorage.getItem('token');
         try {
             //Se evalua si los inputs de las fechas tienen valor para saber que gráfico es el que se mostrará, si los inputs no tienen valor entonces el gráfico que se mostrará es el del año
             if (form_fechas.value.fecha_inicial && form_fechas.value.fecha_final) {
@@ -253,6 +259,10 @@ async function cargarDatos() {
                 suma_donaciones.value = res.totalDonaciones;
                 //Se cambia el título del chart con la información que se acaba de traer
                 OPCIONES_CHART.plugins.title.text = 'Total de donaciones: ' + suma_donaciones.value;
+                //Se reinicia el timer
+                window.dispatchEvent(EVENTO);
+                localStorage.setItem('token', res.token);
+                token.value = localStorage.getItem('token');
             } else if (anio_ref.value) {
                 //Se realiza la petición axios
                 const { data: res } = await axios.get('/donaciones-panio-graf/' + anio_ref.value, {
@@ -266,6 +276,10 @@ async function cargarDatos() {
                 suma_donaciones.value = res.totalDonaciones;
                 //Se cambia el título del chart con la información que se acaba de traer
                 OPCIONES_CHART.plugins.title.text = 'Total donado en el año ' + anio_ref.value + ': ' + '$' + suma_donaciones.value;
+                //Se reinicia el timer
+                window.dispatchEvent(EVENTO);
+                localStorage.setItem('token', res.token);
+                token.value = localStorage.getItem('token');
             }
         } catch (error) {
             console.log(error);
