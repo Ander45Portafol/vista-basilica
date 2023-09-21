@@ -20,12 +20,6 @@
   font-family: 'Poppins', sans-serif;
 }
 
-/* Separador */
-.container-left {
-  border-right-width: 4px;
-  border-right-color: #808080;
-}
-
 /* Centrar imagen */
 .container-right {
   margin: 0 15px;
