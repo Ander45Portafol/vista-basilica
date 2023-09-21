@@ -114,9 +114,8 @@ async function validarCredenciales() {
         });
     } catch (error) {
         console.log(error);
-        const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-            const sqlState = validaciones.extraerSqlState(mensajeError);
+        if (!error.response.data.errors && !error.response.data.error) {
+            const sqlState = validaciones.extraerSqlState(error.response.data.message);
             console.log(sqlState);
             const res = validaciones.mensajeSqlState(sqlState);
 
@@ -132,7 +131,7 @@ async function validarCredenciales() {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: mensajeError,
+                text: error.response.data.error,
                 confirmButtonColor: '#3F4280'
             });
         }
