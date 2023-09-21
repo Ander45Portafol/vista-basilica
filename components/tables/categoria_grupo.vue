@@ -337,6 +337,7 @@ async function crearCategoriaGrupo() {
                 //Se actualiza el token con la respuesta del axios
                 localStorage.setItem('token', res.data.data.token);
                 token.value = localStorage.getItem('token');
+                limpiarForm();
             });
 
             //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
