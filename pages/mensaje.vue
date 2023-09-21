@@ -2,25 +2,28 @@
 <template>
     <div class="principal mt-6">
         <!-- Menu de navegación superior -->
-        <MenuMensajeDashboard />
+        <MenuMensajeDashboard class="mr-8" />
+        <!-- Contenerdor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
+            <!-- Sección del buscador -->
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <!-- Sección del buscador -->
-                <div action="" class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
+                <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (asunto/correo)" v-model="buscar.buscador" @keyup="buscarMensajes($event)">
+                        placeholder="Buscar... (asunto/correo)" v-model="buscar.buscador" @keyup="buscarMensajes($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
-                        <button class="absolute mr-4" @click="limpiarBuscador()"><svg width="20px" height="20px"
-                                stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                color="#000000">
+                        <button class="absolute mr-4" @click="limpiarBuscador()">
+                            <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
                                     stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
                     </div>
                 </div>
+                <!-- Sección de botones a la derecha del buscador -->
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
                     <button
@@ -93,44 +96,17 @@
                                 <span class="font-medium">No se encontraron registros, </span> la petición realizada no
                                 obtuvo resultados.
                             </div>
-                        </div>``
+                        </div>
                     </div>
                 </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <div v-if="mensajes.length == 0 && !ceroRegistrosEncontrados"
-                        class="loadingtable overflow-hidden h-full pr-4">
-                        <div class="contained-data flex-col" v-for="number in 6" :key="number">
-                            <div
-                                class="border-4 border-slate-300 animate-pulse flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
-                                <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                                    <div class="h-16 w-16 bg-slate-300 mr-5 rounded-2xl max-[600px]:hidden"></div>
-                                    <div class="datainfo flex-col max-[400px] p-0 w-full ml-0 mt-2 text-center">
-                                        <div
-                                            class="h-4 bg-slate-300 rounded-full dark:bg-gray-700 w-48 max-[450px]:w-40 max-[400px]:w-full mb-4">
-                                        </div>
-                                        <div
-                                            class="h-3 bg-slate-300 rounded-full dark:bg-gray-700 w-1/2 mb-2.5 max-[400px]:w-full">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                                    <div
-                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-2">
-                                    </div>
-                                    <div
-                                        class="bg-slate-300 h-10 w-10 ml-4 rounded-md flex items-center justify-center max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:ml-8">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <TablaCargando v-if="mensajes.length == 0 && !ceroRegistrosEncontrados" />
                     <TablesMensaje v-if="mensajes.length > 0" :datos_mensajes="mensajes" :actualizar_datos="cargarTabla"
                         :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="mensajes.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                        @cambioDePagina="cambioDePagina" :items_totales="mensajes.length" />
                 </div>
             </div>
         </div>
@@ -215,10 +191,10 @@ function cambioDePagina(pagina_prop) {
     pagina.value = pagina_prop;
 }
 
-function cargarTabla() {
-    leerMensajes();
-    if (buscar.value.texto_buscador) {
-        buscarMensajes();
+async function cargarTabla() {
+    await leerMensajes();
+    if (buscar.value.buscador) {
+        filtrarPaginas();
     }
 }
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano).*/
@@ -236,16 +212,16 @@ watch(pagina, async () => {
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
-function visibilidadRegistros() {
+async function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
     //Se establece el número de página a 1
     pagina.value = 1;
     //Se leen todas las páginas
-    leerMensajes();
+    await leerMensajes();
     //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
-        buscarMensajes();
+        filtrarPaginas();
     }
 }
 
@@ -255,19 +231,26 @@ async function leerMensajes() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
     try {
+        //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
+            //Se realiza la petición axios para leer los registros visibles
             const { data: res } = await axios.get('/mensajes', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
+
+            //Se asigna el valor de la respuesta de axios a la constante data
             data.value = res.data;
+
+            //Se limpia el array de registros paginados
             mensajes.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
             for (let i = 0; i < res.data.length; i += 10) {
                 mensajes.value.push(res.data.slice(i, i + 10));
             }
+
             //Se reinicia el timer
             window.dispatchEvent(EVENT);
             //Se refresca el valor del token con la respuesta del axios
@@ -276,13 +259,18 @@ async function leerMensajes() {
 
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
+
         } else {
+            //Se realiza la petición axios para leer los registros no visibles
             const { data: res } = await axios.get('/mensajes_ocultos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
+            //Se asigna el valor de la respuesta de axios a la constante data
             data.value = res.data;
+
+            //Se limpia el array de registros paginados
             mensajes.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
@@ -299,38 +287,46 @@ async function leerMensajes() {
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
         }
-        if (mensajes.value.length < pagina.value) {
+
+        //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+        //y que se bugee la paginación
+        if ((mensajes.value.length < pagina.value) && pagina.value != 1) {
             //Se actualiza el valor de la constante pagina
-            pagina.value = pagina.value - 1;
+            pagina.value = mensajes.value.length;
         }
 
         if (mensajes.value.length == 0) {
             ceroRegistrosEncontrados.value = true;
         }
+
     } catch (error) {
         console.log(error);
         const MENSAJE_ERROR = error.response.data.message;
-        if (!error.response.data.errors) {
-            //Se extrae el sqlstate (identificador de acciones SQL)
-            const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-            const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: RES,
-                confirmButtonColor: '#3F4280'
-            });
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
         } else {
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: MENSAJE_ERROR,
-                confirmButtonColor: '#3F4280'
-            });
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
         }
     }
 }
@@ -340,45 +336,23 @@ async function leerMensajes() {
 const ejecutado_despues_borrar = ref(false);
 
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarMensajes(event) {
+function buscarMensajes(event) {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
 
+            //Se regresa a la página 1
+            pagina.value = 1;
+
             //Se coloca como false para que si se pueda presionar el borrar
             ejecutado_despues_borrar.value = false;
 
-            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
-            useRouter().push({ query: { buscador: buscar.value.buscador } });
-
-            //Se filtran los registros de data según los parámetros del buscador (nombre_contacto / correo_contacto)
-            const data_filtrada = ref();
-            
-            data_filtrada.value = data.value.filter(mensaje =>
-            mensaje.campos.nombre_contactante.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
-            mensaje.campos.correo_contactante.toString().includes(buscar.value.buscador)
-            );
-
-            //Se limpia el array de registros paginados
-            mensajes.value = [];
-
-            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
-            if (data_filtrada.value.length == 0) {
-                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
-                ceroRegistrosEncontrados.value = true;
-            } else {
-                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data_filtrada.value.length; i += 10) {
-                    mensajes.value.push(data_filtrada.value.slice(i, i + 10));
-                }
-                //Se actualiza el valor de la constante de búsqueda a false
-                ceroRegistrosEncontrados.value = false;
-            }
+            filtrarPaginas();
 
         } else {
             //Se valida las teclas que el usuario puede presionar para bugear el buscador
             if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
-                 //Se coloca como true para que no se pueda presionar el borrar
+                //Se coloca como true para que no se pueda presionar el borrar
                 ejecutado_despues_borrar.value = true;
                 //Se regresa a la página 1 y se cargan todos los registros
                 limpiarBuscador();
@@ -398,6 +372,40 @@ async function buscarMensajes(event) {
     }
 }
 
+function filtrarPaginas() {
+    //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
+    const data_filtrada = ref();
+
+
+    data_filtrada.value = data.value.filter(mensaje =>
+        mensaje.campos.nombre_contactante.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+        mensaje.campos.correo_contactante.toString().includes(buscar.value.buscador)
+    );
+
+    //Se limpia el array de registros paginados
+    mensajes.value = [];
+
+    //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+    if (data_filtrada.value.length == 0) {
+        //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+        ceroRegistrosEncontrados.value = true;
+        pagina.value = 1;
+    } else {
+        //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+        for (let i = 0; i < data_filtrada.value.length; i += 10) {
+            mensajes.value.push(data_filtrada.value.slice(i, i + 10));
+        }
+        //Se actualiza el valor de la constante de búsqueda a false
+        ceroRegistrosEncontrados.value = false;
+    }
+
+    //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+    //y que se bugee la paginación
+    if ((mensajes.value.length < pagina.value) && pagina.value != 1) {
+        //Se actualiza el valor de la constante pagina
+        pagina.value = mensajes.value.length;
+    }
+}
 
 //Función para limpiar el buscador
 function limpiarBuscador() {
@@ -407,5 +415,7 @@ function limpiarBuscador() {
     leerMensajes();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
+    //Se limpia la ruta
+    useRouter().push({ query: '' });
 }
 </script>

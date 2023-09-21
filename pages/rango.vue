@@ -10,7 +10,7 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (titulo enlace)" v-model="buscar.buscador" @keyup="buscarRangos($event)" />
+                        placeholder="Buscar... (nombre rango/cantidad minima)" v-model="buscar.buscador" @keyup="buscarRangos($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -103,7 +103,7 @@
                 </div>
                 <div class="flex justify-center mt-6">
                     <Paginacion v-if="rangos.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="data.length" />
+                        @cambioDePagina="cambioDePagina" :items_totales="rangos.length" />
                 </div>
             </div>
         </div>
@@ -168,13 +168,12 @@ function cambioDePagina(pagina_prop) {
 }
 
 
-function cargarTabla() {
-    leerRangos();
-    if (buscar.value.texto_buscador) {
-        buscarRangos();
+async function cargarTabla() {
+    await leerRangos();
+    if (buscar.value.buscador) {
+        filtrarPaginas();
     }
 }
-
 //Operaciones SCRUD
 
 //Evento para reiniciar el tiempo del componente del timer
@@ -211,19 +210,18 @@ watch(pagina, async () => {
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
-function visibilidadRegistros() {
+async function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
     //Se establece el número de página a 1
     pagina.value = 1;
     //Se leen todas las páginas
-    leerRangos();
+    await leerRangos();
     //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
-        buscarRangos();
+        filtrarPaginas();
     }
 }
-
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
@@ -231,15 +229,20 @@ async function leerRangos() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
     try {
+        //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
+            //Se realiza la petición axios para leer los registros visibles
             const { data: res } = await axios.get('/rangos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
-            data.value = res.data;
-            rangos.value = [];
 
+            //Se asigna el valor de la respuesta de axios a la constante data
+            data.value = res.data;
+
+            //Se limpia el array de registros paginados
+            rangos.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
             for (let i = 0; i < res.data.length; i += 10) {
@@ -254,13 +257,18 @@ async function leerRangos() {
 
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
+
         } else {
+            //Se realiza la petición axios para leer los registros no visibles
             const { data: res } = await axios.get('/rangos_ocultos', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
             });
+            //Se asigna el valor de la respuesta de axios a la constante data
             data.value = res.data;
+
+            //Se limpia el array de registros paginados
             rangos.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
@@ -277,19 +285,49 @@ async function leerRangos() {
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
         }
-        if (rangos.value.length < pagina.value) {
+
+        //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+        //y que se bugee la paginación
+        if ((rangos.value.length < pagina.value) && pagina.value != 1) {
             //Se actualiza el valor de la constante pagina
-            pagina.value = pagina.value - 1;
+            pagina.value = rangos.value.length;
         }
 
         if (rangos.value.length == 0) {
             ceroRegistrosEncontrados.value = true;
         }
+
     } catch (error) {
         console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
-
 
 
 
@@ -297,45 +335,23 @@ async function leerRangos() {
 const ejecutado_despues_borrar = ref(false);
 
 //Función para buscar registros dependiendo del valor del buscador
-async function buscarRangos(event) {
+function buscarRangos(event) {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
 
+            //Se regresa a la página 1
+            pagina.value = 1;
+
             //Se coloca como false para que si se pueda presionar el borrar
             ejecutado_despues_borrar.value = false;
 
-            //Se actualiza la ruta del navegador para mostrar lo que se esta buscando
-            useRouter().push({ query: { buscador: buscar.value.buscador } });
-
-            //Se filtran los registros de data según los parámetros del buscador (titulo_enlace )
-            const data_filtrada = ref();
-            
-            data_filtrada.value = data.value.filter(rango =>
-            rango.campos.nombre_rango.toLowerCase().includes(buscar.value.buscador.toLowerCase())||
-            rango.campos.cantidad_monetaria_minima.toLowerCase().includes(buscar.value.buscador.toLowerCase())
-            );
-
-            //Se limpia el array de registros paginados
-            rangos.value = [];
-
-            //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
-            if (data_filtrada.value.length == 0) {
-                //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
-                ceroRegistrosEncontrados.value = true;
-            } else {
-                //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
-                for (let i = 0; i < data_filtrada.value.length; i += 10) {
-                    rangos.value.push(data_filtrada.value.slice(i, i + 10));
-                }
-                //Se actualiza el valor de la constante de búsqueda a false
-                ceroRegistrosEncontrados.value = false;
-            }
+            filtrarPaginas();
 
         } else {
             //Se valida las teclas que el usuario puede presionar para bugear el buscador
             if (buscar.value.buscador.length == 0 && (event.key != 'CapsLock' && event.key != 'Shift' && event.key != 'Control' && event.key != 'Alt' && event.key != 'Meta' && event.key != 'Escape' && event.key != 'Enter') && !ejecutado_despues_borrar.value) {
-                 //Se coloca como true para que no se pueda presionar el borrar
+                //Se coloca como true para que no se pueda presionar el borrar
                 ejecutado_despues_borrar.value = true;
                 //Se regresa a la página 1 y se cargan todos los registros
                 limpiarBuscador();
@@ -355,7 +371,40 @@ async function buscarRangos(event) {
     }
 }
 
+function filtrarPaginas() {
+    //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
+    const data_filtrada = ref();
 
+    
+    data_filtrada.value = data.value.filter(rango =>
+            rango.campos.nombre_rango.toLowerCase().includes(buscar.value.buscador.toLowerCase())||
+            rango.campos.cantidad_monetaria_minima.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+            );
+
+    //Se limpia el array de registros paginados
+    rangos.value = [];
+
+    //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
+    if (data_filtrada.value.length == 0) {
+        //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
+        ceroRegistrosEncontrados.value = true;
+        pagina.value = 1;
+    } else {
+        //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
+        for (let i = 0; i < data_filtrada.value.length; i += 10) {
+            rangos.value.push(data_filtrada.value.slice(i, i + 10));
+        }
+        //Se actualiza el valor de la constante de búsqueda a false
+        ceroRegistrosEncontrados.value = false;
+    }
+    
+    //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+    //y que se bugee la paginación
+    if ((rangos.value.length < pagina.value) && pagina.value != 1) {
+        //Se actualiza el valor de la constante pagina
+        pagina.value = rangos.value.length;
+    }
+}
 
 //Función para limpiar el buscador
 function limpiarBuscador() {
@@ -365,6 +414,8 @@ function limpiarBuscador() {
     leerRangos();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
+    //Se limpia la ruta
+    useRouter().push({ query: '' });
 }
 </script>
 
