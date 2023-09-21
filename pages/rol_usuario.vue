@@ -175,15 +175,12 @@ function cambioDePagina(pagina_prop) {
     pagina.value = pagina_prop;
 }
 
-
-
-function cargarTabla() {
-    leerRolesUsuarios();
-    if (buscar.value.texto_buscador) {
-        buscarRolesUsuarios();
+async function cargarTabla() {
+    await leerRolesUsuarios();
+    if (buscar.value.buscador) {
+        filtrarPaginas();
     }
 }
- 
 /*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano).*/
 let rolusuario = ref([]);
 
@@ -198,16 +195,16 @@ watch(pagina, async () => {
 const registros_visibles = ref(true);
 
 //Función para evaluar registros según la visibilidad que quiera el usuario
-function visibilidadRegistros() {
+async function visibilidadRegistros() {
     //Se establece el valor de la variable registros_visibles a su opuesto
     registros_visibles.value = !registros_visibles.value;
     //Se establece el número de página a 1
     pagina.value = 1;
     //Se leen todas las páginas
-    leerRolesUsuarios();
+    await leerRolesUsuarios();
     //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
-        buscarRolesUsuarios();
+        filtrarPaginas();
     }
 }
 
@@ -264,7 +261,7 @@ async function leerRolesUsuarios() {
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
         }
-        if (rolusuario.value.length < pagina.value) {
+        if ((rolusuario.value.length < pagina.value) && pagina.value != 1) {
             //Se actualiza el valor de la constante pagina
             pagina.value = pagina.value - 1;
         }
@@ -318,7 +315,7 @@ function buscarRolesUsuarios(event) {
 }
 
 function filtrarPaginas() {
-    //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
+    //Se filtran los registros de data según los parámetros del buscador (titulo_enlace )
     const data_filtrada = ref();
 
     data_filtrada.value = data.value.filter(rol =>
@@ -332,6 +329,7 @@ function filtrarPaginas() {
     if (data_filtrada.value.length == 0) {
         //Se actualiza el valor de la constante de búsqueda a true para mostrar un mensaje al usuario
         ceroRegistrosEncontrados.value = true;
+        pagina.value = 1;
     } else {
         //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
         for (let i = 0; i < data_filtrada.value.length; i += 10) {
@@ -345,7 +343,7 @@ function filtrarPaginas() {
     
     //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
     //y que se bugee la paginación
-    if (rolusuario.value.length < pagina.value) {
+    if ((rolusuario.value.length < pagina.value) && pagina.value != 1)  {
         //Se actualiza el valor de la constante pagina
         pagina.value = rolusuario.value.length;
     }
