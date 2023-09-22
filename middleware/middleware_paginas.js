@@ -33,6 +33,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if (process.client) {
         //Si el usuario no tiene un token, es enviado a la página del login
         if (!localStorage.getItem('token') || (localStorage.getItem('token') && !localStorage.getItem('usuario'))) {
+            console.log('usuario')
             return navigateTo('/');
         } else {
             try {
@@ -44,7 +45,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                 })
 
                 //Si el token es válido
-                if (res.data.message == 'El token de acceso es valido.') {
+                if (res.data.message == 'Acceso concedido.') {
                     //Se realiza la petición axios
                     const res = await axios.post("/accesos-usuario", localStorage.getItem('token'), {
                         headers: {
@@ -80,6 +81,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                         return navigateTo('/');
                     }
                 } else {
+                    console.log(res.data.message)
                     //Si el usuario tiene un token invalido es enviado a la página del login
                     return navigateTo('/');
                 }
