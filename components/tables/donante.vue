@@ -211,6 +211,7 @@ const dataGrafica = ref(null);
 const dataListaGrafica = ref(false);
 
 async function abrirModalGrafica(id) {
+    token.value = localStorage.getItem('token');
     try {
         //Se hace la petición axios y se evalua la respuesta
         await axios.get("/donantes-p-graf/" + id, {
@@ -237,6 +238,9 @@ async function abrirModalGrafica(id) {
             formGrafica.value.nombre_completo_donante = dataGrafica.value.data.nombreDonante;
             formGrafica.value.suma_donaciones = dataGrafica.value.data.totalDonaciones;
             opcionesChart.plugins.title.text = 'Total donado a lo largo del tiempo: $' + formGrafica.value.suma_donaciones;
+            window.dispatchEvent(EVENT);
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
         });
     } catch (error) {
         console.log(error);
