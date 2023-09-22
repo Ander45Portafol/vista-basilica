@@ -1,21 +1,28 @@
 <template>
     <div class="primer_uso h-screen w-screen overflow-hidden">
-        <div class="flex ml-16 h-full w-full">
+        <form class="flex ml-16 h-full w-full" @submit.prevent="crearPrimerUsuario()">
             <div class="w-3/4 flex-col mt-20">
                 <p class="text-white font-semibold text-6xl">Usuario</p>
                 <div class="flex mr-20 mt-20 justify-between">
                     <div class="flex-col">
                         <div class="relative z-0 mt-9 w-72">
                             <input type="text" id="nombre_persona" name="nombre_persona" required maxlength="100"
-                                v-model="form.nombre_usuario"
+                                @input="validarNombre()" v-model="form.nombre_usuario"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
                             <label for="nombre_persona"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                 - Persona<span class="text-sm ml-1"> * </span></label>
                         </div>
+                        <div v-if="!validarNombre()" class="flex w-64 mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                            role="alert">
+                            <div class="flex-col">
+                                El nombre de la persona solo permite<span class="font-medium">
+                                    letras.</span>
+                            </div>
+                        </div>
                         <div class="relative z-0 mt-16 w-72">
-                            <input type="text" id="correo_electronico" name="correo_electronico" required maxlength="100"
+                            <input type="email" id="correo_electronico" name="correo_electronico" required maxlength="100"
                                 v-model="form.correo_usuario"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
@@ -34,35 +41,85 @@
                                 <option value="Pasaporte" class="bg-gray-700">Pasaporte</option>
                                 <option value="Otro" class="bg-gray-700">Otro...</option>
                             </select>
+                            <div v-if="form.tipo_documento == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    Seleccione <span class="font-medium">
+                                        una opción.</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="flex-col">
                         <div class="relative z-0 mt-9 w-72">
                             <input type="text" id="apellido_persona" name="apellido_persona" required maxlength="100"
-                                v-model="form.apellido_usuario"
+                                @input="validarApellido()" v-model="form.apellido_usuario"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
                             <label for="apellido_persona"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
                                 - Persona<span class="text-sm ml-1"> * </span></label>
                         </div>
+                        <div v-if="!validarApellido()" class="flex w-64 mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                            role="alert">
+                            <div class="flex-col">
+                                El apellido de la persona solo permite <span class="font-medium">
+                                    letras.</span>
+                            </div>
+                        </div>
                         <div class="relative z-0 mt-16 w-72">
-                            <input type="text" id="telefono_persona" name="telefono_persona" required maxlength="10"
-                                v-model="form.telefono_usuario"
+                            <input type="text" id="telefono_persona" name="telefono_persona" required maxlength="9"
+                                @input="validarNumeroTelefono()" v-model="form.telefono_usuario"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
                             <label for="telefono_persona"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Teléfono
                                 - Persona<span class="text-sm ml-1"> * </span></label>
                         </div>
+                        <div v-if="!validarNumeroTelefono()" class="flex w-72 mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                            role="alert">
+                            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <div class="flex-col">
+                                    El número de teléfono ingresado <span class="font-medium">
+                                        no tiene un formato correcto.</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="relative z-0 mt-20 w-72">
                             <input type="text" id="numero_documento" name="numero_documento" required maxlength="10"
-                                v-model="form.numero_documento_usuario"
+                                @input="validarNumeroDocumento()" v-model="form.numero_documento_usuario"
                                 class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                 placeholder=" " autocomplete="off" />
                             <label for="numero_documento"
                                 class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Documento
                                 <span class="text-sm ml-1"> * </span></label>
+                        </div>
+                        <div v-if="!validarNumeroDocumento()"
+                            class="flex mt-2 mb-0 w-64 text-sm text-red-400 bg-transparent" role="alert">
+                            <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                            <div>
+                                <div class="flex-col">
+                                    El documento ingresado <span class="font-medium">
+                                        no tiene un formato correcto.</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="flex-col">
@@ -106,7 +163,7 @@
             <div class="h-full flex justify-center items-center w-1/6">
                 <div class="botones w-full h-3/5 ml-10 flex items-center">
                     <div class="flex-col ml-2">
-                        <button @click.prevent="crearPrimerUsuario"
+                        <button type="submit" :disabled="!validarNombre()||!validarApellido()||!validarNumeroDocumento()||!validarNumeroTelefono()"
                             class="h-14 w-64 bg-darkSpace text-white rounded-md text-lg font-semibold flex justify-center items-center">
                             Continuar
                             <svg width="30px" height="30px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
@@ -122,7 +179,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </template>
 <style scoped>
@@ -141,9 +198,12 @@
 <script setup>
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import validaciones from '../assets/validaciones.js';
+
 definePageMeta({
     layout: false,
 });
+
 
 const capturar_parroquia = ref(null);
 const capturar_usuario = ref(null);
@@ -153,13 +213,10 @@ async function validarPantalla() {
     const res = await axios.get('/primer_uso');
     capturar_parroquia.value = res.data.parroquias;
     capturar_usuario.value = res.data.usuarios;
-    if (capturar_parroquia.value == false && capturar_usuario.value == false) {
-        navigateTo('bienvenida');
-    }
-    else if (capturar_parroquia.value == true && capturar_usuario.value == false) {
+    if (capturar_parroquia.value == true && capturar_usuario.value == false) {
         navigateTo('primer_usuario')
-    } else {
-        navigateTo('/');
+    } else if (capturar_parroquia.value == true && capturar_usuario.value == true) {
+        navigateTo('/')
     }
 }
 onMounted(() => {
@@ -310,10 +367,6 @@ function validarNumeroDocumento() {
         var res = validaciones.validarNumeroDocumento(form.value.numero_documento_usuario, form.value.tipo_documento);
         return res;
     }
-}
-function validarUsuario() {
-    var res = validaciones.validarUsuario(form.value.usuario);
-    return res;
 }
 function validarNumeroTelefono() {
     var res = validaciones.validarNumeroTelefono(form.value.telefono_usuario);
