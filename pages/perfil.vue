@@ -48,57 +48,76 @@
             <img src="/img/f_perfil.svg" alt="cohete_login" class="w-full">
         </div>
         <div class="flex h-screen w-full ml-36 items-center">
-            <div class=" h-[52%] w-1/6 mb-44 bg-space opacity-95 mt-40 rounded-lg p-4 text-white flex-col">
-                <div class="flex justify-center relative h-44 w-40 border-2 border-slate-900 ml-12 rounded-lg cursor-pointer"
-                    @click="seleccionarArchivo" @mouseover="iconoBorrarTrue" @mouseleave="iconoBorrarFalse">
-                    <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
-                    <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
-                    <div v-if="mostrarIconoBorrar"
-                        class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px" viewBox="0 0 24 24"
-                            style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
-                            <path
-                                d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
-                            </path>
-                        </svg>
+            <div class="flex-col h-full w-1/6 mt-64">
+                <div class=" h-[42%] w-full bg-space opacity-95 rounded-lg p-4 text-white flex-col">
+                    <div class="flex justify-center">
+                        <div class="flex justify-center relative h-28 w-32 rounded-lg cursor-pointer"
+                            @click="seleccionarArchivo" @mouseover="iconoBorrarTrue" @mouseleave="iconoBorrarFalse">
+                            <img v-if="imagenPreview" :src="imagenPreview" class="h-28 w-30 rounded-lg" />
+                            <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
+                            <div v-if="mostrarIconoBorrar"
+                                class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px" viewBox="0 0 24 24"
+                                    style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                                    <path
+                                        d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-white mt-4 text-center">
+                        <p v-if="nombre_completo_usuario" class="text-2xl font-bold" id="nombre_usuario">{{
+                            nombre_completo_usuario }}</p>
+                        <p v-if="nombre_rol_usuario" id="rol_usuario">{{ nombre_rol_usuario }}</p>
+                        <div class="flex justify-center mt-6">
+                            <button id="cambiarClave" type="button"
+                                class="bg-darkSpace flex gap-4 p-2 items-center text-white w-44 h-10 rounded-lg">
+                                <svg width="28px" height="28px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path d="M21 13V8a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h7" stroke="#FFF"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path clip-rule="evenodd"
+                                        d="M20.879 16.917c.494.304.463 1.043-.045 1.101l-2.567.291-1.151 2.312c-.228.459-.933.234-1.05-.334l-1.255-6.116c-.099-.48.333-.782.75-.525l5.318 3.271z"
+                                        stroke="#FFF" stroke-width="2"></path>
+                                    <path d="M12 11.01l.01-.011M16 11.01l.01-.011M8 11.01l.01-.011" stroke="#FFF"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg> Cambiar clave
+                            </button>
+                        </div>
+                        <div class="flex justify-center mt-3" v-if="texto_autenticable">
+                            <button id="btn2FA" type="button" @click="cambiarValorAutenticable"
+                                class="bg-darkSpace flex gap-4 p-2 items-center text-white w-44 h-10 rounded-lg">
+                                <svg width="28px" height="28px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#FFFFFF">
+                                    <path
+                                        d="M7 16v-4.639c0-.51.1-.999.285-1.453M17 16v-3.185m-7.778-5.08A5.506 5.506 0 0112 7c2.28 0 4.203 1.33 4.805 3.15M10 17v-2.177M14 17v-5.147C14 10.83 13.105 10 12 10s-2 .83-2 1.853v.794"
+                                        stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                    <path
+                                        d="M21 3.6v16.8a.6.6 0 01-.6.6H3.6a.6.6 0 01-.6-.6V3.6a.6.6 0 01.6-.6h16.8a.6.6 0 01.6.6z"
+                                        stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                </svg> {{ texto_autenticable }}
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="text-white mt-4 text-center">
-                    <p v-if="nombre_completo_usuario" class="text-2xl font-bold" id="nombre_usuario">{{
-                        nombre_completo_usuario }}</p>
-                    <p v-if="nombre_rol_usuario" id="rol_usuario">{{ nombre_rol_usuario }}</p>
-                    <div class="flex justify-center mt-6">
-                        <button id="cambiarClave" type="button"
-                            class="bg-darkSpace flex gap-4 p-2 items-center text-white w-44 h-10 rounded-lg">
-                            <svg width="28px" height="28px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path d="M21 13V8a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h7" stroke="#FFF"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path clip-rule="evenodd"
-                                    d="M20.879 16.917c.494.304.463 1.043-.045 1.101l-2.567.291-1.151 2.312c-.228.459-.933.234-1.05-.334l-1.255-6.116c-.099-.48.333-.782.75-.525l5.318 3.271z"
-                                    stroke="#FFF" stroke-width="2"></path>
-                                <path d="M12 11.01l.01-.011M16 11.01l.01-.011M8 11.01l.01-.011" stroke="#FFF"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg> Cambiar clave
-                        </button>
-                    </div>
-                    <div class="flex justify-center mt-3" v-if="texto_autenticable">
-                        <button id="btn2FA" type="button" @click="cambiarValorAutenticable"
-                            class="bg-darkSpace flex gap-4 p-2 items-center text-white w-44 h-10 rounded-lg">
-                            <svg width="28px" height="28px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#FFFFFF">
-                                <path
-                                    d="M7 16v-4.639c0-.51.1-.999.285-1.453M17 16v-3.185m-7.778-5.08A5.506 5.506 0 0112 7c2.28 0 4.203 1.33 4.805 3.15M10 17v-2.177M14 17v-5.147C14 10.83 13.105 10 12 10s-2 .83-2 1.853v.794"
-                                    stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path
-                                    d="M21 3.6v16.8a.6.6 0 01-.6.6H3.6a.6.6 0 01-.6-.6V3.6a.6.6 0 01.6-.6h16.8a.6.6 0 01.6.6z"
-                                    stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg> {{ texto_autenticable }}
-                        </button>
+                <div class="h-[28%] w-full mt-4 bg-space opacity-95 rounded-lg text-white p-6">
+                    <div class="flex-col">
+                        <h3 class=" font-semibold mb-2 text-center">Doble factor de autenticación - 2FA</h3>
+                            <h4 class="font-bold">Ventajas: </h4>
+                            <p class="font-normal text-xs mt-1"><span class="font-bold">-</span>Mayor seguridad.</p>
+                            <p class="font-normal text-xs mt-1"><span class="font-bold">-</span>Protección contra robo de
+                                contraseñas.</p>
+                            <p class="font-normal text-xs mt-1"><span class="font-bold">-</span>Reducción de riesgo de Phishing.
+                            </p>
+                            <p class="font-normal text-xs mt-1"><span class="font-bold">-</span>Protección de datos sensibles.
+                            </p>
                     </div>
                 </div>
             </div>
-            <div class=" h-4/6 w-3/5 mb-12  bg-space opacity-95 mt-40 ml-12 rounded-lg p-6 text-white flex-col">
+            <div class=" h-[70%] w-3/5 mb-12  bg-space opacity-95 mt-14 ml-12 rounded-lg p-6 text-white flex-col">
                 <p class="font-bold text-3xl">Perfil</p>
                 <p class="text-lg font-extralight">Datos generales</p>
                 <form @submit.prevent="actualizarPerfil()" class="flex justify-evenly mt-14">
@@ -257,9 +276,9 @@
                                     no tiene un formato correcto.</span>
                             </div>
                         </div>
-                        <div class="flex items-end  h-44 justify-end w-96">
+                        <div class="flex items-end h-44 justify-end w-96">
                             <button type="submit"
-                                class="bg-darkSpace absolute bottom-20 w-52 flex items-center h-12 rounded-xl gap-4 justify-center"
+                                class="bg-darkSpace absolute bottom-32 w-52 flex items-center h-12 rounded-xl gap-4 justify-center"
                                 :disabled="!validarNombre() || form.tipo_documento == 0 || !validarUsuario() || !validarApellido() || !validarNumeroDocumento() || !validarNumeroTelefono()">
                                 <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
