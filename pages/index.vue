@@ -196,7 +196,7 @@
             <span class="text-sm ml-1"> * </span></label>
         </div>
         <div class="mx-12">
-          <button type="submit" :disabled="mostrar_error_contra"
+          <button type="submit"
             class="w-full py-3 mt-10 text-center text-white font-medium text-lg bg-purpleLogin rounded-lg">Cambiar
             contraseña</button>
         </div>
@@ -720,7 +720,7 @@ async function cambioContra() {
 
     try {
       //Se realiza la petición axios
-      await axios.post('/cambio_clave-perfil', FORMDATA, {
+      await axios.post('/cambio_clave', FORMDATA, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         }
@@ -746,10 +746,20 @@ async function cambioContra() {
     } catch (error) {
       //Se limpian los forms
       limpiarForms();
+      errores_contra.value.validar_numero = false;
+      errores_contra.value.validar_especiales = false;
+      errores_contra.value.validar_mayuscula = false; 
+      errores_contra.value.validar_minuscula = false;
+      errores_contra.value.validar_longitud = false;
+      errores_contra.value.clases_numero = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+      errores_contra.value.clases_especiales = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+      errores_contra.value.clases_mayuscula = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+      errores_contra.value.clases_minuscula = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
+      errores_contra.value.clases_longitud = 'mb-2 flex items-center text-[#A61D1D] font-semibold';
 
       console.log(error);
 
-      if (error.response.status == 401) {
+      if (error.response.data.message == "Token has expired") {
         doble_factor.value = false;
         cambio_contra.value = false;
         enviando_login.value = false;
