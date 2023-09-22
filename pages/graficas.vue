@@ -48,12 +48,12 @@
                     <!-- Título de la gráfica -->
                     <p class="text-2xl font-extrabold mt-5">Donaciones registradas por fecha en la semana actual</p>
                     <p class="text-xl font-bold">Total donado: <span class="text-xl font-normal"
-                            v-if="total_suma_donaciones">${{ total_suma_donaciones }}</span><span class="text-xl font-normal"
-                            v-else>$0.00</span></p>
+                            v-if="total_suma_donaciones">${{ total_suma_donaciones }}</span><span
+                            class="text-xl font-normal" v-else>$0.00</span></p>
                     <div class="grafic h-80 w-full flex justify-center items-center">
                         <!-- Se valida si el gráfico esta listo para mostrarse -->
                         <Line v-if="data_donaciones && data_donaciones.results.length > 0 && data_lista_donaciones"
-                            :data="CHART_DONACIONES" :options="OPCIONES_DONACIONES" class="px-10"/>
+                            :data="CHART_DONACIONES" :options="OPCIONES_DONACIONES" class="px-10" />
                         <!-- Si no esta listo se muestra un mensaje de que no hay información -->
                         <p v-else-if="data_lista_donaciones">No hay donaciones registradas en esta semana.</p>
                     </div>
@@ -68,7 +68,7 @@
                     </div>
                     <div class="grafic h-3/4 w-full flex justify-center items-center max-[950px]:w-full">
                         <!-- Se valida si el gráfico esta listo para mostrarse -->
-                        <PolarArea v-if="data_n_secciones && data_n_secciones.length > 0 && data_lista_n_secciones"
+                        <PolarArea v-if="data_n_secciones && data_n_secciones.results.length > 0 && data_lista_n_secciones"
                             :data="CHART_N_SECCIONES" :options="OPCIONES_N_SECCIONES" />
                         <!-- Si no esta listo se muestra un mensaje de que no hay información -->
                         <p v-else-if="data_lista_n_secciones">No se encontro información.</p>
@@ -137,17 +137,20 @@ definePageMeta({
 })
 
 //onMounted es un hook (en vue los hooks se usan para hacer tareas especificas con los componentes)
-onMounted(() => {
+onMounted(async () => {
     //Se carga el token del localStorage
     token.value = localStorage.getItem('token');
 
     //Se realizan las funciones para llenar las gráficas ya cuando el token ya tiene valor
-    leerDonaciones();
-    leerNUsuarios();
-    leerNSecciones();
-    leerEventos();
-    leerAnuncios();
+    await leerDonaciones();
+    await leerNUsuarios();
+    await leerNSecciones();
+    await leerEventos();
+    await leerAnuncios();
 });
+
+//Evento para reiniciar el tiempo del componente del timer
+const EVENTO = new Event('reset-timer');
 
 //Constante para el token
 const token = ref(null);
@@ -163,6 +166,7 @@ const data_lista_donaciones = ref(false);
 
 //Función para traer los datos con los que llenar la gráfica de donaciones
 async function leerDonaciones() {
+    token.value = localStorage.getItem('token');
     try {
         //Se realiza la petición axios
         const { data: res } = await axios.get('/donaciones-graf', {
@@ -174,6 +178,10 @@ async function leerDonaciones() {
         data_donaciones.value = res;
         total_suma_donaciones = data_donaciones.value.totalSuma;
         data_lista_donaciones.value = true;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENTO);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
     } catch (error) {
         console.log(error);
     }
@@ -249,6 +257,7 @@ var total_usuarios = null;
 
 //Función para traer los datos con los que llenar la gráfica de usuarios
 async function leerNUsuarios() {
+    token.value = localStorage.getItem('token');
     try {
         //Se realiza la petición axios
         const { data: res } = await axios.get('/usuarios-graf', {
@@ -260,6 +269,11 @@ async function leerNUsuarios() {
         data_n_usuarios.value = res;
         total_usuarios = data_n_usuarios.value.totalUsuarios;
         data_lista_usuarios.value = true;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENTO);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
+        console.log(res);
     } catch (error) {
         console.log(error);
     }
@@ -298,6 +312,7 @@ const data_lista_n_secciones = ref(false);
 
 //Función para traer los datos con los que llenar la gráfica de secciones
 async function leerNSecciones() {
+    token.value = localStorage.getItem('token');
     try {
         //Se realiza la petición axios
         const { data: res } = await axios.get('/secciones-graf', {
@@ -308,6 +323,11 @@ async function leerNSecciones() {
         //Se asigna valor a todas las variables
         data_n_secciones.value = res;
         data_lista_n_secciones.value = true;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENTO);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
+        console.log(res);
     } catch (error) {
         console.log(error);
     }
@@ -317,14 +337,14 @@ async function leerNSecciones() {
 const CHART_N_SECCIONES = computed(() => {
     return {
         //Se establecen los labels que son los textos que se muestran abajo del eje x, además se usa el map para evaluar cada registro indivualmente
-        labels: data_n_secciones.value.map(item => item.nombre_pagina),
+        labels: data_n_secciones.value.results.map(item => item.nombre_pagina),
         //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
         datasets: [
             {
                 //Se le agrega un prefijo personalizado a los labels, que además muestran el valor de la data para ese registro individual
                 label: "N° de secciones",
                 //Se establece la data de la grafica con un map de los registros
-                data: data_n_secciones.value.map(item => item.n_secciones),
+                data: data_n_secciones.value.results.map(item => item.n_secciones),
                 //Se establecen todos los colores posibles para los datasets con el backgroundColor
                 backgroundColor: ["rgba(255, 202, 81, 0.5)", "rgba(192, 161, 255, 0.5)"],
                 //Se establecen todos los colores posibles para los bordes con el borderColor
@@ -348,6 +368,7 @@ const data_lista_eventos = ref(false);
 
 //Función para traer los datos con los que llenar la gráfica de eventos
 async function leerEventos() {
+    token.value = localStorage.getItem('token');
     try {
         //Se realiza la petición axios
         const { data: res } = await axios.get('/eventos-graf', {
@@ -358,6 +379,10 @@ async function leerEventos() {
         //Se asigna valor a todas las variables
         data_eventos.value = res;
         data_lista_eventos.value = true;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENTO);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
     } catch (error) {
         console.log(error);
     }
@@ -405,6 +430,7 @@ const data_lista_anuncios = ref(false);
 
 //Función para traer los datos con los que llenar la gráfica de anuncios
 async function leerAnuncios() {
+    token.value = localStorage.getItem('token');
     try {
         //Se realiza la petición axios
         const { data: res } = await axios.get('/anuncios-graf', {
@@ -415,6 +441,10 @@ async function leerAnuncios() {
         //Se asigna valor a todas las variables
         data_anuncios.value = res;
         data_lista_anuncios.value = true;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENTO);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
     } catch (error) {
         console.log(error);
     }

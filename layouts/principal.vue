@@ -19,6 +19,6 @@ import Iconoir from 'iconoir/icons/iconoir.svg'
 
 /*Estilo general*/
 .body {
-   font-family: 'Roboto', sans-serif;
+   font-family: 'Poppins', sans-serif;
 }
 </style>
