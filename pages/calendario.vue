@@ -1,5 +1,90 @@
-<script>
+<template>
+  <div class="principal mt-6">
+    <MenuCalendarioDashboard class="mr-8" />
+  </div>
+  <div class='demo-app'>
+    <div class='demo-app-sidebar'>
+      <div class='demo-app-sidebar-section'>
+        <label>
+          <input type='checkbox' :checked='calendarOptions.weekends' @change='handleWeekendsToggle' />
+          toggle weekends
+        </label>
+      </div>
+      <div class='demo-app-sidebar-section mt-[-20px]'>
+        <h2>All Events <strong> ( {{ currentEvents.length }} ) </strong></h2>
+        <ul class="ml-[-20px] text-[14px]">
+          <li v-for='event in currentEvents' :key='event.id' class="flex items-center rounded-md bg-gray-200 p-5">
+            <div class="w-[100%]">
+              <b>{{ event.startStr }}</b>
+              <i>{{ event.title }}</i>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class='demo-app-main'>
+      <FullCalendar class='demo-app-calendar' :options='calendarOptions'>
+        <template v-slot:eventContent='arg'>
+          <b>{{ arg.timeText }}</b>
+          <i>{{ arg.event.title }}</i>
+        </template>
+      </FullCalendar>
+    </div>
+  </div>
+</template>
 
+<style lang='css'>
+h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+ul {
+  margin: 0;
+  padding: 0 0 0 1.5em;
+}
+
+li {
+  margin: 1.5em 0;
+  padding: 0;
+}
+
+b {
+  /* used for event dates/times */
+  margin-right: 3px;
+}
+
+.demo-app {
+  display: flex;
+  min-height: 100%;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+.demo-app-sidebar {
+  width: 300px;
+  line-height: 1;
+  border-right: 1px solid #d3e2e8;
+}
+
+.demo-app-sidebar-section {
+  padding: 2em;
+}
+
+.demo-app-main {
+  flex-grow: 1;
+  padding: 3em;
+}
+
+.fc {
+  /* the calendar root */
+  max-width: 1100px;
+  margin: 0 auto;
+}
+</style>
+
+
+<script>
 definePageMeta({
   layout: "principal"
 })
@@ -115,85 +200,3 @@ const formData = ref({
 });
 
 </script>
-
-<template>
-  <div class='demo-app'>
-    <div class='demo-app-sidebar'>
-      <div class='demo-app-sidebar-section'>
-        <label>
-          <input type='checkbox' :checked='calendarOptions.weekends' @change='handleWeekendsToggle' />
-          toggle weekends
-        </label>
-      </div>
-      <div class='demo-app-sidebar-section mt-[-20px]'>
-        <h2>All Events <strong> ( {{ currentEvents.length }} ) </strong></h2>
-        <ul class="ml-[-20px] text-[14px]">
-          <li v-for='event in currentEvents' :key='event.id' class="flex items-center rounded-md bg-gray-200 p-5">
-            <div class="w-[100%]">
-              <b>{{ event.startStr }}</b>
-              <i>{{ event.title }}</i>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class='demo-app-main'>
-      <FullCalendar class='demo-app-calendar' :options='calendarOptions'>
-        <template v-slot:eventContent='arg'>
-          <b>{{ arg.timeText }}</b>
-          <i>{{ arg.event.title }}</i>
-        </template>
-      </FullCalendar>
-    </div>
-  </div>
-</template>
-
-<style lang='css'>
-h2 {
-  margin: 0;
-  font-size: 16px;
-}
-
-ul {
-  margin: 0;
-  padding: 0 0 0 1.5em;
-}
-
-li {
-  margin: 1.5em 0;
-  padding: 0;
-}
-
-b {
-  /* used for event dates/times */
-  margin-right: 3px;
-}
-
-.demo-app {
-  display: flex;
-  min-height: 100%;
-  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-  font-size: 14px;
-}
-
-.demo-app-sidebar {
-  width: 300px;
-  line-height: 1;
-  border-right: 1px solid #d3e2e8;
-}
-
-.demo-app-sidebar-section {
-  padding: 2em;
-}
-
-.demo-app-main {
-  flex-grow: 1;
-  padding: 3em;
-}
-
-.fc {
-  /* the calendar root */
-  max-width: 1100px;
-  margin: 0 auto;
-}
-</style>
