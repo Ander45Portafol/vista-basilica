@@ -1,7 +1,7 @@
 <template>
-   <div class="principal mt-6">
+<div class="principal mt-6">
         <!-- Menu de navegación superior -->
-        <MenuPersonalDashboard class="mr-8" />
+        <MenuZonaDashboard lass="mr-8" />
         <!-- Contenerdor principal -->
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <!-- Sección del buscador -->
@@ -10,7 +10,7 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre completo/correo personal)" v-model="buscar.buscador" @keyup="buscarPersonal($event)" />
+                        placeholder="Buscar... (nombre zona)" v-model="buscar.buscador" @keyup="buscarZona($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -69,10 +69,10 @@
             </div>
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <!-- Se manda a traer la longitud del array de personales (el que trae los registros) y así saber cuantos registros son -->
+            <!-- Se manda a traer la longitud del array de zonas (el que trae los registros) y así saber cuantos registros son -->
             <div class="h-screen">
-                <p v-if="personales.length > 0 && !ceroRegistrosEncontrados"
-                    class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ personales[pagina -
+                <p v-if="zonas.length > 0 && !ceroRegistrosEncontrados"
+                    class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ zonas[pagina -
                         1].length
                     }}<span class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
                 <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
@@ -81,7 +81,7 @@
                 </p>
                 <!-- Alerta a mostrar el usuario busca algo que no coincide con ningún registro -->
                 <div class="flex-col">
-                    <div v-if="personales.length == 0 && ceroRegistrosEncontrados">
+                    <div v-if="zonas.length == 0 && ceroRegistrosEncontrados">
                         <div class="flex items-center px-4 py-6 mt-5 mb-4 text-sm text-purpleLogin border-2 border-purpleLogin rounded-lg bg-transparent"
                             role="alert">
                             <svg class="flex-shrink-0 inline w-6 h-6 mr-3" aria-hidden="true"
@@ -97,19 +97,20 @@
                     </div>
                 </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <TablaCargando v-if="personales.length == 0 && !ceroRegistrosEncontrados"/>
-                    <TablesPersonal v-if="personales.length > 0" :datos_personal="personales" :actualizar_datos="cargarTabla"
+                    <TablaCargando v-if="zonas.length == 0 && !ceroRegistrosEncontrados"/>
+                    <TablesZona v-if="zonas.length > 0" :datos_zona="zonas" :actualizar_datos="cargarTabla"
                         :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
-                    <Paginacion v-if="personales.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="personales.length" />
+                    <Paginacion v-if="zonas.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
+                        @cambioDePagina="cambioDePagina" :items_totales="zonas.length" />
                 </div>
             </div>
         </div>
     </div>
 </template>
-<style scoped>
+
+<style scoped> 
 .content-buttons input {
     border: 3px solid #1b1c30;
 }
@@ -161,7 +162,7 @@ onMounted(() => {
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
     //Se lee el personal al montarse la página para evitar problemas del setup y el localStorage
-    leerPersonal();
+    leerZona();
 });
 
 //Evento para reiniciar el tiempo del componente del timer
@@ -187,15 +188,19 @@ function cambioDePagina(pagina_prop) {
     pagina.value = pagina_prop;
 }
 
+
+/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
+y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
+let zonas  = ref([]);
+
+
+/*Funcion que hace forma de cargar para componentes*/
 async function cargarTabla() {
-    await leerPersonal();
+    await leerZona();
     if (buscar.value.buscador) {
         filtrarPaginas();
     }
 }
-/*Se crea una variable let (variable de bloque / su alcance se limita a un bloque cercano). Esta variable es reactiva
-y se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
-let personales  = ref([]);
 
 /*Se crea un watch (detecta cada que "pagina" cambia) y ejecuta un select a los registros de esa página,
 además muestra en la url la página actual*/
@@ -212,23 +217,24 @@ async function visibilidadRegistros() {
     //Se establece el número de página a 1
     pagina.value = 1;
     //Se leen todas las páginas
-    await leerPersonal();
+    await leerZona();
     //Se evalua el buscador para filtrar los registros
     if (buscar.value.buscador) {
         filtrarPaginas();
     }
 }
 
+
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
-async function leerPersonal() {
+async function leerZona() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
     try {
         //Se evalua si se quieren mostrar los registros visibles o invisibles
         if (registros_visibles.value) {
             //Se realiza la petición axios para leer los registros visibles
-            const { data: res } = await axios.get('/personal', {
+            const { data: res } = await axios.get('/zonas', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
@@ -238,11 +244,11 @@ async function leerPersonal() {
             data.value = res.data;
 
             //Se limpia el array de registros paginados
-            personales.value = [];
+            zonas.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
             for (let i = 0; i < res.data.length; i += 10) {
-                personales.value.push(res.data.slice(i, i + 10));
+                zonas.value.push(res.data.slice(i, i + 10));
             }
 
             //Se reinicia el timer
@@ -256,7 +262,7 @@ async function leerPersonal() {
 
         } else {
             //Se realiza la petición axios para leer los registros no visibles
-            const { data: res } = await axios.get('/personal_oculto', {
+            const { data: res } = await axios.get('/zonas_ocultas', {
                 headers: {
                     Authorization: `Bearer ${token.value}`,
                 },
@@ -265,11 +271,11 @@ async function leerPersonal() {
             data.value = res.data;
 
             //Se limpia el array de registros paginados
-            personales.value = [];
+            zonas.value = [];
 
             //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
             for (let i = 0; i < res.data.length; i += 10) {
-                personales.value.push(res.data.slice(i, i + 10));
+                zonas.value.push(res.data.slice(i, i + 10));
             }
 
             //Se reinicia el timer
@@ -284,12 +290,12 @@ async function leerPersonal() {
 
         //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
         //y que se bugee la paginación
-        if ((personales.value.length < pagina.value) && pagina.value != 1) {
+        if ((zonas.value.length < pagina.value) && pagina.value != 1) {
             //Se actualiza el valor de la constante pagina
-            pagina.value = personales.value.length;
+            pagina.value = zonas.value.length;
         }
 
-        if (personales.value.length == 0) {
+        if (zonas.value.length == 0) {
             ceroRegistrosEncontrados.value = true;
         }
 
@@ -325,14 +331,12 @@ async function leerPersonal() {
     }
 }
 
-
-
 //Función para buscar registros dependiendo del valor del buscador
 //Constante ref para controlar que no se pueda spamear el delete en el buscador y bugear el token
 const ejecutado_despues_borrar = ref(false);
 
 //Función para buscar registros dependiendo del valor del buscador
-function buscarPersonal(event) {
+function buscarZona(event) {
     try {
         //Se evalua que el buscador no este vacio
         if (buscar.value.buscador != "") {
@@ -371,14 +375,12 @@ function buscarPersonal(event) {
 function filtrarPaginas() {
     //Se filtran los registros de data según los parámetros del buscador (nombre_pagina / numero_pagina)
     const data_filtrada = ref();
-    data_filtrada.value = data.value.filter(personal =>
-            personal.campos.nombre_personal.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
-            personal.campos.apellido_personal.toString().includes(buscar.value.buscador)||
-            personal.campos.correo_personal.toString().includes(buscar.value.buscador)
+    data_filtrada.value = data.value.filter(zona =>
+    zona.campos.nombre_zona.toLowerCase().includes(buscar.value.buscador.toLowerCase()) 
             );
 
     //Se limpia el array de registros paginados
-    personales.value = [];
+    zonas.value = [];
 
     //Se evalua la longitud del array filtrado, si es 0 significa que no hay registros similares
     if (data_filtrada.value.length == 0) {
@@ -388,7 +390,7 @@ function filtrarPaginas() {
     } else {
         //En caso de que si hayan registros similares, se paginan los registros de 10 en 10 usando el for
         for (let i = 0; i < data_filtrada.value.length; i += 10) {
-            personales.value.push(data_filtrada.value.slice(i, i + 10));
+            zonas.value.push(data_filtrada.value.slice(i, i + 10));
         }
         //Se actualiza el valor de la constante de búsqueda a false
         ceroRegistrosEncontrados.value = false;
@@ -396,9 +398,9 @@ function filtrarPaginas() {
     
     //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
     //y que se bugee la paginación
-    if ((personales.value.length < pagina.value) && pagina.value != 1) {
+    if ((zonas.value.length < pagina.value) && pagina.value != 1) {
         //Se actualiza el valor de la constante pagina
-        pagina.value = personales.value.length;
+        pagina.value = zonas.value.length;
     }
 }
 
@@ -407,10 +409,13 @@ function limpiarBuscador() {
     //Se coloca la constante pagina 1 para que salga la primera pagina de registros
     pagina.value = 1;
     //Se leen todos los registros
-    leerPersonal();
+    leerZona();
     //Se coloca el valor del buscador a nulo
     buscar.value.buscador = "";
     //Se limpia la ruta
     useRouter().push({ query: '' });
 }
+
+
+
 </script>
