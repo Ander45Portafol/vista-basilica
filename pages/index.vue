@@ -1,7 +1,7 @@
 <template>
   <div v-if="!enviando_login && !doble_factor && !cambio_contra" class="w-full grid place-items-center">
     <div class="top flex items-center">
-      <img src="/img/logo_con_letras.svg" alt="logo_login" class="h-[20vh]">
+      <img src="/img/logo_nuevo_negrita.svg" alt="logo_login" class="h-[20vh]">
     </div>
     <form class="middle flex-col w-1/2 mt-12" @submit.prevent="login()">
       <div class="relative z-0">
@@ -460,14 +460,7 @@ async function login() {
     //Si retorno un token se redirige a la página principal
     if (res != null) {
       if (!res.data.data.doble_factor) {
-        const cap_token = res.data.data.token;
-        const cap_usuario = res.data.data.user.id_usuario;
-        const cap_imagen = res.data.data.user.imagen_usuario;
-        localStorage.setItem('token', cap_token)
-        console.log(localStorage.getItem('token'));
-        localStorage.setItem('usuario', cap_usuario);
-        localStorage.setItem('imagen_usuario', cap_imagen);
-
+        console.log(res.data.data.chequeo_cambio.cambio_necesario);
         //Se evalua si el usuario no ha cambiado su contraseña en los ultimos 3 meses
         if (!res.data.data.chequeo_cambio.cambio_necesario) {
           navigateTo('/principal');
@@ -476,6 +469,14 @@ async function login() {
           enviando_login.value = false;
           cambio_contra.value = true;
         }
+
+        const cap_token = res.data.data.token;
+        const cap_usuario = res.data.data.user.id_usuario;
+        const cap_imagen = res.data.data.user.imagen_usuario;
+        localStorage.setItem('token', cap_token)
+        console.log(localStorage.getItem('token'));
+        localStorage.setItem('usuario', cap_usuario);
+        localStorage.setItem('imagen_usuario', cap_imagen);
 
       } else {
         //Se muestra la pantalla del doble factor y se guarda la información necesaria del usuario
