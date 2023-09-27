@@ -188,7 +188,9 @@
           <div class="grafic h-2/3 w-full flex justify-center items-center">
             <!-- Se valida si el gráfico esta listo para mostrarse -->
             <Bar
-              v-if="data_anuncios && data_anuncios.length > 0 && data_lista_anuncios"
+              v-if="
+                data_anuncios && data_anuncios.results.length > 0 && data_lista_anuncios
+              "
               :data="CHART_ANUNCIOS"
               :options="OPCIONES_ANUNCIOS"
               class="px-10"
@@ -531,14 +533,14 @@ async function leerAnuncios() {
 const CHART_ANUNCIOS = computed(() => {
   return {
     //Se establecen los labels que son los textos que se muestran abajo del eje x, además se usa el map para evaluar cada registro indivualmente
-    labels: data_anuncios.value.map((item) => item.fecha),
+    labels: data_anuncios.value.results.map((item) => item.fecha),
     //Se configuran los dataset de la gráfica que se mostrarán cuando hayan datos
     datasets: [
       {
         //Se le agrega un prefijo personalizado a los labels, que además muestran el valor de la data para ese registro individual
         label: "N° de anuncios",
         //Se establece la data de la grafica con un map de los registros
-        data: data_anuncios.value.map((item) => item.cantidad_anuncios),
+        data: data_anuncios.value.results.map((item) => item.cantidad_anuncios),
         //Se pone el porcentaje de la barra a 0.5 para que se vean mas delgadas y no ocupen el cuadro completo
         barPercentage: 0.5,
         //Se establecen los colores posibles para las barritas con el backgroundColor
