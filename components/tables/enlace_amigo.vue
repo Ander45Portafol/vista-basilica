@@ -4,8 +4,9 @@
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-                <img :src="api_url + enlace.campos.imagen_enlace"
-                    class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+                    <img :src="api_url + enlace.campos.imagen_enlace"
+                    @click="mostrarLightBox(api_url + enlace.campos.imagen_enlace)"
+                    class="h-10 w-10 cursor-pointer rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
@@ -59,7 +60,8 @@
             </div>
         </div>
     </div>
-
+    <vue-easy-lightbox :visible="visible_ref" :imgs="imgs_ref" :index="index_ref" @hide="esconderLightBox"></vue-easy-lightbox> 
+    
     <!-- Modal principal-->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -269,7 +271,8 @@
 //Importación de archivo de validaciones
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import validaciones from '../../assets/validaciones.js';
+import validaciones from '../../assets/validaciones.js'
+import VueEasyLightbox from 'vue-easy-lightbox'
 
 const props = defineProps({
     //Prop que se utiliza para cargar los datos de la tabla
@@ -810,5 +813,22 @@ Swal.fire({
 function validarTitulo() {
     var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_enlace);
     return res;
+}
+
+const visible_ref = ref(false);
+const index_ref = ref(0);
+const imgs_ref = ref([]);
+
+function abrirLightBox() {
+    visible_ref.value = true;
+}
+
+function mostrarLightBox(url) {
+    imgs_ref.value = url;
+    abrirLightBox();
+}
+
+function esconderLightBox() {
+    visible_ref.value = false
 }
 </script>
