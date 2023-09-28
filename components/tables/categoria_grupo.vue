@@ -1,6 +1,7 @@
 <template>
-      <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-      <div class="contained-data flex-col" v-for="categoria_grupo in datos_categoria_grupo[paginacion - 1]" :key="categoria_grupo.id">
+    <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
+    <div class="contained-data flex-col" v-for="categoria_grupo in datos_categoria_grupo[paginacion - 1]"
+        :key="categoria_grupo.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -15,7 +16,8 @@
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                 <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn" id="btnedit"
-                    v-if="categoria_grupo.campos.visibilidad_categoria == 1" @click.prevent="estadoActualizar(categoria_grupo.id)">
+                    v-if="categoria_grupo.campos.visibilidad_categoria == 1"
+                    @click.prevent="estadoActualizar(categoria_grupo.id)">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -26,7 +28,8 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="borrarCategoriaGrupo(categoria_grupo.id)" v-if="categoria_grupo.campos.visibilidad_categoria == 1">
+                    @click="borrarCategoriaGrupo(categoria_grupo.id)"
+                    v-if="categoria_grupo.campos.visibilidad_categoria == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -52,7 +55,6 @@
             </div>
         </div>
     </div>
-
     <!-- Modal principal-->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -151,8 +153,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para crear al botón -->
-                                <button id="btnModalAdd" type="submit"
-                                    :disabled="!validarNombreCategoriaGrupo()"
+                                <button id="btnModalAdd" type="submit" :disabled="!validarNombreCategoriaGrupo()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[400px]:mx-4 max-[750px]:my-1 max-[750px]:ml-[-1px] max-[400px]:ml-6 max-[400px]:mr-[6px]">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -165,8 +166,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón -->
-                                <button id="btnModalUpdate" type="submit"
-                                    :disabled="!validarNombreCategoriaGrupo()"
+                                <button id="btnModalUpdate" type="submit" :disabled="!validarNombreCategoriaGrupo()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[750px]:ml-0 = max-[400px]:mt-0 max-[400px]:mx-4 max-[750px]:mt-[1px]">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -312,8 +312,6 @@ function submitForm() {
     }
 }
 
-
-
 //Función para crear una categoria de un grupo
 async function crearCategoriaGrupo() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
@@ -385,7 +383,7 @@ async function crearCategoriaGrupo() {
 
 async function estadoActualizar(id) {
     await leerUnaCategoriaGrupos(id);
-    const  MODAL_ID= document.getElementById('staticModal');
+    const MODAL_ID = document.getElementById('staticModal');
     const BOTON_CERRAR = document.getElementById('closeModal');
     const TEXTO_MODAL = document.getElementById('modalText');
     const OPCIONES_MODAL = {
@@ -461,7 +459,7 @@ async function leerUnaCategoriaGrupos(id) {
 async function actualizarCategoriaGrupo() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if ( validarNombreCategoriaGrupo()) {
+    if (validarNombreCategoriaGrupo()) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
             var id = form.value.id_categoria_grupo_parroquial;
@@ -529,8 +527,6 @@ async function actualizarCategoriaGrupo() {
         }
     }
 }
-
-
 
 //Codigo para cambiar el estado de la categoria
 async function borrarCategoriaGrupo(id,) {
@@ -688,8 +684,6 @@ async function recuperarUnaCategoriaGrupo(id) {
         }
     });
 }
-
-
 
 //Validaciones
 

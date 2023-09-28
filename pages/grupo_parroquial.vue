@@ -26,7 +26,7 @@
                         <NuxtLink to="/categoria_grupo" class="ml-4">Categorias - Grupos</NuxtLink>
                     </button>
                 </div>
-              
+
                 <!-- Sección de botones a la derecha del buscador -->
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
@@ -103,12 +103,13 @@
                 </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
                     <TablaCargando v-if="grupos_parroquiales.length == 0 && !ceroRegistrosEncontrados" />
-                    <TablesGruposParroquiales v-if="grupos_parroquiales.length > 0" :datos_grupos="grupos_parroquiales" :actualizar_datos="cargarTabla"
-                        :paginacion="pagina" />
+                    <TablesGruposParroquiales v-if="grupos_parroquiales.length > 0" :datos_grupos="grupos_parroquiales"
+                        :actualizar_datos="cargarTabla" :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
-                    <Paginacion v-if="grupos_parroquiales.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="grupos_parroquiales.length" />
+                    <Paginacion v-if="grupos_parroquiales.length > 1 && !ceroRegistrosEncontrados"
+                        v-model:pagina_actual="pagina" @cambioDePagina="cambioDePagina"
+                        :items_totales="grupos_parroquiales.length" />
                 </div>
             </div>
         </div>
@@ -231,7 +232,6 @@ async function visibilidadRegistros() {
         filtrarPaginas();
     }
 }
-
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
@@ -383,12 +383,11 @@ function filtrarPaginas() {
     //Se filtran los registros de data según los parámetros del buscador (nombre_grupo  /nombre_encargado/ apellido_encargado )
     const data_filtrada = ref();
 
- 
     data_filtrada.value = data.value.filter(grupo =>
-                grupo.campos.nombre_grupo.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
-                grupo.campos.nombre_encargado.toString().includes(buscar.value.buscador) ||
-                grupo.campos.apellido_encargado.toString().includes(buscar.value.buscador)
-            );
+        grupo.campos.nombre_grupo.toLowerCase().includes(buscar.value.buscador.toLowerCase()) ||
+        grupo.campos.nombre_encargado.toString().includes(buscar.value.buscador) ||
+        grupo.campos.apellido_encargado.toString().includes(buscar.value.buscador)
+    );
 
     //Se limpia el array de registros paginados
     grupos_parroquiales.value = [];
@@ -406,12 +405,11 @@ function filtrarPaginas() {
         //Se actualiza el valor de la constante de búsqueda a false
         ceroRegistrosEncontrados.value = false;
     }
-
     console.log(grupos_parroquiales.value);
-    
+
     //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
     //y que se bugee la paginación
-    if ((grupos_parroquiales.value.length < pagina.value) && pagina.value != 1)  {
+    if ((grupos_parroquiales.value.length < pagina.value) && pagina.value != 1) {
         //Se actualiza el valor de la constante pagina
         pagina.value = grupos_parroquiales.value.length;
     }
@@ -428,5 +426,4 @@ function limpiarBuscador() {
     //Se limpia la ruta
     useRouter().push({ query: '' });
 }
-
 </script>
