@@ -2,10 +2,9 @@
     <div class="principal mt-6">
         <!-- Menu como componente -->
         <MenuConfiguracionParroquiaDashboard class="mr-8" />
-        <div >
+        <div>
             <!-- Formulario -->
-            <form
-       
+            <form @submit.prevent="actualizarConfiguracionParroquia()"
                 class="flex pt-20 justify-evenly max-[700px]:flex-col max-[700px]:items-center max-[700px]:text-2xl overflow-auto h-screen">
                 <div class="flex-col w-80">
                     <!-- Campo de entrada oculto -->
@@ -53,7 +52,7 @@
                         <select id="tipo_documento_representante" name="tipo_documento_representante"
                             v-model="form.tipo_documento"
                             class="block mt-4 py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-space dark:border-space focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                            <option value="0" class="bg-white text-slate-900"> Seleccione una opción </option>
+                            <option value="0" class="bg-slate-900 text-slate-900"> Seleccione una opción </option>
                             <option value="Cédula">Cédula</option>
                             <option value="Pasaporte">Pasaporte</option>
                             <option value="Otro">Otro...</option>
@@ -75,7 +74,7 @@
                 <!-- Campo de entrada  >Página web - Parroquia -->
                 <div class="flex-col w-80 max-[700px]:mt-10">
                     <div class="relative z-0">
-                        <input type="text" id="pagina_web"  name="pagina_web"
+                        <input type="text" id="pagina_web" name="pagina_web"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.pagina_web" />
                         <label for="pagina_web"
@@ -126,7 +125,8 @@
                         <div class="flex justify-center">
                             <div class="flex justify-center relative h-44 w-36 rounded-lg cursor-pointer"
                                 @click="seleccionarArchivo" @mouseover="iconoBorrarTrue" @mouseleave="iconoBorrarFalse">
-                                <img v-if="imagenPreview" :src="imagenPreview" class="h-full w-full rounded-lg border-2 border-gray-800" />
+                                <img v-if="imagenPreview" :src="imagenPreview"
+                                    class="h-full w-full rounded-lg border-2 border-gray-800" />
                                 <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
                                 <div v-if="mostrarIconoBorrar"
                                     class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
@@ -142,30 +142,36 @@
                     </div>
                     <div class="flex items-end justify-end h-full mt-[-60px] w-44 ">
                         <!-- Se le coloca la función para actualizar al botón -->
-                        <button class="border-2 border-space w-10 h-10 flex justify-center items-center"
-                            @click.prevent="actualizarParroquia()">
-                            <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path
-                                    d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
-                                    stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
-                        <button class="border-2 ml-4 border-space w-10 h-10 flex justify-center items-center">
-                            <svg width="24px" height="24px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#45A0B4"
-                                    stroke-width="2" stroke-linecap="round"></path>
-                                <path
-                                    d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
-                                    stroke="#45A0B4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path
-                                    d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
-                                    stroke="#45A0B4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#45A0B4" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </button>
+                        <button type="button" id="btnModalClear" @click="limpiarForm()"
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4 ">
+                                    <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#C99856"
+                                            stroke-width="2" stroke-linecap="round"></path>
+                                        <path
+                                            d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
+                                            stroke="#C99856" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path
+                                            d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
+                                            stroke="#C99856" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"></path>
+                                        <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#C99856" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <button id="btnModalAdd" @click.prevent="actualizarParroquia()"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[400px]:mx-4 max-[750px]:my-1 max-[750px]:ml-[-1px] max-[400px]:ml-6 max-[400px]:mr-[6px]">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                    </svg>
+                                </button>
                     </div>
                 </div>
             </form>
@@ -179,9 +185,10 @@ import Swal from 'sweetalert2';
 import validaciones from '../assets/validaciones.js';
 definePageMeta({
     layout: "principal",
+    //Se le establece un middleware a la página
+    middleware: "middleware-paginas"
 })
 
-const datos_comfiguracion_parroquia = ref(null);
 const token = ref(null);
 const EVENT = new Event('reset-timer');
 
@@ -227,6 +234,15 @@ const cambiarImagen = () => {
         return file[0];
     }
 };
+
+//Metodo para limpiar el campo de la imagen
+function limpiarImagen() {
+    //Limpiar imagen
+    inputImagen.value.value = '';
+    imagenPreview.value = null;
+    form.value.logo_parroquia = "";
+    mostrarIconoBorrar.value = false;
+};
 var api_url = "http://localhost:8000/storage/configuracionParroquia/images/";
 
 //Se crea una variable reactiva para manejar la información del modal
@@ -245,6 +261,25 @@ const form = ref({
     logo_parroquia: "",
 });
 
+
+//Función para limpiar todos los campos del form
+function limpiarForm() {
+    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
+    form.value.id_configuracion_parroquia = "";
+    form.value.nombre_parroquia = "";
+    form.value.pagina_web = "";
+    form.value.ruc_parroquia = "";
+    form.value.direccion_parroquia = "";
+    form.value.nombre_representante = "";
+    form.value.apellido_representante = "";
+    form.value.documento_representante =  "";
+    form.value.tipo_documento =  0;
+    form.value.telefono_parroquia =  "";
+    form.value.identificador_parroquia =  "";
+    form.value.logo_parroquia =  "";
+}
+
+
 async function cargando_datos() {
     token.value = localStorage.getItem('token');
     await axios.get('/parroquia/', {
@@ -254,8 +289,8 @@ async function cargando_datos() {
     }).then(res => {
         // datos_comfiguracion_parroquia.value = res.data.data;
         // console.log(datos_comfiguracion_parroquia.value);
-        console.log(res.data.data);
-         form.value = {
+        console.log(res.data.data[0].id);
+        form.value = {
             id_configuracion_parroquia: res.data.data[0].id,
             nombre_parroquia: res.data.data[0].campos.nombre_parroquia,
             pagina_web: res.data.data[0].campos.pagina_web,
@@ -282,5 +317,92 @@ async function cargando_datos() {
     });
 }
 
+//Toast del sweetalert
+const TOAST = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (TOAST) => {
+        TOAST.addEventListener("mouseenter", Swal.stopTimer);
+        TOAST.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+});
+
+
+async function actualizarConfiguracionParroquia() {
+    token.value = localStorage.getItem('token');
+    try {
+        //Se establece una variable de id con el valor que tiene guardado la variable form
+        var id = form.value.id_configuracion_parroquia;
+        console.log(id);
+        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+        const FORM_DATA = new FormData();
+        FORM_DATA.append("nombre_parroquia", form.value.nombre_parroquia);
+        FORM_DATA.append("pagina_web", form.value.pagina_web);
+        FORM_DATA.append("ruc_parroquia", form.value.ruc_parroquia);
+        FORM_DATA.append("direccion_parroquia", form.value.direccion_parroquia);
+        FORM_DATA.append("nombre_representante", form.value.nombre_representante);
+        FORM_DATA.append("apellido_representante", form.value.apellido_representante);
+        FORM_DATA.append("documento_representante", form.value.documento_representante);
+        FORM_DATA.append("tipo_documento", form.value.tipo_documento);
+        FORM_DATA.append("telefono_parroquia", form.value.telefono_parroquia);
+        FORM_DATA.append("identificador_parroquia", form.value.identificador_parroquia);
+        FORM_DATA.append("logo_parroquia", form.value.logo_parroquia);
+
+        console.log(FORM_DATA);
+
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.post("/parroquia_update/" + id, FORM_DATA, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token.value}`,
+            }
+        }).then(res => {
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+        });
+        //cargando_datos();
+        //Se lanza la alerta de éxito
+        TOAST.fire({
+            icon: 'success',
+            title: 'Informacion actualizada exitosamente'
+        })
+
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
+}
 
 </script>
