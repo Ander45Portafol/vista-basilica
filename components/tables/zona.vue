@@ -10,8 +10,8 @@
                     <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]"> {{
                         zona.campos.nombre_zona }} </p>
-                         <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]"> {{
-                        zona.campos.estado_zona }} </p>
+                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> {{
+                        zona.campos.estado_zona }}</p>
                 </div>
             </div>
             <!-- Al darle clic al evento leerUnaZona ejecuta la funcion -->
@@ -115,7 +115,7 @@
                                 </div>
                             </div>
 
-                              <!-- Campo de entrada Tipo - Contacto -->
+                              <!-- Campo de entrada Estado - Zona -->
                               <div class="pt-4 mt-4 flex-col">
                                 <label for="" class="absolute text-sm text-gray-200">Estado - Zona<span
                                         class="text-sm ml-1"> *
@@ -328,12 +328,408 @@ const TOAST = Swal.mixin({
     },
 });
 
+//Variable para validar que acción se quiere hacer cuando se hace un submit al form
+var formAccion = null;
+
+//Función para evaluar que acción se va a hacer al hacer submit en el form
+function accionForm(accion) {
+    formAccion = accion;
+}
+
+//Función para crear/actualizar un registro cuando se ejecuta el submit del form
+function submitForm() {
+    if (formAccion == "crear") {
+        crearZona();
+    } else {
+        actualizarZona();
+    }
+}
+
+
+//Función para crear una zona
+async function crearZona() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
+    try {
+        const FORM_DATA = new FormData();
+        FORM_DATA.append("nombre_zona", form.value.nombre_zona);
+        FORM_DATA.append("estado_zona", form.value.estado_zona);
+        FORM_DATA.append(
+            "visibilidad_zona",
+            form.value.visibilidad_zona ? 1 : 0
+        );
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.post("/zonas/", FORM_DATA, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        }).then(res => {
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+        });
+
+        //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+        await props.actualizar_datos();
+
+        document.getElementById('closeModal').click();
+        //Se lanza la alerta con el mensaje de éxito
+        // props.actualizar_datos();
+        TOAST.fire({
+            icon: 'success',
+            title: 'Zona creada exitosamente'
+        });
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
+}
+
+
+//Metodo para configurar el modal y enviar el id de la zona
+async function estadoActualizar(id) {
+    await leerUnaZona(id);
+    const  MODAL_ID= document.getElementById('staticModal');
+    const BOTON_CERRAR = document.getElementById('closeModal');
+    const TEXTO_MODAL = document.getElementById('modalText');
+    const OPCIONES_MODAL = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+    const modal = new Modal(MODAL_ID, OPCIONES_MODAL);
+    TEXTO_MODAL.textContent = "Editar";
+    modal.show();
+    document.getElementById('btnModalAdd').classList.add('hidden');
+    document.getElementById('btnModalUpdate').classList.remove('hidden');
+    BOTON_CERRAR.addEventListener('click', function () {
+        modal.hide();
+        limpiarForm();
+    });
+}
+
+//Metodo leer el registro unico
+async function leerUnaZona(id) {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token')
+    try {
+        accionForm("actualizar");
+        await axios.get('/zonas/' + id, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        }).then(res => {
+            console.log(res.data);
+            form.value = {
+                id_zona: res.data.data.id,
+                nombre_zona: res.data.data.campos.nombre_zona,
+                estado_zona: res.data.data.campos.estado_zona,
+                //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
+                visibilidad_zona: res.data.data.campos.visibilidad_zona ? true : false
+            };
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
+        });
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
+}
+
+//Metodo actualizar un registro con sus distinta informacion
+async function actualizarZona() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
+    if (form.estado_zona != 0 && validarNombreZona()) {
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_zona;
+
+            //Se crea una constante FormData para almacenar los datos del modal
+            const FORM_DATA = new FormData();
+            FORM_DATA.append("nombre_zona", form.value.nombre_zona);
+            FORM_DATA.append("estado_zona", form.value.estado_zona);
+            FORM_DATA.append(
+                "visibilidad_zona",
+                form.value.visibilidad_zona ? 1 : 0
+            );
+
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/zonas_update/" + id, FORM_DATA, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
+            //Se manda a llamar la accion para actualizar los datos con las props
+            await props.actualizar_datos();
+
+            document.getElementById("closeModal").click();
+
+            //Se lanza la alerta de éxito
+            TOAST.fire({
+                icon: "success",
+                title: "Zona actualizada exitosamente",
+            });
+
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        }
+    }
+}
+
+
+//Codigo para cambiar el estado de la zona  a inactivo
+async function borrarZona(id,) {
+    console.log(id);
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea ocultar el registro",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        allowOutsideClick: false,
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/zonas/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer  
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+
+                        //Se lanza la alerta de éxito
+                        TOAST.fire({
+                            icon: "success",
+                            title: "Zona ocultada exitosamente",
+                        });
+                    });
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            catch (error) {
+                console.log(error);
+                const MENSAJE_ERROR = error.response.data.message;
+                if (error.response.status == 401) {
+                    navigateTo('/error_401');
+                } else {
+                    if (!error.response.data.errors) {
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: RES,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    } else {
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: MENSAJE_ERROR,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+//Función para cambiar un usuario a activo
+async function recuperarZona(id) {
+
+Swal.fire({
+    title: 'Confirmación',
+    text: "¿¿Desea recuperar el registro",
+    icon: 'warning',
+    reverseButtons: true,
+    showCancelButton: true,
+    confirmButtonColor: '#3F4280',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Confirmar',
+    cancelButtonText: 'Cancelar',
+    allowOutsideClick: false,
+}).then(async (result) => {
+    if (result.isConfirmed) {
+        try {
+            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+            token.value = localStorage.getItem('token');
+            try {
+                //Se realiza la petición axios
+                await axios.delete("/zonas/" + id, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                }).then(res => {
+                    //Se reinicia el timer
+                    window.dispatchEvent(EVENT);
+                    //Se actualiza el valor del token con la respuesta del axios
+                    localStorage.setItem('token', res.data.data.token);
+                    token.value = localStorage.getItem('token');
+                });;
+
+                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                await props.actualizar_datos();
+
+                //Se lanza la alerta de éxito
+                TOAST.fire({
+                    icon: "success",
+                    title: "Zonas recuperada exitosamente",
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        }
+    }
+});
+}
 
 
 
 //Validaciones
 
-//Función para validar el nombre contacto
+//Función para validar el nombre de ka zona
 function validarNombreZona() {
     var res = validaciones.validarSoloLetrasYNumeros(form.value.nombre_zona);
     return res;
