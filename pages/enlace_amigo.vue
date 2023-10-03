@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <TablaCargando v-if="enlaces.length == 0 && !ceroRegistrosEncontrados"/>
+                    <TablaCargando v-if="enlaces.length == 0 && !ceroRegistrosEncontrados" />
                     <TablesEnlaceAmigo v-if="enlaces.length > 0" :datos_enlaces="enlaces" :actualizar_datos="cargarTabla"
                         :paginacion="pagina" />
                 </div>
@@ -377,7 +377,7 @@ function filtrarPaginas() {
     const data_filtrada = ref();
 
     data_filtrada.value = data.value.filter(enlace =>
-    enlace.campos.titulo_enlace.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+        enlace.campos.titulo_enlace.toLowerCase().includes(buscar.value.buscador.toLowerCase())
     );
 
     //Se limpia el array de registros paginados
@@ -398,10 +398,10 @@ function filtrarPaginas() {
     }
 
     console.log(enlaces.value);
-    
+
     //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
     //y que se bugee la paginación
-    if ((enlaces.value.length < pagina.value) && pagina.value != 1)  {
+    if ((enlaces.value.length < pagina.value) && pagina.value != 1) {
         //Se actualiza el valor de la constante pagina
         pagina.value = enlaces.value.length;
     }

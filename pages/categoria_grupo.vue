@@ -10,7 +10,8 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (nombre de la categoria )" v-model="buscar.buscador" @keyup="buscarCategoriaGrupos($event)" />
+                        placeholder="Buscar... (nombre de la categoria )" v-model="buscar.buscador"
+                        @keyup="buscarCategoriaGrupos($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -97,13 +98,14 @@
                     </div>
                 </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
-                    <TablaCargando v-if="categoria_grupos.length == 0 && !ceroRegistrosEncontrados"/>
-                    <TablesCategoriaGrupo v-if="categoria_grupos.length > 0" :datos_categoria_grupo="categoria_grupos" :actualizar_datos="cargarTabla"
-                        :paginacion="pagina" />
+                    <TablaCargando v-if="categoria_grupos.length == 0 && !ceroRegistrosEncontrados" />
+                    <TablesCategoriaGrupo v-if="categoria_grupos.length > 0" :datos_categoria_grupo="categoria_grupos"
+                        :actualizar_datos="cargarTabla" :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
-                    <Paginacion v-if="categoria_grupos.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
-                        @cambioDePagina="cambioDePagina" :items_totales="categoria_grupos.length" />
+                    <Paginacion v-if="categoria_grupos.length > 1 && !ceroRegistrosEncontrados"
+                        v-model:pagina_actual="pagina" @cambioDePagina="cambioDePagina"
+                        :items_totales="categoria_grupos.length" />
                 </div>
             </div>
         </div>
@@ -225,8 +227,6 @@ async function visibilidadRegistros() {
     }
 }
 
-
-
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
 async function leerCategoriaGrupos() {
@@ -252,7 +252,6 @@ async function leerCategoriaGrupos() {
             for (let i = 0; i < res.data.length; i += 10) {
                 categoria_grupos.value.push(res.data.slice(i, i + 10));
             }
-
             //Se reinicia el timer
             window.dispatchEvent(EVENT);
             //Se refresca el valor del token con la respuesta del axios
@@ -289,7 +288,6 @@ async function leerCategoriaGrupos() {
             //Se actualiza el valor de la constante de búsqueda a false
             ceroRegistrosEncontrados.value = false;
         }
-
         //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
         //y que se bugee la paginación
         if ((categoria_grupos.value.length < pagina.value) && pagina.value != 1) {
@@ -332,7 +330,6 @@ async function leerCategoriaGrupos() {
         }
     }
 }
-
 
 //Constante ref para controlar que no se pueda spamear el delete en el buscador y bugear el token
 const ejecutado_despues_borrar = ref(false);
@@ -379,7 +376,7 @@ function filtrarPaginas() {
     const data_filtrada = ref();
 
     data_filtrada.value = data.value.filter(categoria =>
-    categoria.campos.nombre_categoria_grupo.toLowerCase().includes(buscar.value.buscador.toLowerCase())
+        categoria.campos.nombre_categoria_grupo.toLowerCase().includes(buscar.value.buscador.toLowerCase())
     );
 
     //Se limpia el array de registros paginados
@@ -400,10 +397,10 @@ function filtrarPaginas() {
     }
 
     console.log(categoria_grupos.value);
-    
+
     //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
     //y que se bugee la paginación
-    if ((categoria_grupos.value.length < pagina.value) && pagina.value != 1)  {
+    if ((categoria_grupos.value.length < pagina.value) && pagina.value != 1) {
         //Se actualiza el valor de la constante pagina
         pagina.value = categoria_grupos.value.length;
     }

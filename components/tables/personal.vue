@@ -100,17 +100,18 @@
                                     - Personal</label>
                             </div>
                             <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="absolute text-gray-200 text-sm">Tipo personalaaaa<span class="text-sm ml-1"> *
+                                <label for="" class="absolute text-gray-200 text-sm">Tipo personal<span
+                                        class="text-sm ml-1"> *
                                     </span></label>
                                 <select id="underline_select" v-model="form.id_tipo_personal"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                     <option value="0" class="bg-gray-700 text-white"> Seleccione una opción </option>
-                                    <option class="bg-gray-700" v-for="tipo_personal in tipo_personales" :key="tipo_personal.id_tipo_personal"
-                                        :value="tipo_personal.id_tipo_personal">
+                                    <option class="bg-gray-700" v-for="tipo_personal in tipo_personales"
+                                        :key="tipo_personal.id_tipo_personal" :value="tipo_personal.id_tipo_personal">
                                         {{ tipo_personal.tipo_personal }}</option>
                                 </select>
-                                <div v-if="form.id_tipo_personal == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                                    role="alert">
+                                <div v-if="form.id_tipo_personal == 0"
+                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
                                     <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -122,10 +123,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
                         </div>
                         <div class="flex-col w-64">
                             <div class="relative z-0">
@@ -137,28 +134,29 @@
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
                                     - Personal</label>
                             </div>
-                        </div>
-                        <div class="relative z-0">
-                            <input type="text" v-model="form.correo_personal" id="correo_personal" name="correo_personal"
-                                class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                placeholder=" " autocomplete="off" />
-                            <label for="correo_personal"
-                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                - Personal</label>
-                        </div>
-                        <div class="flex-col mt-8">
-                            <label for="" class="text-gray-200">Visibilidad - Personal</label>
-                            <div class="flex justify-start mt-2">
-                                <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                    <input type="checkbox" value="" class="sr-only peer"
-                                        v-model="form.visibilidad_personal">
-                                    <div
-                                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                    </div>
-                                </label>
+                            <div class="relative z-0 mt-6">
+                                <input type="text" v-model="form.correo_personal" id="correo_personal"
+                                    name="correo_personal"
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="correo_personal"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
+                                    - Personal</label>
+                            </div>
+                            <div class="flex-col mt-8">
+                                <label for="" class="text-gray-200">Visibilidad - Personal</label>
+                                <div class="flex justify-start mt-2">
+                                    <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                        <input type="checkbox" value="" class="sr-only peer"
+                                            v-model="form.visibilidad_personal">
+                                        <div
+                                            class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                        </div>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                        <div class="modal-buttons mt-4 flex justify-end items-end">
+                        <div class="modal-buttons flex justify-end items-end">
                             <!-- Se le coloca la función para limpiar el form al botón -->
                             <button type="button" id="btnModalClear" @click="limpiarForm()"
                                 class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
@@ -382,7 +380,7 @@ async function crearPersonal() {
             FORM_DATA.append(
                 "visibilidad_personal",
                 form.value.visibilidad_personal ? 1 : 0
-            ); 
+            );
             FORM_DATA.append("id_tipo_personal", form.value.id_tipo_personal);
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.post("/personal/", FORM_DATA, {
@@ -443,7 +441,7 @@ async function crearPersonal() {
 
 async function estadoActualizar(id) {
     await leerUnPersonal(id);
-    const  MODAL_ID= document.getElementById('staticModal');
+    const MODAL_ID = document.getElementById('staticModal');
     const BOTON_CERRAR = document.getElementById('closeModal');
     const TEXTO_MODAL = document.getElementById('modalText');
     const OPCIONES_MODAL = {
@@ -677,80 +675,80 @@ async function borrarPersonal(id,) {
 //Función para cambiar un usuario a activo
 async function recuperarUnPersonal(id) {
 
-Swal.fire({
-    title: 'Confirmación',
-    text: "¿¿Desea recuperar el registro",
-    icon: 'warning',
-    reverseButtons: true,
-    showCancelButton: true,
-    confirmButtonColor: '#3F4280',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Confirmar',
-    cancelButtonText: 'Cancelar',
-    allowOutsideClick: false,
-}).then(async (result) => {
-    if (result.isConfirmed) {
-        try {
-            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-            token.value = localStorage.getItem('token');
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿¿Desea recuperar el registro",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        allowOutsideClick: false,
+    }).then(async (result) => {
+        if (result.isConfirmed) {
             try {
-                //Se realiza la petición axios
-                await axios.delete("/personal/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }).then(res => {
-                    //Se reinicia el timer
-                    window.dispatchEvent(EVENT);
-                    //Se actualiza el valor del token con la respuesta del axios
-                    localStorage.setItem('token', res.data.data.token);
-                    token.value = localStorage.getItem('token');
-                });;
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/personal/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el valor del token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+                    });;
 
-                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-                await props.actualizar_datos();
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
 
-                //Se lanza la alerta de éxito
-                TOAST.fire({
-                    icon: "success",
-                    title: "Personal recuperado exitosamente",
-                });
-            } catch (error) {
-                console.log(error);
+                    //Se lanza la alerta de éxito
+                    TOAST.fire({
+                        icon: "success",
+                        title: "Personal recuperado exitosamente",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
             }
-        }
-        catch (error) {
-            console.log(error);
-            const MENSAJE_ERROR = error.response.data.message;
-            if (error.response.status == 401) {
-                navigateTo('/error_401');
-            } else {
-                if (!error.response.data.errors) {
-                    //Se extrae el sqlstate (identificador de acciones SQL)
-                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                    const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: RES,
-                        confirmButtonColor: '#3F4280'
-                    });
+            catch (error) {
+                console.log(error);
+                const MENSAJE_ERROR = error.response.data.message;
+                if (error.response.status == 401) {
+                    navigateTo('/error_401');
                 } else {
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: MENSAJE_ERROR,
-                        confirmButtonColor: '#3F4280'
-                    });
+                    if (!error.response.data.errors) {
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: RES,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    } else {
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: MENSAJE_ERROR,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
                 }
             }
         }
-    }
-});
+    });
 }
 
 

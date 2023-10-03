@@ -1,33 +1,6 @@
 <template>
-    <div class="principal mt-6">
-        <div class="topprincipal flex justify-between font-semibold text-base ml-4">
-            <div class="options">
-                <nuxtLink to="/pagina" class="ml-4">Páginas</nuxtLink>
-                <NuxtLink to="/seccion" class="ml-4">Secciones</NuxtLink>
-                <NuxtLink to="/componente" class="active ml-4">Componentes</NuxtLink>
-            </div>
-            <div class="endtop flex justify-between w-20">
-                <NuxtLink to="/perfil">
-                    <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                        <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="#000000" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round"></path>
-                        <path
-                            d="M19.622 10.395l-1.097-2.65L20 6l-2-2-1.735 1.483-2.707-1.113L12.935 2h-1.954l-.632 2.401-2.645 1.115L6 4 4 6l1.453 1.789-1.08 2.657L2 11v2l2.401.655L5.516 16.3 4 18l2 2 1.791-1.46 2.606 1.072L11 22h2l.604-2.387 2.651-1.098C16.697 18.831 18 20 18 20l2-2-1.484-1.75 1.098-2.652 2.386-.62V11l-2.378-.605z"
-                            stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </NuxtLink>
-                <button type="button" data-drawer-target="drawer-right-example" data-drawer-show="drawer-right-example"
-                    data-drawer-placement="right" aria-controls="drawer-right-example">
-                    <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                        <path
-                            d="M18.134 11C18.715 16.375 21 18 21 18H3s3-2.133 3-9.6c0-1.697.632-3.325 1.757-4.525C8.883 2.675 10.41 2 12 2c.337 0 .672.03 1 .09M19 8a3 3 0 100-6 3 3 0 000 6zM13.73 21a1.999 1.999 0 01-3.46 0"
-                            stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
+    <div class="principal mt-4">
+        <MenuTipoComponenteDashboard class="mr-8" />
         <div class="flex mt-10 ml-8">
             <div class="flex-col">
                 <h2 class="text-yellow-500 text-xl font-semibold">Tipo - Componentes</h2>
@@ -61,7 +34,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class=" flex-col mt-6">
+                <div class=" flex-col mt-6 tipo_componente pr-4 overflow-y-scroll h-2/4">
                     <div class="bg-gray-200 w-56 h-52 rounded-lg flex justify-center items-start">
                         <div class="bg-slate-700 h-28 w-48 mt-4 flex items-end rounded-lg">
                             <div class="flex-col mb-4 ml-4">
@@ -74,29 +47,17 @@
                 </div>
             </div>
             <!--Seccion para mostrar la preview del componente-->
-            <div class="flex-col ml-20 w-full">
-                <div class="slider_example relative ml-10 ">
-                    <img src="/img/example_db.png" alt="cohete_login" class="w-10/12 m-auto">
-                    <h1 class="absolute text-gray-50 bottom-36 font-semibold text-4xl ml-36">DON BOSCO</h1>
-                    <h4 class="absolute text-gray-50 bottom-28 font-normal text-lg ml-36">El valdocco de Centroamérica</h4>
+            <div class="flex-col ml-10 w-full">
+                <div class="slider_example relative ml-10 w-full">
+                    <img src="/img/example_db.png" alt="cohete_login" class="w-9/12 rounded-lg m-auto">
+                    <h1 class="absolute text-gray-50 bottom-36 font-semibold text-4xl ml-48">DON BOSCO</h1>
+                    <h4 class="absolute text-gray-50 bottom-28 font-normal text-lg ml-48">El valdocco de Centroamérica</h4>
                 </div>
-                <div class="flex justify-between mt-4">
+                <div class="flex justify-evenly">
                     <div class="w-2/4 flex-col mt-6 ml-32">
                         <button
-                            class="w-40 h-10 bg-gray-300 text-slate-800 rounded-lg flex text-sm justify-around items-center">Escoger
-                            sección<svg width="20px" height="20px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                <path d="M14 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10" stroke="#32345A"
-                                    stroke-width="2" stroke-linecap="round"></path>
-                                <path d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011" stroke="#32345A"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                <path clip-rule="evenodd"
-                                    d="M22.082 18.365c.494.304.464 1.043-.045 1.1l-2.566.292-1.152 2.312c-.228.458-.933.234-1.05-.334l-1.255-6.116c-.098-.48.333-.782.75-.525l5.318 3.271z"
-                                    stroke="#32345A" stroke-width="2"></path>
-                            </svg></button>
-                        <button
                             class="w-40 h-10 bg-slate-800 text-gray-100 rounded-lg mt-2 flex text-sm justify-around items-center"
-                            type="button" @click="abrirModal()">Personalizar
+                            type="button" id="btncomponente">Personalizar
                             <svg width="20px" height="20px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
                                 <path
@@ -111,7 +72,7 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="w-2/4">
+                    <div class="w-2/4 px-10 mt-4">
                         <div class="bg-gray-300 rounded-lg w-full h-32 flex-col">
                             <p class="text-gray-900 text-lg font-semibold pl-4 pt-2">Imagen - Texto</p>
                             <p class="pl-4 pt-2 pr-2 text-slate-900 text-sm font-normal">
@@ -131,19 +92,17 @@
     <!--Show modal-->
     <div id="modal-show" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-3xl max-h-full">
+        <div class="relative w-full max-w-4xl max-h-full">
             <!-- Modal content -->
             <div class="relative rounded-lg shadow modal">
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
-                        <p class="text-xl font-bold text-gray-100">
-                            Visualización
-                        </p>
-                        <p class="text-base font-medium text-gray-400">Componente</p>
+                        <p class="text-xl font-bold text-gray-100" id="titulo_modal"></p>
+                        <p class="text-base font-medium text-gray-400" id="subtitulo_modal"></p>
                     </div>
                     <button type="button" class="bg-transparent rounded-lg p-1.5 ml-auto items-center border-none"
-                        data-modal-hide="modal-show" @click="cerrarModal()" id="btn_close">
+                        id="btnclose">
                         <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
@@ -153,221 +112,275 @@
                 </div>
                 <!-- Modal body -->
                 <div class=" space-y-6 flex justify-evenly pb-10">
-                    <div class="flex-col">
+                    <div class="flex-col" id="visualizacion">
                         <div class="flex">
                             <div class="relative ml-28">
-                                <img src="/img/example_db.png" alt="cohete_login" class="w-2/3 m-auto">
-                                <h1 class="absolute text-gray-50 bottom-14 font-semibold text-xl ml-28">DON BOSCO</h1>
-                                <h4 class="absolute text-gray-50 bottom-10 font-normal text-sm ml-28">El valdocco de
+                                <img src="/img/example_db.png" alt="cohete_login" class="w-full m-auto">
+                                <h1 class="absolute text-gray-50 bottom-14 font-semibold text-xl ml-16">DON BOSCO</h1>
+                                <h4 class="absolute text-gray-50 bottom-10 font-normal text-sm ml-16">El valdocco de
                                     Centroamérica</h4>
                             </div>
-                            <div class="flex justify-end items-center">
-                                <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
-                                    type="button" data-modal-target="modal-data_show" data-modal-toggle="modal-data_show"
-                                    @click="abrirModal2()"><svg width="26px" height="26px" viewBox="0 0 24 24"
-                                        stroke-width="2" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                            <div class="flex justify-end items-center ml-6">
+                                <button @click="cambiarFormularioP"
+                                    class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                    type="button"><svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
+                                        fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg></button>
                             </div>
                         </div>
                         <div class="flex mt-4 w-full justify-center items-center">
-                            <button
-                                class="w-40 h-10 bg-gray-300 text-slate-800 rounded-lg flex text-sm justify-around items-center">Escoger
-                                sección<svg width="20px" height="20px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path d="M14 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10" stroke="#32345A"
-                                        stroke-width="2" stroke-linecap="round"></path>
-                                    <path d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011" stroke="#32345A"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path clip-rule="evenodd"
-                                        d="M22.082 18.365c.494.304.464 1.043-.045 1.1l-2.566.292-1.152 2.312c-.228.458-.933.234-1.05-.334l-1.255-6.116c-.098-.48.333-.782.75-.525l5.318 3.271z"
-                                        stroke="#32345A" stroke-width="2"></path>
-                                </svg></button>
-                            <button class="w-16 h-10 bg-space rounded-lg flex justify-center items-center ml-6"><svg
-                                    width="28px" height="28px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                    <path d="M12 14a2 2 0 100-4 2 2 0 000 4z" stroke="#FFF" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path
-                                        d="M21 12c-1.889 2.991-5.282 6-9 6s-7.111-3.009-9-6c2.299-2.842 4.992-6 9-6s6.701 3.158 9 6z"
-                                        stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    </path>
-                                </svg></button>
+                            <div class="mt-2 flex-col">
+                                <label for="" class="text-sm absolute text-gray-200">Escoger sección<span
+                                        class="text-sm ml-1"> * </span></label>
+                                <select id="underline_select" v-model="form.id_seccion"
+                                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                    <option value="0" class="bg-gray-700">Seleccione una opción</option>
+                                    <option class="bg-gray-700" v-for="seccion in secciones" :key="seccion.id"
+                                        :value="seccion.id">{{ seccion.campos.titulo_seccion }}</option>
+                                </select>
+                                <div v-if="form.id_seccion == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                    role="alert">
+                                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div>
+                                        Seleccione <span class="font-medium">
+                                            una opción.</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <form action="" class="w-full py-6 px-14" id="p_formulario">
+                        <div class="flex justify-between w-full">
+                            <div class="flex-col w-72">
+                                <div class="relative z-0">
+                                    <input type="text" id="titulo_lamina" name="titulo_lamina" required maxlength="100"
+                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                        placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
+                                    <label for="titulo_lamina"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
+                                        - lamina<span class="text-sm ml-1"> * </span></label>
+                                </div>
+                                <div class="relative z-0 mt-8">
+                                    <input type="text" id="subtitulo_lamina" name="subtitulo_lamina" required
+                                        maxlength="100"
+                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                        placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
+                                    <label for="subtitulo_lamina"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtítulo
+                                        - lamina<span class="text-sm ml-1"> * </span></label>
+                                </div>
+                                <div class="relative z-0 mt-8">
+                                    <input type="text" id="descripcion_lamina" name="descripcion_lamina" required
+                                        maxlength="100"
+                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                        placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
+                                    <label for="descripcion_lamina"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
+                                        - lamina<span class="text-sm ml-1"> * </span></label>
+                                </div>
+                                <div class="flex-col mt-8">
+                                    <label for="" class="text-sm text-gray-200">Visibilidad</label>
+                                    <div class="flex justify-start mt-2">
+                                        <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                            <input type="checkbox" value="" class="sr-only peer">
+                                            <div
+                                                class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-col">
+                                <p class="text-center text-white">Imagen</p>
+                                <div class="flex justify-center mt-2">
+                                    <div class="h-52 w-48 rounded-xl border-2 border-white">
+                                        <img src="" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-col">
+                                <div class="mt-20 flex justify-end items-end">
+                                    <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                        type="button" @click="cambiarFormularioS"><svg width="26px" height="26px"
+                                            viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                            <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <form action="" class="w-full py-6 px-10" id="s_formulario">
+                        <div class="flex justify-between w-full">
+                            <div class="flex-col mt-20">
+                                <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                    type="button" @click="cambiarFormularioP">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none"
+                                        stroke-width="2" viewBox="0 0 24 24" color="#000000">
+                                        <path stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12H3m0 0 8.5-8.5M3 12l8.5 8.5"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="flex-col w-72">
+                                <div class="relative z-0">
+                                    <input type="text" id="titulo_lamina" name="titulo_lamina" required maxlength="100"
+                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                        placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
+                                    <label for="titulo_lamina"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
+                                        - lamina<span class="text-sm ml-1"> * </span></label>
+                                </div>
+                                <div class="relative z-0 mt-8">
+                                    <input type="text" id="subtitulo_lamina" name="subtitulo_lamina" required
+                                        maxlength="100"
+                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                        placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
+                                    <label for="subtitulo_lamina"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtítulo
+                                        - lamina<span class="text-sm ml-1"> * </span></label>
+                                </div>
+                                <div class="relative z-0 mt-8">
+                                    <input type="text" id="descripcion_lamina" name="descripcion_lamina" required
+                                        maxlength="100"
+                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                        placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
+                                    <label for="descripcion_lamina"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
+                                        - lamina<span class="text-sm ml-1"> * </span></label>
+                                </div>
+                                <div class="flex-col mt-8">
+                                    <label for="" class="text-sm text-gray-200">Visibilidad</label>
+                                    <div class="flex justify-start mt-2">
+                                        <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                            <input type="checkbox" value="" class="sr-only peer">
+                                            <div
+                                                class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-col">
+                                <p class="text-center text-white">Imagen</p>
+                                <div class="flex justify-center mt-2">
+                                    <div class="h-52 w-48 rounded-xl border-2 border-white">
+                                        <img src="" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-col">
+                                <div class="mt-20 flex justify-end items-end">
+                                    <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                        type="button" @click="cambiarFormularioT"><svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
+                                            fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                            <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <form action="" class="w-full py-6 px-10" id="t_formulario">
+                        <div class="flex justify-between w-full">
+                            <div class="flex-col mt-20">
+                                <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                    type="button" @click="cambiarFormularioS">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none"
+                                        stroke-width="2" viewBox="0 0 24 24" color="#000000">
+                                        <path stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21 12H3m0 0 8.5-8.5M3 12l8.5 8.5"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="flex-col w-72">
+                                <div class="relative z-0">
+                                    <input type="text" id="titulo_lamina" name="titulo_lamina" required maxlength="100"
+                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                        placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
+                                    <label for="titulo_lamina"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
+                                        - lamina<span class="text-sm ml-1"> * </span></label>
+                                </div>
+                                <div class="relative z-0 mt-8">
+                                    <input type="text" id="subtitulo_lamina" name="subtitulo_lamina" required
+                                        maxlength="100"
+                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                        placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
+                                    <label for="subtitulo_lamina"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtítulo
+                                        - lamina<span class="text-sm ml-1"> * </span></label>
+                                </div>
+                                <div class="relative z-0 mt-8">
+                                    <input type="text" id="descripcion_lamina" name="descripcion_lamina" required
+                                        maxlength="100"
+                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                        placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
+                                    <label for="descripcion_lamina"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
+                                        - lamina<span class="text-sm ml-1"> * </span></label>
+                                </div>
+                                <div class="flex-col mt-8">
+                                    <label for="" class="text-sm text-gray-200">Visibilidad</label>
+                                    <div class="flex justify-start mt-2">
+                                        <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                            <input type="checkbox" value="" class="sr-only peer">
+                                            <div
+                                                class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-col">
+                                <p class="text-center text-white">Imagen</p>
+                                <div class="flex justify-center mt-2">
+                                    <div class="h-52 w-48 rounded-xl border-2 border-white">
+                                        <img src="" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
     <!--end Show modal-->
-    <!--second modal-->
-    <div id="modal-data_show" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
-        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative w-full max-w-4xl max-h-full">
-            <!-- Modal content -->
-            <div class="relative rounded-lg shadow modal">
-                <!-- Modal header -->
-                <div class="flex items-start justify-between p-4 rounded-t">
-                    <div class="flex-col ml-4 pt-4">
-                        <p class="text-xl font-bold text-gray-100">
-                            Información
-                        </p>
-                        <p class="text-base font-medium text-gray-400">Componente - lamina</p>
-                    </div>
-                    <button type="button" class="bg-transparent rounded-lg p-1.5 ml-auto items-center border-none"
-                        @click="cerrarModal2()">
-                        <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" color="#000000">
-                            <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
-                                stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>
-                    </button>
-                </div>
-                <!-- Modal body -->
-                <div class=" space-y-6 pb-14">
-                    <div id="animation-carousel" class="relative w-full" data-carousel="static">
-                        <!-- Carousel wrapper -->
-                        <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
-                            <!-- Item 1 -->
-                            <div class="hidden duration-200 ease-linear" data-carousel-item>
-                                <form action="" class="flex justify-evenly">
-                                    <div class="flex-col w-72">
-                                        <div class="relative z-0 mt-6 w-full">
-                                            <input type="text" id="username" name="username"
-                                                class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                                placeholder=" " autocomplete="off" />
-                                            <label for="username"
-                                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Titulo
-                                                - Lamina</label>
-                                        </div>
-                                        <div class="relative z-0 mt-6">
-                                            <input type="text" id="username" name="username"
-                                                class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                                placeholder=" " autocomplete="off" />
-                                            <label for="username"
-                                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtitulo
-                                                - Lamina</label>
-                                        </div>
-                                        <div class="relative z-0 mt-6">
-                                            <input type="text" id="username" name="username"
-                                                class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                                placeholder=" " autocomplete="off" />
-                                            <label for="username"
-                                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
-                                                - Lamina</label>
-                                        </div>
-                                        <div class="flex-col mt-6">
-                                            <label for="" class="text-gray-200">Visibilidad</label>
-                                            <div class="flex justify-start mt-2">
-                                                <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                                    <input type="checkbox" value="" class="sr-only peer">
-                                                    <div
-                                                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex-col ml-16">
-                                        <div class="flex-col text-center">
-                                            <p class="mb-4 text-center text-gray-200">Imagen</p>
-                                            <img src="" class="h-44 w-40 border-2 border-slate-900 ml-2 rounded-lg" />
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <!-- Item 2 -->
-                            <div class="hidden duration-200 ease-linear" data-carousel-item>
-                                <form action="" class="flex justify-evenly">
-                                    <div class="flex-col w-72">
-                                        <div class="relative z-0 mt-6 w-full">
-                                            <input type="text" id="username" name="username"
-                                                class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                                placeholder=" " autocomplete="off" />
-                                            <label for="username"
-                                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Titulo
-                                                - Lamina</label>
-                                        </div>
-                                        <div class="relative z-0 mt-6">
-                                            <input type="text" id="username" name="username"
-                                                class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                                placeholder=" " autocomplete="off" />
-                                            <label for="username"
-                                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtitulo
-                                                - Lamina</label>
-                                        </div>
-                                        <div class="relative z-0 mt-6">
-                                            <input type="text" id="username" name="username"
-                                                class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                                placeholder=" " autocomplete="off" />
-                                            <label for="username"
-                                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
-                                                - Lamina</label>
-                                        </div>
-                                        <div class="flex-col mt-6">
-                                            <label for="" class="text-gray-200">Visibilidad</label>
-                                            <div class="flex justify-start mt-2">
-                                                <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                                    <input type="checkbox" value="" class="sr-only peer">
-                                                    <div
-                                                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex-col ml-16">
-                                        <div class="flex-col text-center">
-                                            <p class="mb-4 text-center text-gray-200">Imagen</p>
-                                            <img src="" class="h-44 w-40 border-2 border-slate-900 ml-2 rounded-lg" />
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <!-- Item 3 -->
-
-                        </div>
-                        <!-- Slider controls -->
-                        <button type="button"
-                            class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                            data-carousel-prev>
-                            <span
-                                class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-space group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                                <svg aria-hidden="true" class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 19l-7-7 7-7"></path>
-                                </svg>
-                                <span class="sr-only">Previous</span>
-                            </span>
-                        </button>
-                        <button type="button"
-                            class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                            data-carousel-next>
-                            <span
-                                class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-space group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                                <svg aria-hidden="true" class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                                    </path>
-                                </svg>
-                                <span class="sr-only">Next</span>
-                            </span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--end second modal-->
 </template>
 <style scoped>
-.topprincipal .active {
-    color: #c99856;
-    border-bottom: 3px solid #c99856;
+.tipo_componente::-webkit-scrollbar {
+    width: 7px;
+}
+
+.tipo_componente::-webkit-scrollbar-thumb {
+    background: #32345A;
 }
 
 .modal {
@@ -375,13 +388,18 @@
             rgba(63, 66, 128, 0.6241) 0%,
             rgba(49, 50, 71, 0.5609) 100%);
     background-color: #1e1e1e;
-}</style>
+}
+</style>
 <script setup>
 import { Modal } from "flowbite";
+import axios from "axios";
 definePageMeta({
     layout: "principal",
 });
-function abrirModal() {
+onMounted(() => {
+    token.value = localStorage.getItem('token');
+    const BOTON_MODAL = document.getElementById('btncomponente');
+    const BOTON_CERRAR_MODAL = document.getElementById('btnclose');
     const modalElement = document.getElementById("modal-show");
     const modalOptions = {
         //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
@@ -389,38 +407,79 @@ function abrirModal() {
         backdropClasses:
             "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
     };
-
     const modal = new Modal(modalElement, modalOptions);
-    // programatically show
-    modal.show();
-}
-function cerrarModal() {
-    const modalElement = document.getElementById("modal-show");
-    const modal = new Modal(modalElement);
-    // programatically show
-    modal.hide();
-}
-function abrirModal2() {
-    const $modalElement = document.querySelector("#modal-data_show");
-    const modalOptions = {
-        //backdrop nos ayuda a colocar si queremos estatico el modal o dinamico
-        backdrop: "static",
-        backdropClasses:
-            "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-    };
-
-    if ($modalElement) {
-        const modal = new Modal($modalElement, modalOptions);
-        // programatically show
+    BOTON_MODAL.addEventListener('click', function () {
+        document.getElementById('visualizacion').classList.remove('hidden');
+        document.getElementById('p_formulario').classList.add('hidden');
+        document.getElementById('t_formulario').classList.add('hidden');
+        document.getElementById('s_formulario').classList.add('hidden');
+        document.getElementById('titulo_modal').textContent = "Visualización";
+        document.getElementById('subtitulo_modal').textContent = "Componente";
+        cargarSecciones();
         modal.show();
+    })
+    BOTON_CERRAR_MODAL.addEventListener('click', function () {
+        modal.hide();
+    })
+});
+const form = ref({
+    id_seccion: 0,
+});
+
+const EVENT = new Event('reset-timer');
+const token = ref(null);
+const secciones = ref(null);
+async function cargarSecciones() {
+    try {
+        const { data: res } = await axios.get('/secciones', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+        secciones.value = res.data;
+        console.log(res.data);
+        window.dispatchEvent(EVENT);
+        //Se refresca el valor del token con la respuesta del axios
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
+    } catch (error) {
+        console.log(error);
     }
 }
-function cerrarModal2() {
-    const $modalElement = document.querySelector("#modal-data_show");
-    if ($modalElement) {
-        const modal = new Modal($modalElement);
-        // programatically show
-        modal.hide();
+function cambiarFormularioP() {
+    try {
+        document.getElementById('visualizacion').classList.add('hidden');
+        document.getElementById('p_formulario').classList.remove('hidden');
+        document.getElementById('s_formulario').classList.add('hidden');
+        document.getElementById('t_formulario').classList.add('hidden');
+        document.getElementById('titulo_modal').textContent = "Información";
+        document.getElementById('subtitulo_modal').textContent = "Componente - lamina";
+    } catch (error) {
+        console.log(error);
+    }
+}
+function cambiarFormularioS() {
+    try {
+        document.getElementById('visualizacion').classList.add('hidden');
+        document.getElementById('p_formulario').classList.add('hidden');
+        document.getElementById('t_formulario').classList.add('hidden');
+        document.getElementById('s_formulario').classList.remove('hidden');
+        document.getElementById('titulo_modal').textContent = "Información";
+        document.getElementById('subtitulo_modal').textContent = "Componente - lamina";
+    } catch (error) {
+        console.log(error);
+    }
+}
+function cambiarFormularioT() {
+    try {
+        document.getElementById('visualizacion').classList.add('hidden');
+        document.getElementById('p_formulario').classList.add('hidden');
+        document.getElementById('t_formulario').classList.remove('hidden');
+        document.getElementById('s_formulario').classList.add('hidden');
+        document.getElementById('titulo_modal').textContent = "Información";
+        document.getElementById('subtitulo_modal').textContent = "Componente - lamina";
+    } catch (error) {
+        console.log(error);
     }
 }
 </script>

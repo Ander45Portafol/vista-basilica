@@ -89,7 +89,7 @@
             </div>
         </div>
     </div>
-    <vue-easy-lightbox :visible="visibleRef" :imgs="imgsRef" :index="indexRef" @hide="esconderLightBox"></vue-easy-lightbox>
+    <vue-easy-lightbox :visible="visible_ref" :imgs="imgs_ref" :index="index_ref" @hide="esconderLightBox"></vue-easy-lightbox>
     <!-- Proyet modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -1303,21 +1303,20 @@ function falseIconoBorrarIcono() {
     }
 }
 
-const visibleRef = ref(false);
-const indexRef = ref(0);
-const imgsRef = ref([]);
+const visible_ref = ref(false);
+const index_ref = ref(0);
+const imgs_ref = ref([]);
 
 function abrirLightBox() {
-    visibleRef.value = true;
+    visible_ref.value = true;
 }
 
 function mostrarLightBox(url) {
-    imgsRef.value = url;
+    imgs_ref.value = url;
     abrirLightBox();
 }
 
 function esconderLightBox() {
-    visibleRef.value = false
+    visible_ref.value = false
 }
-
 </script>

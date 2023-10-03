@@ -109,7 +109,8 @@
         </div>
     </div>
 </template>
-<style scoped>.content-buttons input {
+<style scoped>
+.content-buttons input {
     border: 3px solid #1b1c30;
 }
 
@@ -152,7 +153,6 @@ definePageMeta({
     //Se le establece un middleware a la página
     middleware: "middleware-paginas"
 });
-;
 
 //onMounted es un hook (en vue los hooks se usan para hacer tareas especificas con los componentes)
 /*En este hook se crean todas las funciones relacionadas al manejo del modal, se crean en este onMounted para que se
