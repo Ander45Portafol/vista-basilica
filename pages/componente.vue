@@ -1,13 +1,171 @@
 <script setup>
+//Importacion para usar el hook de onMounted
+import { onMounted, ref } from "vue";
+//Importación de axios, se utiliza para hacer las peticiones al servidor -> Para mas información vean el axiosPlugin en la carpeta plugins
+import axios from "axios";
+//Importación de sweetalert
+import Swal from "sweetalert2";
+//Importación de archivo de validaciones
+import validaciones from "../assets/validaciones.js";
+
+//onMounted es un hook (en vue los hooks se usan para hacer tareas especificas con los componentes)
+/*En este hook se crean todas las funciones relacionadas al manejo del modal, se crean en este onMounted para que se
+realicen mientras el componente se crea y se añade al DOM*/
+onMounted(() => {
+    //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
+    token.value = localStorage.getItem('token');
+    //Se leen los tipos
+    llenarSelectTiposCategorias();
+});
+
 definePageMeta({
     layout: "principal",
 });
+
+const token = ref();
+
+//Variable reactiva para almacenar los datos de la tabla
+const data = ref(null);
+
+/*Se crea una constante ref que se usa para llevar el control de la información que se muestra dependiendo de la pagina*/
+const componentes = ref([]);
+
+//Se crea una constante ref para saber cuando el usuario realizo una búsqueda que no retorno ningún registro
+const cero_registros_encontrados = ref(false);
+
+//Constante ref para poder intercambiar los registros entre visibles y no visibles
+const registros_visibles = ref(true);
+
+//Evento para reiniciar el tiempo del componente del timer
+const EVENTO = new Event('reset-timer');
+
+//Se establece una variable reactiva para manejar la paginación de registros, se establece como 1 ya que es la pagina default
+const pagina = ref(parseInt(useRoute().query.pagina) || 1);
+
+/*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
+?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
+async function leerComponentes() {
+    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+    token.value = localStorage.getItem('token');
+    try {
+        //Se evalua si se quieren mostrar los registros visibles o invisibles
+        if (registros_visibles.value) {
+            //Se realiza la petición axios para leer los registros visibles
+            const { data: res } = await axios.get('/componentes', {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+
+            //Se asigna el valor de la respuesta de axios a la constante data
+            data.value = res.data;
+
+            //Se limpia el array de registros paginados
+            componentes.value = [];
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                componentes.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENTO);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            cero_registros_encontrados.value = false;
+
+        } else {
+            //Se realiza la petición axios para leer los registros no visibles
+            const { data: res } = await axios.get('/componentes_ocultos', {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+            //Se asigna el valor de la respuesta de axios a la constante data
+            data.value = res.data;
+
+            //Se limpia el array de registros paginados
+            componentes.value = [];
+
+            //Se usa un for para paginar los registros almacenados en la constante data de 10 en 10
+            for (let i = 0; i < res.data.length; i += 10) {
+                componentes.value.push(res.data.slice(i, i + 10));
+            }
+
+            //Se reinicia el timer
+            window.dispatchEvent(EVENTO);
+            //Se refresca el valor del token con la respuesta del axios
+            localStorage.setItem('token', res.token);
+            token.value = localStorage.getItem('token');
+
+            //Se actualiza el valor de la constante de búsqueda a false
+            cero_registros_encontrados.value = false;
+        }
+        //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
+        //y que se bugee la paginación
+        if ((componentes.value.length < pagina.value) && pagina.value != 1) {
+            //Se actualiza el valor de la constante pagina
+            pagina.value = componentes.value.length;
+        }
+
+        if (componentes.value.length == 0) {
+            cero_registros_encontrados.value = true;
+        }
+
+        console.log(componentes.value);
+
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
+}
+
+async function llenarSelectTiposCategorias() {
+    const { data: res } = await axios.get('/tipos-categoria-select', {
+        headers: {
+            Authorization: `Bearer ${token.value}`,
+        },
+    });
+
+    localStorage.setItem('token', res.token);
+    token.value = localStorage.getItem('token');
+}
+
 </script>
 <template>
     <!-- Componente principal -->
     <div class="principal mt-4">
         <!-- Encabezado principal -->
-        <MenuComponenteDashboard class="mr-8"/>
+        <MenuComponenteDashboard class="mr-8" />
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <!-- Search Form -->
@@ -105,7 +263,6 @@ definePageMeta({
     </div>
 </template>
 <style scoped>
-
 .content-buttons input {
     border: 3px solid #1b1c30;
 }
