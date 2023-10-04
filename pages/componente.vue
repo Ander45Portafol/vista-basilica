@@ -14,8 +14,8 @@ realicen mientras el componente se crea y se añade al DOM*/
 onMounted(() => {
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
-    //Se leen las paginas al montarse la página para evitar problemas del setup y el localStorage
-    leerComponentes();
+    //Se leen los tipos
+    llenarSelectTiposCategorias();
 });
 
 definePageMeta({
@@ -149,12 +149,22 @@ async function leerComponentes() {
     }
 }
 
+async function llenarSelectTiposCategorias() {
+    const { data: res2 } = await axios.get('/tipos-categoria-select', {
+        headers: {
+            Authorization: `Bearer ${token.value}`,
+        },
+    });
+
+    console.log(res2);
+}
+
 </script>
 <template>
     <!-- Componente principal -->
     <div class="principal mt-4">
         <!-- Encabezado principal -->
-        <MenuComponenteDashboard class="mr-8"/>
+        <MenuComponenteDashboard class="mr-8" />
         <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <!-- Search Form -->
@@ -252,7 +262,6 @@ async function leerComponentes() {
     </div>
 </template>
 <style scoped>
-
 .content-buttons input {
     border: 3px solid #1b1c30;
 }
