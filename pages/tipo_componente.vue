@@ -194,11 +194,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex mt-4 w-full justify-around items-center">
-                            <form class="flex-column">
+                        <form @submit.prevent="empezarAEditar" class="flex mt-4 w-full justify-around items-center">
+                            <div class="flex-column">
                                 <div class="flex items-center justify-center">
                                     <div class="relative z-0 mr-10">
-                                        <input type="text" maxlength="100" id="nombre_componente" name="nombre_componente"
+                                        <input type="text" maxlength="100" id="nombre_componente" name="nombre_componente" v-model="form_componente.nombre_componente"
                                             class="block py-2.5 px-0 w-48 text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                             placeholder=" " autocomplete="off" required />
                                         <label for="nombre_componente"
@@ -208,13 +208,13 @@
                                     <div class="mt-2 flex-col mr-10">
                                         <label for="" class="text-sm absolute text-gray-200">Escoger sección<span
                                                 class="text-sm ml-1"> * </span></label>
-                                        <select id="underline_select" v-model="form.id_seccion"
+                                        <select id="underline_select" v-model="form_componente.id_seccion"
                                             class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                             <option value="0" class="bg-gray-700">Seleccione una opción</option>
                                             <option class="bg-gray-700" v-for="seccion in secciones" :key="seccion.id"
                                                 :value="seccion.id">{{ seccion.campos.titulo_seccion }}</option>
                                         </select>
-                                        <div v-if="form.id_seccion == 0"
+                                        <div v-if="form_componente.id_seccion == 0"
                                             class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
                                             <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3"
                                                 fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -231,7 +231,7 @@
                                 </div>
                                 <div class="flex items-center justify-start mt-10">
                                     <div class="relative z-0 mr-10">
-                                        <input type="number" id="ubicacion_componente" name="ubicacion_componente"
+                                        <input type="number" id="ubicacion_componente" name="ubicacion_componente" v-model="form_componente.ubicacion_componente"
                                             class="block py-2.5 px-0 w-48 text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                             placeholder=" " autocomplete="off" required />
                                         <label for="ubicacion_componente"
@@ -244,8 +244,8 @@
                                             <span class="text-sm ml-1"> * </span></label>
                                         <div class="flex justify-start mt-2">
                                             <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                                <input type="checkbox" value="" class="sr-only peer" id="visibilidad_pagina"
-                                                    name="visibilidad_componente" v-model="form.visibilidad_pagina" />
+                                                <input type="checkbox" value="" class="sr-only peer" id="visibilidad_componente"
+                                                    name="visibilidad_componente" v-model="form_componente.visibilidad_componente" />
                                                 <div
                                                     class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                                 </div>
@@ -253,11 +253,11 @@
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                             <div class="flex items-center justify-center">
-                                <button @click="empezarAEditar"
+                                <button
                                     class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6"
-                                    type="button">
+                                    type="submit">
                                     <p class="text-white ml-3">Empezar a editar |</p>
                                     <svg class="mr-3" width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
                                         fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -266,7 +266,7 @@
                                     </svg>
                                 </button>
                             </div>
-                        </div>
+                        </form>
                     </div>
                     <form action="" class="w-full py-6 px-10" id="s_formulario" v-else>
                         <div class="flex justify-between w-full">
@@ -379,12 +379,12 @@ import Swal from 'sweetalert2';
 definePageMeta({
     layout: "principal",
 });
-onMounted(() => {
+onMounted(async () => {
     initDropdowns();
     token.value = localStorage.getItem('token');
-    llenarSelectTiposCategorias();
-    llenarSelectTiposComponentes();
-    cargarSecciones();
+    await llenarSelectTiposCategorias();
+    await llenarSelectTiposComponentes();
+    await cargarSecciones();
 
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
@@ -429,7 +429,9 @@ async function llenarSelectTiposCategorias() {
             Authorization: `Bearer ${token.value}`,
         },
     });
-
+    console.log(res.token);
+    localStorage.setItem('token', res.token);
+    token.value = localStorage.getItem('token');
     select_tipos_categorias.value = res;
 }
 
@@ -440,8 +442,9 @@ async function llenarSelectTiposComponentes() {
         },
     });
 
+    localStorage.setItem('token', res.token);
+    token.value = localStorage.getItem('token');
     select_tipos_componentes.value = res;
-    console.log(res);
 }
 
 const texto_dropdown = ref('Seleccionar');
@@ -457,7 +460,9 @@ const informacion_componente_seleccionado = ref({
 })
 
 const form_componente = ref({
+    id_componente: "",
     nombre_componente: "",
+    ubicacion_componente: "",
     visibilidad_componente: "",
     id_tipo_componente: "",
     id_seccion: "",
@@ -568,7 +573,7 @@ function abrirModal() {
 
 const pagina = ref(1);
 
-function empezarAEditar() {
+async function empezarAEditar() {
     Swal.fire({
         title: 'Confirmación',
         text: "Una vez seleccionado este tipo de componente, podrá editar la información de su contenido, pero no podrá cambiar su tipo de componente. ¿Desea continuar?",
