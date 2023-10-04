@@ -31,7 +31,7 @@
                 <div v-if="tipos_componentes_filtrados" class=" flex-col mt-6 tipo_componente pr-4 overflow-y-scroll h-2/4">
                     <div @click="seleccionarTipoComponente(item.id_tipo_componente)"
                         v-for="item in tipos_componentes_filtrados"
-                        class="flex justify-center items-center cursor-pointer hover:bg-slate-300 bg-slate-200 w-56 h-52 rounded-lg mt-6">
+                        class="flex justify-center items-center cursor-pointer hover:bg-slate-200 bg-slate-100 w-56 h-52 rounded-lg mt-6">
                         <div class="flex-column text-center">
                             <img :src="RUTA_IMAGENES + item.icono_tipo_componente" :alt="item.tipo_componente">
                             <p class="mt-3 font-semibold text-purpleLogin">{{ item.tipo_componente }}</p>
@@ -105,8 +105,8 @@
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col ml-4 pt-4">
-                        <p class="text-xl font-bold text-gray-100" id="titulo_modal"></p>
-                        <p class="text-base font-medium text-gray-400" id="subtitulo_modal"></p>
+                        <p class="text-xl font-bold text-gray-100" id="titulo_modal">Slider</p>
+                        <p class="text-base font-medium text-gray-400" id="subtitulo_modal">Componente-Lamina</p>
                     </div>
                     <button type="button" class="bg-transparent rounded-lg p-1.5 ml-auto items-center border-none"
                         id="btnclose">
@@ -119,7 +119,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class=" space-y-6 flex justify-evenly pb-10">
-                    <div class="flex-col" id="visualizacion">
+                    <div class="flex-col" id="visualizacion" v-if="zona_preview">
                         <div class="flex">
                             <div class="w-[850px] mx-[25px]">
                                 <div class="relative">
@@ -255,90 +255,24 @@
                                 </div>
                             </form>
                             <div class="flex items-center justify-center">
-                                <button @click="empezarAEditar" class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6"
+                                <button @click="empezarAEditar"
+                                    class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6"
                                     type="button">
                                     <p class="text-white ml-3">Empezar a editar |</p>
                                     <svg class="mr-3" width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
                                         fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg></button>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>
-                    <form action="" class="w-full py-6 px-14" id="p_formulario">
-                        <div class="flex justify-between w-full">
-                            <div class="flex-col w-72">
-                                <div class="relative z-0">
-                                    <input type="text" id="titulo_lamina" name="titulo_lamina" required maxlength="100"
-                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                        placeholder=" " autocomplete="off" />
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
-                                    <label for="titulo_lamina"
-                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
-                                        - lamina<span class="text-sm ml-1"> * </span></label>
-                                </div>
-                                <div class="relative z-0 mt-8">
-                                    <input type="text" id="subtitulo_lamina" name="subtitulo_lamina" required
-                                        maxlength="100"
-                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                        placeholder=" " autocomplete="off" />
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
-                                    <label for="subtitulo_lamina"
-                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtítulo
-                                        - lamina<span class="text-sm ml-1"> * </span></label>
-                                </div>
-                                <div class="relative z-0 mt-8">
-                                    <input type="text" id="descripcion_lamina" name="descripcion_lamina" required
-                                        maxlength="100"
-                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                        placeholder=" " autocomplete="off" />
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
-                                    <label for="descripcion_lamina"
-                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
-                                        - lamina<span class="text-sm ml-1"> * </span></label>
-                                </div>
-                                <div class="flex-col mt-8">
-                                    <label for="" class="text-sm text-gray-200">Visibilidad</label>
-                                    <div class="flex justify-start mt-2">
-                                        <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                            <input type="checkbox" value="" class="sr-only peer">
-                                            <div
-                                                class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-col">
-                                <p class="text-center text-white">Imagen</p>
-                                <div class="flex justify-center mt-2">
-                                    <div class="h-52 w-48 rounded-xl border-2 border-white">
-                                        <img src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-col">
-                                <div class="mt-20 flex justify-end items-end">
-                                    <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
-                                        type="button" @click="cambiarFormularioS"><svg width="26px" height="26px"
-                                            viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                            <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </svg></button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                    <form action="" class="w-full py-6 px-10" id="s_formulario">
+                    <form action="" class="w-full py-6 px-10" id="s_formulario" v-else>
                         <div class="flex justify-between w-full">
                             <div class="flex-col mt-20">
                                 <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
-                                    type="button" @click="cambiarFormularioP">
+                                    type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none"
                                         stroke-width="2" viewBox="0 0 24 24" color="#000000">
                                         <path stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -402,9 +336,8 @@
                             <div class="flex-col">
                                 <div class="mt-20 flex justify-end items-end">
                                     <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
-                                        type="button" @click="cambiarFormularioT"><svg width="26px" height="26px"
-                                            viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        type="button"><svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
+                                            fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                                             <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg></button>
@@ -412,73 +345,9 @@
                             </div>
                         </div>
                     </form>
-                    <form action="" class="w-full py-6 px-10" id="t_formulario">
-                        <div class="flex justify-between w-full">
-                            <div class="flex-col mt-20">
-                                <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
-                                    type="button" @click="cambiarFormularioS">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none"
-                                        stroke-width="2" viewBox="0 0 24 24" color="#000000">
-                                        <path stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            d="M21 12H3m0 0 8.5-8.5M3 12l8.5 8.5"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="flex-col w-72">
-                                <div class="relative z-0">
-                                    <input type="text" id="titulo_lamina" name="titulo_lamina" required maxlength="100"
-                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                        placeholder=" " autocomplete="off" />
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
-                                    <label for="titulo_lamina"
-                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
-                                        - lamina<span class="text-sm ml-1"> * </span></label>
-                                </div>
-                                <div class="relative z-0 mt-8">
-                                    <input type="text" id="subtitulo_lamina" name="subtitulo_lamina" required
-                                        maxlength="100"
-                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                        placeholder=" " autocomplete="off" />
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
-                                    <label for="subtitulo_lamina"
-                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtítulo
-                                        - lamina<span class="text-sm ml-1"> * </span></label>
-                                </div>
-                                <div class="relative z-0 mt-8">
-                                    <input type="text" id="descripcion_lamina" name="descripcion_lamina" required
-                                        maxlength="100"
-                                        class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                        placeholder=" " autocomplete="off" />
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
-                                    <label for="descripcion_lamina"
-                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
-                                        - lamina<span class="text-sm ml-1"> * </span></label>
-                                </div>
-                                <div class="flex-col mt-8">
-                                    <label for="" class="text-sm text-gray-200">Visibilidad</label>
-                                    <div class="flex justify-start mt-2">
-                                        <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                            <input type="checkbox" value="" class="sr-only peer">
-                                            <div
-                                                class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex-col">
-                                <p class="text-center text-white">Imagen</p>
-                                <div class="flex justify-center mt-2">
-                                    <div class="h-52 w-48 rounded-xl border-2 border-white">
-                                        <img src="" alt="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                </div>
+                <div class="flex items-center justify-center">
+                    <input type="text" class="mb-10 w-16 text-center" :value="pagina">
                 </div>
             </div>
         </div>
@@ -516,6 +385,12 @@ onMounted(() => {
     llenarSelectTiposCategorias();
     llenarSelectTiposComponentes();
     cargarSecciones();
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            pagina.value = 1;
+        }
+    });
 });
 const form = ref({
     id_seccion: 0,
@@ -537,42 +412,6 @@ async function cargarSecciones() {
         //Se refresca el valor del token con la respuesta del axios
         localStorage.setItem('token', res.token);
         token.value = localStorage.getItem('token');
-    } catch (error) {
-        console.log(error);
-    }
-}
-function cambiarFormularioP() {
-    try {
-        document.getElementById('visualizacion').classList.add('hidden');
-        document.getElementById('p_formulario').classList.remove('hidden');
-        document.getElementById('s_formulario').classList.add('hidden');
-        document.getElementById('t_formulario').classList.add('hidden');
-        document.getElementById('titulo_modal').textContent = "Información";
-        document.getElementById('subtitulo_modal').textContent = "Componente - lamina";
-    } catch (error) {
-        console.log(error);
-    }
-}
-function cambiarFormularioS() {
-    try {
-        document.getElementById('visualizacion').classList.add('hidden');
-        document.getElementById('p_formulario').classList.add('hidden');
-        document.getElementById('t_formulario').classList.add('hidden');
-        document.getElementById('s_formulario').classList.remove('hidden');
-        document.getElementById('titulo_modal').textContent = "Información";
-        document.getElementById('subtitulo_modal').textContent = "Componente - lamina";
-    } catch (error) {
-        console.log(error);
-    }
-}
-function cambiarFormularioT() {
-    try {
-        document.getElementById('visualizacion').classList.add('hidden');
-        document.getElementById('p_formulario').classList.add('hidden');
-        document.getElementById('t_formulario').classList.remove('hidden');
-        document.getElementById('s_formulario').classList.add('hidden');
-        document.getElementById('titulo_modal').textContent = "Información";
-        document.getElementById('subtitulo_modal').textContent = "Componente - lamina";
     } catch (error) {
         console.log(error);
     }
@@ -662,14 +501,8 @@ function abrirModal() {
         BOTON_CERRAR.addEventListener('click', function () {
             MODAL.hide();
         });
-        const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
 
-        document.getElementById('visualizacion').classList.remove('hidden');
-        document.getElementById('p_formulario').classList.add('hidden');
-        document.getElementById('t_formulario').classList.add('hidden');
-        document.getElementById('s_formulario').classList.add('hidden');
-        document.getElementById('titulo_modal').textContent = "Visualización";
-        document.getElementById('subtitulo_modal').textContent = "Componente";
+        const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
         MODAL.show();
 
         const items = [
@@ -733,10 +566,12 @@ function abrirModal() {
     }
 }
 
-function empezarAEditar(){
+const pagina = ref(1);
+
+function empezarAEditar() {
     Swal.fire({
         title: 'Confirmación',
-        text: "Una vez seleccionado este tipo de componente, podrás editar la información de su contenido, pero no podrás cambiar su tipo de componente. ¿Deseas continuar?",
+        text: "Una vez seleccionado este tipo de componente, podrá editar la información de su contenido, pero no podrá cambiar su tipo de componente. ¿Desea continuar?",
         icon: 'info',
         reverseButtons: true,
         showCancelButton: true,
@@ -747,7 +582,7 @@ function empezarAEditar(){
         cancelButtonText: 'Cancelar'
     }).then(async (result) => {
         if (result.isConfirmed) {
-            cambiarFormularioS();
+            pagina.value = 2;
         }
     });
 }

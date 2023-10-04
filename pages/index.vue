@@ -1,7 +1,7 @@
 <template>
   <div v-if="!enviando_login && !doble_factor && !cambio_contra" class="w-full grid place-items-center">
     <div class="top flex items-center">
-      <img src="/img/logo_nuevo_negrita.svg" alt="logo_login" class="h-[20vh]">
+      <img src="/img/logo_con_letras.svg" alt="logo_login" class="h-[20vh]">
     </div>
     <form class="middle flex-col w-1/2 mt-12" @submit.prevent="login()">
       <div class="relative z-0">
