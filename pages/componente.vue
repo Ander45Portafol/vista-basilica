@@ -150,13 +150,14 @@ async function leerComponentes() {
 }
 
 async function llenarSelectTiposCategorias() {
-    const { data: res2 } = await axios.get('/tipos-categoria-select', {
+    const { data: res } = await axios.get('/tipos-categoria-select', {
         headers: {
             Authorization: `Bearer ${token.value}`,
         },
     });
 
-    console.log(res2);
+    localStorage.setItem('token', res.token);
+    token.value = localStorage.getItem('token');
 }
 
 </script>
