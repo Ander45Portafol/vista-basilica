@@ -13,10 +13,10 @@
           <div class='demo-app-sidebar-section mt-[-20px]'>
             <h2>All Events <strong> ( {{ currentEvents.length }} ) </strong></h2>
             <ul class="ml-[-20px] text-[14px]">
-              <li v-for='evento in eventos' :key='evento.id' class="flex items-center rounded-md bg-gray-200 p-5">
+              <li v-for='evento in currentEvents' :key='evento.id' class="flex items-center rounded-md bg-gray-200 p-5">
                 <div class="w-[100%]">
-                  <b>{{ evento.campos.nombre_evento }}</b>
-                  <i>{{ evento.campos.fecha_evento }}</i>
+                  <b>{{ evento.startStr }}</b>
+                  <i>{{ evento.title }}</i>
                 </div>
               </li>
             </ul>
@@ -308,6 +308,18 @@ export default defineComponent({
       }
     }
     leerEventos();
+    const INITIAL_EVENTS = [
+      {
+        id: crearIdEvento(),
+        title: 'All-day event',
+        start: diaActual
+      },
+      {
+        id: crearIdEvento(),
+        title: 'Timed event',
+        start: diaActual + 'T12:00:00'
+      }
+    ]
     return {
       calendarOptions: {
         plugins: [
@@ -321,7 +333,7 @@ export default defineComponent({
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
         initialView: 'dayGridMonth',
-        initialEvents: eventos.value, // alternatively, use the `events` setting to fetch from a feed
+        initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
         editable: true,
         selectable: true,
         selectMirror: true,
