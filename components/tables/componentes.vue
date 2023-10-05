@@ -9,8 +9,8 @@
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                         {{ componente.campos.nombre_componente }}</p>
-                    <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"><a href="#">{{
-                        componente.campos.id_tipo_componente }}</a></p>
+                    <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"> Nombre componente: <span class="font-semibold |">{{
+                        componente.tipos.tipo_componente }}</span></p>
                     <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
                         {{ componente.campos.id_seccion }}
                     </p>

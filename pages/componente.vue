@@ -227,8 +227,8 @@ async function visibilidadRegistros() {
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
-console.log(data.value);
 async function leerComponentes() {
+    
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
     try {
@@ -243,6 +243,7 @@ async function leerComponentes() {
 
             //Se asigna el valor de la respuesta de axios a la constante data
             data.value = res.data;
+            console.log(data.value);
 
             //Se limpia el array de registros paginados
             componentes.value = [];
