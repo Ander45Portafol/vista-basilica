@@ -273,7 +273,7 @@
                     <form action="" class="w-full py-6 px-10" id="s_formulario" v-else>
                         <div class="flex justify-between w-full">
                             <div class="flex-col mt-20">
-                                <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6" @click="paginaAnteriorSlider"
                                     type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none"
                                         stroke-width="2" viewBox="0 0 24 24" color="#000000">
@@ -337,7 +337,7 @@
                             </div>
                             <div class="flex-col">
                                 <div class="mt-20 flex justify-end items-end">
-                                    <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                    <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6" @click="paginaSiguienteSlider"
                                         type="button"><svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
                                             fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                                             <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF" stroke-width="2"
@@ -349,7 +349,7 @@
                     </form>
                 </div>
                 <div class="flex items-center justify-center">
-                    <input type="text" class="mb-10 w-16 text-center" :value="pagina">
+                    <input type="number" class="mb-10 w-16 text-right" v-model="pagina" @input="cambiarPaginaInput" min="1">
                 </div>
             </div>
         </div>
@@ -575,6 +575,8 @@ function abrirModal() {
 
 const pagina = ref(1);
 
+const id_componente = ref();
+
 async function empezarAEditar() {
     if (form_componente.value.id_seccion != 0) {
         token.value = localStorage.getItem('token');
@@ -609,12 +611,30 @@ async function empezarAEditar() {
                         Authorization: `Bearer ${token.value}`,
                     },
                 });
-
-                console.log(res);
-
+                
+                localStorage.setItem('token', res.data.data.token)
+                token.value = localStorage.getItem('token');
                 pagina.value = 2;
             }
         });
+    }
+}
+
+const cambios = ref();
+
+function paginaSiguienteSlider(){
+
+}
+
+function paginaAnteriorSlider(){
+    if(pagina.value > 1){
+        pagina.value = pagina.value - 1;
+    }
+}
+
+function cambiarPaginaInput(){
+    if(!id_componente.value){
+        pagina.value = 1;
     }
 }
 
