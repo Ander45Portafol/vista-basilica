@@ -26,7 +26,7 @@ const validaciones = {
     //Se valida que el texto no sea nulo
     if (texto != null && texto.trim() != "") {
       //Se valida que en la cadena de texto solo existan letras, números, espacios y caracteres de separación (/ | -)
-      var re = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s/|\-,.]+$/;
+      var re = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s/|\-,.]+$/;
       //Retorna false o true dependiendo de si cumple o no la condición
       return re.test(texto);
     } else {
@@ -109,7 +109,7 @@ const validaciones = {
     //Se valida que el texto no sea nulo
     if (texto != null && texto.trim() != "") {
       //Se valida que en la cadena de texto solo existan letras, números y guión bajo
-      var re = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s_]+$/;
+      var re = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s_]+$/;
       //Retorna false o true dependiendo de si cumple o no la condición
       return re.test(texto);
     } else {
@@ -122,7 +122,7 @@ const validaciones = {
     //Se valida que el texto no sea nulo
     if (texto != null && texto.trim() != "") {
       //Se valida que en la cadena de texto solo existan letras
-      var re = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s/]+$/;
+      var re = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s/]+$/;
       //Retorna false o true dependiendo de si cumple o no la condición
       return re.test(texto);
     } else {
@@ -197,7 +197,7 @@ const validaciones = {
   //Validar que la contraseña ingresada contenga una letra minuscula
   validarContraLetraMinuscula(texto) {
     if (texto != null && texto.trim() != "") {
-      if (!/[a-záéíóúñ]/.test(texto)) {
+      if (!/[a-záéíóúüñ]/.test(texto)) {
         return false;
       } else {
         return true;
@@ -210,20 +210,7 @@ const validaciones = {
   //Validar que la contraseña ingresada contenga una letra mayuscula
   validarContraLetraMayuscula(texto) {
     if (texto != null && texto.trim() != "") {
-      if (!/[A-ZÁÉÍÓÚÑ]/.test(texto)) {
-        return false;
-      } else {
-        return true;
-      }
-    } else {
-      return false;
-    }
-  },
-
-  //Validar que la contraseña ingresada contenga un caracter especial
-  validarContraEspeciales(texto) {
-    if (texto != null && texto.trim() != "") {
-      if (!/[¡!@#¿?*_+-/:]/.test(texto)) {
+      if (!/[A-ZÁÉÍÓÚÑÜ]/.test(texto)) {
         return false;
       } else {
         return true;
@@ -245,6 +232,23 @@ const validaciones = {
       return false;
     }
   },
+
+  //Validar que la contraseña ingresada contenga un caracter especial
+  validarContraEspeciales(texto) {
+    console.log(texto);
+    if (texto.includes('_')) {
+      return true;
+    } else if (texto != null && texto.trim() != "") {
+      // Utilizamos una expresión regular para buscar caracteres especiales
+      if (/[^\w\sáéíóúüÁÉÍÓÚñÑÜ]/u.test(texto)) {
+        return true; // La contraseña contiene caracteres especiales
+      } else {
+        return false; // La contraseña no contiene caracteres especiales
+      }
+    } else {
+      return false; // El texto está vacío o nulo
+    }
+  }
 };
 
 export default validaciones;

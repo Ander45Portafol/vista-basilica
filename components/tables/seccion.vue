@@ -1,5 +1,5 @@
 <template>
-      <div class="contained-data flex-col" v-for="seccione in datos_secciones[paginacion - 1]" :key="seccione.id">
+    <div class="contained-data flex-col" v-for="seccione in datos_secciones[paginacion - 1]" :key="seccione.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -8,13 +8,17 @@
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                         {{ seccione.campos.titulo_seccion }}</p>
-                        <p v-if="seccione.campos.subtitulo_seccion"
+                    <p v-if="seccione.campos.ubicacion_seccion"
+                        class="font-semibold text-sm text-gray-500 max-[750px]:text-[12px]" > Ubicacion de la seccion {{
+                            seccione.campos.ubicacion_seccion }} 
+                    </p>
+                    <p v-if="seccione.campos.subtitulo_seccion"
                         class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{
                             seccione.campos.subtitulo_seccion }}
                     </p>
                     <p v-else class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">Esta sección no
                         tiene subtitulo</p>
-                        <p v-if="seccione.campos.descripcion_seccion"
+                    <p v-if="seccione.campos.descripcion_seccion"
                         class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">{{
                             seccione.campos.descripcion_seccion }}
                     </p>
@@ -158,6 +162,17 @@
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
                                     - Seccion</label>
                             </div>
+
+                            <div class="relative z-0 mt-6">
+                                <input type="number" v-model="form.ubicacion_seccion" id="ubicacion_seccion" min="1"
+                                    max="99" maxlength="250" name="ubicacion_seccion"
+                                    class="block py-2.5 min-h-[3rem] h-[3rem] max-h-[9rem] px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                    placeholder=" " autocomplete="off" />
+                                <label for="ubicacion_seccion"
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Ubicación
+                                    - Seccion</label>
+                            </div>
+
                             <div class="pt-4 mt-4 flex-col">
                                 <label for="" class="absolute text-gray-200">Pagina - Asignada<span class="text-sm ml-1"> *
                                     </span></label>
@@ -257,9 +272,7 @@
                             </div>
                         </div>
                     </form>
-                    <pre>
-                        {{ form }}
-                    </pre>
+
                 </div>
             </div>
         </div>
@@ -364,6 +377,7 @@ function limpiarForm() {
     form.value.titulo_seccion = "";
     form.value.subtitulo_seccion = "";
     form.value.descripcion_seccion = "";
+    form.value.ubicacion_seccion = "";
     form.value.id_pagina = 0;
     form.value.visibilidad_seccion = false;
     form.value.editable = false;
@@ -376,6 +390,7 @@ const form = ref({
     titulo_seccion: "",
     subtitulo_seccion: "",
     descripcion_seccion: "",
+    ubicacion_seccion: "",
     id_pagina: 0,
     visibilidad_seccion: false,
     editable: false,
@@ -416,19 +431,23 @@ function submitForm() {
 async function crearSeccion() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
+    console.log(form);
     if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
         try {
             const FORM_DATA = new FormData();
             FORM_DATA.append("titulo_seccion", form.value.titulo_seccion);
             FORM_DATA.append("subtitulo_seccion", form.value.subtitulo_seccion);
             FORM_DATA.append("descripcion_seccion", form.value.descripcion_seccion);
+            FORM_DATA.append("ubicacion_seccion", form.value.ubicacion_seccion);
             FORM_DATA.append("id_pagina", form.value.id_pagina);
             FORM_DATA.append(
                 "visibilidad_seccion",
                 form.value.visibilidad_seccion ? 1 : 0
             );
             FORM_DATA.append(
-                "editable", form.value.editable ? 1 : 0);
+                "editable",
+                form.value.editable ? 1 : 0
+            );
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.post("/secciones/", FORM_DATA, {
                 headers: {
@@ -444,6 +463,7 @@ async function crearSeccion() {
 
             //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
             await props.actualizar_datos();
+            limpiarForm();
 
             document.getElementById('closeModal').click();
             //Se lanza la alerta con el mensaje de éxito
@@ -524,6 +544,7 @@ async function leerUnaSeccion(id) {
                 titulo_seccion: res.data.data.campos.titulo_seccion,
                 subtitulo_seccion: res.data.data.campos.subtitulo_seccion,
                 descripcion_seccion: res.data.data.campos.descripcion_seccion,
+                ubicacion_seccion: res.data.data.campos.ubicacion_seccion,
                 id_pagina: res.data.data.campos.id_pagina,
                 //Se convierte a true o false en caso de que devuelva 1 o 0, esto por que el input solo acepta true y false
                 visibilidad_seccion: res.data.data.campos.visibilidad_seccion ? true : false,
@@ -582,6 +603,7 @@ async function actualizarSeccion() {
             FORM_DATA.append("titulo_seccion", form.value.titulo_seccion);
             FORM_DATA.append("subtitulo_seccion", form.value.subtitulo_seccion);
             FORM_DATA.append("descripcion_seccion", form.value.descripcion_seccion);
+            FORM_DATA.append("ubicacion_seccion", form.value.ubicacion_seccion);
             FORM_DATA.append("id_pagina", form.value.id_pagina);
             FORM_DATA.append(
                 "visibilidad_seccion",

@@ -128,32 +128,32 @@
                         <div class="flex m-10 justify-evenly">
                             <div class="flex-col mt-6">
                                 <div class="flex text-white">
-                                    <input id="acceso_parroquia" type="checkbox" value="false"
+                                    <input id="acceso_parroquia" type="checkbox" 
                                         v-model="form.acceso_parroquia"
                                         class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     <label for="acceso_parroquia"
                                         class="ml-2 text-sm font-medium text-white">Parroquia</label>
                                 </div>
                                 <div class="flex text-white mt-4">
-                                    <input id="acceso_usuarios" type="checkbox" value="false" v-model="form.acceso_usuarios"
+                                    <input id="acceso_usuarios" type="checkbox"  v-model="form.acceso_usuarios"
                                         class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     <label for="acceso_usuarios"
                                         class="ml-2 text-sm font-medium text-white">Usuarios</label>
                                 </div>
                                 <div class="flex text-white mt-4">
-                                    <input id="acceso_navegabilidad" type="checkbox" value="false"
+                                    <input id="acceso_navegabilidad" type="checkbox" 
                                         v-model="form.acceso_navegabilidad"
                                         class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     <label for="acceso_navegabiildad"
                                         class="ml-2 text-sm font-medium text-white">Navegabilidad</label>
                                 </div>
                                 <div class="flex text-white mt-4">
-                                    <input id="acceso_anuncios" type="checkbox" value="false" v-model="form.acceso_anuncios"
+                                    <input id="acceso_anuncios" type="checkbox"  v-model="form.acceso_anuncios"
                                         class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     <label for="acceso_anuncios" class="ml-2 text-sm font-medium text-white">Anunios</label>
                                 </div>
                                 <div class="flex text-white mt-4">
-                                    <input id="acceso_mensajes" type="checkbox" value="false" v-model="form.acceso_mensajes"
+                                    <input id="acceso_mensajes" type="checkbox"  v-model="form.acceso_mensajes"
                                         class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     <label for="acceso_mensajes"
                                         class="ml-2 text-sm font-medium text-white">Mensajes</label>
@@ -161,27 +161,27 @@
                             </div>
                             <div class="flex-col mt-6">
                                 <div class="flex text-white">
-                                    <input id="acceso_donaciones" type="checkbox" value="false"
+                                    <input id="acceso_donaciones" type="checkbox" 
                                         v-model="form.acceso_donaciones"
                                         class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     <label for="acceso_donaciones"
                                         class="ml-2 text-sm font-medium text-white">Donacionees</label>
                                 </div>
                                 <div class="flex text-white mt-4">
-                                    <input id="acceso_donantes" type="checkbox" value="false" v-model="form.acceso_donantes"
+                                    <input id="acceso_donantes" type="checkbox"  v-model="form.acceso_donantes"
                                         class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     <label for="acceso_donantes"
                                         class="ml-2 text-sm font-medium text-white">Donantes</label>
                                 </div>
                                 <div class="flex text-white mt-4">
-                                    <input id="acceso_calendario" type="checkbox" value="false"
+                                    <input id="acceso_calendario" type="checkbox" 
                                         v-model="form.acceso_calendario"
                                         class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     <label for="acceso_calendario"
                                         class="ml-2 text-sm font-medium text-white">Calendario</label>
                                 </div>
                                 <div class="flex text-white mt-4">
-                                    <input id="acceso_personal" type="checkbox" value="false" v-model="form.acceso_personal"
+                                    <input id="acceso_personal" type="checkbox"  v-model="form.acceso_personal"
                                         class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                                     <label for="acceso_personal"
                                         class="ml-2 text-sm font-medium text-white">Personal</label>
