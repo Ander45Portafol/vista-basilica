@@ -11,8 +11,8 @@
                         {{ componente.campos.nombre_componente }}</p>
                     <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"> Nombre componente: <span class="font-semibold |">{{
                         componente.tipos.tipo_componente }}</span></p>
-                    <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]">
-                        {{ componente.campos.id_seccion }}
+                    <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> Seccion:
+                        {{ componente.secciones.titulo_seccion }}
                     </p>
                 </div>
             </div>
