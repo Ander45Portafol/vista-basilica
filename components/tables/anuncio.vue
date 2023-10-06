@@ -119,7 +119,7 @@
                             </div>
                             <div class="relative z-0 mt-6">
                                 <!-- Campo de entrada de texto -->
-                                <textarea id="contenido_titulo" name="contenido_anuncio" v-model="form.contenido_anuncio"
+                                <textarea id="contenido_titulo" name="contenido_anuncio" v-model="form.contenido_anuncio" maxlength="1000"
                                     class="block py-2.5 px-0 w-full min-h-[3rem] h-[3rem] max-h-[12rem] text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"

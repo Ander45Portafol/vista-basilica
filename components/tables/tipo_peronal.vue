@@ -84,7 +84,7 @@
                         <div class="flex-col w-64">
                             <input type="hidden" name="id_tipo_personal" id="id_tipo_personal" v-model="form.id_tipo_personal">
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="tipo_personal" name="tipo_personal" required maxlength="100"
+                                <input type="text" id="tipo_personal" name="tipo_personal" required maxlength="50"
                                     @input="validarTipoPersonal()" v-model="form.tipo_personal"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
