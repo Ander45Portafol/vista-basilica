@@ -101,10 +101,13 @@
                             </div>
                             <!-- Campo de entrada Mensaje - Donación -->
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="mensaje_donacion" name="mensaje_donacion"
+                                <input type="text" id="mensaje_donacion" name="mensaje_donacion" maxlength="500" required 
                                     v-model="form.mensaje_donacion"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.mensaje_donacion">
+                                    {{ form.mensaje_donacion.length }} /500</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /500</span>
                                 <label for="mensaje_donacion"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Mensaje</label>
                             </div>
@@ -427,74 +430,74 @@ async function actualizarDonacion() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
 
-        try {
-            //Se establece una variable de id con el valor que tiene guardado la variable form
-            var id = form.value.id_donacion;
+    try {
+        //Se establece una variable de id con el valor que tiene guardado la variable form
+        var id = form.value.id_donacion;
 
-            //Se crea una constante FormData para almacenar los datos del modal
-            const FORM_DATA = new FormData();
-            FORM_DATA.append("cantidad_donada", form.value.cantidad_donada);
-            FORM_DATA.append("fecha_donacion", form.value.fecha_donacion);
-            FORM_DATA.append("mensaje_donacion", form.value.mensaje_donacion);
-            FORM_DATA.append("codigo_comprobante", form.value.codigo_comprobante);
-            FORM_DATA.append("visibilidad_donacion", form.value.visibilidad_donacion ? 1 : 0);
-            FORM_DATA.append("id_proyecto_donacion", form.value.id_proyecto_donacion);
-            FORM_DATA.append("id_donante", form.value.id_donante);
+        //Se crea una constante FormData para almacenar los datos del modal
+        const FORM_DATA = new FormData();
+        FORM_DATA.append("cantidad_donada", form.value.cantidad_donada);
+        FORM_DATA.append("fecha_donacion", form.value.fecha_donacion);
+        FORM_DATA.append("mensaje_donacion", form.value.mensaje_donacion);
+        FORM_DATA.append("codigo_comprobante", form.value.codigo_comprobante);
+        FORM_DATA.append("visibilidad_donacion", form.value.visibilidad_donacion ? 1 : 0);
+        FORM_DATA.append("id_proyecto_donacion", form.value.id_proyecto_donacion);
+        FORM_DATA.append("id_donante", form.value.id_donante);
 
-            //Se realiza la petición axios mandando la ruta y el formData
-            await axios.post("/donaciones_update/" + id, FORM_DATA, {
-                headers: {
-                    Authorization: `Bearer ${token.value}`,
-                },
-            }).then(res => {
-                //Se reinicia el timer
-                window.dispatchEvent(EVENT);
-                //Se actualiza el token con la respuesta del axios
-                localStorage.setItem('token', res.data.data.token);
-                token.value = localStorage.getItem('token');
-            });
-            //Se manda a llamar la accion para actualizar los datos con las props
-            await props.actualizar_datos();
+        //Se realiza la petición axios mandando la ruta y el formData
+        await axios.post("/donaciones_update/" + id, FORM_DATA, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        }).then(res => {
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+        });
+        //Se manda a llamar la accion para actualizar los datos con las props
+        await props.actualizar_datos();
 
-            document.getElementById("closeModal").click();
+        document.getElementById("closeModal").click();
 
-            //Se lanza la alerta de éxito
-            TOAST.fire({
-                icon: "success",
-                title: "Donación actualizada exitosamente",
-            });
+        //Se lanza la alerta de éxito
+        TOAST.fire({
+            icon: "success",
+            title: "Donación actualizada exitosamente",
+        });
 
-        } catch (error) {
-            console.log(error);
-            const MENSAJE_ERROR = error.response.data.message;
-            if (error.response.status == 401) {
-                navigateTo('/error_401');
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
             } else {
-                if (!error.response.data.errors) {
-                    //Se extrae el sqlstate (identificador de acciones SQL)
-                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                    const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: RES,
-                        confirmButtonColor: '#3F4280'
-                    });
-                } else {
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: MENSAJE_ERROR,
-                        confirmButtonColor: '#3F4280'
-                    });
-                }
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
             }
         }
     }
+}
 
 
 //Codigo para cambiar el estado del usuarios a inactivo
@@ -633,5 +636,6 @@ async function recuperarDonacion(id) {
     });
 }
 
+//Vaidaciones
 </script>
 <style scoped></style>
