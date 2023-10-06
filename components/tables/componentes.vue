@@ -224,7 +224,7 @@ async function recuperarUnComponente(id) {
 
     Swal.fire({
         title: 'Confirmación',
-        text: "¿¿Desea recuperar el registro",
+        text: "¿¿Desea recuperar el registro?",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,

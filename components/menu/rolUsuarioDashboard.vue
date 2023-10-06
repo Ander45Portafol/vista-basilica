@@ -3,7 +3,6 @@
         <div class="options mt-2">
             <NuxtLink to="/usuario" class="ml-4">Usuarios</NuxtLink>
             <NuxtLink to="" class="active ml-4">Roles Usuarios</NuxtLink>
-            <NuxtLink to="/rol_acceso" class="ml-4">Roles Accesos</NuxtLink>
         </div>
         <div class="endtop flex justify-between w-20">
             <NuxtLink to="/perfil" class="mt-2">

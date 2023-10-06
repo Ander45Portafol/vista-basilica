@@ -119,7 +119,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class=" space-y-6 flex justify-evenly pb-10">
-                    <div class="flex-col" id="visualizacion" v-if="zona_preview">
+                    <div class="flex-col" id="visualizacion" v-if="pagina == 1">
                         <div class="flex">
                             <div class="w-[850px] mx-[25px]">
                                 <div class="relative">
@@ -196,9 +196,10 @@
                         </div>
                         <form @submit.prevent="empezarAEditar" class="flex mt-4 w-full justify-around items-center">
                             <div class="flex-column">
-                                <div class="flex items-center justify-center">
+                                <div class="flex items-end justify-center">
                                     <div class="relative z-0 mr-10">
-                                        <input type="text" maxlength="100" id="nombre_componente" name="nombre_componente" v-model="form_componente.nombre_componente"
+                                        <input type="text" maxlength="100" id="nombre_componente" name="nombre_componente"
+                                            v-model="form_componente.nombre_componente"
                                             class="block py-2.5 px-0 w-48 text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                             placeholder=" " autocomplete="off" required />
                                         <label for="nombre_componente"
@@ -229,11 +230,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="flex items-center justify-start mt-10">
+                                <div class="flex items-center justify-start mt-5">
                                     <div class="relative z-0 mr-10">
-                                        <input type="number" id="ubicacion_componente" name="ubicacion_componente" v-model="form_componente.ubicacion_componente"
+                                        <input type="number" id="ubicacion_componente" name="ubicacion_componente"
+                                            v-model="form_componente.ubicacion_componente"
                                             class="block py-2.5 px-0 w-48 text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                                            placeholder=" " autocomplete="off" required />
+                                            placeholder=" " autocomplete="off" required min="1" max="99" />
                                         <label for="ubicacion_componente"
                                             class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Ubicación
                                             - Componente<span class="text-sm ml-1"> * </span></label>
@@ -244,8 +246,9 @@
                                             <span class="text-sm ml-1"> * </span></label>
                                         <div class="flex justify-start mt-2">
                                             <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                                <input type="checkbox" value="" class="sr-only peer" id="visibilidad_componente"
-                                                    name="visibilidad_componente" v-model="form_componente.visibilidad_componente" />
+                                                <input type="checkbox" value="" class="sr-only peer"
+                                                    id="visibilidad_componente" name="visibilidad_componente"
+                                                    v-model="form_componente.visibilidad_componente" />
                                                 <div
                                                     class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                                 </div>
@@ -255,8 +258,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center justify-center">
-                                <button
-                                    class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6"
+                                <button class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6"
                                     type="submit">
                                     <p class="text-white ml-3">Empezar a editar |</p>
                                     <svg class="mr-3" width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
@@ -271,7 +273,7 @@
                     <form action="" class="w-full py-6 px-10" id="s_formulario" v-else>
                         <div class="flex justify-between w-full">
                             <div class="flex-col mt-20">
-                                <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6" @click="paginaAnteriorSlider"
                                     type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none"
                                         stroke-width="2" viewBox="0 0 24 24" color="#000000">
@@ -335,7 +337,7 @@
                             </div>
                             <div class="flex-col">
                                 <div class="mt-20 flex justify-end items-end">
-                                    <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                    <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6" @click="paginaSiguienteSlider"
                                         type="button"><svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
                                             fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
                                             <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF" stroke-width="2"
@@ -347,7 +349,7 @@
                     </form>
                 </div>
                 <div class="flex items-center justify-center">
-                    <input type="text" class="mb-10 w-16 text-center" :value="pagina">
+                    <input type="number" class="mb-10 w-16 text-right" v-model="pagina" @input="cambiarPaginaInput" min="1">
                 </div>
             </div>
         </div>
@@ -382,9 +384,9 @@ definePageMeta({
 onMounted(async () => {
     initDropdowns();
     token.value = localStorage.getItem('token');
+    await cargarSecciones();
     await llenarSelectTiposCategorias();
     await llenarSelectTiposComponentes();
-    await cargarSecciones();
 
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
@@ -396,7 +398,7 @@ const form = ref({
     id_seccion: 0,
 });
 
-const EVENT = new Event('reset-timer');
+const EVENTO = new Event('reset-timer');
 const token = ref(null);
 const secciones = ref(null);
 async function cargarSecciones() {
@@ -407,11 +409,11 @@ async function cargarSecciones() {
             },
         });
         secciones.value = res.data;
-        console.log(res.data);
-        window.dispatchEvent(EVENT);
+        window.dispatchEvent(EVENTO);
         //Se refresca el valor del token con la respuesta del axios
         localStorage.setItem('token', res.token);
         token.value = localStorage.getItem('token');
+        console.log(res.token);
     } catch (error) {
         console.log(error);
     }
@@ -429,10 +431,10 @@ async function llenarSelectTiposCategorias() {
             Authorization: `Bearer ${token.value}`,
         },
     });
-    console.log(res.token);
+    window.dispatchEvent(EVENTO);
     localStorage.setItem('token', res.token);
     token.value = localStorage.getItem('token');
-    select_tipos_categorias.value = res;
+    select_tipos_categorias.value = res.categorias;
 }
 
 async function llenarSelectTiposComponentes() {
@@ -441,10 +443,10 @@ async function llenarSelectTiposComponentes() {
             Authorization: `Bearer ${token.value}`,
         },
     });
-
+    window.dispatchEvent(EVENTO);
     localStorage.setItem('token', res.token);
     token.value = localStorage.getItem('token');
-    select_tipos_componentes.value = res;
+    select_tipos_componentes.value = res.tipos_comp;
 }
 
 const texto_dropdown = ref('Seleccionar');
@@ -465,7 +467,7 @@ const form_componente = ref({
     ubicacion_componente: "",
     visibilidad_componente: "",
     id_tipo_componente: "",
-    id_seccion: "",
+    id_seccion: "0",
 })
 
 function filtrarTiposComponentes(tipo) {
@@ -573,23 +575,67 @@ function abrirModal() {
 
 const pagina = ref(1);
 
+const id_componente = ref();
+
 async function empezarAEditar() {
-    Swal.fire({
-        title: 'Confirmación',
-        text: "Una vez seleccionado este tipo de componente, podrá editar la información de su contenido, pero no podrá cambiar su tipo de componente. ¿Desea continuar?",
-        icon: 'info',
-        reverseButtons: true,
-        showCancelButton: true,
-        confirmButtonColor: '#3F4280',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Continuar',
-        allowOutsideClick: false,
-        cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            pagina.value = 2;
-        }
-    });
+    if (form_componente.value.id_seccion != 0) {
+        token.value = localStorage.getItem('token');
+        console.log(token.value);
+        Swal.fire({
+            title: 'Confirmación',
+            text: "Una vez seleccionado este tipo de componente, podrá editar la información de su contenido, pero no podrá cambiar su tipo de componente. ¿Desea continuar?",
+            icon: 'info',
+            reverseButtons: true,
+            showCancelButton: true,
+            confirmButtonColor: '#3F4280',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Continuar',
+            allowOutsideClick: false,
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                console.log(form_componente.value);
+
+                const FORM_DATA = new FormData();
+                FORM_DATA.append('nombre_componente', form_componente.value.nombre_componente);
+
+                console.log(FORM_DATA.get('nombre_componente'));
+
+                FORM_DATA.append('ubicacion_componente', form_componente.value.ubicacion_componente);
+                FORM_DATA.append('visibilidad_componente', form_componente.value.visibilidad_componente ? 1 : 0);
+                FORM_DATA.append('id_tipo_componente', form_componente.value.id_tipo_componente);
+                FORM_DATA.append('id_seccion', form_componente.value.id_seccion);
+
+                const res = await axios.post('/componentes', FORM_DATA, {
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
+                
+                localStorage.setItem('token', res.data.data.token)
+                token.value = localStorage.getItem('token');
+                pagina.value = 2;
+            }
+        });
+    }
+}
+
+const cambios = ref();
+
+function paginaSiguienteSlider(){
+
+}
+
+function paginaAnteriorSlider(){
+    if(pagina.value > 1){
+        pagina.value = pagina.value - 1;
+    }
+}
+
+function cambiarPaginaInput(){
+    if(!id_componente.value){
+        pagina.value = 1;
+    }
 }
 
 </script>
