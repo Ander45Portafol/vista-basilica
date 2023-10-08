@@ -286,44 +286,8 @@ export default defineComponent({
   components: {
     FullCalendar,
   },
-  setup() {
-    const EVENT = new Event('reset-timer');
-    const token = ref(null);
-    let eventos = ref([]);
-  },
-  data() {
-    async function leerEventos() {
-      try {
-        token.value = localStorage.getItem('token');
-        const { data: res } = await axios.get('/eventos', {
-          headers: {
-            Authorization: `Bearer ${token.value}`,
-          },
-        });
-        eventos.value = res.data;
-        console.log(eventos.value);
-        //Se reinicia el timer
-        window.dispatchEvent(EVENT);
-        //Se refresca el valor del token con la respuesta del axios
-        localStorage.setItem('token', res.token);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    leerEventos();
-    console.log(eventos.value);
-    const INITIAL_EVENTS = [
-      {
-        id: crearIdEvento(),
-        title: 'All-day event',
-        start: diaActual
-      },
-      {
-        id: crearIdEvento(),
-        title: 'Timed event',
-        start: diaActual + 'T12:00:00'
-      }
-    ]
+
+  data() { 
     return {
       calendarOptions: {
         plugins: [
@@ -337,7 +301,7 @@ export default defineComponent({
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
         initialView: 'dayGridMonth',
-        initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
+        events: [], // alternatively, use the `events` setting to fetch from a feed
         editable: true,
         selectable: true,
         selectMirror: true,
@@ -356,6 +320,32 @@ export default defineComponent({
     }
   },
   methods: {
+    async llenarEventos() {
+      try {
+        const EVENT = new Event('reset-timer');
+        const token = ref(null);
+        const eventos = ref(null);
+        token.value = localStorage.getItem('token');
+        const { data: res } = await axios.get('/eventos', {
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+          },
+        });
+        eventos.value = res.data;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENT);
+        //Se refresca el valor del token con la respuesta del axios
+        localStorage.setItem('token', res.token);
+        this.calendarOptions.events = eventos.value.map((evento) => ({
+          id: evento.id,
+          title: evento.campos.nombre_evento,
+          start: `${evento.campos.fecha_evento}T${evento.campos.hora_inicial_evento}`,
+          end: `${evento.campos.fecha_evento}T${evento.campos.hora_final_evento}`,
+        }));
+      } catch (error) {
+        console.error(error);
+      }
+    },
     handleWeekendsToggle() {
       this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
     },
@@ -409,7 +399,11 @@ export default defineComponent({
     handleEvents(events) {
       this.currentEvents = events
     },
-  }
+  },
+  async mounted() {
+    // Llama a llenarEventos cuando el componente está montado
+    await this.llenarEventos();
+  },
 })
 
 const formData = ref({
