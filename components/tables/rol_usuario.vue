@@ -20,7 +20,7 @@
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                 <button class="h-10 w-10 rounded-md flex items-center justify-center reportbtn"
-                    @click="generarReporteRol(rolusuario.id_rol_usuario)"
+                    @click="generarReporteRol(rolusuario.id)"
                     v-if="rolusuario.campos.visibilidad_rol_usuario == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -352,6 +352,7 @@ const token = ref(null);
 const id = ref(null);
 //Funcion para generar un reporte
 async function generarReporteRol(id_rol) {
+console.log(id_rol);
     //Constante donde se almacena la respuesta que retorna de la api
     const ruta = new URL(`http://127.0.0.1:8000/api/rol_reporte/` + id_rol);
     //Le añadimos el token en la ruta del reporte

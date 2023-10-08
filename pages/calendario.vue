@@ -286,10 +286,12 @@ export default defineComponent({
   components: {
     FullCalendar,
   },
-  data() {
+  setup() {
     const EVENT = new Event('reset-timer');
     const token = ref(null);
-    const eventos = ref(null);
+    let eventos = ref([]);
+  },
+  data() {
     async function leerEventos() {
       try {
         token.value = localStorage.getItem('token');
@@ -299,6 +301,7 @@ export default defineComponent({
           },
         });
         eventos.value = res.data;
+        console.log(eventos.value);
         //Se reinicia el timer
         window.dispatchEvent(EVENT);
         //Se refresca el valor del token con la respuesta del axios
@@ -308,6 +311,7 @@ export default defineComponent({
       }
     }
     leerEventos();
+    console.log(eventos.value);
     const INITIAL_EVENTS = [
       {
         id: crearIdEvento(),
@@ -339,7 +343,7 @@ export default defineComponent({
         selectMirror: true,
         dayMaxEvents: true,
         weekends: true,
-        select: this.probando,
+        select: this.handleDateSelect,
         eventClick: this.handleEventClick,
         eventsSet: this.handleEvents,
         /* you can update a remote database when these fire:
@@ -355,38 +359,38 @@ export default defineComponent({
     handleWeekendsToggle() {
       this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
     },
-    probando() {
-      const modalElement = document.getElementById('staticModal');
-      const closeButton = document.getElementById('closeModal');
-      const tituloModal = document.getElementById('modalText');
-      const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-      };
-      const modal = new Modal(modalElement, modalOptions);
-      tituloModal.textContent = 'Agregar'
-      modal.show();
-      closeButton.addEventListener('click', function () {
-        modal.hide();
-      });
-    },
-    // handleDateSelect(selectInfo) {
-    //   this.probando();
-    //   let title = "evento"
-    //   let calendarApi = selectInfo.view.calendar
-
-    //   calendarApi.unselect() // clear date selection
-
-    //   if (title) {
-    //     calendarApi.addEvent({
-    //       id: crearIdEvento(),
-    //       title,
-    //       start: selectInfo.startStr,
-    //       end: selectInfo.endStr,
-    //       allDay: selectInfo.allDay
-    //     })
-    //   }
+    // probando() {
+    //   const modalElement = document.getElementById('staticModal');
+    //   const closeButton = document.getElementById('closeModal');
+    //   const tituloModal = document.getElementById('modalText');
+    //   const modalOptions = {
+    //     backdrop: 'static',
+    //     backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    //   };
+    //   const modal = new Modal(modalElement, modalOptions);
+    //   tituloModal.textContent = 'Agregar'
+    //   modal.show();
+    //   closeButton.addEventListener('click', function () {
+    //     modal.hide();
+    //   });
     // },
+    handleDateSelect(selectInfo) {
+      this.probando();
+      let title = "evento"
+      let calendarApi = selectInfo.view.calendar
+
+      calendarApi.unselect() // clear date selection
+
+      if (title) {
+        calendarApi.addEvent({
+          id: crearIdEvento(),
+          title,
+          start: selectInfo.startStr,
+          end: selectInfo.endStr,
+          allDay: selectInfo.allDay
+        })
+      }
+    },
     handleEventClick() {
       const modalElement = document.getElementById('staticModal');
       const closeButton = document.getElementById('closeModal');
@@ -409,7 +413,6 @@ export default defineComponent({
 })
 
 const formData = ref({
-  id_evento: "0",
   nombre_evento: "",
   descripcion_evento: "",
   fecha_evento: "",
