@@ -30,13 +30,13 @@
 
 definePageMeta({
     //A esta página no se le establece un layout ya que tiene su propia forma
-    layout: "",
+    layout: "vacio",
 });
 
 //Función para volver al inicio cuando el usuario presiona ese botón
 function volverAlInicio() {
     clearError();
-    navigateTo('/');
+    window.location.href = '/';
 }
 
 </script>

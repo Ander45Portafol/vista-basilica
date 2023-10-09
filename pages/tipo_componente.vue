@@ -220,27 +220,31 @@
                                 <div class="relative">
                                     <!-- Carousel wrapper -->
                                     <div class="relative overflow-hidden rounded-lg h-[450px]">
-                                        <!-- Item 1 -->
-                                        <div v-for="item in laminas_slider"
-                                            :id="'carouselP-item-' + item.campos.identificador_lamina"
-                                            class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20"
-                                            data-carousel-item="">
-                                            <img :src="RUTA_IMAGENES_LAMINAS + item.campos.archivo_imagen"
-                                                class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                                                alt="...">
-                                            <div class="relative top-[300px] px-4 py-2 opacity-100">
-                                                <p class="text-3xl text-white font-bold text-left ml-24">{{
-                                                    item.campos.titulo_lamina }}</p>
-                                                <p class="text-xl text-white font-bold text-left ml-24">{{
-                                                    item.campos.subtitulo_lamina }}</p>
+                                        <div v-for="item in laminas_slider">
+                                            <div v-if="item.campos.visibilidad_lamina"
+                                                :id="'carouselP-item-' + item.campos.identificador_lamina"
+                                                class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20"
+                                                data-carousel-item="">
+                                                <img :src="RUTA_IMAGENES_LAMINAS + item.campos.archivo_imagen"
+                                                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                                    alt="...">
+                                                <div class="relative top-[300px] px-4 py-2 opacity-100">
+                                                    <p class="text-3xl text-white font-bold text-left ml-24">{{
+                                                        item.campos.titulo_lamina }}</p>
+                                                    <p class="text-xl text-white font-bold text-left ml-24">{{
+                                                        item.campos.subtitulo_lamina }}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     <!-- Slider indicators -->
                                     <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
-                                        <button v-for="item in laminas_slider"
-                                            :id="'carouselP-indicator-' + item.campos.identificador_lamina" type="button"
-                                            class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1"></button>
+                                        <div v-for="item in laminas_slider">
+                                            <button v-if="item.campos.visibilidad_lamina"
+                                                :id="'carouselP-indicator-' + item.campos.identificador_lamina"
+                                                type="button" class="w-3 h-3 rounded-full" aria-current="true"
+                                                aria-label="Slide 1"></button>
+                                        </div>
                                     </div>
                                     <!-- Slider controls -->
                                     <button id="data-carouselP-prev" type="button"
@@ -365,39 +369,39 @@
                                 <div class="relative z-0">
                                     <input type="text" id="titulo_lamina" name="titulo_lamina" required maxlength="100"
                                         v-model="form_laminas_slider.titulo_lamina" @input="cambiosGuardados"
+                                        :readonly="read_only_laminas"
                                         class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                         placeholder=" " autocomplete="off" />
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0">
+                                        {{ form_laminas_slider.titulo_lamina.length }}/100</span>
                                     <label for="titulo_lamina"
                                         class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
-                                        - lamina<span class="text-sm ml-1"> * </span></label>
+                                        - lamina</label>
                                 </div>
                                 <div class="relative z-0 mt-8">
                                     <input type="text" id="subtitulo_lamina" name="subtitulo_lamina" required
-                                        v-model="form_laminas_slider.subtitulo_lamina" @input="cambiosGuardados"
-                                        maxlength="100"
+                                        :readonly="read_only_laminas" v-model="form_laminas_slider.subtitulo_lamina"
+                                        @input="cambiosGuardados" maxlength="100"
                                         class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                         placeholder=" " autocomplete="off" />
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0">{{
+                                        form_laminas_slider.subtitulo_lamina.length }}/100</span>
                                     <label for="subtitulo_lamina"
                                         class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtítulo
-                                        - lamina<span class="text-sm ml-1"> * </span></label>
+                                        - lamina</label>
                                 </div>
                                 <div class="relative z-0 mt-8">
                                     <input type="number" id="identificador_lamina" name="identificador_lamina" required
-                                        v-model="form_laminas_slider.identificador_lamina" @input="cambiosGuardados" min="1"
-                                        max="99"
+                                        :readonly="read_only_laminas" v-model="form_laminas_slider.identificador_lamina"
+                                        @input="cambiosGuardados" min="1" max="99"
                                         class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                         placeholder=" " autocomplete="off" />
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
                                     <label for="identificador_lamina"
                                         class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Identificador
-                                        - lamina<span class="text-sm ml-1"> * </span></label>
+                                        - lamina</label>
                                 </div>
                                 <div class="flex-col mt-8">
-                                    <label for="" class="text-sm text-gray-200">Visibilidad</label>
+                                    <label for="" class="text-sm text-gray-200">Visibilidad - lamina *</label>
                                     <div class="flex justify-start mt-2">
                                         <label class="relative inline-flex items-center mb-5 cursor-pointer">
                                             <input type="checkbox" value="" class="sr-only peer" @click="cambiosGuardados"
@@ -409,9 +413,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex-col">
-                                <p class="text-center text-white">Imagen</p>
-                                <div class="h-52 w-48 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative max-[630px]:m-auto"
+                            <div class="flex-col ml-14">
+                                <p class="text-center text-white">Imagen - lamina</p>
+                                <div class="h-52 w-48 border-2 border-slate-900 rounded-lg cursor-pointer relative max-[630px]:m-auto"
                                     @click="SELECCIONAR_ARCHIVO" @mouseover="iconoBorrarTrue"
                                     @mouseleave="iconoBorrarFalse">
                                     <img v-if="imagen_preview" :src="imagen_preview" class="h-52 w-48 rounded-lg" />
@@ -440,7 +444,7 @@
                             </div>
                         </div>
                         <div class="flex items-center justify-end">
-                            <button type="button" id="btnModalClear"
+                            <button type="button" id="btnModalClear" @click="limpiarFormLaminasSlider()"
                                 class="h-10 w-10 rounded-lg flex justify-center items-center ml-4 bg-[#32345a]">
                                 <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -477,9 +481,6 @@
                 <div class="flex items-center justify-center">
                     <input type="number" class="mb-10 w-16 text-right" v-model="pagina" @input="cambiarPaginaInput" min="1">
                 </div>
-                <pre>
-                    {{ form_laminas_slider }}
-                </pre>
             </div>
         </div>
     </div>
@@ -506,9 +507,12 @@ import { Modal, Carousel } from "flowbite";
 import { initDropdowns } from "flowbite";
 import axios from "axios";
 import Swal from 'sweetalert2';
+import validaciones from '../assets/validaciones.js';
 
 definePageMeta({
     layout: "principal",
+    //Se le establece un middleware a la página
+    middleware: "middleware-paginas"
 });
 onMounted(async () => {
     initDropdowns();
@@ -520,6 +524,10 @@ onMounted(async () => {
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
             pagina.value = 1;
+            limpiarFormComponente();
+            limpiarFormLaminasSlider();
+            id_componente.value = '';
+            laminas_slider.value = '';
         }
     });
 });
@@ -545,6 +553,33 @@ async function cargarSecciones() {
         console.log(res.token);
     } catch (error) {
         console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
 
@@ -556,27 +591,89 @@ const RUTA_IMAGENES = "http://localhost:8000/storage/tipos_componentes/";
 const RUTA_IMAGENES_LAMINAS = "http://localhost:8000/storage/laminas/images/";
 
 async function llenarSelectTiposCategorias() {
-    const { data: res } = await axios.get('/tipos-categoria-select', {
-        headers: {
-            Authorization: `Bearer ${token.value}`,
-        },
-    });
-    window.dispatchEvent(EVENTO);
-    localStorage.setItem('token', res.token);
-    token.value = localStorage.getItem('token');
-    select_tipos_categorias.value = res.categorias;
+    try {
+        const { data: res } = await axios.get('/tipos-categoria-select', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+        window.dispatchEvent(EVENTO);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
+        select_tipos_categorias.value = res.categorias;
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
 }
 
 async function llenarSelectTiposComponentes() {
-    const { data: res } = await axios.get('/t_componentes-select', {
-        headers: {
-            Authorization: `Bearer ${token.value}`,
-        },
-    });
-    window.dispatchEvent(EVENTO);
-    localStorage.setItem('token', res.token);
-    token.value = localStorage.getItem('token');
-    select_tipos_componentes.value = res.tipos_comp;
+    try {
+        const { data: res } = await axios.get('/t_componentes-select', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+        window.dispatchEvent(EVENTO);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
+        select_tipos_componentes.value = res.tipos_comp;
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
 }
 
 const texto_dropdown = ref('Seleccionar');
@@ -599,6 +696,14 @@ const form_componente = ref({
     id_tipo_componente: "",
     id_seccion: "0",
 })
+
+function limpiarFormComponente() {
+    form_componente.value.id_componente = '';
+    form_componente.value.nombre_componente = '';
+    form_componente.value.ubicacion_componente = '';
+    form_componente.value.visibilidad_componente = false;
+    form_componente.value.id_seccion = 0;
+}
 
 function filtrarTiposComponentes(tipo) {
     texto_dropdown.value = tipo;
@@ -637,6 +742,11 @@ function abrirModal() {
         };
         BOTON_CERRAR.addEventListener('click', function () {
             MODAL.hide();
+            pagina.value = 1;
+            limpiarFormComponente();
+            limpiarFormLaminasSlider();
+            id_componente.value = '';
+            laminas_slider.value = '';
         });
 
         const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
@@ -715,7 +825,7 @@ const read_only = ref(false);
 
 async function empezarAEditar() {
     if (id_componente.value) {
-        pagina.value = 2;
+        paginaSiguienteSlider();
     } else if (form_componente.value.id_seccion != 0) {
         token.value = localStorage.getItem('token');
         console.log(token.value);
@@ -744,20 +854,50 @@ async function empezarAEditar() {
                 FORM_DATA.append('id_tipo_componente', form_componente.value.id_tipo_componente);
                 FORM_DATA.append('id_seccion', form_componente.value.id_seccion);
 
-                const res = await axios.post('/componentes', FORM_DATA, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                });
+                try {
+                    const res = await axios.post('/componentes', FORM_DATA, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    });
 
-                read_only.value = true;
+                    read_only.value = true;
 
-                localStorage.setItem('token', res.data.data.token)
-                token.value = localStorage.getItem('token');
-                pagina.value = 2;
-                id_componente.value = res.data.data.id_comp;
-                console.log(id_componente.value);
+                    window.dispatchEvent(EVENTO);
+                    localStorage.setItem('token', res.data.data.token)
+                    token.value = localStorage.getItem('token');
+                    pagina.value = 2;
+                    id_componente.value = res.data.data.id_comp;
+                } catch (error) {
+                    console.log(error);
+                    const MENSAJE_ERROR = error.response.data.message;
+                    if (error.response.status == 401) {
+                        navigateTo('/error_401');
+                    } else {
+                        if (!error.response.data.errors) {
+                            //Se extrae el sqlstate (identificador de acciones SQL)
+                            const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                            //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                            const RES = validaciones.mensajeSqlState(SQL_STATE);
 
+                            //Se muestra un sweetalert con el mensaje
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: RES,
+                                confirmButtonColor: '#3F4280'
+                            });
+                        } else {
+                            //Se muestra un sweetalert con el mensaje
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: MENSAJE_ERROR,
+                                confirmButtonColor: '#3F4280'
+                            });
+                        }
+                    }
+                }
             }
         });
     }
@@ -781,6 +921,9 @@ function paginaSiguienteSlider() {
             text: 'Para poder realizar esta acción, guarda los cambios realizados.',
             confirmButtonColor: '#3F4280'
         });
+    } else {
+        pagina.value = pagina.value + 1;
+        cambiarPaginaInput();
     }
 }
 
@@ -792,33 +935,45 @@ async function paginaAnteriorSlider() {
             text: 'Para poder realizar esta acción, guarda los cambios realizados.',
             confirmButtonColor: '#3F4280'
         });
-    } else if (pagina.value > 1) {
+    } else {
         pagina.value = pagina.value - 1;
+        cambiarPaginaInput();
+    }
+}
 
-        if (pagina.value == 1) {
+async function cambiarPaginaInput() {
+    if (pagina.value != '') {
+        if (!id_componente.value) {
+            pagina.value = 1;
+        }
 
+        if (!laminas_slider.value && pagina.value > 2) {
+            pagina.value = 2;
+        } else if (laminas_slider.value && pagina.value == 1) {
             await nextTick();
 
             const ITEMS = [];
             const ITEMS_INDICADORES = [];
+            var posicion = 0;
 
             laminas_slider.value.forEach((element) => {
                 const IDENTIFICADOR_LAMINA = element.campos.identificador_lamina;
+                const VISIBILIDAD_LAMINA = element.campos.visibilidad_lamina;
 
-                // Agregar un nuevo elemento al arreglo 'items'
-                ITEMS.push({
-                    position: IDENTIFICADOR_LAMINA - 1,
-                    el: document.getElementById('carouselP-item-' + IDENTIFICADOR_LAMINA),
-                })
+                if (VISIBILIDAD_LAMINA == true) {
+                    // Agregar un nuevo elemento al arreglo 'items'
+                    ITEMS.push({
+                        position: posicion,
+                        el: document.getElementById('carouselP-item-' + IDENTIFICADOR_LAMINA),
+                    })
 
-                ITEMS_INDICADORES.push({
-                    position: IDENTIFICADOR_LAMINA - 1,
-                    el: document.getElementById('carouselP-indicator-' + IDENTIFICADOR_LAMINA),
-                })
+                    ITEMS_INDICADORES.push({
+                        position: posicion,
+                        el: document.getElementById('carouselP-indicator-' + IDENTIFICADOR_LAMINA),
+                    })
+                }
+                posicion = posicion + 1;
             });
-
-            console.log(ITEMS);
-            console.log(ITEMS_INDICADORES);
 
             const OPTIONS = {
                 defaultPosition: 1,
@@ -843,20 +998,30 @@ async function paginaAnteriorSlider() {
                     CAROUSEL.next();
                 });
             }
+        } else if (laminas_slider.value && pagina.value == laminas_slider.value.length + 2) {
+            read_only_laminas.value = false;
+            limpiarFormLaminasSlider();
+        } else if (laminas_slider.value && pagina.value > (laminas_slider.value.length + 2)) {
+            pagina.value = laminas_slider.value.length + 2;
+        } else if (laminas_slider.value && pagina.value <= (laminas_slider.value.length + 2) && pagina.value != 1) {
+            read_only_laminas.value = true;
+            form_laminas_slider.value.archivo_imagen = laminas_slider.value[pagina.value - 2].campos.archivo_imagen;
+            imagen_preview.value = RUTA_IMAGENES_LAMINAS + form_laminas_slider.value.archivo_imagen;
+            form_laminas_slider.value.titulo_lamina = laminas_slider.value[pagina.value - 2].campos.titulo_lamina;
+            form_laminas_slider.value.subtitulo_lamina = laminas_slider.value[pagina.value - 2].campos.subtitulo_lamina;
+            form_laminas_slider.value.identificador_lamina = laminas_slider.value[pagina.value - 2].campos.identificador_lamina;
+            form_laminas_slider.value.visibilidad_lamina = laminas_slider.value[pagina.value - 2].campos.visibilidad_lamina;
         }
     }
 }
 
-function cambiarPaginaInput() {
-    if (!id_componente.value) {
-        pagina.value = 1;
-    }
-
-    if (!laminas_slider.value && pagina.value > 2) {
-        pagina.value = 2;
-    } else if (laminas_slider.value && pagina.value > laminas_slider.value.length) {
-        pagina.value = laminas_slider.value.length;
-    }
+function limpiarFormLaminasSlider() {
+    cambios_guardados.value = true;
+    form_laminas_slider.value.titulo_lamina = '';
+    form_laminas_slider.value.subtitulo_lamina = '';
+    form_laminas_slider.value.identificador_lamina = '';
+    form_laminas_slider.value.visibilidad_lamina = '';
+    limpiarImagen();
 }
 
 const form_laminas_slider = ref({
@@ -868,53 +1033,138 @@ const form_laminas_slider = ref({
     visibilidad_lamina: false,
 });
 
+//Toast del sweetalert
+const TOAST = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (TOAST) => {
+        TOAST.addEventListener("mouseenter", Swal.stopTimer);
+        TOAST.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+});
+
+const read_only_laminas = ref(false);
+
 async function crearLaminaSlider() {
-    token.value = localStorage.getItem('token');
-
-    try {
-        const FORM_DATA = new FormData();
-        FORM_DATA.append('titulo_lamina', form_laminas_slider.value.titulo_lamina);
-        FORM_DATA.append('subtitulo_lamina', form_laminas_slider.value.subtitulo_lamina);
-        FORM_DATA.append('identificador_lamina', form_laminas_slider.value.identificador_lamina);
-        FORM_DATA.append('visibilidad_lamina', form_laminas_slider.value.visibilidad_lamina ? 1 : 0);
-        FORM_DATA.append('archivo_imagen', form_laminas_slider.value.archivo_imagen);
-        FORM_DATA.append('id_componente', id_componente.value);
-
-        console.log(token.value);
-
-        const res = await axios.post('/laminas', FORM_DATA, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token.value}`,
-            },
-        });
-
-        localStorage.setItem('token', res.data.data.token);
+    if (read_only_laminas.value == false) {
         token.value = localStorage.getItem('token');
 
-        cambios_guardados.value = true;
+        try {
+            const FORM_DATA = new FormData();
+            FORM_DATA.append('titulo_lamina', form_laminas_slider.value.titulo_lamina);
+            FORM_DATA.append('subtitulo_lamina', form_laminas_slider.value.subtitulo_lamina);
+            FORM_DATA.append('identificador_lamina', form_laminas_slider.value.identificador_lamina);
+            FORM_DATA.append('visibilidad_lamina', form_laminas_slider.value.visibilidad_lamina ? 1 : 0);
+            FORM_DATA.append('archivo_imagen', form_laminas_slider.value.archivo_imagen);
+            FORM_DATA.append('id_componente', id_componente.value);
 
-        await leerLaminas();
+            console.log(token.value);
 
-        clases_preview_carousel.value.clases_carousel_preview = 'flex';
-        clases_preview_carousel.value.clases_carousel_vacio = 'flex hidden';
-    } catch (error) {
-        console.log(error);
+            const res = await axios.post('/laminas', FORM_DATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+
+            window.dispatchEvent(EVENTO);
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+
+            cambios_guardados.value = true;
+
+            await leerLaminas();
+
+            clases_preview_carousel.value.clases_carousel_preview = 'flex';
+            clases_preview_carousel.value.clases_carousel_vacio = 'flex hidden';
+
+            TOAST.fire({
+                icon: 'success',
+                title: 'Lamina creada exitosamente'
+            });
+
+            read_only_laminas.value = true;
+
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        }
     }
 }
 
 async function leerLaminas() {
     token.value = localStorage.getItem('token');
-    const { data: res } = await axios.post('/laminas/' + id_componente.value, null, {
-        headers: {
-            Authorization: `Bearer ${token.value}`,
-        },
-    });
+    try {
+        const { data: res } = await axios.post('/laminas/' + id_componente.value, null, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
 
-    localStorage.setItem('token', res.token);
-    token.value = localStorage.getItem('token');
+        window.dispatchEvent(EVENTO);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
 
-    laminas_slider.value = res.data;
+        laminas_slider.value = res.data;
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
 }
 
 const clases_preview_carousel = ref({
@@ -966,8 +1216,10 @@ const cambiarImagen = () => {
 //Metodo para limpiar el campo de la imagen
 function limpiarImagen() {
     //Limpiar imagen
-    input_imagen.value.value = '';
-    imagen_preview.value = null;
+    imagen_preview.value = '';
+    if (input_imagen.value.value) {
+        input_imagen.value.value = '';
+    }
     form_laminas_slider.value.archivo_imagen = "";
     mostrar_icono_borrar.value = false;
 }
