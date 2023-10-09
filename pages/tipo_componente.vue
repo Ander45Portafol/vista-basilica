@@ -120,37 +120,58 @@
                 <!-- Modal body -->
                 <div class=" space-y-6 flex justify-evenly pb-10">
                     <div class="flex-col" id="visualizacion" v-if="pagina == 1">
-                        <div class="flex">
+                        <div :class="clases_preview_carousel.clases_carousel_vacio">
                             <div class="w-[850px] mx-[25px]">
                                 <div class="relative">
                                     <!-- Carousel wrapper -->
                                     <div class="relative overflow-hidden rounded-lg h-[450px]">
                                         <!-- Item 1 -->
-                                        <div id="carousel-item-1" class="hidden duration-700 ease-in-out">
-                                            <span
-                                                class="absolute text-2xl font-semibold text-white -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 sm:text-3xl dark:text-gray-800">First
-                                                Slide</span>
+                                        <div id="carousel-item-1"
+                                            class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20"
+                                            data-carousel-item="">
                                             <img src="https://flowbite.com/docs/images/carousel/carousel-1.svg"
                                                 class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                                 alt="...">
+                                            <div class="relative top-[300px] px-4 py-2 opacity-100">
+                                                <p class="text-3xl text-white font-bold text-left ml-24">Título</p>
+                                                <p class="text-xl text-white font-bold text-left ml-24">Subtítulo</p>
+                                            </div>
                                         </div>
-                                        <!-- Item 2 -->
-                                        <div id="carousel-item-2" class="hidden duration-700 ease-in-out">
+                                        <!-- Item 1 -->
+                                        <div id="carousel-item-2"
+                                            class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20"
+                                            data-carousel-item="">
                                             <img src="https://flowbite.com/docs/images/carousel/carousel-2.svg"
                                                 class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                                 alt="...">
+                                            <div class="relative top-[300px] px-4 py-2 opacity-100">
+                                                <p class="text-3xl text-white font-bold text-left ml-24">Título</p>
+                                                <p class="text-xl text-white font-bold text-left ml-24">Subtítulo</p>
+                                            </div>
                                         </div>
-                                        <!-- Item 3 -->
-                                        <div id="carousel-item-3" class="hidden duration-700 ease-in-out">
+                                        <!-- Item 1 -->
+                                        <div id="carousel-item-3"
+                                            class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20"
+                                            data-carousel-item="">
                                             <img src="https://flowbite.com/docs/images/carousel/carousel-3.svg"
                                                 class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                                 alt="...">
+                                            <div class="relative top-[300px] px-4 py-2 opacity-100">
+                                                <p class="text-3xl text-white font-bold text-left ml-24">Título</p>
+                                                <p class="text-xl text-white font-bold text-left ml-24">Subtítulo</p>
+                                            </div>
                                         </div>
-                                        <!-- Item 4 -->
-                                        <div id="carousel-item-4" class="hidden duration-700 ease-in-out">
+                                        <!-- Item 1 -->
+                                        <div id="carousel-item-4"
+                                            class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20"
+                                            data-carousel-item="">
                                             <img src="https://flowbite.com/docs/images/carousel/carousel-4.svg"
                                                 class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                                 alt="...">
+                                            <div class="relative top-[300px] px-4 py-2 opacity-100">
+                                                <p class="text-3xl text-white font-bold text-left ml-24">Título</p>
+                                                <p class="text-xl text-white font-bold text-left ml-24">Subtítulo</p>
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- Slider indicators -->
@@ -194,12 +215,69 @@
                                 </div>
                             </div>
                         </div>
+                        <div :class="clases_preview_carousel.clases_carousel_preview">
+                            <div class="w-[850px] mx-[25px]">
+                                <div class="relative">
+                                    <!-- Carousel wrapper -->
+                                    <div class="relative overflow-hidden rounded-lg h-[450px]">
+                                        <!-- Item 1 -->
+                                        <div v-for="item in laminas_slider"
+                                            :id="'carouselP-item-' + item.campos.identificador_lamina"
+                                            class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20"
+                                            data-carousel-item="">
+                                            <img :src="RUTA_IMAGENES_LAMINAS + item.campos.archivo_imagen"
+                                                class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                                alt="...">
+                                            <div class="relative top-[300px] px-4 py-2 opacity-100">
+                                                <p class="text-3xl text-white font-bold text-left ml-24">{{
+                                                    item.campos.titulo_lamina }}</p>
+                                                <p class="text-xl text-white font-bold text-left ml-24">{{
+                                                    item.campos.subtitulo_lamina }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Slider indicators -->
+                                    <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
+                                        <button v-for="item in laminas_slider"
+                                            :id="'carouselP-indicator-' + item.campos.identificador_lamina" type="button"
+                                            class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1"></button>
+                                    </div>
+                                    <!-- Slider controls -->
+                                    <button id="data-carouselP-prev" type="button"
+                                        class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
+                                        <span
+                                            class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                                            <svg class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15 19l-7-7 7-7"></path>
+                                            </svg>
+                                            <span class="hidden">Previous</span>
+                                        </span>
+                                    </button>
+                                    <button id="data-carouselP-next" type="button"
+                                        class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
+                                        <span
+                                            class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                                            <svg class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                            <span class="hidden">Next</span>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         <form @submit.prevent="empezarAEditar" class="flex mt-4 w-full justify-around items-center">
                             <div class="flex-column">
                                 <div class="flex items-end justify-center">
                                     <div class="relative z-0 mr-10">
                                         <input type="text" maxlength="100" id="nombre_componente" name="nombre_componente"
-                                            v-model="form_componente.nombre_componente"
+                                            :readonly="read_only" v-model="form_componente.nombre_componente"
                                             class="block py-2.5 px-0 w-48 text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                             placeholder=" " autocomplete="off" required />
                                         <label for="nombre_componente"
@@ -210,6 +288,7 @@
                                         <label for="" class="text-sm absolute text-gray-200">Escoger sección<span
                                                 class="text-sm ml-1"> * </span></label>
                                         <select id="underline_select" v-model="form_componente.id_seccion"
+                                            :readonly="read_only"
                                             class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
                                             <option value="0" class="bg-gray-700">Seleccione una opción</option>
                                             <option class="bg-gray-700" v-for="seccion in secciones" :key="seccion.id"
@@ -233,7 +312,7 @@
                                 <div class="flex items-center justify-start mt-5">
                                     <div class="relative z-0 mr-10">
                                         <input type="number" id="ubicacion_componente" name="ubicacion_componente"
-                                            v-model="form_componente.ubicacion_componente"
+                                            :readonly="read_only" v-model="form_componente.ubicacion_componente"
                                             class="block py-2.5 px-0 w-48 text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                             placeholder=" " autocomplete="off" required min="1" max="99" />
                                         <label for="ubicacion_componente"
@@ -246,7 +325,7 @@
                                             <span class="text-sm ml-1"> * </span></label>
                                         <div class="flex justify-start mt-2">
                                             <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                                <input type="checkbox" value="" class="sr-only peer"
+                                                <input type="checkbox" value="" class="sr-only peer" :readonly="read_only"
                                                     id="visibilidad_componente" name="visibilidad_componente"
                                                     v-model="form_componente.visibilidad_componente" />
                                                 <div
@@ -270,11 +349,11 @@
                             </div>
                         </form>
                     </div>
-                    <form action="" class="w-full py-6 px-10" id="s_formulario" v-else>
+                    <form @submit.prevent="crearLaminaSlider" class="w-full py-6 px-10" id="s_formulario" v-else>
                         <div class="flex justify-between w-full">
                             <div class="flex-col mt-20">
-                                <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6" @click="paginaAnteriorSlider"
-                                    type="button">
+                                <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                    @click="paginaAnteriorSlider" type="button">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none"
                                         stroke-width="2" viewBox="0 0 24 24" color="#000000">
                                         <path stroke="#FFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -285,6 +364,7 @@
                             <div class="flex-col w-72">
                                 <div class="relative z-0">
                                     <input type="text" id="titulo_lamina" name="titulo_lamina" required maxlength="100"
+                                        v-model="form_laminas_slider.titulo_lamina" @input="cambiosGuardados"
                                         class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                         placeholder=" " autocomplete="off" />
                                     <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
@@ -295,6 +375,7 @@
                                 </div>
                                 <div class="relative z-0 mt-8">
                                     <input type="text" id="subtitulo_lamina" name="subtitulo_lamina" required
+                                        v-model="form_laminas_slider.subtitulo_lamina" @input="cambiosGuardados"
                                         maxlength="100"
                                         class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                         placeholder=" " autocomplete="off" />
@@ -305,21 +386,22 @@
                                         - lamina<span class="text-sm ml-1"> * </span></label>
                                 </div>
                                 <div class="relative z-0 mt-8">
-                                    <input type="text" id="descripcion_lamina" name="descripcion_lamina" required
-                                        maxlength="100"
+                                    <input type="number" id="identificador_lamina" name="identificador_lamina" required
+                                        v-model="form_laminas_slider.identificador_lamina" @input="cambiosGuardados" min="1"
+                                        max="99"
                                         class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                         placeholder=" " autocomplete="off" />
                                     <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"></span>
-                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"> 0 /100</span>
-                                    <label for="descripcion_lamina"
-                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
+                                    <label for="identificador_lamina"
+                                        class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Identificador
                                         - lamina<span class="text-sm ml-1"> * </span></label>
                                 </div>
                                 <div class="flex-col mt-8">
                                     <label for="" class="text-sm text-gray-200">Visibilidad</label>
                                     <div class="flex justify-start mt-2">
                                         <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                                            <input type="checkbox" value="" class="sr-only peer">
+                                            <input type="checkbox" value="" class="sr-only peer" @click="cambiosGuardados"
+                                                v-model="form_laminas_slider.visibilidad_lamina">
                                             <div
                                                 class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
                                             </div>
@@ -329,28 +411,75 @@
                             </div>
                             <div class="flex-col">
                                 <p class="text-center text-white">Imagen</p>
-                                <div class="flex justify-center mt-2">
-                                    <div class="h-52 w-48 rounded-xl border-2 border-white">
-                                        <img src="" alt="">
+                                <div class="h-52 w-48 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative max-[630px]:m-auto"
+                                    @click="SELECCIONAR_ARCHIVO" @mouseover="iconoBorrarTrue"
+                                    @mouseleave="iconoBorrarFalse">
+                                    <img v-if="imagen_preview" :src="imagen_preview" class="h-52 w-48 rounded-lg" />
+                                    <input type="file" ref="input_imagen" class="hidden" @change="cambiarImagen" />
+                                    <div v-if="mostrar_icono_borrar"
+                                        class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
+                                            viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                                            <path
+                                                d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                            </path>
+                                        </svg>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex-col">
                                 <div class="mt-20 flex justify-end items-end">
-                                    <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6" @click="paginaSiguienteSlider"
-                                        type="button"><svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
-                                            fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                        @click="paginaSiguienteSlider" type="button"><svg width="26px" height="26px"
+                                            viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg" color="#000000">
                                             <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg></button>
                                 </div>
                             </div>
                         </div>
+                        <div class="flex items-center justify-end">
+                            <button type="button" id="btnModalClear"
+                                class="h-10 w-10 rounded-lg flex justify-center items-center ml-4 bg-[#32345a]">
+                                <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
+                                        stroke-width="2" stroke-linecap="round"></path>
+                                    <path
+                                        d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
+                                        stroke="#23B7A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                    <path
+                                        d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
+                                        stroke="#23B7A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    </path>
+                                    <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+                            <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
+                            <button id="btnModalAdd" type="submit"
+                                class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center bg-[#32345a]">
+                                <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                    <path
+                                        d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                        stroke="#23B7A0" stroke-width="2"></path>
+                                    <path
+                                        d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                        stroke="#23B7A0" stroke-width="2"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </form>
                 </div>
                 <div class="flex items-center justify-center">
                     <input type="number" class="mb-10 w-16 text-right" v-model="pagina" @input="cambiarPaginaInput" min="1">
                 </div>
+                <pre>
+                    {{ form_laminas_slider }}
+                </pre>
             </div>
         </div>
     </div>
@@ -399,7 +528,7 @@ const form = ref({
 });
 
 const EVENTO = new Event('reset-timer');
-const token = ref(null);
+const token = ref();
 const secciones = ref(null);
 async function cargarSecciones() {
     try {
@@ -424,6 +553,7 @@ const select_tipos_categorias = ref();
 const select_tipos_componentes = ref();
 
 const RUTA_IMAGENES = "http://localhost:8000/storage/tipos_componentes/";
+const RUTA_IMAGENES_LAMINAS = "http://localhost:8000/storage/laminas/images/";
 
 async function llenarSelectTiposCategorias() {
     const { data: res } = await axios.get('/tipos-categoria-select', {
@@ -465,7 +595,7 @@ const form_componente = ref({
     id_componente: "",
     nombre_componente: "",
     ubicacion_componente: "",
-    visibilidad_componente: "",
+    visibilidad_componente: false,
     id_tipo_componente: "",
     id_seccion: "0",
 })
@@ -530,6 +660,27 @@ function abrirModal() {
                 el: document.getElementById('carousel-item-4')
             },
         ];
+
+
+        const items_indicators = [
+            {
+                position: 0,
+                el: document.getElementById('carousel-indicator-1')
+            },
+            {
+                position: 1,
+                el: document.getElementById('carousel-indicator-2')
+            },
+            {
+                position: 2,
+                el: document.getElementById('carousel-indicator-3')
+            },
+            {
+                position: 3,
+                el: document.getElementById('carousel-indicator-4')
+            },
+        ];
+
         const options = {
             defaultPosition: 1,
             interval: 3000,
@@ -537,24 +688,7 @@ function abrirModal() {
             indicators: {
                 activeClasses: 'bg-white dark:bg-gray-800',
                 inactiveClasses: 'bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800',
-                items: [
-                    {
-                        position: 0,
-                        el: document.getElementById('carousel-indicator-1')
-                    },
-                    {
-                        position: 1,
-                        el: document.getElementById('carousel-indicator-2')
-                    },
-                    {
-                        position: 2,
-                        el: document.getElementById('carousel-indicator-3')
-                    },
-                    {
-                        position: 3,
-                        el: document.getElementById('carousel-indicator-4')
-                    },
-                ]
+                items: items_indicators,
             },
         };
         if (document.getElementById('carousel-item-1')) {
@@ -577,8 +711,12 @@ const pagina = ref(1);
 
 const id_componente = ref();
 
+const read_only = ref(false);
+
 async function empezarAEditar() {
-    if (form_componente.value.id_seccion != 0) {
+    if (id_componente.value) {
+        pagina.value = 2;
+    } else if (form_componente.value.id_seccion != 0) {
         token.value = localStorage.getItem('token');
         console.log(token.value);
         Swal.fire({
@@ -611,31 +749,227 @@ async function empezarAEditar() {
                         Authorization: `Bearer ${token.value}`,
                     },
                 });
-                
+
+                read_only.value = true;
+
                 localStorage.setItem('token', res.data.data.token)
                 token.value = localStorage.getItem('token');
                 pagina.value = 2;
+                id_componente.value = res.data.data.id_comp;
+                console.log(id_componente.value);
+
             }
         });
     }
 }
 
-const cambios = ref();
+const cambios_guardados = ref(true);
 
-function paginaSiguienteSlider(){
+const laminas_slider = ref();
 
-}
-
-function paginaAnteriorSlider(){
-    if(pagina.value > 1){
-        pagina.value = pagina.value - 1;
+function cambiosGuardados() {
+    if (cambios_guardados.value == true) {
+        cambios_guardados.value = false;
     }
 }
 
-function cambiarPaginaInput(){
-    if(!id_componente.value){
+function paginaSiguienteSlider() {
+    if (cambios_guardados.value == false) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia',
+            text: 'Para poder realizar esta acción, guarda los cambios realizados.',
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+async function paginaAnteriorSlider() {
+    if (cambios_guardados.value == false) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia',
+            text: 'Para poder realizar esta acción, guarda los cambios realizados.',
+            confirmButtonColor: '#3F4280'
+        });
+    } else if (pagina.value > 1) {
+        pagina.value = pagina.value - 1;
+
+        if (pagina.value == 1) {
+
+            await nextTick();
+
+            const ITEMS = [];
+            const ITEMS_INDICADORES = [];
+
+            laminas_slider.value.forEach((element) => {
+                const IDENTIFICADOR_LAMINA = element.campos.identificador_lamina;
+
+                // Agregar un nuevo elemento al arreglo 'items'
+                ITEMS.push({
+                    position: IDENTIFICADOR_LAMINA - 1,
+                    el: document.getElementById('carouselP-item-' + IDENTIFICADOR_LAMINA),
+                })
+
+                ITEMS_INDICADORES.push({
+                    position: IDENTIFICADOR_LAMINA - 1,
+                    el: document.getElementById('carouselP-indicator-' + IDENTIFICADOR_LAMINA),
+                })
+            });
+
+            console.log(ITEMS);
+            console.log(ITEMS_INDICADORES);
+
+            const OPTIONS = {
+                defaultPosition: 1,
+                interval: 3000,
+
+                indicators: {
+                    activeClasses: 'bg-white dark:bg-gray-800',
+                    inactiveClasses: 'bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800',
+                    items: ITEMS_INDICADORES,
+                },
+            };
+            if (document.getElementById('carouselP-item-1')) {
+                const CAROUSEL = new Carousel(ITEMS, OPTIONS);
+                CAROUSEL.cycle()
+                // set event listeners for prev and next buttons
+                const prevButton = document.getElementById('data-carouselP-prev');
+                const nextButton = document.getElementById('data-carouselP-next');
+                prevButton.addEventListener('click', () => {
+                    CAROUSEL.prev();
+                });
+                nextButton.addEventListener('click', () => {
+                    CAROUSEL.next();
+                });
+            }
+        }
+    }
+}
+
+function cambiarPaginaInput() {
+    if (!id_componente.value) {
         pagina.value = 1;
     }
+
+    if (!laminas_slider.value && pagina.value > 2) {
+        pagina.value = 2;
+    } else if (laminas_slider.value && pagina.value > laminas_slider.value.length) {
+        pagina.value = laminas_slider.value.length;
+    }
+}
+
+const form_laminas_slider = ref({
+    id_lamina_componente: '',
+    archivo_imagen: '',
+    titulo_lamina: '',
+    subtitulo_lamina: '',
+    identificador_lamina: '',
+    visibilidad_lamina: false,
+});
+
+async function crearLaminaSlider() {
+    token.value = localStorage.getItem('token');
+
+    try {
+        const FORM_DATA = new FormData();
+        FORM_DATA.append('titulo_lamina', form_laminas_slider.value.titulo_lamina);
+        FORM_DATA.append('subtitulo_lamina', form_laminas_slider.value.subtitulo_lamina);
+        FORM_DATA.append('identificador_lamina', form_laminas_slider.value.identificador_lamina);
+        FORM_DATA.append('visibilidad_lamina', form_laminas_slider.value.visibilidad_lamina ? 1 : 0);
+        FORM_DATA.append('archivo_imagen', form_laminas_slider.value.archivo_imagen);
+        FORM_DATA.append('id_componente', id_componente.value);
+
+        console.log(token.value);
+
+        const res = await axios.post('/laminas', FORM_DATA, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+
+        localStorage.setItem('token', res.data.data.token);
+        token.value = localStorage.getItem('token');
+
+        cambios_guardados.value = true;
+
+        await leerLaminas();
+
+        clases_preview_carousel.value.clases_carousel_preview = 'flex';
+        clases_preview_carousel.value.clases_carousel_vacio = 'flex hidden';
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function leerLaminas() {
+    token.value = localStorage.getItem('token');
+    const { data: res } = await axios.post('/laminas/' + id_componente.value, null, {
+        headers: {
+            Authorization: `Bearer ${token.value}`,
+        },
+    });
+
+    localStorage.setItem('token', res.token);
+    token.value = localStorage.getItem('token');
+
+    laminas_slider.value = res.data;
+}
+
+const clases_preview_carousel = ref({
+    clases_carousel_vacio: 'flex',
+    clases_carousel_preview: 'flex hidden',
+});
+
+//Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
+const mostrar_icono_borrar = ref(false);
+//Metodo para hacer visible el icono de borrar una imagen
+function iconoBorrarTrue() {
+    if (imagen_preview.value) {
+        mostrar_icono_borrar.value = true;
+    }
+}
+//Metodo para no mostrar el icono de borrar una imagen
+function iconoBorrarFalse() {
+    if (imagen_preview.value) {
+        mostrar_icono_borrar.value = false;
+    }
+}
+//Variable reactiva para mostrar la imagen capturada
+const imagen_preview = ref(null);
+//Metodo para seleccionar una imagen para el registro
+const SELECCIONAR_ARCHIVO = () => {
+    if (mostrar_icono_borrar.value == false) {
+        input_imagen.value.click();
+    } else {
+        limpiarImagen();
+    }
+};
+//Variable reactiva para caputar el valor de la imagen
+const input_imagen = ref(null);
+//Metodo para cambiar la imagen de un registro
+const cambiarImagen = () => {
+    const INPUT = input_imagen.value;
+    const ARCHIVO = INPUT.files;
+    if (ARCHIVO && ARCHIVO[0]) {
+        form_laminas_slider.value.archivo_imagen = ARCHIVO[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagen_preview.value = e.target.result;
+        };
+        reader.readAsDataURL(ARCHIVO[0]);
+        return ARCHIVO[0];
+    }
+};
+
+//Metodo para limpiar el campo de la imagen
+function limpiarImagen() {
+    //Limpiar imagen
+    input_imagen.value.value = '';
+    imagen_preview.value = null;
+    form_laminas_slider.value.archivo_imagen = "";
+    mostrar_icono_borrar.value = false;
 }
 
 </script>
