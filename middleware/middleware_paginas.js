@@ -33,8 +33,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if (process.client) {
         //Si el usuario no tiene un token, es enviado a la página del login
         if (!localStorage.getItem('token') || (localStorage.getItem('token') && !localStorage.getItem('usuario'))) {
-            console.log('usuario')
-            return navigateTo('/');
+            window.location.href = '/';
         } else {
             try {
                 //Se realiza la petición axios para verficiar que sea un token válido
@@ -65,7 +64,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                         return navigateTo('/');
                     } else if ((to.path === '/usuario' || to.path === '/rol_usuario') && !PERMISOS_TRUE.includes('acceso_usuarios')) {
                         return navigateTo('/');
-                    } else if ((to.path === '/pagina' || to.path === '/seccion') && !PERMISOS_TRUE.includes('acceso_navegabilidad')) {
+                    } else if ((to.path === '/pagina' || to.path === '/seccion' || to.path === '/componente') && !PERMISOS_TRUE.includes('acceso_navegabilidad')) {
+                        return navigateTo('/');
+                    } else if(to.path === '/tipo_componente' && (from.path != '/componente' && from.path != '/tipo_componente')){
                         return navigateTo('/');
                     } else if (to.path === '/anuncio' && !PERMISOS_TRUE.includes('acceso_anuncios')) {
                         return navigateTo('/');
@@ -81,9 +82,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                         return navigateTo('/');
                     }
                 } else {
-                    console.log(res.data.message)
                     //Si el usuario tiene un token invalido es enviado a la página del login
-                    return navigateTo('/');
+                    window.location.href = '/';
                 }
 
             } catch (error) {

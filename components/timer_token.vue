@@ -81,8 +81,7 @@ const CONTEO = () => {
       alerta_1minuto.close();
     }
     //Además, retorna al login y elimina el token del localStorage
-    navigateTo('/');
-    localStorage.removeItem('token');
+    window.location.href = '/';
   }
 };
 

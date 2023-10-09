@@ -3,7 +3,8 @@ module.exports = {
     head: {
       link: [
         { rel: 'icon', type: 'image/png', href: '/img/logo_sin_letras.png' }
-      ]
+      ],
+      title: 'AD-ASTRA'
     }
   },
   modules: ['@nuxtjs/tailwindcss'],

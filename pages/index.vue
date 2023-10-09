@@ -381,26 +381,18 @@ onMounted(async () => {
   if (localStorage.getItem('token')) {
     //Si el usuario tiene un token válido, se cierra la sesión y se elimina el token
     try {
-      const res = await axios.post('/verificar-token/', localStorage.getItem('token'), {
+      await axios.post("/logout", localStorage.getItem('token'), {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-      })
-
-      if (res.data.message == 'El token de acceso es valido.') {
-        await axios.post("/logout", localStorage.getItem('token'), {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-      }
-      localStorage.removeItem('token');
-      localStorage.removeItem('usuario');
-      localStorage.removeItem('imagen_usuario');
+      });
     } catch (error) {
       console.log(error);
     }
   }
+  localStorage.removeItem('token');
+  localStorage.removeItem('usuario');
+  localStorage.removeItem('imagen_usuario');
 });
 
 //Toast de sweetalert 
@@ -703,7 +695,7 @@ function validarContra() {
     mostrar_error_contra.value = '';
   }
 
-  if(form_contras.value.nueva_clave == '' && form_contras.value.confirmar_clave == ''){
+  if (form_contras.value.nueva_clave == '' && form_contras.value.confirmar_clave == '') {
     mostrar_error_contra.value = '';
   }
 }
@@ -749,7 +741,7 @@ async function cambioContra() {
       limpiarForms();
       errores_contra.value.validar_numero = false;
       errores_contra.value.validar_especiales = false;
-      errores_contra.value.validar_mayuscula = false; 
+      errores_contra.value.validar_mayuscula = false;
       errores_contra.value.validar_minuscula = false;
       errores_contra.value.validar_longitud = false;
       errores_contra.value.clases_numero = 'mb-2 flex items-center text-[#A61D1D] font-semibold';

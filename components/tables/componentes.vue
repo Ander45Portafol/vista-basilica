@@ -146,7 +146,7 @@ async function borrarComponente(id,) {
     console.log(id);
     Swal.fire({
         title: 'Confirmación',
-        text: "¿Desea ocultar el registro",
+        text: "¿Desea ocultar el registro?",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
