@@ -56,7 +56,7 @@
                                 stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </button>
-                    <button id="btnadd" type="button"
+                    <NuxtLink id="btnadd" to="/tipo_componente"
                         class="w-20 h-10 flex items-center justify-center mx-4 font-bold rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:ml-0">
                         <svg width="24px" height="24px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#FFFFFF">
@@ -64,7 +64,7 @@
                                 d="M8 12h4m4 0h-4m0 0V8m0 4v4M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
                                 stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
-                    </button>
+                    </NuxtLink>
                 </div>
             </div>
             <!-- Línea divisora -->
@@ -227,8 +227,8 @@ async function visibilidadRegistros() {
 
 /*Función para leer la información de los registros de la página actual, se hace uso de axios para llamar la ruta junto con 
 ?page que se usa para ver la paginación de registros, y mediante el valor de la constante de "pagina" se manda a llamar los registros especificos*/
-console.log(data.value);
 async function leerComponentes() {
+    
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
     try {
@@ -243,6 +243,7 @@ async function leerComponentes() {
 
             //Se asigna el valor de la respuesta de axios a la constante data
             data.value = res.data;
+            console.log(data.value);
 
             //Se limpia el array de registros paginados
             componentes.value = [];

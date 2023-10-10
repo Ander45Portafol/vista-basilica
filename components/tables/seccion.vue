@@ -9,7 +9,7 @@
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                         {{ seccione.campos.titulo_seccion }}</p>
                     <p v-if="seccione.campos.ubicacion_seccion"
-                        class="font-semibold text-sm text-gray-500 max-[750px]:text-[12px]" > Ubicacion de la seccion {{
+                        class="font-semibold text-sm text-gray-500 max-[750px]:text-[12px]" > Ubicacion de la seccion: {{
                             seccione.campos.ubicacion_seccion }} 
                     </p>
                     <p v-if="seccione.campos.subtitulo_seccion"
