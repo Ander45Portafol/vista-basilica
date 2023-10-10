@@ -341,7 +341,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center justify-center">
-                                <button class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6"
+                                <button class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6 hover:bg-lightPurpleLogin"
                                     type="submit">
                                     <p class="text-white ml-3">Empezar a editar |</p>
                                     <svg class="mr-3" width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
@@ -640,7 +640,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center justify-center">
-                                <button class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6"
+                                <button class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6 hover:bg-lightPurpleLogin"
                                     type="submit">
                                     <p class="text-white ml-3">Empezar a editar |</p>
                                     <svg class="mr-3" width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
@@ -820,9 +820,6 @@ onMounted(async () => {
             read_only_laminas.value = false;
         }
     });
-});
-const form = ref({
-    id_seccion: 0,
 });
 
 const EVENTO = new Event('reset-timer');
