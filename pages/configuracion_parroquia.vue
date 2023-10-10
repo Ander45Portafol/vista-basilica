@@ -11,39 +11,94 @@
                     <input type="hidden" v-model="form.id_configuracion_parroquia">
                     <!-- Campo de entrada Nombre - Parroquia -->
                     <div class="relative z-0">
-                        <input type="text" id="nombre_parroquia" name="nombre_parroquia"
+                        <input type="text" id="nombre_parroquia" name="nombre_parroquia" maxlength="150" required
+                            @input="validarNombreParroquia()"
                             class="block py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.nombre_parroquia" />
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.nombre_parroquia">
+                            {{
+                                form.nombre_parroquia.length }} /150</span>
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
                         <label for="nombre_parroquia"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900  peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                             - Parroquia</label>
                     </div>
+                    <div v-if="!validarNombreParroquia()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                        role="alert">
+                        <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            El nombre de la parroquia solo permite caracteres <span class="font-medium">
+                                alfanuméricos y algunos especiales (- / |).</span>
+                        </div>
+                    </div>
                     <!-- Campo de entrada  RUC - Parroquia -->
                     <div class="relative z-0 mt-12">
-                        <input type="text" id="ruc_parroquia" name="ruc_parroquia"
+                        <input type="text" id="ruc_parroquia" name="ruc_parroquia" maxlength="13" required
+                            @input="validarRuc()"
                             class="block py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.ruc_parroquia" />
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.ruc_parroquia">
+                            {{ form.ruc_parroquia.length }} /13</span>
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /13</span>
                         <label for="ruc_parroquia"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">RUC
                             - Parroquia</label>
                     </div>
+                    <div v-if="!validarRuc()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                        <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <span class="font-medium">El RUC de la parroquia solo admite numeros.</span>
+                        </div>
+                    </div>
                     <!-- Campo de texto Dirección - Parroquia -->
                     <div class="relative z-0 mt-12">
-                        <textarea type="text" id="direccion_parroquia" name="direccion_parroquia"
+                        <textarea type="text" id="direccion_parroquia" name="direccion_parroquia" maxlength="250" required
                             class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model=form.direccion_parroquia />
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.direccion_parroquia">
+                            {{
+                                form.direccion_parroquia.length }} /250</span>
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /250 </span>
                         <label for="ruc_parroquia"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Dirección
                             - Parroquia</label>
                     </div>
                     <!-- Campo de entrada  Nombre - Representante -->
                     <div class="relative z-0 mt-12">
-                        <input type="text" id="nombre_representante" name="nombre_representante"
+                        <input type="text" id="nombre_representante" name="nombre_representante" maxlength="100" required
+                            @input="validarNombreRepresentante()"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.nombre_representante" />
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.nombre_representante">
+                            {{
+                                form.nombre_representante.length }} /100</span>
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100 </span>
                         <label for="nombre_representante"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                             - Representante</label>
+                    </div>
+                    <div v-if="!validarNombreRepresentante()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                        role="alert">
+                        <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            El nombre del representante solo permite caracteres <span class="font-medium">
+                                alfanuméricos y algunos especiales (- / |).</span>
+                        </div>
                     </div>
 
                     <div class="pt-4 mt-2">
@@ -74,50 +129,124 @@
                 <!-- Campo de entrada  >Página web - Parroquia -->
                 <div class="flex-col w-80 max-[700px]:mt-10">
                     <div class="relative z-0">
-                        <input type="text" id="pagina_web" name="pagina_web"
+                        <input type="text" id="pagina_web" name="pagina_web" maxlength="250" required
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.pagina_web" />
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.pagina_web">
+                            {{
+                                form.pagina_web.length }} /250</span>
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /250 </span>
                         <label for="pagina_web"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Página
                             web - Parroquia</label>
                     </div>
                     <!-- Campo de entrada  >Idetificador - Parroquia -->
                     <div class="relative z-0 mt-12">
-                        <input type="text" id="identificador_parroquia" name="identificador_parroquia"
+                        <input type="text" id="identificador_parroquia" name="identificador_parroquia" maxlength="100"
+                            required @input="validarIdentificacionFarroquia()"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none dark:text-white focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.identificador_parroquia" />
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.identificador_parroquia">
+                            {{
+                                form.identificador_parroquia.length }} /100</span>
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100 </span>
                         <label for="identificador_parroquia"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Identificador
                             - Parroquia</label>
                     </div>
+                    <div v-if="!validarIdentificacionFarroquia()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                        role="alert">
+                        <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <span class="font-medium">El identificador de la parroquia solo admite numeros.</span>
+                        </div>
+                    </div>
                     <!-- Campo de entrada  >Apellido- Representante -->
                     <div class="relative z-0 mt-12">
-                        <input type="text" id="apellido_representante" name="apellido_representante"
+                        <input type="text" id="apellido_representante" name="apellido_representante" maxlength="100"
+                            required @input="validarApellidoRepresentante()"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.apellido_representante" />
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.apellido_representante">
+                            {{
+                                form.apellido_representante.length }} /100</span>
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100 </span>
                         <label for="apellido_representante"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
                             - Representante</label>
                     </div>
+                    <div v-if="!validarApellidoRepresentante()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                        role="alert">
+                        <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            El apellido del representante solo permite caracteres <span class="font-medium">
+                                alfanuméricos y algunos especiales (- / |).</span>
+                        </div>
+                    </div>
                     <!-- Campo de entrada  >Teléfono- Parroquia -->
                     <div class="relative z-0 mt-12">
-                        <input type="text" id="telefono_parroquia" name="telefono_parroquia"
+                        <input type="text" id="telefono_parroquia" name="telefono_parroquia" maxlength="10" required
+                            @input="validarNumeroTelefono()"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none  focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.telefono_parroquia" />
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.telefono_parroquia">
+                            {{
+                                form.telefono_parroquia.length }} /10</span>
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /10</span>
                         <label for="telefono_parroquia"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Teléfono
                             - Parroquia</label>
                     </div>
+                    <div v-if="!validarNumeroTelefono()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                        role="alert">
+                        <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            El número de teléfono ingresado <span class="font-medium">
+                                no tiene un formato correcto.</span>
+                        </div>
+                    </div>
                     <!-- Campo de entrada  >Documento- Representante -->
                     <div class="relative z-0 mt-10">
-                        <input type="text" id="documento_representante" name="documento_representante"
+                        <input type="text" id="documento_representante" name="documento_representante" maxlength="10" required
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.documento_representante" />
+                            <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.documento_representante">
+                            {{
+                                form.documento_representante.length }} /10</span>
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /10</span>
                         <label for="documento_representante"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">#
                             Documento
                             - Representante</label>
                     </div>
+                    <div v-if="!validarNumeroDocumento()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El documento ingresado <span class="font-medium">
+                                        no tiene un formato correcto.</span>
+                                </div>
+                            </div>
                 </div>
                 <div class="flex-col h-96 max-[700px]:mt-10">
                     <div class="h-1/2">
@@ -143,35 +272,33 @@
                     <div class="flex items-end justify-end h-full mt-[-60px] w-44 ">
                         <!-- Se le coloca la función para actualizar al botón -->
                         <button type="button" id="btnModalClear" @click="limpiarForm()"
-                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4 ">
-                                    <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#C99856"
-                                            stroke-width="2" stroke-linecap="round"></path>
-                                        <path
-                                            d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
-                                            stroke="#C99856" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path
-                                            d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
-                                            stroke="#C99856" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"></path>
-                                        <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#C99856" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
-                                </button>
-                                <button id="btnModalAdd" @click.prevent="actualizarParroquia()"
-                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[400px]:mx-4 max-[750px]:my-1 max-[750px]:ml-[-1px] max-[400px]:ml-6 max-[400px]:mr-[6px]">
-                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
-                                        <path
-                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                        <path
-                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                                            stroke="#23B7A0" stroke-width="2"></path>
-                                    </svg>
-                                </button>
+                            class="h-10 w-10 rounded-lg flex justify-center items-center ml-4 ">
+                            <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#C99856"
+                                    stroke-width="2" stroke-linecap="round"></path>
+                                <path
+                                    d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
+                                    stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path
+                                    d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
+                                    stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#C99856" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
+                        <button id="btnModalAdd" @click.prevent="actualizarConfiguracionParroquia()"
+                            class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[400px]:mx-4 max-[750px]:my-1 max-[750px]:ml-[-1px] max-[400px]:ml-6 max-[400px]:mr-[6px]">
+                            <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path
+                                    d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                    stroke="#23B7A0" stroke-width="2"></path>
+                                <path
+                                    d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                    stroke="#23B7A0" stroke-width="2"></path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </form>
@@ -272,11 +399,11 @@ function limpiarForm() {
     form.value.direccion_parroquia = "";
     form.value.nombre_representante = "";
     form.value.apellido_representante = "";
-    form.value.documento_representante =  "";
-    form.value.tipo_documento =  0;
-    form.value.telefono_parroquia =  "";
-    form.value.identificador_parroquia =  "";
-    form.value.logo_parroquia =  "";
+    form.value.documento_representante = "";
+    form.value.tipo_documento = 0;
+    form.value.telefono_parroquia = "";
+    form.value.identificador_parroquia = "";
+    form.value.logo_parroquia = "";
 }
 
 
@@ -403,6 +530,49 @@ async function actualizarConfiguracionParroquia() {
             }
         }
     }
+}
+
+//validaciones 
+function validarNombreParroquia() {
+    var res = validaciones.validarSoloLetras(form.value.nombre_parroquia);
+    return res;
+}
+
+function validarRuc() {
+    var res = validaciones.validarSoloNumero(form.value.ruc_parroquia);
+    return res;
+}
+
+
+function validarNombreRepresentante() {
+    var res = validaciones.validarSoloLetras(form.value.nombre_representante);
+    return res;
+}
+
+function validarApellidoRepresentante() {
+    var res = validaciones.validarSoloLetras(form.value.apellido_representante);
+    return res;
+}
+
+function validarNumeroDocumento() {
+    if (form.value.tipo_documento == 0 && form.value.documento_representante.length == 0) {
+        return true;
+    } else if (form.value.tipo_documento == 0) {
+        return false;
+    } else {
+        var res = validaciones.validarNumeroDocumento(form.value.documento_representante, form.value.tipo_documento);
+        return res;
+    }
+}
+
+function validarNumeroTelefono() {
+    var res = validaciones.validarNumeroTelefono(form.value.telefono_parroquia);
+    return res;
+}
+
+function validarIdentificacionFarroquia() {
+    var res = validaciones.validarSoloNumero(form.value.identificador_parroquia);
+    return res;
 }
 
 </script>

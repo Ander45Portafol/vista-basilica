@@ -24,7 +24,8 @@
             <div class="buttons-data flex justify-center flex-row items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2 max-[400px]:flex-wrap"
                 v-if="proyecto.campos.visibilidad_proyecto == 1">
                 <div class="flex max-[400px]:mr-2">
-                    <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 imagenbtn max-[750px]:mr-0 max-[750px]:mt-2"
+                    <button
+                        class="h-10 w-10 rounded-md flex items-center justify-center mr-4 imagenbtn max-[750px]:mr-0 max-[750px]:mt-2"
                         @click="modalImagenes(proyecto.id)">
                         <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -35,7 +36,8 @@
                                 stroke="#3F4280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </button>
-                    <button class="h-10 w-10 rounded-md flex items-center justify-center mr-4 reportbtn max-[750px]:mt-2 max-[750px]:m-0 max-[400px]:ml-2"
+                    <button
+                        class="h-10 w-10 rounded-md flex items-center justify-center mr-4 reportbtn max-[750px]:mt-2 max-[750px]:m-0 max-[400px]:ml-2"
                         v-if="proyecto.campos.visibilidad_proyecto == 1" @click="generarReporteProyecto(proyecto.id)">
                         <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -48,8 +50,7 @@
                     </button>
                 </div>
                 <div class="flex max-[400px]:mr-2">
-                    <button
-                        class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[750px]:mt-2"
+                    <button class="h-10 w-10 rounded-md flex items-center justify-center editbtn max-[750px]:mt-2"
                         @click="estadoActualizar(proyecto.id)" v-if="proyecto.campos.visibilidad_proyecto == 1">
                         <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -60,8 +61,7 @@
                     </button>
                     <button
                         class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:ml-2"
-                        @click="borrarProyecto(proyecto.id)"
-                        v-if="proyecto.campos.visibilidad_proyecto == 1">
+                        @click="borrarProyecto(proyecto.id)" v-if="proyecto.campos.visibilidad_proyecto == 1">
                         <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                             xmlns="http://www.w3.org/2000/svg" color="#000000">
                             <path
@@ -89,7 +89,8 @@
             </div>
         </div>
     </div>
-    <vue-easy-lightbox :visible="visible_ref" :imgs="imgs_ref" :index="index_ref" @hide="esconderLightBox"></vue-easy-lightbox>
+    <vue-easy-lightbox :visible="visible_ref" :imgs="imgs_ref" :index="index_ref"
+        @hide="esconderLightBox"></vue-easy-lightbox>
     <!-- Proyet modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -493,8 +494,8 @@ onMounted(() => {
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
     id.value = localStorage.getItem('usuario');
-     //Codigo para abrir el modal, con el boton de crear
-     const AGREGAR_BOTON = document.getElementById('btnadd');
+    //Codigo para abrir el modal, con el boton de crear
+    const AGREGAR_BOTON = document.getElementById('btnadd');
     const MODAL_ID = document.getElementById('staticModal');
     const CERRAR_BOTON = document.getElementById('closeModal');
     const TITULO_MODAL = document.getElementById('modalText');
@@ -783,41 +784,41 @@ async function leerUnProyecto(id) {
 async function actualizarProyecto() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-        try {
-            var id = form.value.id_proyecto_donacion;
-            const FORMDATA = new FormData();
-            FORMDATA.append("nombre_proyecto", form.value.nombre_proyecto);
-            FORMDATA.append("descripcion_proyecto", form.value.descripcion_proyecto);
-            FORMDATA.append("meta_monetaria", form.value.meta_monetaria);
-            FORMDATA.append("visibilidad_proyecto", form.value.visibilidad_proyecto ? 1 : 0);
-            FORMDATA.append("estado_proyecto", form.value.estado_proyecto);
-            FORMDATA.append("imagen_principal", form.value.imagen_principal);
-            FORMDATA.append("icono_proyecto", form.value.icono_proyecto);
-            console.log(FORMDATA);
-            await axios.post("/proyectos_update/" + id, FORMDATA, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${token.value}`,
-                }
-            }).then(res => {
-                //Se reinicia el timer
-                window.dispatchEvent(EVENT);
-                //Se actualiza el token con la respuesta del axios
-                localStorage.setItem('token', res.data.data.token);
-                token.value = localStorage.getItem('token');
-            });
+    try {
+        var id = form.value.id_proyecto_donacion;
+        const FORMDATA = new FormData();
+        FORMDATA.append("nombre_proyecto", form.value.nombre_proyecto);
+        FORMDATA.append("descripcion_proyecto", form.value.descripcion_proyecto);
+        FORMDATA.append("meta_monetaria", form.value.meta_monetaria);
+        FORMDATA.append("visibilidad_proyecto", form.value.visibilidad_proyecto ? 1 : 0);
+        FORMDATA.append("estado_proyecto", form.value.estado_proyecto);
+        FORMDATA.append("imagen_principal", form.value.imagen_principal);
+        FORMDATA.append("icono_proyecto", form.value.icono_proyecto);
+        console.log(FORMDATA);
+        await axios.post("/proyectos_update/" + id, FORMDATA, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token.value}`,
+            }
+        }).then(res => {
+            //Se reinicia el timer
+            window.dispatchEvent(EVENT);
+            //Se actualiza el token con la respuesta del axios
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+        });
 
-            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-            await props.actualizar_datos();
+        //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+        await props.actualizar_datos();
 
-            document.getElementById('closeModal').click();
-            TOAST.fire({
-                icon: 'success',
-                title: 'Proyecto actualizado exitosamente'
-            });
-        }
-        catch (error) {
-            console.log(error);
+        document.getElementById('closeModal').click();
+        TOAST.fire({
+            icon: 'success',
+            title: 'Proyecto actualizado exitosamente'
+        });
+    }
+    catch (error) {
+        console.log(error);
         const MENSAJE_ERROR = error.response.data.message;
         if (error.response.status == 401) {
             navigateTo('/error_401');
@@ -845,8 +846,8 @@ async function actualizarProyecto() {
                 });
             }
         }
-        }
     }
+}
 
 //Codigo para cambiar el estado del proyecto a inactivo
 async function borrarProyecto(id,) {
@@ -894,33 +895,33 @@ async function borrarProyecto(id,) {
             }
             catch (error) {
                 console.log(error);
-        const MENSAJE_ERROR = error.response.data.message;
-        if (error.response.status == 401) {
-            navigateTo('/error_401');
-        } else {
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const RES = validaciones.mensajeSqlState(SQL_STATE);
+                const MENSAJE_ERROR = error.response.data.message;
+                if (error.response.status == 401) {
+                    navigateTo('/error_401');
+                } else {
+                    if (!error.response.data.errors) {
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: RES,
-                    confirmButtonColor: '#3F4280'
-                });
-            } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: MENSAJE_ERROR,
-                    confirmButtonColor: '#3F4280'
-                });
-            }
-        }
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: RES,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    } else {
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: MENSAJE_ERROR,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
+                }
             }
         }
     });
@@ -929,80 +930,80 @@ async function borrarProyecto(id,) {
 //Función para cambiar un proyecto a activo
 async function recuperarProyecto(id) {
 
-Swal.fire({
-    title: 'Confirmación',
-    text: "¿¿Desea recuperar el registro",
-    icon: 'warning',
-    reverseButtons: true,
-    showCancelButton: true,
-    confirmButtonColor: '#3F4280',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Confirmar',
-    cancelButtonText: 'Cancelar',
-    allowOutsideClick: false,
-}).then(async (result) => {
-    if (result.isConfirmed) {
-        try {
-            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-            token.value = localStorage.getItem('token');
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿¿Desea recuperar el registro",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        allowOutsideClick: false,
+    }).then(async (result) => {
+        if (result.isConfirmed) {
             try {
-                //Se realiza la petición axios
-                await axios.delete("/proyectos/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }).then(res => {
-                    //Se reinicia el timer
-                    window.dispatchEvent(EVENT);
-                    //Se actualiza el valor del token con la respuesta del axios
-                    localStorage.setItem('token', res.data.data.token);
-                    token.value = localStorage.getItem('token');
-                });;
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/proyectos/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el valor del token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+                    });;
 
-                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-                await props.actualizar_datos();
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
 
-                //Se lanza la alerta de éxito
-                TOAST.fire({
-                    icon: "success",
-                    title: "Proyecto recuperado exitosamente",
-                });
-            } catch (error) {
+                    //Se lanza la alerta de éxito
+                    TOAST.fire({
+                        icon: "success",
+                        title: "Proyecto recuperado exitosamente",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            catch (error) {
                 console.log(error);
-            }
-        }
-        catch (error) {
-            console.log(error);
-        const MENSAJE_ERROR = error.response.data.message;
-        if (error.response.status == 401) {
-            navigateTo('/error_401');
-        } else {
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const RES = validaciones.mensajeSqlState(SQL_STATE);
+                const MENSAJE_ERROR = error.response.data.message;
+                if (error.response.status == 401) {
+                    navigateTo('/error_401');
+                } else {
+                    if (!error.response.data.errors) {
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: RES,
-                    confirmButtonColor: '#3F4280'
-                });
-            } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: MENSAJE_ERROR,
-                    confirmButtonColor: '#3F4280'
-                });
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: RES,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    } else {
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: MENSAJE_ERROR,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
+                }
             }
         }
-        }
-    }
-});
+    });
 }
 
 //Validaciones
@@ -1057,6 +1058,7 @@ const nombre_proyectoref = ref(null);
 
 //Función para leer las imagenes y el proyecto asignado
 async function leerImagenesProyectos(id_proyecto) {
+    token.value = localStorage.getItem('token');
     id_proyectoref.value = id_proyecto;
     try {
         //Se realiza la petición axios para traer los datos
@@ -1068,6 +1070,9 @@ async function leerImagenesProyectos(id_proyecto) {
         //Se asigna el valor de la respuesta de axios a la variable data_imagenes
         data_imagenes.value = res.imagenes;
         nombre_proyectoref.value = res.nombre_proyecto;
+        window.dispatchEvent(EVENT);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
     } catch (error) {
         console.log(error);
         //Se extrae el mensaje de error
@@ -1149,6 +1154,7 @@ function vaciarImagenes() {
 
 //Función para actualizar las imagenes
 async function actualizarImagenes() {
+    token.value = localStorage.getItem('token');
     try {
         //Se evalua si el array de previews tiene valor, si tiene significa que hay registros para agregar
         if (imagenesPreviewArray.value.length > 0) {
@@ -1162,12 +1168,15 @@ async function actualizarImagenes() {
             }
 
             //Se envia la petición axios
-            await axios.post('/imagenes_proyectos', formData, {
+            const res = await axios.post('/imagenes_proyectos', formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                     Authorization: `Bearer ${token.value}`,
                 },
             });
+            window.dispatchEvent(EVENT);
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
         }
 
         //Se evalua si hay datos en el array de imagenesBorradas, si hay significa que hay registros para borrar
@@ -1187,18 +1196,21 @@ async function actualizarImagenes() {
 
             //Si el usuario escogió la opción de confirmar se eliminan los registros
             if (eleccion.isConfirmed) {
-                await axios.delete('imagenes_proyectos', {
+                const res = await axios.delete('imagenes_proyectos', {
                     data: { id_imagen_proyecto: imagenesBorradas.value },
                     headers: {
                         Authorization: `Bearer ${token.value}`,
                     },
                 });
+                window.dispatchEvent(EVENT);
+                localStorage.setItem('token', res.data.token);
+                token.value = localStorage.getItem('token');
             }
         }
 
         //Se cierra el modal y se muestra el toast
         document.getElementById('imageclose').click();
-        Toast.fire({
+        TOAST.fire({
             icon: 'success',
             title: 'Imagenes actualizadas exitosamente'
         });

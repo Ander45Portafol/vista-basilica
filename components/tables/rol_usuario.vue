@@ -102,7 +102,7 @@
                             <!-- Se enlazan todos los inputs usando el v-model a la variable form -->
                             <input type="hidden" id="id_rol_usuario" v-model="form.id_rol_usuario">
                             <div class="relative z-0">
-                                <input type="text" v-model="form.rol_usuario" @input="validarRolUsuario()" maxlength="100"
+                                <input type="text" v-model="form.rol_usuario" @input="validarRolUsuario()" maxlength="50"
                                     id="rol_usuario" name="rol_usuario"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" required />
