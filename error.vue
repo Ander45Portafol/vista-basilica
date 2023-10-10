@@ -63,7 +63,7 @@ async function volverAlInicio() {
                 } else {
                     //Si no, volverá a la página del login
                     clearError();
-                    navigateTo('/');
+                    window.location.href = '/';
                 }
             });
         } catch (error) {
@@ -72,7 +72,7 @@ async function volverAlInicio() {
     } else {
         //Si el usuario no tiene token, volverá a la página del login
         clearError();
-        navigateTo('/');
+        window.location.href = '/';
     }
 }
 </script>
