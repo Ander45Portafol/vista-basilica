@@ -3,7 +3,6 @@
             <div class="options">
                 <NuxtLink class="ml-4" to="/calendario">Calendario</NuxtLink>
                 <NuxtLink class="active ml-4" to="/zona">Zona</NuxtLink>
-                <NuxtLink class="ml-4" to="/horario">Horario</NuxtLink>
             </div>
             <div class="endtop flex justify-between w-20">
            <BotonPerfil/>
