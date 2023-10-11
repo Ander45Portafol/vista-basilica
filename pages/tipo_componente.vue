@@ -1075,7 +1075,9 @@
                       <div
                         class="p-5 w-[700px] border border-b-0 border-lightPurpleLogin"
                       >
-                        <p class="mb-2 text-white">{{ item.campos.contenido_lamina }}</p>
+                        <p class="mb-2 text-white">
+                          {{ item.campos.contenido_lamina }}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1514,123 +1516,54 @@
             id="visualizacion-banner"
             v-if="pagina == 1 || pagina == ''"
           >
-            <div :class="clases_preview_carousel.clases_carousel_vacio">
-              <div class="w-[850px] mx-[25px]">
+            <div class="flex">
+              <div v-if="v_banner == 1" class="w-[850px] mx-[25px]">
                 <div class="relative">
                   <!-- Carousel wrapper -->
                   <div
-                    class="relative overflow-hidden rounded-lg h-[450px] flex bg-gray-200 items-center"
+                    class="relative overflow-hidden rounded-lg h-[450px] flex bg-white items-center"
                   >
-                    <div class="banner flex h-3/4 items-center px-6">
-                      <div class="imagen h-52 w-64">
-                        <img class="w-48 rounded-lg" href />
-                      </div>
-                      <div class="texto flex-col ml-8">
+                    <img
+                      class="h-[240px] w-[300px] mx-[50px] rounded-lg"
+                      :src="preview_banner.imagen"
+                    />
+                    <div class="banner w-[450px] flex h-3/4 items-center mr-[50px]">
+                      <div class="texto flex-col">
                         <p class="text-2xl font-bold mb-4 text-black" id="titulo-banner">
-                          Titulo
+                          {{ preview_banner.titulo }}
                         </p>
-                        <p class="text-xl font text-black" id="subtutulo-banner">
-                          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                          Veritatis temporibus deleniti expedita beatae, id ullam quaerat
-                          quibusdam aspernatur molestiae nam veniam delectus optio maxime
-                          distinctio sint autem natus vero reiciendis?
+                        <p class="text-lg font text-black" id="contenido-banner">
+                          {{ preview_banner.contenido }}
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div :class="clases_preview_carousel.clases_carousel_preview">
-              <div class="w-[850px] mx-[25px]">
+              <div v-else class="w-[850px] mx-[25px]">
                 <div class="relative">
                   <!-- Carousel wrapper -->
-                  <div class="relative overflow-hidden rounded-lg h-[450px]">
-                    <div v-for="item in laminas_slider">
-                      <div
-                        v-if="item.campos.visibilidad_lamina"
-                        :id="'Banner-item-' + item.campos.identificador_lamina"
-                        class="absolute inset-0 z-20 transition-all duration-700 ease-in-out transform translate-x-0"
-                        data-carousel-item=""
-                      >
-                        <img
-                          :src="RUTA_IMAGENES_LAMINAS + item.campos.archivo_imagen"
-                          class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                          alt="..."
-                        />
-                        <div class="relative top-[300px] px-4 py-2 opacity-100">
-                          <p class="ml-24 text-3xl font-bold text-left text-white">
-                            {{ item.campos.titulo_lamina }}
-                          </p>
-                          <p class="ml-24 text-xl font-bold text-left text-white">
-                            {{ item.campos.subtitulo_lamina }}
-                          </p>
-                        </div>
+                  <div
+                    class="relative overflow-hidden rounded-lg h-[450px] flex bg-white items-center"
+                  >
+                    <div class="banner w-[450px] flex h-3/4 items-center ml-[50px]">
+                      <div class="texto flex-col">
+                        <p
+                          class="text-2xl font-bold mb-4 text-black"
+                          id="titulo-banner-2"
+                        >
+                          {{ preview_banner.titulo }}
+                        </p>
+                        <p class="text-lg font text-black" id="contenido-banner-2">
+                          {{ preview_banner.contenido }}
+                        </p>
                       </div>
                     </div>
+                    <img
+                      class="h-[240px] w-[300px] mx-[50px] rounded-lg"
+                      :src="preview_banner.imagen"
+                    />
                   </div>
-                  <!-- Slider indicators -->
-                  <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2">
-                    <div v-for="item in laminas_slider">
-                      <button
-                        v-if="item.campos.visibilidad_lamina"
-                        :id="'Banner-indicator-' + item.campos.identificador_lamina"
-                        type="button"
-                        class="w-3 h-3 ml-3 rounded-full"
-                      ></button>
-                    </div>
-                  </div>
-                  <!-- Slider controls -->
-                  <button
-                    id="data-banner-prev"
-                    type="button"
-                    class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                  >
-                    <span
-                      class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none"
-                    >
-                      <svg
-                        class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M15 19l-7-7 7-7"
-                        ></path>
-                      </svg>
-                      <span class="hidden">Previous</span>
-                    </span>
-                  </button>
-                  <button
-                    id="data-banner-next"
-                    type="button"
-                    class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                  >
-                    <span
-                      class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none"
-                    >
-                      <svg
-                        class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M9 5l7 7-7 7"
-                        ></path>
-                      </svg>
-                      <span class="hidden">Next</span>
-                    </span>
-                  </button>
                 </div>
               </div>
             </div>
@@ -1808,15 +1741,15 @@
                   </svg>
                 </button>
               </div>
-              <div class="flex-col w-72">
+              <div class="flex-col mt-[7%] w-72">
                 <div class="relative z-0">
                   <input
                     type="text"
                     id="titulo_lamina_banner"
-                    name="titulo_lamina"
+                    name="titulo_lamina_banner"
                     required
                     maxlength="100"
-                    v-model="form_laminas_slider.titulo_lamina"
+                    v-model="form_banner.titulo_lamina"
                     @input="cambiosGuardados"
                     :readonly="read_only_laminas"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
@@ -1824,100 +1757,58 @@
                     autocomplete="off"
                   />
                   <span class="text-xs text-gray-400 absolute bottom-0.5 right-0">
-                    {{ form_laminas_slider.titulo_lamina.length }}/100</span
+                    {{ form_banner.titulo_lamina.length }}/100</span
                   >
                   <label
-                    for="titulo_lamina"
+                    for="titulo_lamina_banner"
                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >Título - lamina</label
                   >
                 </div>
                 <div class="relative z-0 mt-8">
-                  <input
-                    type="text"
-                    id="subtitulo_lamina_banner"
-                    name="subtitulo_lamina"
+                  <textarea
+                    id="cotenido_lamina_banner"
+                    name="contenido_lamina_banner"
                     required
                     :readonly="read_only_laminas"
-                    v-model="form_laminas_slider.subtitulo_lamina"
+                    v-model="form_banner.contenido_lamina"
                     @input="cambiosGuardados"
-                    maxlength="100"
-                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                    maxlength="1000"
+                    class="block h-12 max-h-64 py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
                     placeholder=" "
                     autocomplete="off"
                   />
-                  <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
-                    >{{ form_laminas_slider.subtitulo_lamina.length }}/100</span
+                  <span class="text-xs text-gray-400 absolute bottom-0.5 right-3"
+                    >{{ form_banner.contenido_lamina.length }}/1000</span
                   >
                   <label
-                    for="subtitulo_lamina"
+                    for="contenido_lamina_banner"
                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >Subtítulo - lamina</label
+                    >Contenido - lamina</label
                   >
-                </div>
-                <div class="relative z-0 mt-8">
-                  <input
-                    type="number"
-                    id="identificador_lamina_banner"
-                    name="identificador_lamina"
-                    required
-                    :readonly="read_only_laminas"
-                    v-model="form_laminas_slider.identificador_lamina"
-                    @input="cambiosGuardados"
-                    min="1"
-                    max="99"
-                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
-                    placeholder=" "
-                    autocomplete="off"
-                  />
-                  <label
-                    for="identificador_lamina"
-                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                    >Identificador - lamina</label
-                  >
-                </div>
-                <div class="flex-col mt-8">
-                  <label for="" class="text-sm text-gray-200"
-                    >Visibilidad - lamina *</label
-                  >
-                  <div class="flex justify-start mt-2">
-                    <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        value=""
-                        class="sr-only peer"
-                        @click="cambiosGuardados"
-                        v-model="form_laminas_slider.visibilidad_lamina"
-                        :disabled="read_only_laminas"
-                      />
-                      <div
-                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
-                      ></div>
-                    </label>
-                  </div>
                 </div>
               </div>
               <div class="flex-col ml-14">
                 <p class="text-center text-white">Imagen - lamina</p>
                 <div
                   class="h-52 w-48 border-2 border-slate-900 rounded-lg cursor-pointer relative max-[630px]:m-auto"
-                  @click="SELECCIONAR_ARCHIVO"
-                  @mouseover="iconoBorrarTrue"
-                  @mouseleave="iconoBorrarFalse"
+                  @click="SELECCIONAR_ARCHIVO2"
+                  @mouseover="iconoBorrarTrue2"
+                  @mouseleave="iconoBorrarFalse2"
                 >
                   <img
-                    v-if="imagen_preview"
-                    :src="imagen_preview"
+                    v-if="imagen_preview2"
+                    :src="imagen_preview2"
                     class="w-48 rounded-lg h-52"
                   />
                   <input
                     type="file"
-                    ref="input_imagen"
+                    ref="input_imagen2"
                     class="hidden"
-                    @change="cambiarImagen"
+                    @change="cambiarImagen2"
                   />
                   <div
-                    v-if="mostrar_icono_borrar"
+                    v-if="mostrar_icono_borrar2"
                     class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg"
                   >
                     <svg
@@ -2094,15 +1985,17 @@ onMounted(async () => {
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
       pagina.value = 1;
-      limpiarFormComponente();
-      limpiarFormLaminasSlider();
-      limpiarFormLaminasAcordeon();
       id_componente.value = "";
       laminas_slider.value = "";
       laminas_acordeon.value = "";
       cambios_guardados.value = true;
       read_only.value = false;
       read_only_laminas.value = false;
+      limpiarPreviewBanner();
+      limpiarFormComponente();
+      limpiarFormLaminasSlider();
+      limpiarFormLaminasAcordeon();
+      limpiarFormBanner();
     }
   });
 });
@@ -2268,6 +2161,34 @@ const form_componente = ref({
   id_tipo_componente: "",
   id_seccion: "0",
 });
+
+const form_banner = ref({
+  id_lamina_componente: "",
+  titulo_lamina: "",
+  contenido_lamina: "",
+  archivo_imagen: "",
+});
+
+function limpiarFormBanner() {
+  form_banner.value.id_lamina_componente = "";
+  form_banner.value.titulo_lamina = "";
+  form_banner.value.contenido_lamina = "";
+  limpiarImagen2();
+}
+
+const preview_banner = ref({
+  titulo: "Título",
+  contenido:
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis temporibus deleniti expedita beatae, id ullam quaerat quibusdam aspernatur molestiae nam veniam delectus optio maxime distinctio sint autem natus vero reiciendis",
+  imagen: "/img/imagen_banner.svg",
+});
+
+function limpiarPreviewBanner() {
+  preview_banner.value.titulo = "Título";
+  preview_banner.value.contenido =
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis temporibus deleniti expedita beatae, id ullam quaerat quibusdam aspernatur molestiae nam veniam delectus optio maxime distinctio sint autem natus vero reiciendis";
+  preview_banner.value.imagen = "/img/imagen_banner.svg";
+}
 
 function limpiarFormComponente() {
   form_componente.value.id_componente = "";
@@ -2444,6 +2365,12 @@ async function abrirModal() {
     informacion_componente_seleccionado.value.nombre == "Imagen - Texto V1" ||
     informacion_componente_seleccionado.value.nombre == "Imagen - Texto V2"
   ) {
+    if (informacion_componente_seleccionado.value.nombre == "Imagen - Texto V1") {
+      v_banner.value = 1;
+    } else {
+      v_banner.value = 2;
+    }
+
     const MODAL_ID = document.getElementById("modal-show-banner");
     const BOTON_CERRAR = document.getElementById("btnclose-banner");
     const OPCIONES_MODAL = {
@@ -2452,6 +2379,14 @@ async function abrirModal() {
     };
     BOTON_CERRAR.addEventListener("click", function () {
       MODAL.hide();
+      pagina.value = 1;
+      limpiarFormComponente();
+      id_componente.value = "";
+      cambios_guardados.value = true;
+      read_only.value = false;
+      read_only_laminas.value = false;
+      limpiarPreviewBanner();
+      limpiarFormBanner();
     });
     const MODAL = new Modal(
       MODAL_ID,
@@ -2462,6 +2397,8 @@ async function abrirModal() {
     MODAL.show();
   }
 }
+
+const v_banner = ref();
 
 const pagina = ref(1);
 
@@ -2747,6 +2684,13 @@ async function cambiarPaginaInput() {
         form_laminas_acordeon.value.visibilidad_lamina =
           laminas_acordeon.value[pagina.value - 2].campos.visibilidad_lamina;
       }
+    } else if (
+      informacion_componente_seleccionado.value.nombre == "Imagen - Texto V1" ||
+      informacion_componente_seleccionado.value.nombre == "Imagen - Texto V2"
+    ) {
+      if (pagina.value > 2) {
+        pagina.value = 2;
+      }
     }
   }
 }
@@ -2854,6 +2798,33 @@ async function crearLamina() {
             Authorization: `Bearer ${token.value}`,
           },
         });
+
+        window.dispatchEvent(EVENTO);
+        localStorage.setItem("token", res.data.data.token);
+        token.value = localStorage.getItem("token");
+      } else if (
+        informacion_componente_seleccionado.value.nombre == "Imagen - Texto V1" ||
+        informacion_componente_seleccionado.value.nombre == "Imagen - Texto V2"
+      ) {
+        const FORM_DATA = new FormData();
+        FORM_DATA.append("titulo_lamina", form_banner.value.titulo_lamina);
+        FORM_DATA.append("contenido_lamina", form_banner.value.contenido_lamina);
+        FORM_DATA.append("identificador_lamina", 1);
+        FORM_DATA.append("visibilidad_lamina", 1);
+        FORM_DATA.append("archivo_imagen", form_banner.value.archivo_imagen);
+        FORM_DATA.append("id_componente", id_componente.value);
+
+        const res = await axios.post("/laminas", FORM_DATA, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token.value}`,
+          },
+        });
+
+        preview_banner.value.titulo = res.data.data.lamina.titulo_lamina;
+        preview_banner.value.contenido = res.data.data.lamina.contenido_lamina;
+        preview_banner.value.imagen =
+          RUTA_IMAGENES_LAMINAS + res.data.data.lamina.archivo_imagen;
 
         window.dispatchEvent(EVENTO);
         localStorage.setItem("token", res.data.data.token);
@@ -3018,5 +2989,57 @@ function limpiarImagen() {
   }
   form_laminas_slider.value.archivo_imagen = "";
   mostrar_icono_borrar.value = false;
+}
+
+//Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
+const mostrar_icono_borrar2 = ref(false);
+//Metodo para hacer visible el icono de borrar una imagen
+function iconoBorrarTrue2() {
+  if (imagen_preview2.value) {
+    mostrar_icono_borrar2.value = true;
+  }
+}
+//Metodo para no mostrar el icono de borrar una imagen
+function iconoBorrarFalse2() {
+  if (imagen_preview2.value) {
+    mostrar_icono_borrar2.value = false;
+  }
+}
+//Variable reactiva para mostrar la imagen capturada
+const imagen_preview2 = ref(null);
+//Metodo para seleccionar una imagen para el registro
+const SELECCIONAR_ARCHIVO2 = () => {
+  if (mostrar_icono_borrar2.value == false) {
+    input_imagen2.value.click();
+  } else {
+    limpiarImagen2();
+  }
+};
+//Variable reactiva para caputar el valor de la imagen
+const input_imagen2 = ref(null);
+//Metodo para cambiar la imagen de un registro
+const cambiarImagen2 = () => {
+  const INPUT = input_imagen2.value;
+  const ARCHIVO = INPUT.files;
+  if (ARCHIVO && ARCHIVO[0]) {
+    form_banner.value.archivo_imagen = ARCHIVO[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imagen_preview2.value = e.target.result;
+    };
+    reader.readAsDataURL(ARCHIVO[0]);
+    return ARCHIVO[0];
+  }
+};
+
+//Metodo para limpiar el campo de la imagen
+function limpiarImagen2() {
+  //Limpiar imagen
+  imagen_preview2.value = "";
+  if (input_imagen2.value.value) {
+    input_imagen2.value.value = "";
+  }
+  form_banner.value.archivo_imagen = "";
+  mostrar_icono_borrar2.value = false;
 }
 </script>
