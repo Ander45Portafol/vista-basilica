@@ -4,8 +4,10 @@
     <div class="mdprincipal flex-col">
       <div class='demo-app py-4'>
         <div class='demo-app-sidebar h-screen'>
-          <div class='demo-app-sidebar-section h-5/6 mt-[-20px]'>
-            <h2 class="mb-4">All Events <strong> ( {{ currentEvents.length }} ) </strong></h2>
+          <div class='demo-app-sidebar-section h-5/6 mt-[-20px] menu-evento'>
+            <button class="mb-4 pb-2 active" id="btneventos">Eventos <strong> ( {{ currentEvents.length }} )
+              </strong></button>
+            <button class="ml-6 pb-2" id="btneliminados" @click="eventosOcultos">Eliminados <strong>()</strong></button>
             <div class="container_cards w-full h-full pr-6 overflow-y-scroll">
               <ul class="ml-[-20px] text-[14px]">
                 <li v-for='evento in currentEvents' :key='evento.id' class="flex items-center rounded-md bg-gray-200 p-5">
@@ -38,7 +40,19 @@
         <div class='demo-app-main h-1/3'>
           <FullCalendar class='demo-app-calendar' :options='calendarOptions'>
             <template v-slot:eventContent='arg'>
-              <i>{{ arg.event.title }}</i>
+              <div class="flex-col p-2">
+                <p class="font-bold">{{ arg.event.title }}</p>
+                <div class="flex">
+                  <p class="text-xs">{{ arg.event.start.toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  }) }}<span class="mx-2">-</span></p>
+                  <p class="text-xs">{{ arg.event.end.toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  }) }}</p>
+                </div>
+              </div>
             </template>
           </FullCalendar>
         </div>
@@ -111,6 +125,15 @@
                     <option class="bg-gray-700" v-for="persona in personal" :key="persona.id" :value="persona.id">
                       {{ persona.campos.nombre_personal }}</option>
                   </select>
+                </div>
+                <div class="relative z-0 mt-8">
+                  <input type="date" id="fecha_evento" v-model="form.fecha_evento"
+                    name="fecha_evento" :disabled="fecha_eventos"
+                    class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                    placeholder="" autocomplete="off" />
+                  <label for="evento"
+                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
+                    evento</label>
                 </div>
               </div>
               <div class="flex-col w-52">
@@ -233,6 +256,10 @@ h2 {
   font-size: 16px;
 }
 
+.menu-evento .active {
+  border-bottom: 3px solid#1b1c30;
+}
+
 .deletebtn {
   border: 3px solid #872727;
 }
@@ -350,6 +377,7 @@ export default defineComponent({
         events: [], // alternatively, use the `events` setting to fetch from a feed
         editable: false,
         selectable: true,
+        height: 600,
         selectMirror: true,
         dayMaxEvents: true,
         weekends: true,
@@ -366,6 +394,7 @@ export default defineComponent({
       personal: [],
       accion: null,
       zonas: [],
+      fecha_eventos:true,
       token: null,
       form: {
         id_evento: "",
@@ -471,13 +500,16 @@ export default defineComponent({
       };
       const modal = new Modal(modalElement, modalOptions);
       tituloModal.textContent = 'Agregar'
+      this.fecha_eventos=true;
       this.accion = "agregar";
       modal.show();
       closeButton.addEventListener('click', function () {
         modal.hide();
       });
       fecha_evento.value = selectInfo.startStr;
-      console.log(fecha_evento.value);
+      document.getElementById('fecha_evento').value = selectInfo.startStr;
+      
+        console.log(fecha_evento.value);
     },
     async GuardarEvento() {
       try {
@@ -504,7 +536,7 @@ export default defineComponent({
         }).then(res => {
           window.dispatchEvent(EVENT);
           // //Se actualiza el token con la respuesta del axios
-          localStorage.setItem('token', res.data. data.token);
+          localStorage.setItem('token', res.data.data.token);
           this.token = localStorage.getItem('token');
           this.llenarEventos();
         });
@@ -606,6 +638,7 @@ export default defineComponent({
       };
       const modal = new Modal(modalElement, modalOptions);
       tituloModal.textContent = 'Actualizar'
+      this.fecha_eventos=false;
       this.accion = "actualizar"
       modal.show();
       closeButton.addEventListener('click', function () {
@@ -653,6 +686,10 @@ export default defineComponent({
           }
         }
       })
+    },
+    eventosOcultos() {
+      document.getElementById('btneliminados').classList.add('active');
+      document.getElementById('btneventos').classList.remove('active');
     },
     handleEvents(events) {
       this.currentEvents = events
