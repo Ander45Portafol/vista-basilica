@@ -1,31 +1,43 @@
 <template>
   <div class="principal mt-6">
     <MenuCalendarioDashboard class="mr-8" />
-    <div class="mdprincipal flex-col px-8">
-      <div class='demo-app'>
-        <div class='demo-app-sidebar'>
-          <div class='demo-app-sidebar-section'>
-            <label>
-              <input type='checkbox' :checked='calendarOptions.weekends' @change='handleWeekendsToggle' />
-              toggle weekends
-            </label>
-          </div>
-          <div class='demo-app-sidebar-section mt-[-20px]'>
-            <h2>All Events <strong> ( {{ currentEvents.length }} ) </strong></h2>
-            <ul class="ml-[-20px] text-[14px]">
-              <li v-for='evento in currentEvents' :key='evento.id' class="flex items-center rounded-md bg-gray-200 p-5">
-                <div class="w-[100%]">
-                  <b>{{ evento.startStr }}</b>
-                  <i>{{ evento.title }}</i>
-                </div>
-              </li>
-            </ul>
+    <div class="mdprincipal flex-col">
+      <div class='demo-app py-4'>
+        <div class='demo-app-sidebar h-screen'>
+          <div class='demo-app-sidebar-section h-5/6 mt-[-20px]'>
+            <h2 class="mb-4">All Events <strong> ( {{ currentEvents.length }} ) </strong></h2>
+            <div class="container_cards w-full h-full pr-6 overflow-y-scroll">
+              <ul class="ml-[-20px] text-[14px]">
+                <li v-for='evento in currentEvents' :key='evento.id' class="flex items-center rounded-md bg-gray-200 p-5">
+                  <div class="flex-col w-[100%]">
+                    <p class="font-semibold">Dia: <span class="font-normal">{{ evento.start.toLocaleDateString('es-ES')
+                    }}</span></p>
+                    <p class=" mt-2 font-semibold">Hora inicio: <span class="font-normal">{{
+                      evento.start.toLocaleTimeString('es-ES') }}</span></p>
+                    <p class="mt-2 font-semibold">Hora final: <span class="font-normal">{{
+                      evento.end.toLocaleTimeString('es-ES') }}</span></p>
+                    <p class="mt-2 font-semibold">Nombre evento: <span class="font-normal">{{ evento.title }}</span></p>
+                    <div class="flex justify-center mt-4">
+                      <button @click="eliminarEvento(evento.id, evento.title)"
+                        class="h-10 w-10 rounded-md flex items-center justify-center deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
+                        <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                          xmlns="http://www.w3.org/2000/svg" color="#000000">
+                          <path
+                            d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
+                            stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          </path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
         <div class='demo-app-main h-1/3'>
           <FullCalendar class='demo-app-calendar' :options='calendarOptions'>
             <template v-slot:eventContent='arg'>
-              <b>{{ arg.timeText }}</b>
               <i>{{ arg.event.title }}</i>
             </template>
           </FullCalendar>
@@ -59,7 +71,7 @@
         </div>
         <!-- Cuerpo del modal -->
         <div class="p-6 space-y-6 pb-10">
-          <form class="flex-col flex-wrap" @submit.prevent="GuardarEvento">
+          <form class="flex-col flex-wrap" @submit.prevent="accionForm">
             <div class="flex justify-evenly flex-wrap">
               <div class="flex-col w-52">
                 <div class="relative z-0">
@@ -221,6 +233,10 @@ h2 {
   font-size: 16px;
 }
 
+.deletebtn {
+  border: 3px solid #872727;
+}
+
 ul {
   margin: 0;
   padding: 0 0 0 1.5em;
@@ -274,6 +290,14 @@ b {
   max-width: 1100px;
   margin: 0 auto;
 }
+
+.container_cards::-webkit-scrollbar {
+  width: 7px;
+}
+
+.container_cards::-webkit-scrollbar-thumb {
+  background: #32345A;
+}
 </style>
 
 
@@ -284,11 +308,12 @@ definePageMeta({
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { Modal } from 'flowbite';
-import { defineComponent } from 'vue'
-import FullCalendar from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
+import { defineComponent } from 'vue';
+import FullCalendar from '@fullcalendar/vue3';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import esLocale from '@fullcalendar/core/locales/es';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 
 const fecha_evento = ref(null);
 //Metodo para mostrar las alertas
@@ -310,19 +335,20 @@ export default defineComponent({
   data() {
     return {
       calendarOptions: {
+        locale: esLocale,
         plugins: [
           dayGridPlugin,
           timeGridPlugin,
           interactionPlugin // needed for dateClick
         ],
         headerToolbar: {
-          left: 'prev,next today',
+          left: 'prev,next',
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
         initialView: 'dayGridMonth',
         events: [], // alternatively, use the `events` setting to fetch from a feed
-        editable: true,
+        editable: false,
         selectable: true,
         selectMirror: true,
         dayMaxEvents: true,
@@ -338,6 +364,7 @@ export default defineComponent({
       },
       currentEvents: [],
       personal: [],
+      accion: null,
       zonas: [],
       form: {
         id_evento: "",
@@ -379,13 +406,60 @@ export default defineComponent({
           title: evento.campos.nombre_evento,
           start: `${evento.campos.fecha_evento}T${evento.campos.hora_inicial_evento}`,
           end: `${evento.campos.fecha_evento}T${evento.campos.hora_final_evento}`,
+          display: '#5357aa',
+          color: '#5357aa',
         }));
       } catch (error) {
         console.error(error);
       }
     },
+    async llenarUnEvento(id) {
+      try {
+        const EVENT = new Event('reset-timer');
+        const token = ref(null);
+        token.value = localStorage.getItem('token');
+        await axios.get("/eventos/" + id, {
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+          },
+        }).then(res => {
+          console.log(res);
+          this.form = {
+            id_evento: res.data.data.id,
+            nombre_evento: res.data.data.campos.nombre_evento,
+            descripcion_evento: res.data.data.campos.descripcion_evento,
+            fecha_evento: res.data.data.campos.fecha_evento,
+            hora_inicial_evento: res.data.data.campos.hora_inicial_evento,
+            hora_final_evento: res.data.data.campos.hora_final_evento,
+            nombre_consultor: res.data.data.campos.nombre_consultor,
+            apellido_consultor: res.data.data.campos.apellido_consultor,
+            telefono_consultor: res.data.data.campos.telefono_consultor,
+            visibilidad_evento: res.data.data.campos.visibilidad_evento ? true : false,
+            modalidad_evento: res.data.data.campos.modalidad_evento,
+            estado_evento: res.data.data.campos.estado_evento,
+            id_personal: res.data.data.campos.id_personal,
+            id_zona: res.data.data.campos.id_zona
+          }
+          //document.getElementById('nombre_evento').value = res.data.data.campos.nombre_evento;
+          //Se reinicia el timer
+          window.dispatchEvent(EVENT);
+          //Se actualiza el token con la respuesta del axios
+          localStorage.setItem('token', res.data.token);
+          token.value = localStorage.getItem('token');
+        });
+      } catch (error) {
+
+      }
+    },
     handleWeekendsToggle() {
       this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
+    },
+    accionForm() {
+      if (this.accion == "agregar") {
+        this.GuardarEvento();
+      } else if (this.accion == "actualizar") {
+        this.modificarEvento();
+      }
     },
     agregarEvento(selectInfo) {
       const modalElement = document.getElementById('staticModal');
@@ -397,6 +471,7 @@ export default defineComponent({
       };
       const modal = new Modal(modalElement, modalOptions);
       tituloModal.textContent = 'Agregar'
+      this.accion = "agregar";
       modal.show();
       closeButton.addEventListener('click', function () {
         modal.hide();
@@ -430,7 +505,7 @@ export default defineComponent({
         }).then(res => {
           window.dispatchEvent(EVENT);
           // //Se actualiza el token con la respuesta del axios
-          localStorage.setItem('token', res.data.data.token);
+          localStorage.setItem('token', res.token);
           token.value = localStorage.getItem('token');
           this.llenarEventos();
         });
@@ -481,7 +556,48 @@ export default defineComponent({
         console.log(error)
       }
     },
-    actualizarEvento() {
+    async modificarEvento() {
+      let id=this.form.id_evento;
+      try {
+        const EVENT = new Event('reset-timer');
+        const token = ref(null);
+        token.value = localStorage.getItem('token');
+        const FORMDATA = new FormData();
+        FORMDATA.append("nombre_evento", this.form.nombre_evento);
+        FORMDATA.append("descripcion_evento", this.form.descripcion_evento);
+        FORMDATA.append("fecha_evento", this.form.fecha_evento);
+        FORMDATA.append("hora_inicial_evento", this.form.hora_inicial_evento);
+        FORMDATA.append("hora_final_evento", this.form.hora_final_evento);
+        FORMDATA.append("nombre_consultor", this.form.nombre_consultor);
+        FORMDATA.append("apellido_consultor", this.form.apellido_consultor);
+        FORMDATA.append("telefono_consultor", this.form.telefono_consultor);
+        FORMDATA.append("visibilidad_evento", this.form.visibilidad_evento ? 1 : 0);
+        FORMDATA.append("modalidad_evento", this.form.modalidad_evento);
+        FORMDATA.append("estado_evento", this.form.estado_evento);
+        FORMDATA.append("id_personal", this.form.id_personal);
+        FORMDATA.append("id_zona", this.form.id_zona);
+        await axios.post('/eventos_update/'+id, FORMDATA, {
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+          },
+        }).then(res => {
+          window.dispatchEvent(EVENT);
+          // //Se actualiza el token con la respuesta del axios
+          localStorage.setItem('token', res.token);
+          token.value = localStorage.getItem('token');
+          this.llenarEventos();
+        });
+        document.getElementById('closeModal').click();
+        Toast.fire({
+          icon: 'success',
+          title: 'Evento modificado exitosamente'
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async actualizarEvento(info) {
+      await this.llenarUnEvento(info.event.id);
       const modalElement = document.getElementById('staticModal');
       const closeButton = document.getElementById('closeModal');
       const tituloModal = document.getElementById('modalText');
@@ -491,13 +607,58 @@ export default defineComponent({
       };
       const modal = new Modal(modalElement, modalOptions);
       tituloModal.textContent = 'Actualizar'
+      this.accion = "actualizar"
       modal.show();
       closeButton.addEventListener('click', function () {
         modal.hide();
       });
+
+    },
+    async eliminarEvento(id, titulo) {
+      const EVENT = new Event('reset-timer');
+      const token = ref(null);
+      token.value = localStorage.getItem('token');
+      Swal.fire({
+        title: 'Confirmación',
+        text: "¿Desea eliminar el evento: " + titulo + "?",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        allowOutsideClick: false,
+        cancelButtonText: 'Cancelar'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await axios.delete("/eventos/" + id, {
+              headers: {
+                Authorization: `Bearer ${token.value}`,
+              },
+            }).then(res => {
+              //Se reinicia el timer  
+              window.dispatchEvent(EVENT);
+              //Se actualiza el token con la respuesta del axios
+              localStorage.setItem('token', res.data.data.token);
+              token.value = localStorage.getItem('token');
+
+              //Se lanza la alerta de éxito
+              Toast.fire({
+                icon: "success",
+                title: "Evento eliminado exitosamente",
+              });
+              this.llenarEventos();
+            })
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      })
     },
     handleEvents(events) {
       this.currentEvents = events
+      console.log(this.currentEvents);
     },
   },
   async mounted() {

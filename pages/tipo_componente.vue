@@ -119,7 +119,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class=" space-y-6 flex justify-evenly pb-10">
-                    <div class="flex-col" id="visualizacion" v-if="pagina == 1">
+                    <div class="flex-col" id="visualizacion" v-if="pagina == 1 || pagina == ''">
                         <div :class="clases_preview_carousel.clases_carousel_vacio">
                             <div class="w-[850px] mx-[25px]">
                                 <div class="relative">
@@ -238,12 +238,11 @@
                                         </div>
                                     </div>
                                     <!-- Slider indicators -->
-                                    <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
+                                    <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2">
                                         <div v-for="item in laminas_slider">
                                             <button v-if="item.campos.visibilidad_lamina"
                                                 :id="'carouselP-indicator-' + item.campos.identificador_lamina"
-                                                type="button" class="w-3 h-3 rounded-full" aria-current="true"
-                                                aria-label="Slide 1"></button>
+                                                type="button" class="w-3 ml-3 h-3 rounded-full"></button>
                                         </div>
                                     </div>
                                     <!-- Slider controls -->
@@ -341,7 +340,8 @@
                                 </div>
                             </div>
                             <div class="flex items-center justify-center">
-                                <button class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6"
+                                <button
+                                    class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6 hover:bg-lightPurpleLogin"
                                     type="submit">
                                     <p class="text-white ml-3">Empezar a editar |</p>
                                     <svg class="mr-3" width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
@@ -509,7 +509,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class=" space-y-6 flex justify-evenly pb-10">
-                    <div class="flex-col" id="visualizacion_acordeon" v-if="pagina == 1">
+                    <div class="flex-col" id="visualizacion_acordeon" v-if="pagina == 1 || pagina == ''">
                         <div v-if="!laminas_acordeon"
                             class="w-[750px] h-[400px] overflow-y-scroll overflow-x-hidden	flex items-center justify-center">
                             <div id="accordion-color" data-accordion="collapse"
@@ -640,7 +640,8 @@
                                 </div>
                             </div>
                             <div class="flex items-center justify-center">
-                                <button class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6"
+                                <button
+                                    class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6 hover:bg-lightPurpleLogin"
                                     type="submit">
                                     <p class="text-white ml-3">Empezar a editar |</p>
                                     <svg class="mr-3" width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
@@ -820,9 +821,6 @@ onMounted(async () => {
             read_only_laminas.value = false;
         }
     });
-});
-const form = ref({
-    id_seccion: 0,
 });
 
 const EVENTO = new Event('reset-timer');
