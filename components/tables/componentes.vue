@@ -81,7 +81,7 @@
                     </div>
                     <!-- Modal body -->
                     <div class=" space-y-6 flex justify-evenly pb-10">
-                        <div class="flex-col" id="visualizacion" v-if="pagina_modal == 1">
+                        <div class="flex-col" id="visualizacion" v-if="pagina_modal == 1 || pagina_modal == ''">
                             <div v-if="laminas_slider && laminas_slider.length == 0" class="flex">
                                 <div class="w-[850px] mx-[25px]">
                                     <div class="relative">
@@ -200,12 +200,11 @@
                                             </div>
                                         </div>
                                         <!-- Slider indicators -->
-                                        <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
+                                        <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2">
                                             <div v-for="item in laminas_slider">
                                                 <button v-if="item.campos.visibilidad_lamina"
                                                     :id="'carouselP-indicator-' + item.campos.identificador_lamina"
-                                                    type="button" class="w-3 h-3 rounded-full" aria-current="true"
-                                                    aria-label="Slide 1"></button>
+                                                    type="button" class="w-3 ml-3 h-3 rounded-full"></button>
                                             </div>
                                         </div>
                                         <!-- Slider controls -->
@@ -238,7 +237,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <form @submit.prevent="" class="flex mt-4 w-full justify-around items-center">
+                            <form @submit.prevent="actualizarComponente"
+                                class="flex mt-4 w-full justify-around items-center">
                                 <div class="flex-column">
                                     <div class="flex items-end justify-center">
                                         <div class="relative z-0 mr-10">
@@ -306,8 +306,8 @@
                                     <div class="flex-col">
                                         <button
                                             class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6 hover:bg-lightPurpleLogin"
-                                            type="submit">
-                                            <p class="text-white ml-3">Empezar a editar |</p>
+                                            type="button" @click="paginaSiguiente">
+                                            <p class="text-white ml-3">Editar laminas |</p>
                                             <svg class="mr-3" width="26px" height="26px" viewBox="0 0 24 24"
                                                 stroke-width="2" fill="none" xmlns="http://www.w3.org/2000/svg"
                                                 color="#000000">
@@ -319,9 +319,8 @@
                                             class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6 mt-5 hover:bg-lightPurpleLogin"
                                             type="submit">
                                             <p class="text-white ml-3">Guardar cambios |</p>
-                                            <svg class="mr-3" xmlns="http://www.w3.org/2000/svg"
-                                                width="26px" height="26px" fill="none" stroke-width="1.5"
-                                                viewBox="0 0 24 24" color="#FFFFFF">
+                                            <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="26px" height="26px"
+                                                fill="none" stroke-width="1.5" viewBox="0 0 24 24" color="#FFFFFF">
                                                 <path stroke="#FFFFFF" stroke-width="1.5"
                                                     d="M3 19V5a2 2 0 0 1 2-2h11.172a2 2 0 0 1 1.414.586l2.828 2.828A2 2 0 0 1 21 7.828V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z">
                                                 </path>
@@ -334,7 +333,7 @@
                                 </div>
                             </form>
                         </div>
-                        <form @submit.prevent="" class="w-full py-6 px-10" id="s_formulario" v-else>
+                        <form @submit.prevent="formAccion" class="w-full py-6 px-10" id="s_formulario" v-else>
                             <div class="flex justify-between w-full">
                                 <div class="flex-col mt-20">
                                     <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
@@ -463,7 +462,8 @@
                         </form>
                     </div>
                     <div class="flex items-center justify-center">
-                        <input type="number" class="mb-10 w-16 text-right" v-model="pagina_modal" min="1">
+                        <input type="number" class="mb-10 w-16 text-right" v-model="pagina_modal" min="1"
+                            @input="cambiarPaginaInput">
                     </div>
                 </div>
             </div>
@@ -494,7 +494,6 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import validaciones from '../../assets/validaciones.js'
-import VueEasyLightbox from 'vue-easy-lightbox'
 import { Modal, Carousel, Accordion } from "flowbite";
 
 const props = defineProps({
@@ -535,7 +534,6 @@ const TOAST = Swal.mixin({
 
 //Codigo para cambiar el estado del componente a inactivo
 async function borrarComponente(id,) {
-    console.log(id);
     Swal.fire({
         title: 'Confirmación',
         text: "¿Desea ocultar el registro?",
@@ -697,6 +695,7 @@ const form_componente = ref({
     visibilidad_componente: false,
     id_tipo_componente: "",
     id_seccion: "0",
+    nombre_tipo_componente: '',
 });
 
 function limpiarFormComponente() {
@@ -705,54 +704,192 @@ function limpiarFormComponente() {
     form_componente.value.ubicacion_componente = '';
     form_componente.value.visibilidad_componente = false;
     form_componente.value.id_seccion = 0;
+    form_componente.value.nombre_tipo_componente = '';
 }
 
 const laminas_slider = ref();
 const laminas_acordeon = ref();
 
-const RUTA_IMAGENES = "http://localhost:8000/storage/tipos_componentes/";
 const RUTA_IMAGENES_LAMINAS = "http://localhost:8000/storage/laminas/images/";
 
-async function leerInfoComponentes(id, tipo) {
-    token.value = localStorage.getItem('token');
-    const { data: res } = await axios.get('/componentes/' + id, {
-        headers: {
-            Authorization: `Bearer ${token.value}`,
-        },
-    });
+async function leerComponente(id) {
+    try {
+        token.value = localStorage.getItem('token');
+        const { data: res } = await axios.get('/componentes/' + id, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
 
-    window.dispatchEvent(EVENT);
-    localStorage.setItem('token', res.token);
-    token.value = localStorage.getItem('token');
+        window.dispatchEvent(EVENT);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
 
-    if (res.data) {
-        form_componente.value.id_componente = res.data.id;
-        form_componente.value.nombre_componente = res.data.campos.nombre_componente;
-        form_componente.value.ubicacion_componente = res.data.campos.ubicacion_componente;
-        form_componente.value.visibilidad_componente = res.data.campos.visibilidad_componente;
-        form_componente.value.id_tipo_componente = res.data.campos.id_tipo_componente;
-        form_componente.value.id_seccion = res.data.campos.id_seccion;
+        if (res.data) {
+            form_componente.value.id_componente = res.data.id;
+            form_componente.value.nombre_componente = res.data.campos.nombre_componente;
+            form_componente.value.ubicacion_componente = res.data.campos.ubicacion_componente;
+            form_componente.value.visibilidad_componente = res.data.campos.visibilidad_componente;
+            form_componente.value.id_tipo_componente = res.data.campos.id_tipo_componente;
+            form_componente.value.id_seccion = res.data.campos.id_seccion;
+            form_componente.value.nombre_tipo_componente = res.data.tipos.tipo_componente;
+        }
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
+}
 
-    const { data: res2 } = await axios.post('/laminas/' + id, null, {
-        headers: {
-            Authorization: `Bearer ${token.value}`,
-        },
-    });
+async function leerLaminas(id, tipo) {
+    try {
+        token.value = localStorage.getItem('token');
+        const { data: res } = await axios.post('/laminas/' + id, null, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
 
-    window.dispatchEvent(EVENT);
-    localStorage.setItem('token', res.token);
-    token.value = localStorage.getItem('token');
+        window.dispatchEvent(EVENT);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
 
-    switch (tipo) {
-        case 'Slider':
-            laminas_slider.value = res2.data;
-            console.log(laminas_slider.value);
-            break;
-        case 'Acordeón':
-            laminas_acordeon.value = res2.data;
-            console.log(laminas_acordeon.value);
-            break;
+        switch (tipo) {
+            case 'Slider':
+                laminas_slider.value = res.data;
+                break;
+            case 'Acordeón':
+                laminas_acordeon.value = res.data;
+                console.log(laminas_acordeon.value);
+                break;
+        }
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
+}
+
+async function actualizarComponente() {
+    try {
+        token.value = localStorage.getItem('token');
+        const FORM_DATA = new FormData();
+        FORM_DATA.append('nombre_componente', form_componente.value.nombre_componente);
+        FORM_DATA.append('ubicacion_componente', form_componente.value.ubicacion_componente);
+        FORM_DATA.append('visibilidad_componente', form_componente.value.visibilidad_componente ? 1 : 0);
+        FORM_DATA.append('id_tipo_componente', form_componente.value.id_tipo_componente);
+        FORM_DATA.append('id_seccion', form_componente.value.id_seccion);
+
+        const res = await axios.post('/componentes_update/' + form_componente.value.id_componente, FORM_DATA, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        })
+
+        //Se reinicia el timer
+        window.dispatchEvent(EVENT);
+        localStorage.setItem('token', res.data.data.token);
+        token.value = localStorage.getItem('token');
+
+        if (res.data.data) {
+            form_componente.value.id_componente = res.data.data.componente.id_componente;
+            form_componente.value.nombre_componente = res.data.data.componente.nombre_componente;
+            form_componente.value.ubicacion_componente = res.data.data.componente.ubicacion_componente;
+            if (res.data.data.componente.visibilidad_componente == 1) {
+                form_componente.value.visibilidad_componente = true;
+            } else {
+                form_componente.value.visibilidad_componente = false;
+            }
+            form_componente.value.id_tipo_componente = res.data.data.componente.id_tipo_componente;
+            form_componente.value.id_seccion = res.data.data.componente.id_seccion;
+            form_componente.value.nombre_tipo_componente = res.data.data.componente.tipos.tipo_componente;
+        }
+
+        //Se lanza la alerta de éxito
+        TOAST.fire({
+            icon: "success",
+            title: "Componente actualizado exitosamente",
+        });
+
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
 
@@ -771,7 +908,6 @@ async function llenarSelectSecciones() {
         //Se refresca el valor del token con la respuesta del axios
         localStorage.setItem('token', res.token);
         token.value = localStorage.getItem('token');
-        console.log(secciones.value);
     } catch (error) {
         console.log(error);
         const MENSAJE_ERROR = error.response.data.message;
@@ -805,27 +941,20 @@ async function llenarSelectSecciones() {
 }
 
 const pagina_modal = ref(1);
-const preview_acordeon = ref(false);
-const preview_slider = ref(false);
 
 function paginaSiguiente() {
     pagina_modal.value = pagina_modal.value + 1;
-    //cambiarPaginaInput();
+    cambiarPaginaInput();
 }
 
 function paginaAnterior() {
     pagina_modal.value = pagina_modal.value - 1;
-    //cambiarPaginaInput();
+    cambiarPaginaInput();
 }
 
 async function abrirModal(id, tipo) {
-    pagina_modal.value = 1;
-    limpiarFormComponente();
-    limpiarFormLaminasSlider();
-    limpiarFormLaminasAcordeon();
-    laminas_slider.value = '';
-    laminas_acordeon.value = '';
-    await leerInfoComponentes(id, tipo);
+    await leerComponente(id);
+    await leerLaminas(id, tipo);
 
     switch (tipo) {
         case 'Slider':
@@ -835,67 +964,308 @@ async function abrirModal(id, tipo) {
                 backdrop: 'static',
                 backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
             };
-            BOTON_CERRAR.addEventListener('click', function () {
+            BOTON_CERRAR.addEventListener('click', async function () {
                 MODAL.hide();
+                pagina_modal.value = 1;
+                limpiarFormComponente();
+                limpiarFormLaminasSlider();
+                laminas_slider.value = '';
+                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                await props.actualizar_datos();
             });
 
             const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
             MODAL.show();
 
             await nextTick();
-
-            const ITEMS = [];
-            const ITEMS_INDICADORES = [];
-            var posicion = 0;
-
-            laminas_slider.value.forEach((element) => {
-                const IDENTIFICADOR_LAMINA = element.campos.identificador_lamina;
-                const VISIBILIDAD_LAMINA = element.campos.visibilidad_lamina;
-
-                if (VISIBILIDAD_LAMINA == true) {
-                    // Agregar un nuevo elemento al arreglo 'items'
-                    ITEMS.push({
-                        position: posicion,
-                        el: document.getElementById('carouselP-item-' + IDENTIFICADOR_LAMINA),
-                    })
-
-                    ITEMS_INDICADORES.push({
-                        position: posicion,
-                        el: document.getElementById('carouselP-indicator-' + IDENTIFICADOR_LAMINA),
-                    })
-
-                    posicion = posicion + 1;
-                }
-            });
-
-            const OPTIONS = {
-                defaultPosition: 1,
-                interval: 3000,
-
-                indicators: {
-                    activeClasses: 'bg-blue-100 text-lightPurpleLogin',
-                    inactiveClasses: 'bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800',
-                    items: ITEMS_INDICADORES,
-                },
-            };
-            if (document.getElementById('carouselP-item-1')) {
-                const CAROUSEL = new Carousel(ITEMS, OPTIONS);
-                CAROUSEL.cycle()
-                // set event listeners for prev and next buttons
-                const prevButton = document.getElementById('data-carouselP-prev');
-                const nextButton = document.getElementById('data-carouselP-next');
-                prevButton.addEventListener('click', () => {
-                    CAROUSEL.prev();
-                });
-                nextButton.addEventListener('click', () => {
-                    CAROUSEL.next();
-                });
-            }
+            llenarPreviewSlider();
 
             break;
         case 'Acordeón':
 
             break;
+    }
+}
+
+const form_accion = ref();
+
+async function cambiarPaginaInput() {
+    if (pagina_modal.value != '') {
+        if (form_componente.value.nombre_tipo_componente == 'Slider') {
+            if (!laminas_slider.value && pagina_modal.value > 2) {
+                form_accion.value = 'Crear';
+                pagina_modal.value = 2;
+            } else if (laminas_slider.value && pagina_modal.value == 1) {
+                await nextTick();
+                llenarPreviewSlider();
+            } else if (laminas_slider.value && pagina_modal.value == laminas_slider.value.length + 2) {
+                form_accion.value = 'Crear';
+                limpiarFormLaminasSlider();
+            } else if (laminas_slider.value && pagina_modal.value > (laminas_slider.value.length + 2)) {
+                pagina_modal.value = laminas_slider.value.length + 2;
+            } else if (laminas_slider.value && pagina_modal.value <= (laminas_slider.value.length + 2) && pagina_modal.value != 1) {
+                form_accion.value = 'Actualizar';
+                form_laminas_slider.value.id_lamina_componente = laminas_slider.value[pagina_modal.value - 2].id;
+                form_laminas_slider.value.archivo_imagen = laminas_slider.value[pagina_modal.value - 2].campos.archivo_imagen;
+                imagen_preview.value = RUTA_IMAGENES_LAMINAS + form_laminas_slider.value.archivo_imagen;
+                form_laminas_slider.value.titulo_lamina = laminas_slider.value[pagina_modal.value - 2].campos.titulo_lamina;
+                form_laminas_slider.value.subtitulo_lamina = laminas_slider.value[pagina_modal.value - 2].campos.subtitulo_lamina;
+                form_laminas_slider.value.identificador_lamina = laminas_slider.value[pagina_modal.value - 2].campos.identificador_lamina;
+                form_laminas_slider.value.visibilidad_lamina = laminas_slider.value[pagina_modal.value - 2].campos.visibilidad_lamina;
+            }
+        } else if (informacion_componente_seleccionado.value.nombre == 'Acordeón') {
+
+        }
+    }
+}
+
+async function formAccion() {
+    if (form_accion.value == 'Crear') {
+        crearLamina();
+    } else {
+        actualizarLamina();
+    }
+}
+
+async function crearLamina() {
+    token.value = localStorage.getItem('token');
+    if (form_componente.value.nombre_tipo_componente == 'Slider') {
+        try {
+            const FORM_DATA = new FormData();
+            FORM_DATA.append('titulo_lamina', form_laminas_slider.value.titulo_lamina);
+            FORM_DATA.append('subtitulo_lamina', form_laminas_slider.value.subtitulo_lamina);
+            FORM_DATA.append('identificador_lamina', form_laminas_slider.value.identificador_lamina);
+            FORM_DATA.append('visibilidad_lamina', form_laminas_slider.value.visibilidad_lamina ? 1 : 0);
+            FORM_DATA.append('archivo_imagen', form_laminas_slider.value.archivo_imagen);
+            FORM_DATA.append('id_componente', form_componente.value.id_componente);
+
+            const res = await axios.post('/laminas', FORM_DATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+
+            window.dispatchEvent(EVENT);
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+
+            TOAST.fire({
+                icon: 'success',
+                title: 'Lamina creada exitosamente'
+            });
+
+            await leerLaminas(form_componente.value.id_componente, form_componente.value.nombre_tipo_componente);
+
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        }
+    }
+}
+
+async function actualizarLamina() {
+    token.value = localStorage.getItem('token');
+    if (form_componente.value.nombre_tipo_componente == 'Slider') {
+        try {
+            const FORM_DATA = new FormData();
+            FORM_DATA.append('titulo_lamina', form_laminas_slider.value.titulo_lamina);
+            FORM_DATA.append('subtitulo_lamina', form_laminas_slider.value.subtitulo_lamina);
+            FORM_DATA.append('identificador_lamina', form_laminas_slider.value.identificador_lamina);
+            FORM_DATA.append('visibilidad_lamina', form_laminas_slider.value.visibilidad_lamina ? 1 : 0);
+            FORM_DATA.append('archivo_imagen', form_laminas_slider.value.archivo_imagen);
+            FORM_DATA.append('id_componente', form_componente.value.id_componente);
+
+            const res = await axios.post('/laminas_update/' + form_laminas_slider.value.id_lamina_componente, FORM_DATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+
+            window.dispatchEvent(EVENT);
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+
+            TOAST.fire({
+                icon: 'success',
+                title: 'Lamina actualizada exitosamente'
+            });
+
+            await leerLaminas(form_componente.value.id_componente, form_componente.value.nombre_tipo_componente);
+
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        }
+    }
+}
+
+function llenarPreviewSlider() {
+    if (laminas_slider.value.length > 0) {
+
+        const ITEMS = [];
+        const ITEMS_INDICADORES = [];
+        var posicion = 0;
+
+        laminas_slider.value.forEach((element) => {
+            const IDENTIFICADOR_LAMINA = element.campos.identificador_lamina;
+            const VISIBILIDAD_LAMINA = element.campos.visibilidad_lamina;
+
+            if (VISIBILIDAD_LAMINA == true) {
+                // Agregar un nuevo elemento al arreglo 'items'
+                ITEMS.push({
+                    position: posicion,
+                    el: document.getElementById('carouselP-item-' + IDENTIFICADOR_LAMINA),
+                })
+
+                ITEMS_INDICADORES.push({
+                    position: posicion,
+                    el: document.getElementById('carouselP-indicator-' + IDENTIFICADOR_LAMINA),
+                })
+
+                posicion = posicion + 1;
+            }
+        });
+
+        const OPTIONS = {
+            defaultPosition: 1,
+            interval: 3000,
+
+            indicators: {
+                activeClasses: 'bg-blue-100 text-lightPurpleLogin',
+                inactiveClasses: 'bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800',
+                items: ITEMS_INDICADORES,
+            },
+        };
+        if (document.getElementById('carouselP-item-1')) {
+            const CAROUSEL = new Carousel(ITEMS, OPTIONS);
+            CAROUSEL.cycle()
+            // set event listeners for prev and next buttons
+            const prevButton = document.getElementById('data-carouselP-prev');
+            const nextButton = document.getElementById('data-carouselP-next');
+            prevButton.addEventListener('click', () => {
+                CAROUSEL.prev();
+            });
+            nextButton.addEventListener('click', () => {
+                CAROUSEL.next();
+            });
+        }
+    } else {
+        const items = [
+            {
+                position: 0,
+                el: document.getElementById('carousel-item-1')
+            },
+            {
+                position: 1,
+                el: document.getElementById('carousel-item-2')
+            },
+            {
+                position: 2,
+                el: document.getElementById('carousel-item-3')
+            },
+            {
+                position: 3,
+                el: document.getElementById('carousel-item-4')
+            },
+        ];
+
+
+        const items_indicators = [
+            {
+                position: 0,
+                el: document.getElementById('carousel-indicator-1')
+            },
+            {
+                position: 1,
+                el: document.getElementById('carousel-indicator-2')
+            },
+            {
+                position: 2,
+                el: document.getElementById('carousel-indicator-3')
+            },
+            {
+                position: 3,
+                el: document.getElementById('carousel-indicator-4')
+            },
+        ];
+
+        const options = {
+            defaultPosition: 1,
+            interval: 3000,
+
+            indicators: {
+                activeClasses: 'bg-white dark:bg-gray-800',
+                inactiveClasses: 'bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800',
+                items: items_indicators,
+            },
+        };
+        if (document.getElementById('carousel-item-1')) {
+            const carousel = new Carousel(items, options);
+            carousel.cycle()
+            // set event listeners for prev and next buttons
+            const prevButton = document.getElementById('data-carousel-prev');
+            const nextButton = document.getElementById('data-carousel-next');
+            prevButton.addEventListener('click', () => {
+                carousel.prev();
+            });
+            nextButton.addEventListener('click', () => {
+                carousel.next();
+            });
+        }
     }
 }
 
@@ -947,19 +1317,20 @@ function iconoBorrarFalse() {
 }
 //Variable reactiva para mostrar la imagen capturada
 const imagen_preview = ref(null);
+//Variable reactiva para caputar el valor de la imagen
+const input_imagen = ref(null);
+
 //Metodo para seleccionar una imagen para el registro
 const SELECCIONAR_ARCHIVO = () => {
     if (mostrar_icono_borrar.value == false) {
-        input_imagen.value.click();
+        input_imagen.value[0].click();
     } else {
         limpiarImagen();
     }
 };
-//Variable reactiva para caputar el valor de la imagen
-const input_imagen = ref(null);
 //Metodo para cambiar la imagen de un registro
 const cambiarImagen = () => {
-    const INPUT = input_imagen.value;
+    const INPUT = input_imagen.value[0];
     const ARCHIVO = INPUT.files;
     if (ARCHIVO && ARCHIVO[0]) {
         form_laminas_slider.value.archivo_imagen = ARCHIVO[0];
@@ -976,6 +1347,9 @@ const cambiarImagen = () => {
 function limpiarImagen() {
     //Limpiar imagen
     imagen_preview.value = '';
+    if (input_imagen.value[0].value) {
+        input_imagen.value[0].value = '';
+    }
     form_laminas_slider.value.archivo_imagen = "";
     mostrar_icono_borrar.value = false;
 }
