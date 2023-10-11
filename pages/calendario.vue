@@ -366,6 +366,7 @@ export default defineComponent({
       personal: [],
       accion: null,
       zonas: [],
+      token: null,
       form: {
         id_evento: "",
         nombre_evento: "",
@@ -386,14 +387,13 @@ export default defineComponent({
   },
   methods: {
     async llenarEventos() {
+      const EVENT = new Event('reset-timer');
+      const eventos = ref(null);
+      this.token = localStorage.getItem('token');
       try {
-        const EVENT = new Event('reset-timer');
-        const token = ref(null);
-        const eventos = ref(null);
-        token.value = localStorage.getItem('token');
         const { data: res } = await axios.get('/eventos', {
           headers: {
-            Authorization: `Bearer ${token.value}`,
+            Authorization: `Bearer ${this.token}`,
           },
         });
         eventos.value = res.data;
@@ -401,6 +401,7 @@ export default defineComponent({
         window.dispatchEvent(EVENT);
         //Se refresca el valor del token con la respuesta del axios
         localStorage.setItem('token', res.token);
+        this.token = localStorage.getItem('token');
         this.calendarOptions.events = eventos.value.map((evento) => ({
           id: evento.id,
           title: evento.campos.nombre_evento,
@@ -416,11 +417,10 @@ export default defineComponent({
     async llenarUnEvento(id) {
       try {
         const EVENT = new Event('reset-timer');
-        const token = ref(null);
-        token.value = localStorage.getItem('token');
+        this.token = localStorage.getItem('token');
         await axios.get("/eventos/" + id, {
           headers: {
-            Authorization: `Bearer ${token.value}`,
+            Authorization: `Bearer ${this.token}`,
           },
         }).then(res => {
           console.log(res);
@@ -445,7 +445,7 @@ export default defineComponent({
           window.dispatchEvent(EVENT);
           //Se actualiza el token con la respuesta del axios
           localStorage.setItem('token', res.data.token);
-          token.value = localStorage.getItem('token');
+          this.token = localStorage.getItem('token');
         });
       } catch (error) {
 
@@ -482,8 +482,7 @@ export default defineComponent({
     async GuardarEvento() {
       try {
         const EVENT = new Event('reset-timer');
-        const token = ref(null);
-        token.value = localStorage.getItem('token');
+        this.token = localStorage.getItem('token');
         const FORMDATA = new FormData();
         FORMDATA.append("nombre_evento", this.form.nombre_evento);
         FORMDATA.append("descripcion_evento", this.form.descripcion_evento);
@@ -500,13 +499,13 @@ export default defineComponent({
         FORMDATA.append("id_zona", this.form.id_zona);
         await axios.post('/eventos', FORMDATA, {
           headers: {
-            Authorization: `Bearer ${token.value}`,
+            Authorization: `Bearer ${this.token}`,
           },
         }).then(res => {
           window.dispatchEvent(EVENT);
           // //Se actualiza el token con la respuesta del axios
-          localStorage.setItem('token', res.token);
-          token.value = localStorage.getItem('token');
+          localStorage.setItem('token', res.data. data.token);
+          this.token = localStorage.getItem('token');
           this.llenarEventos();
         });
         document.getElementById('closeModal').click();
@@ -521,11 +520,10 @@ export default defineComponent({
     async llenarPersonal() {
       try {
         const EVENT = new Event('reset-timer');
-        const token = ref(null);
-        token.value = localStorage.getItem('token');
+        this.token = localStorage.getItem('token');
         const { data: res } = await axios.get('/personal', {
           headers: {
-            Authorization: `Bearer ${token.value}`,
+            Authorization: `Bearer ${this.token}`,
           },
         });
         this.personal = res.data;
@@ -533,6 +531,7 @@ export default defineComponent({
         window.dispatchEvent(EVENT);
         //Se refresca el valor del token con la respuesta del axios
         localStorage.setItem('token', res.token);
+        this.token = localStorage.getItem('token');
       } catch (error) {
         console.log(error)
       }
@@ -540,11 +539,10 @@ export default defineComponent({
     async llenarZonas() {
       try {
         const EVENT = new Event('reset-timer');
-        const token = ref(null);
-        token.value = localStorage.getItem('token');
+        this.token = localStorage.getItem('token');
         const { data: res } = await axios.get('/zonas', {
           headers: {
-            Authorization: `Bearer ${token.value}`,
+            Authorization: `Bearer ${this.token}`,
           },
         });
         this.zonas = res.data;
@@ -552,16 +550,16 @@ export default defineComponent({
         window.dispatchEvent(EVENT);
         //Se refresca el valor del token con la respuesta del axios
         localStorage.setItem('token', res.token);
+        this.token = localStorage.getItem('token');
       } catch (error) {
         console.log(error)
       }
     },
     async modificarEvento() {
-      let id=this.form.id_evento;
+      let id = this.form.id_evento;
+      const EVENT = new Event('reset-timer');
+      this.token = localStorage.getItem('token');
       try {
-        const EVENT = new Event('reset-timer');
-        const token = ref(null);
-        token.value = localStorage.getItem('token');
         const FORMDATA = new FormData();
         FORMDATA.append("nombre_evento", this.form.nombre_evento);
         FORMDATA.append("descripcion_evento", this.form.descripcion_evento);
@@ -576,15 +574,16 @@ export default defineComponent({
         FORMDATA.append("estado_evento", this.form.estado_evento);
         FORMDATA.append("id_personal", this.form.id_personal);
         FORMDATA.append("id_zona", this.form.id_zona);
-        await axios.post('/eventos_update/'+id, FORMDATA, {
+        await axios.post('/eventos_update/' + id, FORMDATA, {
           headers: {
-            Authorization: `Bearer ${token.value}`,
+            Authorization: `Bearer ${this.token}`,
           },
         }).then(res => {
+          console.log(res.data);
           window.dispatchEvent(EVENT);
           // //Se actualiza el token con la respuesta del axios
-          localStorage.setItem('token', res.token);
-          token.value = localStorage.getItem('token');
+          localStorage.setItem('token', res.data.data.token);
+          this.token = localStorage.getItem('token');
           this.llenarEventos();
         });
         document.getElementById('closeModal').click();
@@ -616,8 +615,7 @@ export default defineComponent({
     },
     async eliminarEvento(id, titulo) {
       const EVENT = new Event('reset-timer');
-      const token = ref(null);
-      token.value = localStorage.getItem('token');
+      this.token = localStorage.getItem('token');
       Swal.fire({
         title: 'Confirmación',
         text: "¿Desea eliminar el evento: " + titulo + "?",
@@ -634,14 +632,14 @@ export default defineComponent({
           try {
             await axios.delete("/eventos/" + id, {
               headers: {
-                Authorization: `Bearer ${token.value}`,
+                Authorization: `Bearer ${this.token}`,
               },
             }).then(res => {
               //Se reinicia el timer  
               window.dispatchEvent(EVENT);
               //Se actualiza el token con la respuesta del axios
               localStorage.setItem('token', res.data.data.token);
-              token.value = localStorage.getItem('token');
+              this.token = localStorage.getItem('token');
 
               //Se lanza la alerta de éxito
               Toast.fire({
