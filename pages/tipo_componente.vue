@@ -1518,12 +1518,14 @@
               <div class="w-[850px] mx-[25px]">
                 <div class="relative">
                   <!-- Carousel wrapper -->
-                  <div class="relative overflow-hidden rounded-lg h-[450px] flex bg-gray-200 items-center">
+                  <div
+                    class="relative overflow-hidden rounded-lg h-[450px] flex bg-gray-200 items-center"
+                  >
                     <div class="banner flex h-3/4 items-center px-6">
-                      <div class="imagen h-52 w-52">
+                      <div class="imagen h-52 w-64">
                         <img class="w-48 rounded-lg" href />
                       </div>
-                      <div class="texto flex-col ml-8 ">
+                      <div class="texto flex-col ml-8">
                         <p class="text-2xl font-bold mb-4 text-black" id="titulo-banner">
                           Titulo
                         </p>
@@ -1536,32 +1538,6 @@
                       </div>
                     </div>
                   </div>
-                  <!-- Slider controls -->
-                  <button
-                    id="data-carousel-next-banner"
-                    type="button"
-                    class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                  >
-                    <span
-                      class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none"
-                    >
-                      <svg
-                        class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M9 5l7 7-7 7"
-                        ></path>
-                      </svg>
-                      <span class="hidden">Next</span>
-                    </span>
-                  </button>
                 </div>
               </div>
             </div>
@@ -2092,8 +2068,8 @@
   );
   background-color: #1e1e1e;
 }
-.imagen{
-    border: 3px solid #000;
+.imagen {
+  border: 3px solid #000;
 }
 </style>
 <script setup>
