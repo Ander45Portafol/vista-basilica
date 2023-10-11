@@ -509,7 +509,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class=" space-y-6 flex justify-evenly pb-10">
-                    <div class="flex-col" id="visualizacion_acordeon" v-if="pagina == 1">
+                    <div class="flex-col" id="visualizacion_acordeon" v-if="pagina == 1 || pagina == ''">
                         <div v-if="!laminas_acordeon"
                             class="w-[750px] h-[400px] overflow-y-scroll overflow-x-hidden	flex items-center justify-center">
                             <div id="accordion-color" data-accordion="collapse"
