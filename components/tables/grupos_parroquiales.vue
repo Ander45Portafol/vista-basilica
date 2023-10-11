@@ -1,6 +1,6 @@
 <template>
     <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-    <div class="contained-data flex-col" v-for="grupo in datos_grupos[paginacion - 1]" :key="grupo.id">
+    <div class="flex-col contained-data" v-for="grupo in datos_grupos[paginacion - 1]" :key="grupo.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -20,6 +20,18 @@
             <!-- Al darle clic al evento leerUnContacto ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+                <button
+                    class="h-10 w-10 rounded-md flex items-center justify-center mr-4 imagenbtn max-[750px]:mr-0 max-[750px]:mt-2"
+                    @click="modalImagenes(grupo.id)">
+                    <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                        <path d="M21 7.6v12.8a.6.6 0 01-.6.6H7.6a.6.6 0 01-.6-.6V7.6a.6.6 0 01.6-.6h12.8a.6.6 0 01.6.6z"
+                            stroke="#3F4280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path
+                            d="M18 4H4.6a.6.6 0 00-.6.6V18M7 16.8l5.444-1.8L21 18M16.5 13a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"
+                            stroke="#3F4280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
                 <button v-if="grupo.campos.visibilidad_grupo == 1" @click.prevent="estadoActualizar(grupo.id)"
                     class="h-10 w-10 rounded-md flex items-center ml-4 justify-center editbtn max-[400px]:mx-4">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -69,7 +81,7 @@
             <div class="relative rounded-lg shadow modal">
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
-                    <div class="flex-col ml-4 pt-4">
+                    <div class="flex-col pt-4 ml-4">
                         <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
                         <p class="text-base font-medium text-gray-400">
                             Grupo - Parroquial
@@ -102,7 +114,7 @@
                                     0 /100</span>
                                 <label for="nombre_grupo"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                                    - Grupo<span class="text-sm ml-1"> * </span></label>
+                                    - Grupo<span class="ml-1 text-sm"> * </span></label>
                             </div>
                             <div v-if="!validarNombreGrupo()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
                                 role="alert">
@@ -157,16 +169,16 @@
                                     0 /100</span>
                                 <label for="username"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
-                                    - Encargado<span class="text-sm ml-1">
+                                    - Encargado<span class="ml-1 text-sm">
                                         *
                                     </span></label>
                             </div>
-                            <div class="pt-4 mt-4 flex-col">
-                                <label for="" class="text-sm absolute text-gray-200">Categoría - Grupo<span
-                                        class="text-sm ml-1"> * </span></label>
+                            <div class="flex-col pt-4 mt-4">
+                                <label for="" class="absolute text-sm text-gray-200">Categoría - Grupo<span
+                                        class="ml-1 text-sm"> * </span></label>
                                 <select id="underline_select" v-model="form.id_categoria_grupo_parroquial"
                                     class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                                    <option value="0" class="bg-gray-700 text-white"> Seleccione una opción </option>
+                                    <option value="0" class="text-white bg-gray-700"> Seleccione una opción </option>
                                     <option class="bg-gray-700" v-for="categoria_grupo in roles"
                                         :key="categoria_grupo.id_categoria_grupo_parroquial"
                                         :value="categoria_grupo.id_categoria_grupo_parroquial">
@@ -200,7 +212,7 @@
                                     0 /1000</span>
                                 <label for="descripcion_grupo"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
-                                    - Grupo<span class="text-sm ml-1">
+                                    - Grupo<span class="ml-1 text-sm">
                                         *
                                     </span></label>
                             </div>
@@ -243,7 +255,7 @@
                                     0 /9</span>
                                 <label for="telefono_encargado"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
-                                    - Encargado<span class="text-sm ml-1">
+                                    - Encargado<span class="ml-1 text-sm">
                                         *
                                     </span></label>
                             </div>
@@ -281,7 +293,7 @@
                                     <div class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative max-[630px]:m-auto"
                                         @click="seleccionarArchivo" @mouseover="iconoBorrarTrue"
                                         @mouseleave="iconoBorrarFalse">
-                                        <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
+                                        <img v-if="imagenPreview" :src="imagenPreview" class="w-40 rounded-lg h-44" />
                                         <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
                                         <div v-if="mostrarIconoBorrar"
                                             class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
@@ -296,15 +308,15 @@
                                     </div>
                                     <div class="m-auto max-[630px]:text-center max-[630px]:ml-[-58px]">
                                         <button type="button"
-                                            class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300 text-center"
+                                            class="w-40 py-2 mt-3 text-center bg-white rounded-md ml-14 hover:bg-slate-300"
                                             @click="seleccionarArchivo">Seleccionar Imagen</button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-buttons mt-6 flex justify-end items-end">
+                            <div class="flex items-end justify-end mt-6 modal-buttons">
                                 <!-- Se le coloca la función para limpiar el form al botón -->
                                 <button type="button" id="btnModalClear" @click="limpiarForm()"
-                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4">
+                                    class="flex items-center justify-center w-10 h-10 ml-4 rounded-lg">
                                     <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
@@ -327,7 +339,7 @@
                                     !validarApellidoEncargado() ||
                                     form.id_categoria_grupo_parroquial == 0 ||
                                     !validarTelefono()
-                                    " class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                    " class="flex items-center justify-center w-10 h-10 ml-2 rounded-lg">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -344,7 +356,7 @@
                                     !validarApellidoEncargado() ||
                                     form.id_categoria_grupo_parroquial == 0 ||
                                     !validarTelefono()
-                                    " class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
+                                    " class="flex items-center justify-center w-10 h-10 ml-2 rounded-lg">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                                         <path
@@ -358,6 +370,94 @@
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Images modal -->
+    <div id="imagemodal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
+        class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative w-full max-w-4xl max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 modalG">
+                <!-- Modal header -->
+                <div class="flex items-start justify-between p-4 rounded-t">
+                    <div class="flex-col pt-4 ml-4">
+                        <p class="text-3xl font-bold text-gray-100" id="modalText">Grupos parroquiales</p>
+                        <p class="text-lg font-medium text-gray-400">Imagenes referentes a los grupos parroquiales</p>
+                    </div>
+                    <button type="button"
+                        class="inline-flex items-center justify-center w-8 h-8 ml-auto text-sm text-gray-400 bg-transparent rounded-lg hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+                        id="imageclose">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="flex-col p-8 space-y-6">
+                    <div class="flex items-center justify-between">
+                        <p class="text-gray-100">Ingrese las imagenes que desee mostrar para sus grupos parroquiales
+                            publicos</p>
+                        <button class="flex items-center justify-center h-10 rounded-lg bg-space w-14"
+                            @click="seleccionarArchivos">
+                            <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path d="M13 21H3.6a.6.6 0 01-.6-.6V3.6a.6.6 0 01.6-.6h16.8a.6.6 0 01.6.6V13"
+                                    stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M3 16l7-3 5.5 2.5M16 10a2 2 0 110-4 2 2 0 010 4zM16 19h3m3 0h-3m0 0v-3m0 3v3"
+                                    stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="grid w-full grid-cols-5 gap-5 px-5 py-5 h-80 image-container">
+                        <div v-if="data_imagenes" v-for="item in data_imagenes" :key="item.id_imagen_grupo_parroquial"
+                            class="relative">
+                            <img :src="api_url + item.archivo_imagen" class="w-32 h-32 rounded-lg" />
+                            <div @click="agregarImagenBorrada(item.id_imagen_grupo_parroquial)"
+                                class="absolute inset-0 flex items-center justify-center w-32 h-32 rounded-lg opacity-0 hover:opacity-100"
+                                style="background-color: rgba(179, 42, 42, 0.5);">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px" viewBox="0 0 24 24"
+                                    style="fill: rgb(23, 22, 22); transform: ; msFilter:;">
+                                    <path
+                                        d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div v-for="(imagen, id) in imagenesPreviewArray" :key="id" class="relative">
+                            <img :src="imagen.url" class="w-32 h-32 rounded-lg" />
+                            <div @click="agregarImagenPreviewBorrada(id)"
+                                class="absolute inset-0 flex items-center justify-center w-32 h-32 rounded-lg opacity-0 hover:opacity-100"
+                                style="background-color: rgb(0, 0, 0, 0.5);">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px" viewBox="0 0 24 24"
+                                    style="fill: rgb(190, 59, 59); transform: ; msFilter:;">
+                                    <path
+                                        d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+                        <input type="file" accept=".jpg, .jpeg, .png, .svg" ref="inputImagenes" class="hidden"
+                            @change="cambiarImagenes" multiple />
+                    </div>
+                    <div class="flex items-center justify-between mt-6">
+                        <div class="relative z-0 w-64">
+                            <input type="text" id="grupo" name="grupo" v-model="nombre_grupo_parroquialref" required readonly
+                                maxlength="100"
+                                class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+                                placeholder=" " autocomplete="off" />
+                            <label for="grupo"
+                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Grupo
+                                parroquial</label>
+                        </div>
+                        <button class="w-32 h-10 mt-4 text-white rounded-lg bg-space" @click="actualizarImagenes">
+                            Guardar
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -381,6 +481,9 @@
     border: 3px solid #872727;
 }
 
+.buttons-data .imagenbtn {
+    border: 3px solid #3F4280;
+}
 
 .modal {
     background: linear-gradient(180deg,
@@ -391,6 +494,13 @@
 
 .modal-buttons button {
     background-color: #32345a;
+}
+
+.modalG {
+    background: linear-gradient(180deg,
+            rgba(74, 64, 160, 0.624) 0%,
+            rgba(62, 50, 119, 0.561) 100%);
+    background-color: #1e1e1e;
 }
 </style>
 
@@ -490,54 +600,6 @@ async function llenarSelectCategoriaGrupos() {
         }
     }
 }
-
-//Variable para poder concectar con el storage de la api y asi poder buscar imagenes
-var api_url = "http://localhost:8000/storage/gruposParroquiales/images/";
-
-//Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
-const mostrarIconoBorrar = ref(false);
-//Metodo para hacer visible el icono de borrar una imagen
-function iconoBorrarTrue() {
-    if (imagenPreview.value) {
-        mostrarIconoBorrar.value = true;
-    }
-}
-//Metodo para no mostrar el icono de borrar una imagen
-function iconoBorrarFalse() {
-    if (imagenPreview.value) {
-        mostrarIconoBorrar.value = false;
-    }
-}
-//Variable reactiva para mostrar la imagen capturada
-const imagenPreview = ref(null);
-//Metodo para seleccionar una imagen para el registro
-const seleccionarArchivo = () => {
-    if (mostrarIconoBorrar.value == false) {
-        inputImagen.value.click();
-    } else {
-        limpiarImagen();
-    }
-};
-//Variable reactiva para caputar el valor de la imagen
-const inputImagen = ref(null);
-//Metodo para cambiar la imagen de un registro
-const cambiarImagen = () => {
-    const input = inputImagen.value;
-    const file = input.files;
-    if (file && file[0]) {
-        form.value.logo_grupo = file[0];
-        console.log(form.value.logo_grupo);
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            imagenPreview.value = e.target.result;
-        };
-        reader.readAsDataURL(file[0]);
-        return file[0];
-    }
-};
-
-
-
 
 //Se crea una variable reactiva para manejar la información del modal
 const form = ref({
@@ -1018,6 +1080,253 @@ async function recuperarGrupoParroquial(id) {
         }
     });
 }
+
+
+//Variable para poder concectar con el storage de la api y asi poder buscar imagenes
+var api_url = "http://localhost:8000/storage/gruposParroquiales/images/";
+
+
+//Imagenes grupos parroquiales
+
+//Función para abrir el modal
+async function modalImagenes(id_grupo_parroquial) {
+    console.log(id_grupo_parroquial)
+    await leerImagenesGruposParroquiales(id_grupo_parroquial);
+    const modalElement = document.getElementById('imagemodal');
+    const modalOptions = {
+        backdrop: 'static',
+        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+    };
+    const modal = new Modal(modalElement, modalOptions);
+    const closeImagesButton = document.getElementById('imageclose');
+    closeImagesButton.addEventListener('click', function () {
+        modal.hide();
+        id_grupo_parroquialref.value = "";
+        nombre_grupo_parroquialref.value = "";
+        vaciarImagenes();
+    });
+    modal.show();
+}
+
+//Variable ref para guardar los registros que se traen de la api
+const data_imagenes = ref(null);
+
+//Variable ref para guardar el id del grupo al que pertenecen las imagenes
+const id_grupo_parroquialref = ref(null);
+
+//Variable ref para guardar el nombre del grupo al que pertenecen las imagenes
+const nombre_grupo_parroquialref = ref(null);
+
+
+//Función para leer las imagenes y el grupo asignado
+async function leerImagenesGruposParroquiales(id_grupo_parroquial) {
+    console.log(id_grupo_parroquial);
+    token.value = localStorage.getItem('token');
+    id_grupo_parroquialref.value = id_grupo_parroquial;
+    try {
+        //Se realiza la petición axios para traer los datos
+        const { data: res } = await axios.get('/imagenes_grupos/' + id_grupo_parroquial, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+        //Se asigna el valor de la respuesta de axios a la variable data_imagenes
+        data_imagenes.value = res.imagenes;
+        nombre_grupo_parroquialref.value = res.nombre_grupo;
+        window.dispatchEvent(EVENT);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
+    } catch (error) {
+        console.log(error);
+        //Se extrae el mensaje de error
+        const mensajeError = error.response.data.message;
+        //Se extrae el sqlstate (identificador de acciones SQL)
+        const sqlState = validaciones.extraerSqlState(mensajeError);
+        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+        const res = validaciones.mensajeSqlState(sqlState);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: res,
+            confirmButtonColor: '#3F4280'
+        });
+    }
+}
+
+//Array ref para guardar la preview de las imagenes
+const imagenesPreviewArray = ref([]);
+
+//Variable ref para enlazar el input de tipo file
+const inputImagenes = ref(null);
+
+//Función para abrir el selector de archivos
+const seleccionarArchivos = () => {
+    inputImagenes.value.click();
+};
+
+
+//Función para cargar las preview
+const cambiarImagenes = () => {
+    //Constantes para traer los archivos seleccionados en el input
+    const input = inputImagenes.value;
+    const archivos = input.files;
+
+    if (archivos && archivos.length > 0) {
+        //Se ejecuta un for para evaluar cada archivo
+        for (const archivo of archivos) {
+            //File reader
+            const reader = new FileReader();
+
+            //Se crea una constante imagenData la cual contiene la url para mostrar la preview y el objeto tipo File que se enviara a la API
+            reader.onload = (e) => {
+                const imagenData = {
+                    file: archivo,
+                    //e.target.result hace referencia al reader.readAsDataURL (función que convierte el objeto tipo File en una url base64 para poder mostrarla con el preview)
+                    url: e.target.result,
+                };
+                //Se le asigna imagenData a cada posición de la arreglo de previews
+                imagenesPreviewArray.value.push(imagenData);
+            };
+
+            reader.readAsDataURL(archivo);
+        }
+    }
+};
+
+//Array ref para almacenar los ids de las imagenes a borrar
+const imagenesBorradas = ref([]);
+
+//Función para agregar una nueva posición al array anterior
+function agregarImagenBorrada(id) {
+    imagenesBorradas.value.push(id);
+    data_imagenes.value = data_imagenes.value.filter((item) => item.id_imagen_grupo_parroquial != id);
+}
+
+//Función para eliminar una posición del array de previews
+function agregarImagenPreviewBorrada(id) {
+    imagenesPreviewArray.value.splice(id, 1);
+}
+
+//Función para vaciar las imagenes al cerrar el modal
+function vaciarImagenes() {
+    imagenesPreviewArray.value.splice(0);
+    inputImagenes.value.value = "";
+    imagenesBorradas.value.splice(0);
+}
+
+//Función para actualizar las imagenes
+async function actualizarImagenes() {
+    token.value = localStorage.getItem('token');
+    try {
+        //Se evalua si el array de previews tiene valor, si tiene significa que hay registros para agregar
+        if (imagenesPreviewArray.value.length > 0) {
+
+            const formData = new FormData();
+            formData.append('id_grupo_parroquial', id_grupo_parroquialref.value);
+            //Se hace un for para cada posición del arreglo
+            for (const imagenData of imagenesPreviewArray.value) {
+                //Se crea un FormData con el archivo de la imagen y el id del grupo parroquial al que pertenece
+                formData.append('archivo_imagen[]', imagenData.file);
+            }
+
+            //Se envia la petición axios
+            const res = await axios.post('/imagenes_grupos', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+            window.dispatchEvent(EVENT);
+            localStorage.setItem('token', res.data.token);
+            token.value = localStorage.getItem('token');
+        }
+
+        //Se evalua si hay datos en el array de imagenesBorradas, si hay significa que hay registros para borrar
+        if (imagenesBorradas.value.length > 0) {
+            //Se muestra el sweetalert de confirmación, se hace un await para que el codigo espere que salte el sweetalert para continuar
+            const eleccion = await Swal.fire({
+                title: 'Confirmación',
+                text: 'Desea eliminar las imagenes seleccionadas?',
+                icon: 'warning',
+                reverseButtons: true,
+                showCancelButton: true,
+                confirmButtonColor: '#3F4280',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirmar',
+                cancelButtonText: 'Cancelar'
+            });
+
+            //Si el usuario escogió la opción de confirmar se eliminan los registros
+            if (eleccion.isConfirmed) {
+                const res = await axios.delete('imagenes_grupos', {
+                    data: { id_imagen_grupo_parroquial: imagenesBorradas.value },
+                    headers: {
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
+                window.dispatchEvent(EVENT);
+                localStorage.setItem('token', res.data.token);
+                token.value = localStorage.getItem('token');
+            }
+        }
+
+        //Se cierra el modal y se muestra el toast
+        document.getElementById('imageclose').click();
+        TOAST.fire({
+            icon: 'success',
+            title: 'Imagenes actualizadas exitosamente'
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
+//Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
+const mostrarIconoBorrar = ref(false);
+//Metodo para hacer visible el icono de borrar una imagen
+function iconoBorrarTrue() {
+    if (imagenPreview.value) {
+        mostrarIconoBorrar.value = true;
+    }
+}
+//Metodo para no mostrar el icono de borrar una imagen
+function iconoBorrarFalse() {
+    if (imagenPreview.value) {
+        mostrarIconoBorrar.value = false;
+    }
+}
+//Variable reactiva para mostrar la imagen capturada
+const imagenPreview = ref(null);
+//Metodo para seleccionar una imagen para el registro
+const seleccionarArchivo = () => {
+    if (mostrarIconoBorrar.value == false) {
+        inputImagen.value.click();
+    } else {
+        limpiarImagen();
+    }
+};
+//Variable reactiva para caputar el valor de la imagen
+const inputImagen = ref(null);
+//Metodo para cambiar la imagen de un registro
+const cambiarImagen = () => {
+    const input = inputImagen.value;
+    const file = input.files;
+    if (file && file[0]) {
+        form.value.logo_grupo = file[0];
+        console.log(form.value.logo_grupo);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagenPreview.value = e.target.result;
+        };
+        reader.readAsDataURL(file[0]);
+        return file[0];
+    }
+};
+
 
 //Validaciones
 
