@@ -285,7 +285,7 @@
                     </div>
                     <div class="flex justify-around">
                         <div class="flex justify-start h-44">
-                            <button @click="deshabilitarToken"
+                            <button type="button" @click="deshabilitarToken"
                                 class="bg-darkSpace absolute bottom-32 w-52 flex items-center h-12 rounded-xl gap-4 justify-center">
                                 <svg width="28px" height="28px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
