@@ -114,7 +114,7 @@
                             </div>
                             <div class="relative z-0 mt-10">
                                 <input type="text" id="descripcion_rango" name="descripcion_rango"
-                                    v-model="form.descripcion_rango" max="1000" required 
+                                    v-model="form.descripcion_rango" maxlength="1000" required 
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                     <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
