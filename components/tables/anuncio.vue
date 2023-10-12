@@ -5,7 +5,8 @@
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                 <img :src="api_url + anuncio.campos.imagen_anuncio"
-                    class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+                    @click="mostrarLightBox(api_url + anuncio.campos.imagen_anuncio)"
+                    class="h-10 w-10 cursor-pointer rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
@@ -60,6 +61,9 @@
             </div>
         </div>
     </div>
+      <!--Llama la propiedad de lightbox para las imagenes-->
+      <vue-easy-lightbox :visible="visible_ref" :imgs="imgs_ref" :index="index_ref"
+        @hide="esconderLightBox"></vue-easy-lightbox>
     <!-- Modal principal-->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -119,7 +123,8 @@
                             </div>
                             <div class="relative z-0 mt-6">
                                 <!-- Campo de entrada de texto -->
-                                <textarea id="contenido_titulo" name="contenido_anuncio" v-model="form.contenido_anuncio" maxlength="1000"
+                                <textarea id="contenido_titulo" name="contenido_anuncio" v-model="form.contenido_anuncio"
+                                    maxlength="1000"
                                     class="block py-2.5 px-0 w-full min-h-[3rem] h-[3rem] max-h-[12rem] text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-5"
@@ -174,7 +179,7 @@
                                         <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
                                         <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
                                         <div v-if="mostrarIconoBorrar"
-                                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                            class="absolute h-44 inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
                                                 viewBox="0 0 24 24"
                                                 style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
@@ -282,8 +287,8 @@
 //Importación de archivo de validaciones
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Modal } from 'flowbite';
 import validaciones from '../../assets/validaciones.js';
+import VueEasyLightbox from 'vue-easy-lightbox'
 //Definimos la prop que traera los datos del componente principál
 const props = defineProps({
     datos_anuncios: Array,
@@ -312,11 +317,13 @@ onMounted(() => {
             document.getElementById('btnModalUpdate').classList.add('hidden');
             accionForm('crear');
             modal.show();
+            validarFechasCrear();
         });
         closeButton.addEventListener('click', function () {
             modal.hide();
         });
     }
+
     //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
     token.value = localStorage.getItem('token');
 });
@@ -432,63 +439,64 @@ function submitForm() {
 
 //Función para crear un anuncio
 async function crearAnuncio() {
-    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-    token.value = localStorage.getItem('token');
-    try {
-        const formData = new FormData();
-        formData.append("titulo_anuncio", form.value.titulo_anuncio);
-        formData.append("contenido_anuncio", form.value.contenido_anuncio);
-        formData.append("fecha_anuncio", form.value.fecha_anuncio);
-        formData.append("enlace_externo", form.value.enlace_externo);
-        formData.append(
-            "visibilidad_anuncio",
-            form.value.visibilidad_anuncio ? 1 : 0
-        );
-        formData.append("imagen_anuncio", form.value.imagen_anuncio);
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/anuncios/", formData, {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            },
-        }).then(res => {
-            //Se reinicia el timer
-            window.dispatchEvent(EVENT);
-            //Se actualiza el token con la respuesta del axios
-            localStorage.setItem('token', res.data.data.token);
-            token.value = localStorage.getItem('token');
-        });
-        document.getElementById('closeModal').click();
-        //Se lanza la alerta con el mensaje de éxito
-        props.actualizar_datos();
-        Toast.fire({
-            icon: 'success',
-            title: 'Anuncio creado exitosamente'
-        });
-    } catch (error) {
-        console.log(error);
-        const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            const res = validaciones.mensajeSqlState(sqlState);
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
+    if (validarTituloAnuncio()) {
+        //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+        token.value = localStorage.getItem('token');
+        try {
+            const formData = new FormData();
+            formData.append("titulo_anuncio", form.value.titulo_anuncio);
+            formData.append("contenido_anuncio", form.value.contenido_anuncio);
+            formData.append("fecha_anuncio", form.value.fecha_anuncio);
+            formData.append("enlace_externo", form.value.enlace_externo);
+            formData.append(
+                "visibilidad_anuncio",
+                form.value.visibilidad_anuncio ? 1 : 0
+            );
+            formData.append("imagen_anuncio", form.value.imagen_anuncio);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/anuncios/", formData, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
             });
-        } else {
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: mensajeError,
-                confirmButtonColor: '#3F4280'
+            document.getElementById('closeModal').click();
+            //Se lanza la alerta con el mensaje de éxito
+            props.actualizar_datos();
+            Toast.fire({
+                icon: 'success',
+                title: 'Anuncio creado exitosamente'
             });
+        } catch (error) {
+            console.log(error);
+            const mensajeError = error.response.data.message;
+            if (!error.response.data.errors) {
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                const res = validaciones.mensajeSqlState(sqlState);
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: mensajeError,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
         }
     }
 }
-
 
 async function estadoActualizar(id) {
     //se llama la funcion  para poder acapturar los datos
@@ -503,6 +511,7 @@ async function estadoActualizar(id) {
     const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
     TITULO_MODAL.textContent = "Editar";
     MODAL.show();
+    validarFechasActualizar();
     accionForm('actualizar');
     document.getElementById('btnModalAdd').classList.add('hidden');
     document.getElementById('btnModalUpdate').classList.remove('hidden');
@@ -766,11 +775,47 @@ async function recuperarUnAnuncio(id) {
     });
 }
 
+const visible_ref = ref(false);
+const index_ref = ref(0);
+const imgs_ref = ref([]);
+
+function abrirLightBox() {
+    visible_ref.value = true;
+}
+
+function mostrarLightBox(url) {
+    imgs_ref.value = url;
+    abrirLightBox();
+}
+
+function esconderLightBox() {
+    visible_ref.value = false
+}
+
 
 //Validaciones
 function validarTituloAnuncio() {
     var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_anuncio);
     return res;
+}
+
+function validarFechasCrear() {
+    const res = validaciones.validarFecha(0, 1, 0);
+
+    var fecha_actual = new Date();
+
+    fecha_actual = fecha_actual.getFullYear() + '-' + (fecha_actual.getMonth() + 1) + '-' + fecha_actual.getDate();
+
+    document.getElementById('fecha_anuncio').min = fecha_actual;
+    document.getElementById('fecha_anuncio').max = res.max;
+    form.value.fecha_anuncio = fecha_actual;
+}
+
+function validarFechasActualizar() {
+    const res = validaciones.validarFecha(0, 1, 0, form.value.fecha_anuncio);
+
+    document.getElementById('fecha_anuncio').min = res.min;
+    document.getElementById('fecha_anuncio').max = res.max;
 }
 
 </script>

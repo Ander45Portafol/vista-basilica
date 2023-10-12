@@ -1,6 +1,6 @@
 <template>
- <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
- <div class="contained-data flex-col" v-for="componente in datos_componentes[paginacion - 1]" :key="componente.id">
+    <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
+    <div class="contained-data flex-col" v-for="componente in datos_componentes[paginacion - 1]" :key="componente.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -9,8 +9,9 @@
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
                         {{ componente.campos.nombre_componente }}</p>
-                    <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"> Tipo de componente: <span class="font-semibold |">{{
-                        componente.tipos.tipo_componente }}</span></p>
+                    <p class="font-normal text-sm mt-1text-gray-500 max-[750px]:text-[12px]"> Tipo de componente: <span
+                            class="font-semibold |">{{
+                                componente.tipos.tipo_componente }}</span></p>
                     <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> Sección:
                         {{ componente.secciones.titulo_seccion }}
                     </p>
@@ -19,8 +20,9 @@
             <!-- Al darle clic al evento leer ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                <!-- <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn" id="btnedit"
-                    v-if="componente.campos.visibilidad_componente == 1" @click.prevent="estadoActualizar(componente.id)">
+                <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn" id="btnedit"
+                    v-if="componente.campos.visibilidad_componente == 1"
+                    @click.prevent="abrirModal(componente.id, componente.tipos.tipo_componente)">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -28,7 +30,7 @@
                             stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         </path>
                     </svg>
-                </button> -->
+                </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
                     @click="borrarComponente(componente.id)" v-if="componente.campos.visibilidad_componente == 1">
@@ -56,6 +58,973 @@
                 </button>
             </div>
         </div>
+        <!--Show modal-->
+        <div id="modal-show" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
+            class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div class="relative w-full max-w-4xl max-h-full">
+                <!-- Modal content -->
+                <div class="relative rounded-lg shadow modal">
+                    <!-- Modal header -->
+                    <div class="flex items-start justify-between p-4 rounded-t">
+                        <div class="flex-col ml-4 pt-4">
+                            <p class="text-xl font-bold text-gray-100" id="titulo_modal">Slider</p>
+                            <p class="text-base font-medium text-gray-400" id="subtitulo_modal">Componente-Lamina</p>
+                        </div>
+                        <button type="button" class="bg-transparent rounded-lg p-1.5 ml-auto items-center border-none"
+                            id="btnclose">
+                            <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
+                                    stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class=" space-y-6 flex justify-evenly pb-10">
+                        <div class="flex-col" id="visualizacion" v-if="pagina_modal == 1 || pagina_modal == ''">
+                            <div v-if="laminas_slider && laminas_slider.length == 0" class="flex">
+                                <div class="w-[850px] mx-[25px]">
+                                    <div class="relative">
+                                        <!-- Carousel wrapper -->
+                                        <div class="relative overflow-hidden rounded-lg h-[450px]">
+                                            <!-- Item 1 -->
+                                            <div id="carousel-item-1"
+                                                class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20"
+                                                data-carousel-item="">
+                                                <img src="https://flowbite.com/docs/images/carousel/carousel-1.svg"
+                                                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                                    alt="...">
+                                                <div class="relative top-[300px] px-4 py-2 opacity-100">
+                                                    <p class="text-3xl text-white font-bold text-left ml-24">Título</p>
+                                                    <p class="text-xl text-white font-bold text-left ml-24">Subtítulo</p>
+                                                </div>
+                                            </div>
+                                            <!-- Item 1 -->
+                                            <div id="carousel-item-2"
+                                                class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20"
+                                                data-carousel-item="">
+                                                <img src="https://flowbite.com/docs/images/carousel/carousel-2.svg"
+                                                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                                    alt="...">
+                                                <div class="relative top-[300px] px-4 py-2 opacity-100">
+                                                    <p class="text-3xl text-white font-bold text-left ml-24">Título</p>
+                                                    <p class="text-xl text-white font-bold text-left ml-24">Subtítulo</p>
+                                                </div>
+                                            </div>
+                                            <!-- Item 1 -->
+                                            <div id="carousel-item-3"
+                                                class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20"
+                                                data-carousel-item="">
+                                                <img src="https://flowbite.com/docs/images/carousel/carousel-3.svg"
+                                                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                                    alt="...">
+                                                <div class="relative top-[300px] px-4 py-2 opacity-100">
+                                                    <p class="text-3xl text-white font-bold text-left ml-24">Título</p>
+                                                    <p class="text-xl text-white font-bold text-left ml-24">Subtítulo</p>
+                                                </div>
+                                            </div>
+                                            <!-- Item 1 -->
+                                            <div id="carousel-item-4"
+                                                class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20"
+                                                data-carousel-item="">
+                                                <img src="https://flowbite.com/docs/images/carousel/carousel-4.svg"
+                                                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                                    alt="...">
+                                                <div class="relative top-[300px] px-4 py-2 opacity-100">
+                                                    <p class="text-3xl text-white font-bold text-left ml-24">Título</p>
+                                                    <p class="text-xl text-white font-bold text-left ml-24">Subtítulo</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Slider indicators -->
+                                        <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
+                                            <button id="carousel-indicator-1" type="button" class="w-3 h-3 rounded-full"
+                                                aria-current="true" aria-label="Slide 1"></button>
+                                            <button id="carousel-indicator-2" type="button" class="w-3 h-3 rounded-full"
+                                                aria-current="false" aria-label="Slide 2"></button>
+                                            <button id="carousel-indicator-3" type="button" class="w-3 h-3 rounded-full"
+                                                aria-current="false" aria-label="Slide 3"></button>
+                                            <button id="carousel-indicator-4" type="button" class="w-3 h-3 rounded-full"
+                                                aria-current="false" aria-label="Slide 4"></button>
+                                        </div>
+                                        <!-- Slider controls -->
+                                        <button id="data-carousel-prev" type="button"
+                                            class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
+                                            <span
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                                                <svg class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M15 19l-7-7 7-7"></path>
+                                                </svg>
+                                                <span class="hidden">Previous</span>
+                                            </span>
+                                        </button>
+                                        <button id="data-carousel-next" type="button"
+                                            class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
+                                            <span
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                                                <svg class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 5l7 7-7 7"></path>
+                                                </svg>
+                                                <span class="hidden">Next</span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else class="flex">
+                                <div class="w-[850px] mx-[25px]">
+                                    <div class="relative">
+                                        <!-- Carousel wrapper -->
+                                        <div class="relative overflow-hidden rounded-lg h-[450px]">
+                                            <div v-for="item in laminas_slider">
+                                                <div v-if="item.campos.visibilidad_lamina"
+                                                    :id="'carouselP-item-' + item.campos.identificador_lamina"
+                                                    class="duration-700 ease-in-out absolute inset-0 transition-all transform translate-x-0 z-20"
+                                                    data-carousel-item="">
+                                                    <img :src="RUTA_IMAGENES_LAMINAS + item.campos.archivo_imagen"
+                                                        class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                                        alt="...">
+                                                    <div class="relative top-[300px] px-4 py-2 opacity-100">
+                                                        <p class="text-3xl text-white font-bold text-left ml-24">{{
+                                                            item.campos.titulo_lamina }}</p>
+                                                        <p class="text-xl text-white font-bold text-left ml-24">{{
+                                                            item.campos.subtitulo_lamina }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Slider indicators -->
+                                        <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2">
+                                            <div v-for="item in laminas_slider">
+                                                <button v-if="item.campos.visibilidad_lamina"
+                                                    :id="'carouselP-indicator-' + item.campos.identificador_lamina"
+                                                    type="button" class="w-3 ml-3 h-3 rounded-full"></button>
+                                            </div>
+                                        </div>
+                                        <!-- Slider controls -->
+                                        <button id="data-carouselP-prev" type="button"
+                                            class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
+                                            <span
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                                                <svg class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M15 19l-7-7 7-7"></path>
+                                                </svg>
+                                                <span class="hidden">Previous</span>
+                                            </span>
+                                        </button>
+                                        <button id="data-carouselP-next" type="button"
+                                            class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none">
+                                            <span
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                                                <svg class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none"
+                                                    stroke="currentColor" viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 5l7 7-7 7"></path>
+                                                </svg>
+                                                <span class="hidden">Next</span>
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <form @submit.prevent="actualizarComponente"
+                                class="flex mt-4 w-full justify-around items-center">
+                                <div class="flex-column">
+                                    <div class="flex items-end justify-center">
+                                        <div class="relative z-0 mr-10">
+                                            <input type="text" maxlength="100" id="nombre_componente"
+                                                name="nombre_componente" v-model="form_componente.nombre_componente"
+                                                class="block py-2.5 px-0 w-48 text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                                placeholder=" " autocomplete="off" required />
+                                            <label for="nombre_componente"
+                                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
+                                                - Componente<span class="text-sm ml-1"> * </span></label>
+                                        </div>
+                                        <div class="mt-2 flex-col mr-10">
+                                            <label for="" class="text-sm absolute text-gray-200">Escoger sección<span
+                                                    class="text-sm ml-1"> * </span></label>
+                                            <select id="underline_select" v-model="form_componente.id_seccion"
+                                                class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                                <option value="0" class="bg-gray-700">Seleccione una opción</option>
+                                                <option class="bg-gray-700" v-for="seccion in secciones" :key="seccion.id"
+                                                    :value="seccion.id">{{ seccion.campos.titulo_seccion }}</option>
+                                            </select>
+                                            <div v-if="form_componente.id_seccion == 0"
+                                                class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3"
+                                                    fill="currentColor" viewBox="0 0 20 20"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <div>
+                                                    Seleccione <span class="font-medium">
+                                                        una opción.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-start mt-5">
+                                        <div class="relative z-0 mr-10">
+                                            <input type="number" id="ubicacion_componente" name="ubicacion_componente"
+                                                v-model="form_componente.ubicacion_componente"
+                                                class="block py-2.5 px-0 w-48 text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                                placeholder=" " autocomplete="off" required min="1" max="99" />
+                                            <label for="ubicacion_componente"
+                                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Ubicación
+                                                - Componente<span class="text-sm ml-1"> * </span></label>
+                                        </div>
+                                        <div class="flex-column">
+                                            <label for="visibilidad_componente" class="text-sm text-gray-200">Visibilidad -
+                                                Componente
+                                                <span class="text-sm ml-1"> * </span></label>
+                                            <div class="flex justify-start mt-2">
+                                                <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                                    <input type="checkbox" value="" class="sr-only peer"
+                                                        id="visibilidad_componente" name="visibilidad_componente"
+                                                        v-model="form_componente.visibilidad_componente" />
+                                                    <div
+                                                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-center">
+                                    <div class="flex-col">
+                                        <button
+                                            class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6 hover:bg-lightPurpleLogin"
+                                            type="button" @click="paginaSiguiente">
+                                            <p class="text-white ml-3">Editar laminas |</p>
+                                            <svg class="mr-3" width="26px" height="26px" viewBox="0 0 24 24"
+                                                stroke-width="2" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                                color="#000000">
+                                                <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                        </button>
+                                        <button
+                                            class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6 mt-5 hover:bg-lightPurpleLogin"
+                                            type="submit">
+                                            <p class="text-white ml-3">Guardar cambios |</p>
+                                            <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="26px" height="26px"
+                                                fill="none" stroke-width="1.5" viewBox="0 0 24 24" color="#FFFFFF">
+                                                <path stroke="#FFFFFF" stroke-width="1.5"
+                                                    d="M3 19V5a2 2 0 0 1 2-2h11.172a2 2 0 0 1 1.414.586l2.828 2.828A2 2 0 0 1 21 7.828V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z">
+                                                </path>
+                                                <path stroke="#FFFFFF" stroke-width="1.5"
+                                                    d="M8.6 9h6.8a.6.6 0 0 0 .6-.6V3.6a.6.6 0 0 0-.6-.6H8.6a.6.6 0 0 0-.6.6v4.8a.6.6 0 0 0 .6.6ZM6 13.6V21h12v-7.4a.6.6 0 0 0-.6-.6H6.6a.6.6 0 0 0-.6.6Z">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <form @submit.prevent="formAccion" class="w-full py-6 px-10" id="s_formulario" v-else>
+                            <div class="flex justify-between w-full">
+                                <div class="flex-col mt-20">
+                                    <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                        @click="paginaAnterior" type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none"
+                                            stroke-width="2" viewBox="0 0 24 24" color="#000000">
+                                            <path stroke="#FFF" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" d="M21 12H3m0 0 8.5-8.5M3 12l8.5 8.5"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="flex-col w-72">
+                                    <div class="relative z-0">
+                                        <input type="text" id="titulo_lamina" name="titulo_lamina" required maxlength="100"
+                                            v-model="form_laminas_slider.titulo_lamina"
+                                            class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                            placeholder=" " autocomplete="off" />
+                                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0">
+                                            {{ form_laminas_slider.titulo_lamina.length }}/100</span>
+                                        <label for="titulo_lamina"
+                                            class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
+                                            - lamina</label>
+                                    </div>
+                                    <div class="relative z-0 mt-8">
+                                        <input type="text" id="subtitulo_lamina" name="subtitulo_lamina" required
+                                            v-model="form_laminas_slider.subtitulo_lamina" maxlength="100"
+                                            class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                            placeholder=" " autocomplete="off" />
+                                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0">{{
+                                            form_laminas_slider.subtitulo_lamina.length }}/100</span>
+                                        <label for="subtitulo_lamina"
+                                            class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Subtítulo
+                                            - lamina</label>
+                                    </div>
+                                    <div class="relative z-0 mt-8">
+                                        <input type="number" id="identificador_lamina" name="identificador_lamina" required
+                                            v-model="form_laminas_slider.identificador_lamina" min="1" max="99"
+                                            class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                            placeholder=" " autocomplete="off" />
+                                        <label for="identificador_lamina"
+                                            class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Identificador
+                                            - lamina</label>
+                                    </div>
+                                    <div class="flex-col mt-8">
+                                        <label for="" class="text-sm text-gray-200">Visibilidad - lamina *</label>
+                                        <div class="flex justify-start mt-2">
+                                            <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                                <input type="checkbox" value="" class="sr-only peer"
+                                                    @click="cambiosGuardados"
+                                                    v-model="form_laminas_slider.visibilidad_lamina">
+                                                <div
+                                                    class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-col ml-14">
+                                    <p class="text-center text-white">Imagen - lamina</p>
+                                    <div class="h-52 w-48 border-2 border-slate-900 rounded-lg cursor-pointer relative max-[630px]:m-auto"
+                                        @click="SELECCIONAR_ARCHIVO" @mouseover="iconoBorrarTrue"
+                                        @mouseleave="iconoBorrarFalse">
+                                        <img v-if="imagen_preview" :src="imagen_preview" class="h-52 w-48 rounded-lg" />
+                                        <input type="file" ref="input_imagen" class="hidden" @change="cambiarImagen" />
+                                        <div v-if="mostrar_icono_borrar"
+                                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
+                                                viewBox="0 0 24 24"
+                                                style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
+                                                <path
+                                                    d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-col">
+                                    <div class="mt-20 flex justify-end items-end">
+                                        <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                            @click="paginaSiguiente" type="button"><svg width="26px" height="26px"
+                                                viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                                <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-end">
+                                <button type="button" id="btnModalClear" @click="limpiarFormLaminasSlider"
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4 bg-[#32345a]">
+                                    <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
+                                            stroke-width="2" stroke-linecap="round"></path>
+                                        <path
+                                            d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
+                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                        </path>
+                                        <path
+                                            d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
+                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                        </path>
+                                        <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
+                                <button id="btnModalAdd" type="submit"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center bg-[#32345a]">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <input type="number" class="mb-10 w-16 text-right" v-model="pagina_modal" min="1"
+                            @input="cambiarPaginaInput">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modal-show-acordeon" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
+            class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div class="relative w-full max-w-4xl max-h-full">
+                <!-- Modal content -->
+                <div class="relative rounded-lg shadow modal">
+                    <!-- Modal header -->
+                    <div class="flex items-start justify-between p-4 rounded-t">
+                        <div class="flex-col ml-4 pt-4">
+                            <p class="text-xl font-bold text-gray-100" id="titulo_modal_acordeon">Acordeón</p>
+                            <p class="text-base font-medium text-gray-400" id="subtitulo_modal_acordeon">Componente-Lamina
+                            </p>
+                        </div>
+                        <button type="button" class="bg-transparent rounded-lg p-1.5 ml-auto items-center border-none"
+                            id="btnclose-acordeon">
+                            <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
+                                    stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class=" space-y-6 flex justify-evenly pb-10">
+                        <div class="flex-col" id="visualizacion_acordeon" v-if="pagina_modal == 1 || pagina_modal == ''">
+                            <div v-if="laminas_acordeon && laminas_acordeon.length == 0"
+                                class="w-[750px] h-[400px] overflow-y-scroll overflow-x-hidden	flex items-center justify-center">
+                                <div id="accordion-color" data-accordion="collapse"
+                                    data-active-classes="bg-blue-100 text-lightPurpleLogin">
+                                    <div v-for="number in 5">
+                                        <h2 :id="'accordion-color-heading-' + number">
+                                            <button type="button"
+                                                class="flex items-center justify-between w-[700px] p-5 font-medium text-left text-white border border-b-0 border-white rounded-t-xl focus:ring-4 focus:ring-lightPurpleLogin hover:bg-white hover:text-lightPurpleLogin"
+                                                :data-accordion-target="'accordion-color-body-' + number"
+                                                aria-expanded="true" :aria-controls="'accordion-color-body-' + number">
+                                                <span>Titulo {{ number }}</span>
+                                                <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0"
+                                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 10 6">
+                                                    <path stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5" />
+                                                </svg>
+                                            </button>
+                                        </h2>
+                                        <div :id="'accordion-color-body-' + number" class="hidden"
+                                            :aria-labelledby="'accordion-color-heading-' + number">
+                                            <div class="p-5 w-[700px] border border-b-0 border-lightPurpleLogin">
+                                                <p class="mb-2 text-white">Contenido del acordeón.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else
+                                class="w-[750px] h-[400px] overflow-y-scroll overflow-x-hidden	flex items-center justify-center">
+                                <div id="accordion-color-preview" data-accordion="collapse"
+                                    data-active-classes="bg-blue-100 text-lightPurpleLogin">
+                                    <div v-for="item in laminas_acordeon">
+                                        <h2 v-if="item.campos.visibilidad_lamina"
+                                            :id="'accordion-preview-heading-' + item.campos.identificador_lamina">
+                                            <button type="button"
+                                                class="flex items-center justify-between w-[700px] p-5 font-medium text-left text-white border border-b-0 border-white rounded-t-xl focus:ring-4 focus:ring-lightPurpleLogin hover:bg-white hover:text-lightPurpleLogin"
+                                                :data-accordion-target="'accordion-preview-body-' + item.campos.identificador_lamina"
+                                                aria-expanded="true"
+                                                :aria-controls="'accordion-preview-body-' + item.campos.identificador_lamina">
+                                                <span>{{ item.campos.titulo_lamina }}</span>
+                                                <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0"
+                                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 10 6">
+                                                    <path stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5" />
+                                                </svg>
+                                            </button>
+                                        </h2>
+                                        <div>
+                                            <div v-if="item.campos.visibilidad_lamina"
+                                                :id="'accordion-preview-body-' + item.campos.identificador_lamina"
+                                                class="hidden"
+                                                :aria-labelledby="'accordion-preview-heading-' + item.campos.identificador_lamina">
+                                                <div class="p-5 w-[700px] border border-b-0 border-lightPurpleLogin">
+                                                    <p class="mb-2 text-white">{{ item.campos.contenido_lamina }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <form @submit.prevent="actualizarComponente"
+                                class="flex mt-4 w-full justify-around items-center">
+                                <div class="flex-column">
+                                    <div class="flex items-end justify-center">
+                                        <div class="relative z-0 mr-10">
+                                            <input type="text" maxlength="100" id="nombre_componente_acordeon"
+                                                name="nombre_componente_acordeon"
+                                                v-model="form_componente.nombre_componente"
+                                                class="block py-2.5 px-0 w-48 text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                                placeholder=" " autocomplete="off" required />
+                                            <label for="nombre_componente"
+                                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
+                                                - Componente<span class="text-sm ml-1"> * </span></label>
+                                        </div>
+                                        <div class="mt-2 flex-col mr-10">
+                                            <label for="" class="text-sm absolute text-gray-200">Escoger sección<span
+                                                    class="text-sm ml-1"> * </span></label>
+                                            <select id="underline_select_acordeon" v-model="form_componente.id_seccion"
+                                                class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                                <option value="0" class="bg-gray-700">Seleccione una opción</option>
+                                                <option class="bg-gray-700" v-for="seccion in secciones" :key="seccion.id"
+                                                    :value="seccion.id">{{
+                                                        seccion.campos.titulo_seccion }}</option>
+                                            </select>
+                                            <div v-if="form_componente.id_seccion == 0"
+                                                class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3"
+                                                    fill="currentColor" viewBox="0 0 20 20"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <div>
+                                                    Seleccione <span class="font-medium">
+                                                        una opción.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-start mt-5">
+                                        <div class="relative z-0 mr-10">
+                                            <input type="number" id="ubicacion_componente_acordeon"
+                                                name="ubicacion_componente_acordeon"
+                                                v-model="form_componente.ubicacion_componente"
+                                                class="block py-2.5 px-0 w-48 text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                                placeholder=" " autocomplete="off" required min="1" max="99" />
+                                            <label for="ubicacion_componente"
+                                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Ubicación
+                                                - Componente<span class="text-sm ml-1"> * </span></label>
+                                        </div>
+                                        <div class="flex-column">
+                                            <label for="visibilidad_componente_acordeon"
+                                                class="text-sm text-gray-200">Visibilidad -
+                                                Componente
+                                                <span class="text-sm ml-1"> * </span></label>
+                                            <div class="flex justify-start mt-2">
+                                                <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                                    <input type="checkbox" value="" class="sr-only peer"
+                                                        id="visibilidad_componente_acordeon"
+                                                        name="visibilidad_componente_acordeon"
+                                                        v-model="form_componente.visibilidad_componente" />
+                                                    <div
+                                                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-col items-center justify-center">
+                                    <button
+                                        class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6 hover:bg-lightPurpleLogin"
+                                        type="button" @click="paginaSiguiente">
+                                        <p class="text-white ml-3">Editar laminas |</p>
+                                        <svg class="mr-3" width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
+                                            fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                            <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </button>
+                                    <button
+                                        class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6 mt-5 hover:bg-lightPurpleLogin"
+                                        type="submit">
+                                        <p class="text-white ml-3">Guardar cambios |</p>
+                                        <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="26px" height="26px"
+                                            fill="none" stroke-width="1.5" viewBox="0 0 24 24" color="#FFFFFF">
+                                            <path stroke="#FFFFFF" stroke-width="1.5"
+                                                d="M3 19V5a2 2 0 0 1 2-2h11.172a2 2 0 0 1 1.414.586l2.828 2.828A2 2 0 0 1 21 7.828V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z">
+                                            </path>
+                                            <path stroke="#FFFFFF" stroke-width="1.5"
+                                                d="M8.6 9h6.8a.6.6 0 0 0 .6-.6V3.6a.6.6 0 0 0-.6-.6H8.6a.6.6 0 0 0-.6.6v4.8a.6.6 0 0 0 .6.6ZM6 13.6V21h12v-7.4a.6.6 0 0 0-.6-.6H6.6a.6.6 0 0 0-.6.6Z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <form @submit.prevent="formAccion" class="w-full py-6 px-10" id="s_formulario_acordeon" v-else>
+                            <div class="flex justify-between w-full">
+                                <div class="flex-col mt-20">
+                                    <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                        @click="paginaAnterior" type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none"
+                                            stroke-width="2" viewBox="0 0 24 24" color="#000000">
+                                            <path stroke="#FFF" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" d="M21 12H3m0 0 8.5-8.5M3 12l8.5 8.5"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="flex-col w-2/4">
+                                    <div class="relative z-0">
+                                        <input type="text" id="titulo_lamina_acordeon" name="titulo_lamina_acordeon"
+                                            required maxlength="100" v-model="form_laminas_acordeon.titulo_lamina"
+                                            class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                            placeholder=" " autocomplete="off" />
+                                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0">
+                                            {{ form_laminas_acordeon.titulo_lamina.length }}/100</span>
+                                        <label for="titulo_lamina"
+                                            class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
+                                            - lamina</label>
+                                    </div>
+                                    <div class="relative z-0 mt-8">
+                                        <textarea id="contenido_lamina_acordeon" name="contenido_lamina_acordeon" required
+                                            v-model="form_laminas_acordeon.contenido_lamina" maxlength="1000"
+                                            class="block h-12 max-h-64 py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                            placeholder=" " autocomplete="off" />
+                                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-3">{{
+                                            form_laminas_acordeon.contenido_lamina.length }}/1000</span>
+                                        <label for="contenido_lamina_acordeon"
+                                            class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Contenido
+                                            - lamina</label>
+                                    </div>
+                                    <div class="relative z-0 mt-8">
+                                        <input type="number" id="identificador_lamina_acordeon"
+                                            name="identificador_lamina_acordeon" required
+                                            v-model="form_laminas_acordeon.identificador_lamina" min="1" max="99"
+                                            class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                            placeholder=" " autocomplete="off" />
+                                        <label for="identificador_lamina_acordeon"
+                                            class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Identificador
+                                            - lamina</label>
+                                    </div>
+                                    <div class="flex-col mt-8">
+                                        <label for="" class="text-sm text-gray-200">Visibilidad - lamina *</label>
+                                        <div class="flex justify-start mt-2">
+                                            <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                                <input type="checkbox" value="" class="sr-only peer"
+                                                    @click="cambiosGuardados"
+                                                    v-model="form_laminas_acordeon.visibilidad_lamina">
+                                                <div
+                                                    class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-col">
+                                    <div class="mt-20 flex justify-end items-end">
+                                        <button class="bg-space flex justify-center items-center w-16 h-12 rounded-xl mr-6"
+                                            @click="paginaSiguiente" type="button"><svg width="26px" height="26px"
+                                                viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                                <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                </path>
+                                            </svg></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-end">
+                                <button type="button" id="btnModalClearAcordeon" @click="limpiarFormLaminasAcordeon"
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4 bg-[#32345a]">
+                                    <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
+                                            stroke-width="2" stroke-linecap="round"></path>
+                                        <path
+                                            d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
+                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                        </path>
+                                        <path
+                                            d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
+                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                        </path>
+                                        <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
+                                <button id="btnModalAddAcordeon" type="submit"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center bg-[#32345a]">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <input type="number" class="mb-10 w-16 text-right" v-model="pagina_modal"
+                            @input="cambiarPaginaInput" min="1">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modal-show-banner" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
+            class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+            <div class="relative w-full max-w-4xl max-h-full">
+                <!-- Modal content -->
+                <div class="relative rounded-lg shadow modal">
+                    <!-- Modal header -->
+                    <div class="flex items-start justify-between p-4 rounded-t">
+                        <div class="flex-col pt-4 ml-4">
+                            <p class="text-xl font-bold text-gray-100" id="titulo_modal-banner">Banner</p>
+                            <p class="text-base font-medium text-gray-400" id="subtitulo_modal-banner">
+                                Componente-Lamina
+                            </p>
+                        </div>
+                        <button type="button" class="bg-transparent rounded-lg p-1.5 ml-auto items-center border-none"
+                            id="btnclose-banner">
+                            <svg width="24px" height="24px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                <path d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"
+                                    stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Modal body -->
+                    <div class="flex pb-10 space-y-6 justify-evenly">
+                        <div class="flex-col" id="visualizacion-banner" v-if="pagina_modal == 1 || pagina_modal == ''">
+                            <div class="flex">
+                                <div v-if="v_banner == 1" class="w-[850px] mx-[25px]">
+                                    <div class="relative">
+                                        <!-- Carousel wrapper -->
+                                        <div
+                                            class="relative overflow-hidden rounded-lg h-[450px] flex bg-white items-center">
+                                            <img class="h-[240px] w-[300px] mx-[50px] rounded-lg"
+                                                :src="preview_banner.imagen" />
+                                            <div class="banner w-[450px] flex h-3/4 items-center mr-[50px]">
+                                                <div class="texto flex-col">
+                                                    <p class="text-2xl font-bold mb-4 text-black" id="titulo-banner">
+                                                        {{ preview_banner.titulo }}
+                                                    </p>
+                                                    <p class="text-lg font text-black" id="contenido-banner">
+                                                        {{ preview_banner.contenido }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else class="w-[850px] mx-[25px]">
+                                    <div class="relative">
+                                        <!-- Carousel wrapper -->
+                                        <div
+                                            class="relative overflow-hidden rounded-lg h-[450px] flex bg-white items-center">
+                                            <div class="banner w-[450px] flex h-3/4 items-center ml-[50px]">
+                                                <div class="texto flex-col">
+                                                    <p class="text-2xl font-bold mb-4 text-black" id="titulo-banner-2">
+                                                        {{ preview_banner.titulo }}
+                                                    </p>
+                                                    <p class="text-lg font text-black" id="contenido-banner-2">
+                                                        {{ preview_banner.contenido }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <img class="h-[240px] w-[300px] mx-[50px] rounded-lg"
+                                                :src="preview_banner.imagen" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <form @submit.prevent="actualizarComponente"
+                                class="flex items-center justify-around w-full mt-4">
+                                <div class="flex-column">
+                                    <div class="flex items-end justify-center">
+                                        <div class="relative z-0 mr-10">
+                                            <input type="text" maxlength="100" id="nombre_componente_banner"
+                                                name="nombre_componente" v-model="form_componente.nombre_componente"
+                                                class="block py-2.5 px-0 w-48 text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                                placeholder=" " autocomplete="off" required />
+                                            <label for="nombre_componente"
+                                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
+                                                - Componente<span class="ml-1 text-sm"> * </span></label>
+                                        </div>
+                                        <div class="flex-col mt-2 mr-10">
+                                            <label for="" class="absolute text-sm text-gray-200">Escoger sección<span
+                                                    class="ml-1 text-sm"> * </span></label>
+                                            <select id="underline_select_banner" v-model="form_componente.id_seccion"
+                                                class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                                                <option value="0" class="bg-gray-700">Seleccione una opción</option>
+                                                <option class="bg-gray-700" v-for="seccion in secciones" :key="seccion.id"
+                                                    :value="seccion.id">
+                                                    {{ seccion.campos.titulo_seccion }}
+                                                </option>
+                                            </select>
+                                            <div v-if="form_componente.id_seccion == 0"
+                                                class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3"
+                                                    fill="currentColor" viewBox="0 0 20 20"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd"
+                                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                                <div>Seleccione <span class="font-medium"> una opción.</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-start mt-5">
+                                        <div class="relative z-0 mr-10">
+                                            <input type="number" id="ubicacion_componente_banner"
+                                                name="ubicacion_componente" v-model="form_componente.ubicacion_componente"
+                                                class="block py-2.5 px-0 w-48 text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                                placeholder=" " autocomplete="off" required min="1" max="99" />
+                                            <label for="ubicacion_componente"
+                                                class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Ubicación
+                                                - Componente<span class="ml-1 text-sm"> * </span></label>
+                                        </div>
+                                        <div class="flex-column">
+                                            <label for="visibilidad_componente" class="text-sm text-gray-200">Visibilidad -
+                                                Componente
+                                                <span class="ml-1 text-sm"> * </span></label>
+                                            <div class="flex justify-start mt-2">
+                                                <label class="relative inline-flex items-center mb-5 cursor-pointer">
+                                                    <input type="checkbox" value="" class="sr-only peer"
+                                                        id="visibilidad_componente_banner" name="visibilidad_componente"
+                                                        v-model="form_componente.visibilidad_componente" />
+                                                    <div
+                                                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-col items-center justify-center">
+                                    <button
+                                        class="flex items-center justify-around w-48 h-12 mr-6 bg-space rounded-xl hover:bg-lightPurpleLogin"
+                                        type="button" @click="paginaSiguiente">
+                                        <p class="ml-3 text-white">Editar laminas |</p>
+                                        <svg class="mr-3" width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2"
+                                            fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                            <path d="M3 12h18m0 0l-8.5-8.5M21 12l-8.5 8.5" stroke="#FFF" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </button>
+                                    <button
+                                        class="bg-space flex justify-around items-center w-48 h-12 rounded-xl mr-6 mt-5 hover:bg-lightPurpleLogin"
+                                        type="submit">
+                                        <p class="text-white ml-3">Guardar cambios |</p>
+                                        <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="26px" height="26px"
+                                            fill="none" stroke-width="1.5" viewBox="0 0 24 24" color="#FFFFFF">
+                                            <path stroke="#FFFFFF" stroke-width="1.5"
+                                                d="M3 19V5a2 2 0 0 1 2-2h11.172a2 2 0 0 1 1.414.586l2.828 2.828A2 2 0 0 1 21 7.828V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z">
+                                            </path>
+                                            <path stroke="#FFFFFF" stroke-width="1.5"
+                                                d="M8.6 9h6.8a.6.6 0 0 0 .6-.6V3.6a.6.6 0 0 0-.6-.6H8.6a.6.6 0 0 0-.6.6v4.8a.6.6 0 0 0 .6.6ZM6 13.6V21h12v-7.4a.6.6 0 0 0-.6-.6H6.6a.6.6 0 0 0-.6.6Z">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <form @submit.prevent="actualizarLamina" class="w-full px-10 py-6" id="s_formulario" v-else>
+                            <div class="flex justify-between w-full">
+                                <div class="flex-col mt-20">
+                                    <button class="flex items-center justify-center w-16 h-12 mr-6 bg-space rounded-xl"
+                                        @click="paginaAnterior" type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="30px" height="30px" fill="none"
+                                            stroke-width="2" viewBox="0 0 24 24" color="#000000">
+                                            <path stroke="#FFF" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" d="M21 12H3m0 0 8.5-8.5M3 12l8.5 8.5"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="flex-col mt-[7%] w-72">
+                                    <div class="relative z-0">
+                                        <input type="text" id="titulo_lamina_banner" name="titulo_lamina_banner" required
+                                            maxlength="100" v-model="form_banner.titulo_lamina"
+                                            class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                            placeholder=" " autocomplete="off" />
+                                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0">
+                                            {{ form_banner.titulo_lamina.length }}/100</span>
+                                        <label for="titulo_lamina_banner"
+                                            class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
+                                            - lamina</label>
+                                    </div>
+                                    <div class="relative z-0 mt-8">
+                                        <textarea id="cotenido_lamina_banner" name="contenido_lamina_banner" required
+                                            v-model="form_banner.contenido_lamina" maxlength="1000"
+                                            class="block h-12 max-h-64 py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-lightPurpleLogin peer"
+                                            placeholder=" " autocomplete="off" />
+                                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-3">{{
+                                            form_banner.contenido_lamina.length }}/1000</span>
+                                        <label for="contenido_lamina_banner"
+                                            class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Contenido
+                                            - lamina</label>
+                                    </div>
+                                </div>
+                                <div class="flex-col mr-28">
+                                    <p class="text-center text-white">Imagen - lamina</p>
+                                    <div class="h-52 w-48 border-2 border-slate-900 rounded-lg cursor-pointer relative max-[630px]:m-auto"
+                                        @click="SELECCIONAR_ARCHIVO2" @mouseover="iconoBorrarTrue2"
+                                        @mouseleave="iconoBorrarFalse2">
+                                        <img v-if="imagen_preview2" :src="imagen_preview2" class="w-48 rounded-lg h-52" />
+                                        <input type="file" ref="input_imagen2" class="hidden" @change="cambiarImagen2" />
+                                        <div v-if="mostrar_icono_borrar2"
+                                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
+                                                viewBox="0 0 24 24"
+                                                style="fill: rgba(255, 255, 255, 1); transform: ; msfilter: ">
+                                                <path
+                                                    d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-end mt-10">
+                                <button type="button" id="btnModalClearBanner" @click="limpiarFormBanner"
+                                    class="h-10 w-10 rounded-lg flex justify-center items-center ml-4 bg-[#32345a]">
+                                    <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0"
+                                            stroke-width="2" stroke-linecap="round"></path>
+                                        <path
+                                            d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
+                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                        </path>
+                                        <path
+                                            d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
+                                            stroke="#23B7A0" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                        </path>
+                                        <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
+                                <button id="btnModalAddBanner" type="submit"
+                                    class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center bg-[#32345a]">
+                                    <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg" color="#000000">
+                                        <path
+                                            d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                        <path
+                                            d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
+                                            stroke="#23B7A0" stroke-width="2"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <input type="number" class="w-16 mb-10 text-right" v-model="pagina_modal"
+                            @input="cambiarPaginaInput" min="1" max="2" />
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -75,7 +1044,6 @@
 .buttons-data .deletebtn {
     border: 3px solid #872727;
 }
-
 </style>
 
 <script setup>
@@ -83,7 +1051,7 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import validaciones from '../../assets/validaciones.js'
-import VueEasyLightbox from 'vue-easy-lightbox'
+import { Modal, Carousel, Accordion } from "flowbite";
 
 const props = defineProps({
     //Prop que se utiliza para cargar los datos de la tabla
@@ -98,34 +1066,14 @@ const props = defineProps({
 const EVENT = new Event('reset-timer');
 
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
-onMounted(() => {
+onMounted(async () => {
     //Se le asigna un valor a la variable token para poder utilizar el middleware de laravel
     token.value = localStorage.getItem('token');
+    await llenarSelectSecciones();
 });
 
 //Variable reactiva para almacenar el token del localStorag
 const token = ref(null);
-
-//Se crea una variable reactiva para manejar la información del modal
-const form = ref({
-    id_componente: "",
-    nombre_componente: "",
-    ubicacion_componente: "",
-    visibilidad_componente: false,
-    id_tipo_componente: 0,
-    id_seccion: 0,
-});
-
-//Función para limpiar todos los campos del form
-function limpiarForm() {
-    //Se llama el valor de la variable form y se cambia cada uno de sus elementos a nulo
-    form.value.id_componente = "";
-    form.value.nombre_componente = "";
-    form.value.ubicacion_componente = "";
-    form.value.visibilidad_componente = false;
-    form.value.id_tipo_componente = 0;
-    form.value.id_seccion = 0;
-}
 
 //Funciones para manejo del modal
 //Toast del sweetalert
@@ -143,7 +1091,6 @@ const TOAST = Swal.mixin({
 
 //Codigo para cambiar el estado del componente a inactivo
 async function borrarComponente(id,) {
-    console.log(id);
     Swal.fire({
         title: 'Confirmación',
         text: "¿Desea ocultar el registro?",
@@ -298,5 +1245,1086 @@ async function recuperarUnComponente(id) {
     });
 }
 
+const form_componente = ref({
+    id_componente: "",
+    nombre_componente: "",
+    ubicacion_componente: "",
+    visibilidad_componente: false,
+    id_tipo_componente: "",
+    id_seccion: "0",
+    nombre_tipo_componente: '',
+});
+
+function limpiarFormComponente() {
+    form_componente.value.id_componente = '';
+    form_componente.value.nombre_componente = '';
+    form_componente.value.ubicacion_componente = '';
+    form_componente.value.visibilidad_componente = false;
+    form_componente.value.id_seccion = 0;
+    form_componente.value.nombre_tipo_componente = '';
+}
+
+const laminas_slider = ref();
+const laminas_acordeon = ref();
+
+const RUTA_IMAGENES_LAMINAS = "http://localhost:8000/storage/laminas/images/";
+
+async function leerComponente(id) {
+    try {
+        token.value = localStorage.getItem('token');
+        const { data: res } = await axios.get('/componentes/' + id, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+
+        window.dispatchEvent(EVENT);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
+
+        if (res.data) {
+            form_componente.value.id_componente = res.data.id;
+            form_componente.value.nombre_componente = res.data.campos.nombre_componente;
+            form_componente.value.ubicacion_componente = res.data.campos.ubicacion_componente;
+            form_componente.value.visibilidad_componente = res.data.campos.visibilidad_componente;
+            form_componente.value.id_tipo_componente = res.data.campos.id_tipo_componente;
+            form_componente.value.id_seccion = res.data.campos.id_seccion;
+            form_componente.value.nombre_tipo_componente = res.data.tipos.tipo_componente;
+        }
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
+}
+
+async function leerLaminas(id, tipo) {
+    try {
+        token.value = localStorage.getItem('token');
+        const { data: res } = await axios.post('/laminas/' + id, null, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+
+        window.dispatchEvent(EVENT);
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
+
+        switch (tipo) {
+            case 'Slider':
+                laminas_slider.value = res.data;
+                break;
+            case 'Acordeón':
+                laminas_acordeon.value = res.data;
+                break;
+            case 'Imagen - Texto V1':
+                if (res.data[0]) {
+                    form_banner.value.id_lamina_componente = res.data[0].id;
+                    form_banner.value.titulo_lamina = res.data[0].campos.titulo_lamina;
+                    form_banner.value.contenido_lamina = res.data[0].campos.contenido_lamina;
+                    form_banner.value.archivo_imagen = res.data[0].campos.archivo_imagen;
+                    imagen_preview2.value = RUTA_IMAGENES_LAMINAS + form_banner.value.archivo_imagen;
+                }
+                break;
+            case 'Imagen - Texto V2':
+                if (res.data[0]) {
+                    form_banner.value.id_lamina_componente = res.data[0].id;
+                    form_banner.value.titulo_lamina = res.data[0].campos.titulo_lamina;
+                    form_banner.value.contenido_lamina = res.data[0].campos.contenido_lamina;
+                    form_banner.value.archivo_imagen = res.data[0].campos.archivo_imagen;
+                    imagen_preview2.value = RUTA_IMAGENES_LAMINAS + form_banner.value.archivo_imagen;
+                }
+                break;
+        }
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
+}
+
+async function actualizarComponente() {
+    try {
+        token.value = localStorage.getItem('token');
+        const FORM_DATA = new FormData();
+        FORM_DATA.append('nombre_componente', form_componente.value.nombre_componente);
+        FORM_DATA.append('ubicacion_componente', form_componente.value.ubicacion_componente);
+        FORM_DATA.append('visibilidad_componente', form_componente.value.visibilidad_componente ? 1 : 0);
+        FORM_DATA.append('id_tipo_componente', form_componente.value.id_tipo_componente);
+        FORM_DATA.append('id_seccion', form_componente.value.id_seccion);
+
+        const res = await axios.post('/componentes_update/' + form_componente.value.id_componente, FORM_DATA, {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        })
+
+        //Se reinicia el timer
+        window.dispatchEvent(EVENT);
+        localStorage.setItem('token', res.data.data.token);
+        token.value = localStorage.getItem('token');
+
+        if (res.data.data) {
+            form_componente.value.id_componente = res.data.data.componente.id_componente;
+            form_componente.value.nombre_componente = res.data.data.componente.nombre_componente;
+            form_componente.value.ubicacion_componente = res.data.data.componente.ubicacion_componente;
+            if (res.data.data.componente.visibilidad_componente == 1) {
+                form_componente.value.visibilidad_componente = true;
+            } else {
+                form_componente.value.visibilidad_componente = false;
+            }
+            form_componente.value.id_tipo_componente = res.data.data.componente.id_tipo_componente;
+            form_componente.value.id_seccion = res.data.data.componente.id_seccion;
+            form_componente.value.nombre_tipo_componente = res.data.data.componente.tipos.tipo_componente;
+        }
+
+        //Se lanza la alerta de éxito
+        TOAST.fire({
+            icon: "success",
+            title: "Componente actualizado exitosamente",
+        });
+
+        //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+        await props.actualizar_datos();
+
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
+}
+
+const secciones = ref();
+
+async function llenarSelectSecciones() {
+    try {
+        token.value = localStorage.getItem('token');
+        const { data: res } = await axios.get('/secciones', {
+            headers: {
+                Authorization: `Bearer ${token.value}`,
+            },
+        });
+        secciones.value = res.data;
+        window.dispatchEvent(EVENT);
+        //Se refresca el valor del token con la respuesta del axios
+        localStorage.setItem('token', res.token);
+        token.value = localStorage.getItem('token');
+    } catch (error) {
+        console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
+    }
+}
+
+const pagina_modal = ref(1);
+
+function paginaSiguiente() {
+    pagina_modal.value = pagina_modal.value + 1;
+    cambiarPaginaInput();
+}
+
+function paginaAnterior() {
+    pagina_modal.value = pagina_modal.value - 1;
+    cambiarPaginaInput();
+}
+
+const v_banner = ref();
+
+async function abrirModal(id, tipo) {
+    await leerComponente(id);
+    await leerLaminas(id, tipo);
+
+    if (tipo == 'Slider') {
+        const MODAL_ID = document.getElementById('modal-show');
+        const BOTON_CERRAR = document.getElementById('btnclose');
+        const OPCIONES_MODAL = {
+            backdrop: 'static',
+            backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+        };
+        BOTON_CERRAR.addEventListener('click', async function () {
+            MODAL.hide();
+            pagina_modal.value = 1;
+            limpiarFormComponente();
+            limpiarFormLaminasSlider();
+            laminas_slider.value = '';
+        });
+
+        const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+        MODAL.show();
+
+        await nextTick();
+        llenarPreviewSlider();
+    } else if (tipo == 'Acordeón') {
+        const MODAL_ID = document.getElementById('modal-show-acordeon');
+        const BOTON_CERRAR = document.getElementById('btnclose-acordeon');
+        const OPCIONES_MODAL = {
+            backdrop: 'static',
+            backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+        };
+        BOTON_CERRAR.addEventListener('click', async function () {
+            MODAL.hide();
+            pagina_modal.value = 1;
+            limpiarFormComponente();
+            limpiarFormLaminasAcordeon();
+            laminas_acordeon.value = '';
+        });
+
+        const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+        MODAL.show();
+
+        await nextTick();
+        llenarPreviewAcordeon();
+    } else if (tipo == "Imagen - Texto V1" || tipo == "Imagen - Texto V2") {
+        if (tipo == "Imagen - Texto V1") {
+            v_banner.value = 1;
+        } else {
+            v_banner.value = 2;
+        }
+
+        const MODAL_ID = document.getElementById('modal-show-banner');
+        const BOTON_CERRAR = document.getElementById('btnclose-banner');
+        const OPCIONES_MODAL = {
+            backdrop: 'static',
+            backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+        };
+        BOTON_CERRAR.addEventListener('click', async function () {
+            MODAL.hide();
+            pagina_modal.value = 1;
+            limpiarFormComponente();
+            limpiarFormBanner();
+            limpiarPreviewBanner();
+        });
+
+        llenarPreviewBanner();
+        const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
+        MODAL.show();
+    }
+}
+
+const form_accion = ref();
+
+async function cambiarPaginaInput() {
+    if (pagina_modal.value != '') {
+        if (form_componente.value.nombre_tipo_componente == 'Slider') {
+            if (!laminas_slider.value && pagina_modal.value > 2) {
+                form_accion.value = 'Crear';
+                pagina_modal.value = 2;
+            } else if (laminas_slider.value && pagina_modal.value == 1) {
+                await nextTick();
+                llenarPreviewSlider();
+            } else if (laminas_slider.value && pagina_modal.value == laminas_slider.value.length + 2) {
+                form_accion.value = 'Crear';
+                limpiarFormLaminasSlider();
+            } else if (laminas_slider.value && pagina_modal.value > (laminas_slider.value.length + 2)) {
+                pagina_modal.value = laminas_slider.value.length + 2;
+            } else if (laminas_slider.value && pagina_modal.value <= (laminas_slider.value.length + 2) && pagina_modal.value != 1) {
+                form_accion.value = 'Actualizar';
+                form_laminas_slider.value.id_lamina_componente = laminas_slider.value[pagina_modal.value - 2].id;
+                form_laminas_slider.value.archivo_imagen = laminas_slider.value[pagina_modal.value - 2].campos.archivo_imagen;
+                imagen_preview.value = RUTA_IMAGENES_LAMINAS + form_laminas_slider.value.archivo_imagen;
+                form_laminas_slider.value.titulo_lamina = laminas_slider.value[pagina_modal.value - 2].campos.titulo_lamina;
+                form_laminas_slider.value.subtitulo_lamina = laminas_slider.value[pagina_modal.value - 2].campos.subtitulo_lamina;
+                form_laminas_slider.value.identificador_lamina = laminas_slider.value[pagina_modal.value - 2].campos.identificador_lamina;
+                form_laminas_slider.value.visibilidad_lamina = laminas_slider.value[pagina_modal.value - 2].campos.visibilidad_lamina;
+            }
+        } else if (form_componente.value.nombre_tipo_componente == 'Acordeón') {
+            if (!laminas_acordeon.value && pagina_modal.value > 2) {
+                form_accion.value = 'Crear';
+                pagina_modal.value = 2;
+            } else if (laminas_acordeon.value && pagina_modal.value == 1) {
+                await nextTick();
+                llenarPreviewAcordeon();
+            } else if (laminas_acordeon.value && pagina_modal.value == laminas_acordeon.value.length + 2) {
+                form_accion.value = 'Crear';
+                limpiarFormLaminasAcordeon();
+            } else if (laminas_acordeon.value && pagina_modal.value > (laminas_acordeon.value.length + 2)) {
+                pagina_modal.value = laminas_acordeon.value.length + 2;
+            } else if (laminas_acordeon.value && pagina_modal.value <= (laminas_acordeon.value.length + 2) && pagina_modal.value != 1) {
+                form_accion.value = 'Actualizar';
+                form_laminas_acordeon.value.id_lamina_componente = laminas_acordeon.value[pagina_modal.value - 2].id;
+                form_laminas_acordeon.value.titulo_lamina = laminas_acordeon.value[pagina_modal.value - 2].campos.titulo_lamina;
+                form_laminas_acordeon.value.contenido_lamina = laminas_acordeon.value[pagina_modal.value - 2].campos.contenido_lamina;
+                form_laminas_acordeon.value.identificador_lamina = laminas_acordeon.value[pagina_modal.value - 2].campos.identificador_lamina;
+                form_laminas_acordeon.value.visibilidad_lamina = laminas_acordeon.value[pagina_modal.value - 2].campos.visibilidad_lamina;
+            }
+        } else if (form_componente.value.nombre_tipo_componente == 'Imagen - Texto V1' || form_componente.value.nombre_tipo_componente == 'Imagen - Texto V2') {
+            if (pagina_modal.value > 2) {
+                pagina_modal.value = 2;
+            } else if (pagina_modal.value == 1) {
+                llenarPreviewBanner();
+            }
+        }
+    }
+}
+
+async function formAccion() {
+    if (form_accion.value == 'Crear') {
+        crearLamina();
+    } else {
+        actualizarLamina();
+    }
+}
+
+async function crearLamina() {
+    token.value = localStorage.getItem('token');
+    if (form_componente.value.nombre_tipo_componente == 'Slider') {
+        try {
+            const FORM_DATA = new FormData();
+            FORM_DATA.append('titulo_lamina', form_laminas_slider.value.titulo_lamina);
+            FORM_DATA.append('subtitulo_lamina', form_laminas_slider.value.subtitulo_lamina);
+            FORM_DATA.append('identificador_lamina', form_laminas_slider.value.identificador_lamina);
+            FORM_DATA.append('visibilidad_lamina', form_laminas_slider.value.visibilidad_lamina ? 1 : 0);
+            FORM_DATA.append('archivo_imagen', form_laminas_slider.value.archivo_imagen);
+            FORM_DATA.append('id_componente', form_componente.value.id_componente);
+
+            const res = await axios.post('/laminas', FORM_DATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+
+            window.dispatchEvent(EVENT);
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+
+            TOAST.fire({
+                icon: 'success',
+                title: 'Lamina creada exitosamente'
+            });
+
+            await leerLaminas(form_componente.value.id_componente, form_componente.value.nombre_tipo_componente);
+
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        }
+    } else if (form_componente.value.nombre_tipo_componente == 'Acordeón') {
+        try {
+            const FORM_DATA = new FormData();
+            FORM_DATA.append('titulo_lamina', form_laminas_acordeon.value.titulo_lamina);
+            FORM_DATA.append('contenido_lamina', form_laminas_acordeon.value.contenido_lamina);
+            FORM_DATA.append('identificador_lamina', form_laminas_acordeon.value.identificador_lamina);
+            FORM_DATA.append('visibilidad_lamina', form_laminas_acordeon.value.visibilidad_lamina ? 1 : 0);
+            FORM_DATA.append('id_componente', form_componente.value.id_componente);
+
+            const res = await axios.post('/laminas', FORM_DATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+
+            window.dispatchEvent(EVENT);
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+
+            TOAST.fire({
+                icon: 'success',
+                title: 'Lamina creada exitosamente'
+            });
+
+            await leerLaminas(form_componente.value.id_componente, form_componente.value.nombre_tipo_componente);
+
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        }
+    }
+}
+
+async function actualizarLamina() {
+    token.value = localStorage.getItem('token');
+    if (form_componente.value.nombre_tipo_componente == 'Slider') {
+        try {
+            const FORM_DATA = new FormData();
+            FORM_DATA.append('titulo_lamina', form_laminas_slider.value.titulo_lamina);
+            FORM_DATA.append('subtitulo_lamina', form_laminas_slider.value.subtitulo_lamina);
+            FORM_DATA.append('identificador_lamina', form_laminas_slider.value.identificador_lamina);
+            FORM_DATA.append('visibilidad_lamina', form_laminas_slider.value.visibilidad_lamina ? 1 : 0);
+            FORM_DATA.append('archivo_imagen', form_laminas_slider.value.archivo_imagen);
+            FORM_DATA.append('id_componente', form_componente.value.id_componente);
+
+            const res = await axios.post('/laminas_update/' + form_laminas_slider.value.id_lamina_componente, FORM_DATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+
+            window.dispatchEvent(EVENT);
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+
+            TOAST.fire({
+                icon: 'success',
+                title: 'Lamina actualizada exitosamente'
+            });
+
+            await leerLaminas(form_componente.value.id_componente, form_componente.value.nombre_tipo_componente);
+
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        }
+    } else if (form_componente.value.nombre_tipo_componente == 'Acordeón') {
+        try {
+            const FORM_DATA = new FormData();
+            FORM_DATA.append('titulo_lamina', form_laminas_acordeon.value.titulo_lamina);
+            FORM_DATA.append('contenido_lamina', form_laminas_acordeon.value.contenido_lamina);
+            FORM_DATA.append('identificador_lamina', form_laminas_acordeon.value.identificador_lamina);
+            FORM_DATA.append('visibilidad_lamina', form_laminas_acordeon.value.visibilidad_lamina ? 1 : 0);
+            FORM_DATA.append('id_componente', form_componente.value.id_componente);
+
+            const res = await axios.post('/laminas_update/' + form_laminas_acordeon.value.id_lamina_componente, FORM_DATA, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            });
+
+            window.dispatchEvent(EVENT);
+            localStorage.setItem('token', res.data.data.token);
+            token.value = localStorage.getItem('token');
+
+            TOAST.fire({
+                icon: 'success',
+                title: 'Lamina actualizada exitosamente'
+            });
+
+            await leerLaminas(form_componente.value.id_componente, form_componente.value.nombre_tipo_componente);
+
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        }
+    } else if (form_componente.value.nombre_tipo_componente == 'Imagen - Texto V1' || form_componente.value.nombre_tipo_componente == 'Imagen - Texto V2') {
+        try {
+            const FORM_DATA = new FormData();
+            FORM_DATA.append('titulo_lamina', form_banner.value.titulo_lamina);
+            FORM_DATA.append('contenido_lamina', form_banner.value.contenido_lamina);
+            FORM_DATA.append('identificador_lamina', 1);
+            FORM_DATA.append('visibilidad_lamina', 1);
+            FORM_DATA.append('archivo_imagen', form_banner.value.archivo_imagen);
+            FORM_DATA.append('id_componente', form_componente.value.id_componente);
+
+            if (form_banner.value.id_lamina_componente) {
+                const res = await axios.post('/laminas_update/' + form_banner.value.id_lamina_componente, FORM_DATA, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
+
+                window.dispatchEvent(EVENT);
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+
+                TOAST.fire({
+                    icon: 'success',
+                    title: 'Lamina actualizada exitosamente'
+                });
+            } else {
+                const res = await axios.post('/laminas', FORM_DATA, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token.value}`,
+                    },
+                });
+
+                window.dispatchEvent(EVENT);
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+
+                TOAST.fire({
+                    icon: 'success',
+                    title: 'Lamina creada exitosamente'
+                });
+            }
+
+            await leerLaminas(form_componente.value.id_componente, form_componente.value.nombre_tipo_componente);
+
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
+            }
+        }
+    }
+}
+
+function llenarPreviewBanner() {
+    if (form_banner.value.id_lamina_componente && form_banner.value.titulo_lamina && form_banner.value.contenido_lamina && form_banner.value.archivo_imagen) {
+        preview_banner.value.titulo = form_banner.value.titulo_lamina;
+        preview_banner.value.contenido = form_banner.value.contenido_lamina;
+        preview_banner.value.imagen = RUTA_IMAGENES_LAMINAS + form_banner.value.archivo_imagen;
+    } else {
+        limpiarPreviewBanner();
+    }
+}
+
+async function llenarPreviewSlider() {
+    await nextTick();
+    if (laminas_slider.value.length > 0) {
+
+        const ITEMS = [];
+        const ITEMS_INDICADORES = [];
+        var posicion = 0;
+
+        laminas_slider.value.forEach((element) => {
+            const IDENTIFICADOR_LAMINA = element.campos.identificador_lamina;
+            const VISIBILIDAD_LAMINA = element.campos.visibilidad_lamina;
+
+            if (VISIBILIDAD_LAMINA == true) {
+                // Agregar un nuevo elemento al arreglo 'items'
+                ITEMS.push({
+                    position: posicion,
+                    el: document.getElementById('carouselP-item-' + IDENTIFICADOR_LAMINA),
+                })
+
+                ITEMS_INDICADORES.push({
+                    position: posicion,
+                    el: document.getElementById('carouselP-indicator-' + IDENTIFICADOR_LAMINA),
+                })
+
+                posicion = posicion + 1;
+            }
+        });
+
+        const OPTIONS = {
+            defaultPosition: 1,
+            interval: 3000,
+
+            indicators: {
+                activeClasses: 'bg-blue-100 text-lightPurpleLogin',
+                inactiveClasses: 'bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800',
+                items: ITEMS_INDICADORES,
+            },
+        };
+        if (document.getElementById('carouselP-item-1')) {
+            const CAROUSEL = new Carousel(ITEMS, OPTIONS);
+            CAROUSEL.cycle()
+            // set event listeners for prev and next buttons
+            const prevButton = document.getElementById('data-carouselP-prev');
+            const nextButton = document.getElementById('data-carouselP-next');
+            prevButton.addEventListener('click', () => {
+                CAROUSEL.prev();
+            });
+            nextButton.addEventListener('click', () => {
+                CAROUSEL.next();
+            });
+        }
+    } else {
+        const items = [
+            {
+                position: 0,
+                el: document.getElementById('carousel-item-1')
+            },
+            {
+                position: 1,
+                el: document.getElementById('carousel-item-2')
+            },
+            {
+                position: 2,
+                el: document.getElementById('carousel-item-3')
+            },
+            {
+                position: 3,
+                el: document.getElementById('carousel-item-4')
+            },
+        ];
+
+
+        const items_indicators = [
+            {
+                position: 0,
+                el: document.getElementById('carousel-indicator-1')
+            },
+            {
+                position: 1,
+                el: document.getElementById('carousel-indicator-2')
+            },
+            {
+                position: 2,
+                el: document.getElementById('carousel-indicator-3')
+            },
+            {
+                position: 3,
+                el: document.getElementById('carousel-indicator-4')
+            },
+        ];
+
+        const options = {
+            defaultPosition: 1,
+            interval: 3000,
+
+            indicators: {
+                activeClasses: 'bg-white dark:bg-gray-800',
+                inactiveClasses: 'bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800',
+                items: items_indicators,
+            },
+        };
+        if (document.getElementById('carousel-item-1')) {
+            const carousel = new Carousel(items, options);
+            carousel.cycle()
+            // set event listeners for prev and next buttons
+            const prevButton = document.getElementById('data-carousel-prev');
+            const nextButton = document.getElementById('data-carousel-next');
+            prevButton.addEventListener('click', () => {
+                carousel.prev();
+            });
+            nextButton.addEventListener('click', () => {
+                carousel.next();
+            });
+        }
+    }
+}
+
+async function llenarPreviewAcordeon() {
+    await nextTick();
+    if (laminas_acordeon.value.length > 0) {
+        const ITEMS_ACORDEON = [];
+
+        laminas_acordeon.value.forEach((element) => {
+            const IDENTIFICADOR_LAMINA = element.campos.identificador_lamina;
+            const VISIBILIDAD_LAMINA = element.campos.visibilidad_lamina;
+
+            if (VISIBILIDAD_LAMINA == true) {
+                // Agregar un nuevo elemento al arreglo 'items'
+                ITEMS_ACORDEON.push({
+                    id: 'accordion-preview-heading-' + IDENTIFICADOR_LAMINA,
+                    triggerEl: document.querySelector('#accordion-preview-heading-' + IDENTIFICADOR_LAMINA),
+                    targetEl: document.querySelector('#accordion-preview-body-' + IDENTIFICADOR_LAMINA),
+                    active: false
+                })
+            }
+        });
+
+        const ACORDEON_OPTIONS = {
+            alwaysOpen: false,
+            activeClasses: 'border border-b-0 border-white rounded-t-xl bg-lightPurpleLogin',
+        };
+
+        if (document.querySelector('#' + ITEMS_ACORDEON[0].id)) {
+            const ACORDEON = new Accordion(ITEMS_ACORDEON, ACORDEON_OPTIONS);
+            ACORDEON.open(ITEMS_ACORDEON[0].id);
+        }
+    } else {
+        const ITEMS_ACORDEON = [];
+
+        for (var i = 1; i < 6; i++) {
+            ITEMS_ACORDEON.push({
+                id: 'accordion-color-heading-' + i,
+                triggerEl: document.querySelector('#accordion-color-heading-' + i),
+                targetEl: document.querySelector('#accordion-color-body-' + i),
+                active: false
+            })
+        }
+
+        const ACORDEON_OPTIONS = {
+            alwaysOpen: false,
+            activeClasses: 'border border-b-0 border-white rounded-t-xl bg-lightPurpleLogin',
+        };
+
+        if (document.querySelector('#' + ITEMS_ACORDEON[0].id)) {
+            const ACORDEON = new Accordion(ITEMS_ACORDEON, ACORDEON_OPTIONS);
+            ACORDEON.open(ITEMS_ACORDEON[0].id);
+        }
+    }
+}
+
+const form_laminas_slider = ref({
+    id_lamina_componente: '',
+    archivo_imagen: '',
+    titulo_lamina: '',
+    subtitulo_lamina: '',
+    identificador_lamina: '',
+    visibilidad_lamina: false,
+});
+
+function limpiarFormLaminasSlider() {
+    form_laminas_slider.value.titulo_lamina = '';
+    form_laminas_slider.value.subtitulo_lamina = '';
+    form_laminas_slider.value.identificador_lamina = '';
+    form_laminas_slider.value.visibilidad_lamina = false;
+    limpiarImagen();
+}
+
+const form_laminas_acordeon = ref({
+    id_lamina_componente: '',
+    titulo_lamina: '',
+    contenido_lamina: '',
+    identificador_lamina: '',
+    visibilidad_lamina: false,
+});
+
+function limpiarFormLaminasAcordeon() {
+    form_laminas_acordeon.value.titulo_lamina = '';
+    form_laminas_acordeon.value.contenido_lamina = '';
+    form_laminas_acordeon.value.identificador_lamina = '';
+    form_laminas_acordeon.value.visibilidad_lamina = false;
+}
+
+const form_banner = ref({
+    id_lamina_componente: "",
+    titulo_lamina: "",
+    contenido_lamina: "",
+    archivo_imagen: "",
+});
+
+function limpiarFormBanner() {
+    form_banner.value.id_lamina_componente = "";
+    form_banner.value.titulo_lamina = "";
+    form_banner.value.contenido_lamina = "";
+    limpiarImagen2();
+}
+
+const preview_banner = ref({
+    titulo: "Título",
+    contenido:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis temporibus deleniti expedita beatae, id ullam quaerat quibusdam aspernatur molestiae nam veniam delectus optio maxime distinctio sint autem natus vero reiciendis",
+    imagen: "/img/imagen_banner.svg",
+});
+
+function limpiarPreviewBanner() {
+    preview_banner.value.titulo = "Título";
+    preview_banner.value.contenido =
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis temporibus deleniti expedita beatae, id ullam quaerat quibusdam aspernatur molestiae nam veniam delectus optio maxime distinctio sint autem natus vero reiciendis";
+    preview_banner.value.imagen = "/img/imagen_banner.svg";
+}
+
+//Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
+const mostrar_icono_borrar = ref(false);
+//Metodo para hacer visible el icono de borrar una imagen
+function iconoBorrarTrue() {
+    if (imagen_preview.value) {
+        mostrar_icono_borrar.value = true;
+    }
+}
+//Metodo para no mostrar el icono de borrar una imagen
+function iconoBorrarFalse() {
+    if (imagen_preview.value) {
+        mostrar_icono_borrar.value = false;
+    }
+}
+//Variable reactiva para mostrar la imagen capturada
+const imagen_preview = ref(null);
+//Variable reactiva para caputar el valor de la imagen
+const input_imagen = ref(null);
+
+//Metodo para seleccionar una imagen para el registro
+const SELECCIONAR_ARCHIVO = () => {
+    if (mostrar_icono_borrar.value == false) {
+        input_imagen.value[0].click();
+    } else {
+        limpiarImagen();
+    }
+};
+//Metodo para cambiar la imagen de un registro
+const cambiarImagen = () => {
+    const INPUT = input_imagen.value[0];
+    const ARCHIVO = INPUT.files;
+    if (ARCHIVO && ARCHIVO[0]) {
+        form_laminas_slider.value.archivo_imagen = ARCHIVO[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagen_preview.value = e.target.result;
+        };
+        reader.readAsDataURL(ARCHIVO[0]);
+        return ARCHIVO[0];
+    }
+};
+
+//Metodo para limpiar el campo de la imagen
+function limpiarImagen() {
+    //Limpiar imagen
+    imagen_preview.value = '';
+    if (input_imagen.value[0].value) {
+        input_imagen.value[0].value = '';
+    }
+    form_laminas_slider.value.archivo_imagen = "";
+    mostrar_icono_borrar.value = false;
+}
+
+
+//Variable reactiva para verificar si mostrar o no el boton para borrar alguna imagen
+const mostrar_icono_borrar2 = ref(false);
+//Metodo para hacer visible el icono de borrar una imagen
+function iconoBorrarTrue2() {
+    if (imagen_preview2.value) {
+        mostrar_icono_borrar2.value = true;
+    }
+}
+//Metodo para no mostrar el icono de borrar una imagen
+function iconoBorrarFalse2() {
+    if (imagen_preview2.value) {
+        mostrar_icono_borrar2.value = false;
+    }
+}
+//Variable reactiva para mostrar la imagen capturada
+const imagen_preview2 = ref(null);
+//Metodo para seleccionar una imagen para el registro
+const SELECCIONAR_ARCHIVO2 = () => {
+    if (mostrar_icono_borrar2.value == false) {
+        input_imagen2.value[0].click();
+    } else {
+        limpiarImagen2();
+    }
+};
+//Variable reactiva para caputar el valor de la imagen
+const input_imagen2 = ref(null);
+//Metodo para cambiar la imagen de un registro
+const cambiarImagen2 = () => {
+    const INPUT = input_imagen2.value[0];
+    const ARCHIVO = INPUT.files;
+    if (ARCHIVO && ARCHIVO[0]) {
+        form_banner.value.archivo_imagen = ARCHIVO[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagen_preview2.value = e.target.result;
+        };
+        reader.readAsDataURL(ARCHIVO[0]);
+        return ARCHIVO[0];
+    }
+};
+
+//Metodo para limpiar el campo de la imagen
+function limpiarImagen2() {
+    //Limpiar imagen
+    imagen_preview2.value = "";
+    if (input_imagen2.value[0].value) {
+        input_imagen2.value[0].value = "";
+    }
+    form_banner.value.archivo_imagen = "";
+    mostrar_icono_borrar2.value = false;
+}
 
 </script>

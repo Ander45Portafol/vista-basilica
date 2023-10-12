@@ -1,9 +1,9 @@
 <template>
-    <div class="principal mt-6">
+    <div class="mt-6 principal">
         <!-- Menu de navegación superior -->
         <MenuGrupoParroquialDashboard class="mr-8" />
         <!-- Contenerdor principal -->
-        <div class="mdprincipal flex-col mt-8 px-8 overflow-hidden">
+        <div class="flex-col px-8 mt-8 overflow-hidden mdprincipal">
             <!-- Sección del buscador -->
             <div class="h-16 w-full rounded-xl flex justify-between items-center content-buttons max-[450px]:flex-wrap">
                 <!-- Sección del buscador -->
@@ -12,7 +12,7 @@
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
                         placeholder="Buscar... (nombre grupo / nombre completo)" v-model="buscar.buscador"
                         @keyup="buscarGruposParroquiales($event)" />
-                    <div class="flex justify-end items-center">
+                    <div class="flex items-center justify-end">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
                             <svg width="20px" height="20px" stroke-width="2" viewBox="0 0 24 24" fill="none"
@@ -22,7 +22,7 @@
                             </svg>
                         </button>
                     </div>
-                    <button class="ml-10 bg-space text-white w-48 h-12 rounded-xl">
+                    <button class="w-48 h-12 ml-10 text-white bg-space rounded-xl">
                         <NuxtLink to="/categoria_grupo" class="ml-4">Categorias - Grupos</NuxtLink>
                     </button>
                 </div>
@@ -79,15 +79,15 @@
                 <p v-if="grupos_parroquiales.length > 0 && !ceroRegistrosEncontrados"
                     class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ grupos_parroquiales[pagina -
                         1].length
-                    }}<span class="text-gray-500 font-normal ml-2">registro encontrado!</span></p>
+                    }}<span class="ml-2 font-normal text-gray-500">registro encontrado!</span></p>
                 <p v-else class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">
                     -
-                    <span class="text-gray-500 font-normal ml-2">registros encontrados!</span>
+                    <span class="ml-2 font-normal text-gray-500">registros encontrados!</span>
                 </p>
                 <!-- Alerta a mostrar el usuario busca algo que no coincide con ningún registro -->
                 <div class="flex-col">
                     <div v-if="grupos_parroquiales.length == 0 && ceroRegistrosEncontrados">
-                        <div class="flex items-center px-4 py-6 mt-5 mb-4 text-sm text-purpleLogin border-2 border-purpleLogin rounded-lg bg-transparent"
+                        <div class="flex items-center px-4 py-6 mt-5 mb-4 text-sm bg-transparent border-2 rounded-lg text-purpleLogin border-purpleLogin"
                             role="alert">
                             <svg class="flex-shrink-0 inline w-6 h-6 mr-3" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
@@ -101,7 +101,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="tables overflow-y-scroll h-3/5 pr-4">
+                <div class="pr-4 overflow-y-scroll tables h-3/5">
                     <TablaCargando v-if="grupos_parroquiales.length == 0 && !ceroRegistrosEncontrados" />
                     <TablesGruposParroquiales v-if="grupos_parroquiales.length > 0" :datos_grupos="grupos_parroquiales"
                         :actualizar_datos="cargarTabla" :paginacion="pagina" />
@@ -137,6 +137,7 @@
 .tables::-webkit-scrollbar-thumb {
     background: #32345A;
 }
+
 </style>
 
 <script setup>

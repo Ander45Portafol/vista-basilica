@@ -26,7 +26,7 @@ const validaciones = {
     //Se valida que el texto no sea nulo
     if (texto != null && texto.trim() != "") {
       //Se valida que en la cadena de texto solo existan letras, números, espacios y caracteres de separación (/ | -)
-      var re = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s/|\-,.]+$/;
+      var re = /^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s/|\-_!?¿¡,.]+$/;
       //Retorna false o true dependiendo de si cumple o no la condición
       return re.test(texto);
     } else {
@@ -77,9 +77,15 @@ const validaciones = {
     }
   },
   //Función para validar inputs tipo date (recibe la cantidad de días y meses a agregar/restar)
-  validarFecha(dias, meses, anios) {
+  validarFecha(dias, meses, anios, fecha) {
     //Fecha actual
-    var fecha_actual = new Date();
+    var fecha_actual = '';
+    if (fecha) {
+      fecha_actual = Date.parse(fecha);
+      fecha_actual = new Date(fecha_actual);
+    }else{
+      fecha_actual = new Date();
+    }
 
     //Fechas minima y máxima, además de cambiar el formato de las fechas
     var fecha_minima = new Date(

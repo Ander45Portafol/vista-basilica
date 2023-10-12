@@ -235,9 +235,6 @@
                     </form>
                 </div>
             </div>
-            <pre>
-                {{ form }}
-        </pre>
         </div>
     </div>
 </template>
@@ -391,67 +388,69 @@ function submitForm() {
 
 //Función para crear un Contacto
 async function crearContacto() {
-    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-    token.value = localStorage.getItem('token');
-    try {
-        const FORM_DATA = new FormData();
-        FORM_DATA.append("nombre_contacto", form.value.nombre_contacto);
-        FORM_DATA.append("correo_contacto", form.value.correo_contacto);
-        FORM_DATA.append("tipo_contacto", form.value.tipo_contacto);
-        FORM_DATA.append(
-            "visibilidad_contacto",
-            form.value.visibilidad_contacto ? 1 : 0
-        );
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/contactos/", FORM_DATA, {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            },
-        }).then(res => {
-            //Se reinicia el timer
-            window.dispatchEvent(EVENT);
-            //Se actualiza el token con la respuesta del axios
-            localStorage.setItem('token', res.data.data.token);
-            token.value = localStorage.getItem('token');
-        });
+    if (form.value.tipo_contacto != 0 && validarNombreContacto()) {
+        //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+        token.value = localStorage.getItem('token');
+        try {
+            const FORM_DATA = new FormData();
+            FORM_DATA.append("nombre_contacto", form.value.nombre_contacto);
+            FORM_DATA.append("correo_contacto", form.value.correo_contacto);
+            FORM_DATA.append("tipo_contacto", form.value.tipo_contacto);
+            FORM_DATA.append(
+                "visibilidad_contacto",
+                form.value.visibilidad_contacto ? 1 : 0
+            );
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/contactos/", FORM_DATA, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
 
-        //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-        await props.actualizar_datos();
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await props.actualizar_datos();
 
-        document.getElementById('closeModal').click();
-        //Se lanza la alerta con el mensaje de éxito
-        // props.actualizar_datos();
-        TOAST.fire({
-            icon: 'success',
-            title: 'Contacto creado exitosamente'
-        });
-    } catch (error) {
-        console.log(error);
-        const MENSAJE_ERROR = error.response.data.message;
-        if (error.response.status == 401) {
-            navigateTo('/error_401');
-        } else {
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: RES,
-                    confirmButtonColor: '#3F4280'
-                });
+            document.getElementById('closeModal').click();
+            //Se lanza la alerta con el mensaje de éxito
+            // props.actualizar_datos();
+            TOAST.fire({
+                icon: 'success',
+                title: 'Contacto creado exitosamente'
+            });
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
             } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: MENSAJE_ERROR,
-                    confirmButtonColor: '#3F4280'
-                });
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     }
@@ -460,7 +459,7 @@ async function crearContacto() {
 //Metodo para configurar el modal y enviar el id del usuario
 async function estadoActualizar(id) {
     await leerUnContacto(id);
-    const  MODAL_ID= document.getElementById('staticModal');
+    const MODAL_ID = document.getElementById('staticModal');
     const BOTON_CERRAR = document.getElementById('closeModal');
     const TEXTO_MODAL = document.getElementById('modalText');
     const OPCIONES_MODAL = {
@@ -538,7 +537,7 @@ async function leerUnContacto(id) {
 async function actualizarContacto() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if (form.tipo_contacto != 0 && validarNombreContacto()) {
+    if (form.value.tipo_contacto != 0 && validarNombreContacto()) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
             var id = form.value.id_contacto;

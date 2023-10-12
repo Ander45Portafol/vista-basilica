@@ -101,29 +101,30 @@
                             </div>
                             <!-- Campo de entrada Mensaje - Donación -->
                             <div class="relative z-0 mt-6">
-                                <input type="text" id="mensaje_donacion" name="mensaje_donacion" maxlength="500" required 
+                                <input type="text" id="mensaje_donacion" name="mensaje_donacion" maxlength="500"
                                     v-model="form.mensaje_donacion"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.mensaje_donacion">
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
+                                    v-if="form.mensaje_donacion">
                                     {{ form.mensaje_donacion.length }} /500</span>
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /500</span>
                                 <label for="mensaje_donacion"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Mensaje</label>
                             </div>
                             <div v-if="!validarMensaje()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                        role="alert">
-                        <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        <div>
-                            El nombre del representante solo permite caracteres <span class="font-medium">
-                                alfanuméricos y algunos especiales (- / |).</span>
-                        </div>
-                    </div>
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El nombre del representante solo permite caracteres <span class="font-medium">
+                                        alfanuméricos y algunos especiales (- / |).</span>
+                                </div>
+                            </div>
                             <!-- Campo de entrada Donante - Donación -->
                             <div class="pt-4 mt-2 flex-col">
                                 <label for="" class="absolute text-sm text-gray-200">Donante <span class="text-sm ml-1"> *
@@ -170,6 +171,7 @@
                         <div class="flex-col w-64">
                             <div class="relative z-0">
                                 <input type="date" id="fecha_donacion" name="fecha_donacion" v-model="form.fecha_donacion"
+                                    readonly
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="fecha_donacion"
@@ -291,14 +293,6 @@ onMounted(() => {
         const event = new Event('modal-closed');
         window.dispatchEvent(event);
     });
-
-    function validarFechas() {
-        var res = validaciones.validarFecha(0, 1, 0);
-        document.getElementById('fecha_donacion').min = res.min;
-        document.getElementById('fecha_donacion').max = res.max;
-    }
-
-    validarFechas();
 
     llenarSelectDonantes();
     llenarSelectProyectos();
@@ -440,73 +434,75 @@ async function llenarSelectProyectos() {
 }
 
 async function actualizarDonacion() {
-    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-    token.value = localStorage.getItem('token');
+    if (form.value.id_donante != 0 && form.value.id_proyecto_donacion != 0) {
+        //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+        token.value = localStorage.getItem('token');
 
-    try {
-        //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_donacion;
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_donacion;
 
-        //Se crea una constante FormData para almacenar los datos del modal
-        const FORM_DATA = new FormData();
-        FORM_DATA.append("cantidad_donada", form.value.cantidad_donada);
-        FORM_DATA.append("fecha_donacion", form.value.fecha_donacion);
-        FORM_DATA.append("mensaje_donacion", form.value.mensaje_donacion);
-        FORM_DATA.append("codigo_comprobante", form.value.codigo_comprobante);
-        FORM_DATA.append("visibilidad_donacion", form.value.visibilidad_donacion ? 1 : 0);
-        FORM_DATA.append("id_proyecto_donacion", form.value.id_proyecto_donacion);
-        FORM_DATA.append("id_donante", form.value.id_donante);
+            //Se crea una constante FormData para almacenar los datos del modal
+            const FORM_DATA = new FormData();
+            FORM_DATA.append("cantidad_donada", form.value.cantidad_donada);
+            FORM_DATA.append("fecha_donacion", form.value.fecha_donacion);
+            FORM_DATA.append("mensaje_donacion", form.value.mensaje_donacion);
+            FORM_DATA.append("codigo_comprobante", form.value.codigo_comprobante);
+            FORM_DATA.append("visibilidad_donacion", form.value.visibilidad_donacion ? 1 : 0);
+            FORM_DATA.append("id_proyecto_donacion", form.value.id_proyecto_donacion);
+            FORM_DATA.append("id_donante", form.value.id_donante);
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/donaciones_update/" + id, FORM_DATA, {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            },
-        }).then(res => {
-            //Se reinicia el timer
-            window.dispatchEvent(EVENT);
-            //Se actualiza el token con la respuesta del axios
-            localStorage.setItem('token', res.data.data.token);
-            token.value = localStorage.getItem('token');
-        });
-        //Se manda a llamar la accion para actualizar los datos con las props
-        await props.actualizar_datos();
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/donaciones_update/" + id, FORM_DATA, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
+            //Se manda a llamar la accion para actualizar los datos con las props
+            await props.actualizar_datos();
 
-        document.getElementById("closeModal").click();
+            document.getElementById("closeModal").click();
 
-        //Se lanza la alerta de éxito
-        TOAST.fire({
-            icon: "success",
-            title: "Donación actualizada exitosamente",
-        });
+            //Se lanza la alerta de éxito
+            TOAST.fire({
+                icon: "success",
+                title: "Donación actualizada exitosamente",
+            });
 
-    } catch (error) {
-        console.log(error);
-        const MENSAJE_ERROR = error.response.data.message;
-        if (error.response.status == 401) {
-            navigateTo('/error_401');
-        } else {
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: RES,
-                    confirmButtonColor: '#3F4280'
-                });
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
             } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: MENSAJE_ERROR,
-                    confirmButtonColor: '#3F4280'
-                });
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     }
@@ -518,7 +514,7 @@ async function borrarDonacion(id,) {
     console.log(id);
     Swal.fire({
         title: 'Confirmación',
-        text: "¿Desea ocultar el registro",
+        text: "¿Desea ocultar el registro?",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,
@@ -654,5 +650,16 @@ function validarMensaje() {
     var res = validaciones.validarSoloLetras(form.value.mensaje_donacion);
     return res;
 }
+
+//Función para validar que la meta monetaria lleve 2 decimales
+function convertirDecimales() {
+    if (form.value.cantidad_donada != null) {
+        var res = validaciones.convertirDecimales(form.value.cantidad_donada, 2);
+        if (res != false) {
+            form.value.cantidad_donada = res;
+        }
+    }
+}
+
 </script>
 <style scoped></style>

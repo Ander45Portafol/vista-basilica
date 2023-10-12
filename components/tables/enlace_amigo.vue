@@ -97,14 +97,14 @@
                             <input type="hidden" id="id_enlace_amigo" v-model="form.id_enlace_amigo">
                             <!-- Campo de entrada Titulo- Enlace-->
                             <div class="relative z-0">
-                                <input type="text" id="titulo_enlace" name="titulo_enlace" maxlength="150" required
+                                <input type="text" id="titulo_enlace" name="titulo_enlace" maxlength="200" required
                                     @input="validarTitulo()"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.titulo_enlace">
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.titulo_enlace">
                                     {{
-                                        form.titulo_enlace.length }} /150</span>
-                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
+                                        form.titulo_enlace.length }} /200</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /200</span>
                                 <label for="titulo_enlace"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Título
                                     - Enlace<span class="text-sm ml-1"> * </span></label>
@@ -168,7 +168,7 @@
                                         <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
                                         <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
                                         <div v-if="mostrarIconoBorrar"
-                                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                            class="absolute h-44 inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
                                                 viewBox="0 0 24 24"
                                                 style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
@@ -804,13 +804,6 @@ async function recuperarUnEnlace(id) {
         }
     });
 }
-
-//Validaciones
-function validarTitulo() {
-    var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_enlace);
-    return res;
-}
-
 const visible_ref = ref(false);
 const index_ref = ref(0);
 const imgs_ref = ref([]);
@@ -827,4 +820,12 @@ function mostrarLightBox(url) {
 function esconderLightBox() {
     visible_ref.value = false
 }
+
+//Validaciones
+function validarTitulo() {
+    var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_enlace);
+    return res;
+}
+
+
 </script>

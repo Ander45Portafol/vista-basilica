@@ -82,22 +82,56 @@
                         <div class="flex-col w-64">
                             <input type="hidden" id="id_personal" v-model="form.id_personal">
                             <div class="relative z-0">
-                                <input type="text" v-model="form.nombre_personal" id="nombre_personal"
-                                    name="nombre_personal"
+                                <input type="text" v-model="form.nombre_personal" id="nombre_personal" 
+                                    name="nombre_personal" maxlength="100" required @input="validarNombrePersonal()"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.nombre_personal">
+                                    {{
+                                        form.nombre_personal.length }} /100</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
                                 <label for="nombre_personal"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                                     - Personal</label>
                             </div>
+                            <div v-if="!validarNombrePersonal()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El nombre del personal solo permite <span class="font-medium">
+                                        letras.</span>
+                                </div>
+                            </div>
                             <div class="relative z-0 mt-6">
                                 <input type="text" v-model="form.telefono_personal" id="telefono_personal"
-                                    name="telefono_personal"
+                                    name="telefono_personal" maxlength="9" required @input="validarTelefono()"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.telefono_personal">
+                                    {{
+                                        form.telefono_personal.length }} /9</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /9</span>
                                 <label for="telefono_personal"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
                                     - Personal</label>
+                            </div>
+                            <div v-if="!validarTelefono()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El número de teléfono ingresado <span class="font-medium">
+                                        no tiene un formato correcto.</span>
+                                </div>
                             </div>
                             <div class="pt-4 mt-4 flex-col">
                                 <label for="" class="absolute text-gray-200 text-sm">Tipo personal<span
@@ -127,18 +161,39 @@
                         <div class="flex-col w-64">
                             <div class="relative z-0">
                                 <input type="text" v-model="form.apellido_personal" id="apellido_personal"
-                                    name="apellido_personal"
+                                    name="apellido_personal" maxlength="100" required  @input="validarApellidoPersonal()"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.apellido_personal">
+                                    {{
+                                        form.apellido_personal.length }} /100</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
                                 <label for="apellido_personal"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
                                     - Personal</label>
                             </div>
+                            <div v-if="!validarApellidoPersonal()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                role="alert">
+                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    El apellido del personal solo permite <span class="font-medium">
+                                        letras.</span>
+                                </div>
+                            </div>
                             <div class="relative z-0 mt-6">
-                                <input type="text" v-model="form.correo_personal" id="correo_personal"
-                                    name="correo_personal"
+                                <input type="email" v-model="form.correo_personal" id="correo_personal"
+                                    name="correo_personal" maxlength="100" required
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
+                                    <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.correo_personal">
+                                    {{
+                                        form.correo_personal.length }} /100</span>
+                                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
                                 <label for="correo_personal"
                                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Correo
                                     - Personal</label>
@@ -177,7 +232,7 @@
                                 </svg>
                             </button>
                             <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                            <button id="btnModalAdd" type="submit"
+                            <button id="btnModalAdd" type="submit" :disabled="!validarNombrePersonal() || !validarApellidoPersonal() || !validarTelefono() || form.id_tipo_personal == 0"
                                 class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                 <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -190,7 +245,7 @@
                                 </svg>
                             </button>
                             <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                            <button id="btnModalUpdate" type="submit"
+                            <button id="btnModalUpdate" type="submit" :disabled="!validarNombrePersonal() || !validarApellidoPersonal() || !validarTelefono() || form.id_tipo_personal == 0"
                                 class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                 <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -370,7 +425,7 @@ function submitForm() {
 async function crearPersonal() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if (validarNombrePersonal() && validarApellidoPersonal() && validarTelefono() && form.id_tipo_personal != 0) {
+    if (validarNombrePersonal() && validarApellidoPersonal() && validarTelefono() && form.value.id_tipo_personal != 0) {
         try {
             const FORM_DATA = new FormData();
             FORM_DATA.append("nombre_personal", form.value.nombre_personal);
@@ -522,7 +577,7 @@ async function leerUnPersonal(id) {
 async function actualizarPersonal() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if (validarNombrePersonal() && validarApellidoPersonal() && validarTelefono() && form.id_tipo_personal != 0) {
+    if (validarNombrePersonal() && validarApellidoPersonal() && validarTelefono() && form.value.id_tipo_personal != 0) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
             var id = form.value.id_personal;

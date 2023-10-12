@@ -79,7 +79,7 @@
               >${{ total_suma_donaciones }}</span
             ><span class="text-xl font-normal" v-else>$0.00</span>
           </p>
-          <div class="grafic h-80 w-full flex justify-center items-center">
+          <div class="grafic h-[500px] w-full flex justify-center items-center">
             <!-- Se valida si el gráfico esta listo para mostrarse -->
             <Line
               v-if="
