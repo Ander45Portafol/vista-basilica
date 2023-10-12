@@ -605,7 +605,7 @@ function submitForm() {
 async function crearProyecto() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if (validarNombreProyecto() && form.estado_proyecto != 0) {
+    if (validarNombreProyecto() && form.value.estado_proyecto != 0) {
         try {
             const FORMDATA = new FormData();
             FORMDATA.append("nombre_proyecto", form.value.nombre_proyecto);
@@ -782,68 +782,70 @@ async function leerUnProyecto(id) {
 
 //Metodo para actualizar la informacion de un proyecto
 async function actualizarProyecto() {
-    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-    token.value = localStorage.getItem('token');
-    try {
-        var id = form.value.id_proyecto_donacion;
-        const FORMDATA = new FormData();
-        FORMDATA.append("nombre_proyecto", form.value.nombre_proyecto);
-        FORMDATA.append("descripcion_proyecto", form.value.descripcion_proyecto);
-        FORMDATA.append("meta_monetaria", form.value.meta_monetaria);
-        FORMDATA.append("visibilidad_proyecto", form.value.visibilidad_proyecto ? 1 : 0);
-        FORMDATA.append("estado_proyecto", form.value.estado_proyecto);
-        FORMDATA.append("imagen_principal", form.value.imagen_principal);
-        FORMDATA.append("icono_proyecto", form.value.icono_proyecto);
-        console.log(FORMDATA);
-        await axios.post("/proyectos_update/" + id, FORMDATA, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token.value}`,
-            }
-        }).then(res => {
-            //Se reinicia el timer
-            window.dispatchEvent(EVENT);
-            //Se actualiza el token con la respuesta del axios
-            localStorage.setItem('token', res.data.data.token);
-            token.value = localStorage.getItem('token');
-        });
+    if (validarNombreProyecto() && form.value.estado_proyecto != 0) {
+        //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+        token.value = localStorage.getItem('token');
+        try {
+            var id = form.value.id_proyecto_donacion;
+            const FORMDATA = new FormData();
+            FORMDATA.append("nombre_proyecto", form.value.nombre_proyecto);
+            FORMDATA.append("descripcion_proyecto", form.value.descripcion_proyecto);
+            FORMDATA.append("meta_monetaria", form.value.meta_monetaria);
+            FORMDATA.append("visibilidad_proyecto", form.value.visibilidad_proyecto ? 1 : 0);
+            FORMDATA.append("estado_proyecto", form.value.estado_proyecto);
+            FORMDATA.append("imagen_principal", form.value.imagen_principal);
+            FORMDATA.append("icono_proyecto", form.value.icono_proyecto);
+            console.log(FORMDATA);
+            await axios.post("/proyectos_update/" + id, FORMDATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                }
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
 
-        //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-        await props.actualizar_datos();
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await props.actualizar_datos();
 
-        document.getElementById('closeModal').click();
-        TOAST.fire({
-            icon: 'success',
-            title: 'Proyecto actualizado exitosamente'
-        });
-    }
-    catch (error) {
-        console.log(error);
-        const MENSAJE_ERROR = error.response.data.message;
-        if (error.response.status == 401) {
-            navigateTo('/error_401');
-        } else {
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: RES,
-                    confirmButtonColor: '#3F4280'
-                });
+            document.getElementById('closeModal').click();
+            TOAST.fire({
+                icon: 'success',
+                title: 'Proyecto actualizado exitosamente'
+            });
+        }
+        catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
             } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: MENSAJE_ERROR,
-                    confirmButtonColor: '#3F4280'
-                });
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     }
@@ -854,7 +856,7 @@ async function borrarProyecto(id,) {
     console.log(id);
     Swal.fire({
         title: 'Confirmación',
-        text: "¿Desea ocultar el registro",
+        text: "¿Desea ocultar el registro?",
         icon: 'warning',
         reverseButtons: true,
         showCancelButton: true,

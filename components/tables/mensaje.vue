@@ -223,7 +223,7 @@
                                 </div>
                             </div>
                             <div class="relative z-0 mt-6">
-                                <input type="date" id="fecha_mensaje" name="fecha_mensaje" v-model="form.fecha_mensaje"
+                                <input type="date" id="fecha_mensaje" name="fecha_mensaje" v-model="form.fecha_mensaje" readonly
                                     required
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" aaaaa" autocomplete="off" />
@@ -383,13 +383,6 @@ onMounted(() => {
     console.log(props.datos_mensajes);
     //Capturamos el token del localStorage para poder realizar las perticiones protegidas desde la api
     token.value = localStorage.getItem('token');
-    //Agrega la funcion par ala validacion de la fecha de los  mensajes
-    function validarFechas() {
-        var res = validaciones.validarFecha(0, 1, 0);
-        document.getElementById('fecha_mensaje').min = res.min;
-        document.getElementById('fecha_mensaje').max = res.max;
-    }
-    validarFechas();
     //Ejecutamos este metodo, para poder llenar el select del modal con la informacion de loS contactos
     llenarSelectContactos();
 });

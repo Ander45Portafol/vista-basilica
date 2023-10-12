@@ -21,7 +21,7 @@
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
                 <button
-                    class="h-10 w-10 rounded-md flex items-center justify-center mr-4 imagenbtn max-[750px]:mr-0 max-[750px]:mt-2"
+                    class="h-10 w-10 rounded-md flex items-center justify-center imagenbtn max-[750px]:mr-0 max-[750px]:mt-2"
                     @click="modalImagenes(grupo.id)">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -254,7 +254,7 @@
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>
                                     0 /9</span>
                                 <label for="telefono_encargado"
-                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Telefono
+                                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Teléfono
                                     - Encargado<span class="ml-1 text-sm">
                                         *
                                     </span></label>
@@ -268,7 +268,7 @@
                                         clip-rule="evenodd"></path>
                                 </svg>
                                 <div>
-                                    El número de telefono ingresado
+                                    El número de teléfono ingresado
                                     <span class="font-medium">
                                         no tiene un formato correcto.</span>
                                 </div>
