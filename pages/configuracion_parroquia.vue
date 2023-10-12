@@ -38,7 +38,7 @@
                     </div>
                     <!-- Campo de entrada  RUC - Parroquia -->
                     <div class="relative z-0 mt-12">
-                        <input type="text" id="ruc_parroquia" name="ruc_parroquia" maxlength="13" required
+                        <input type="text" id="ruc_parroquia" name="ruc_parroquia" minlength="13" maxlength="13" required
                             @input="validarRuc()"
                             class="block py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.ruc_parroquia" />
@@ -65,10 +65,10 @@
                         <textarea type="text" id="direccion_parroquia" name="direccion_parroquia" maxlength="250" required
                             class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model=form.direccion_parroquia />
-                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.direccion_parroquia">
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-3" v-if="form.direccion_parroquia">
                             {{
                                 form.direccion_parroquia.length }} /250</span>
-                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /250 </span>
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-3" v-else> 0 /250 </span>
                         <label for="ruc_parroquia"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Dirección
                             - Parroquia</label>
@@ -107,7 +107,7 @@
                         <select id="tipo_documento_representante" name="tipo_documento_representante"
                             v-model="form.tipo_documento"
                             class="block mt-4 py-2.5 px-0 w-full text-sm text-black bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-space dark:border-space focus:outline-none focus:ring-0 focus:border-gray-200 peer">
-                            <option value="0" class="bg-slate-900 text-slate-900"> Seleccione una opción </option>
+                            <option value="0" class="bg-white text-slate-900"> Seleccione una opción </option>
                             <option value="Cédula">Cédula</option>
                             <option value="Pasaporte">Pasaporte</option>
                             <option value="Otro">Otro...</option>
@@ -222,10 +222,11 @@
                     </div>
                     <!-- Campo de entrada  >Documento- Representante -->
                     <div class="relative z-0 mt-10">
-                        <input type="text" id="documento_representante" name="documento_representante" maxlength="10" required
+                        <input type="text" id="documento_representante" name="documento_representante" maxlength="10"
+                            required
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.documento_representante" />
-                            <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.documento_representante">
+                        <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.documento_representante">
                             {{
                                 form.documento_representante.length }} /10</span>
                         <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /10</span>
@@ -235,18 +236,18 @@
                             - Representante</label>
                     </div>
                     <div v-if="!validarNumeroDocumento()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                                role="alert">
-                                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                <div>
-                                    El documento ingresado <span class="font-medium">
-                                        no tiene un formato correcto.</span>
-                                </div>
-                            </div>
+                        role="alert">
+                        <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            El documento ingresado <span class="font-medium">
+                                no tiene un formato correcto.</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="flex-col h-96 max-[700px]:mt-10">
                     <div class="h-1/2">
@@ -287,7 +288,7 @@
                                     stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
-                        <button id="btnModalAdd" @click.prevent="actualizarConfiguracionParroquia()"
+                        <button id="btnModalAdd" type="submit" :disabled="!validarNombreParroquia() || !validarRuc() || !validarNombreRepresentante() || !validarApellidoRepresentante() || !validarNumeroTelefono() || !validarIdentificacionFarroquia() || !validarNumeroDocumento()"
                             class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[400px]:mx-4 max-[750px]:my-1 max-[750px]:ml-[-1px] max-[400px]:ml-6 max-[400px]:mr-[6px]">
                             <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -459,74 +460,76 @@ const TOAST = Swal.mixin({
 
 
 async function actualizarConfiguracionParroquia() {
-    token.value = localStorage.getItem('token');
-    try {
-        //Se establece una variable de id con el valor que tiene guardado la variable form
-        var id = form.value.id_configuracion_parroquia;
-        console.log(id);
-        //Se crea una constante para guardar el valor actual que tienen todos los campos del form
-        const FORM_DATA = new FormData();
-        FORM_DATA.append("nombre_parroquia", form.value.nombre_parroquia);
-        FORM_DATA.append("pagina_web", form.value.pagina_web);
-        FORM_DATA.append("ruc_parroquia", form.value.ruc_parroquia);
-        FORM_DATA.append("direccion_parroquia", form.value.direccion_parroquia);
-        FORM_DATA.append("nombre_representante", form.value.nombre_representante);
-        FORM_DATA.append("apellido_representante", form.value.apellido_representante);
-        FORM_DATA.append("documento_representante", form.value.documento_representante);
-        FORM_DATA.append("tipo_documento", form.value.tipo_documento);
-        FORM_DATA.append("telefono_parroquia", form.value.telefono_parroquia);
-        FORM_DATA.append("identificador_parroquia", form.value.identificador_parroquia);
-        FORM_DATA.append("logo_parroquia", form.value.logo_parroquia);
+    if (validarNombreParroquia() && validarRuc() && validarNombreRepresentante() && validarApellidoRepresentante() && validarNumeroTelefono() && validarIdentificacionFarroquia() && validarNumeroDocumento()) {
+        token.value = localStorage.getItem('token');
+        try {
+            //Se establece una variable de id con el valor que tiene guardado la variable form
+            var id = form.value.id_configuracion_parroquia;
+            console.log(id);
+            //Se crea una constante para guardar el valor actual que tienen todos los campos del form
+            const FORM_DATA = new FormData();
+            FORM_DATA.append("nombre_parroquia", form.value.nombre_parroquia);
+            FORM_DATA.append("pagina_web", form.value.pagina_web);
+            FORM_DATA.append("ruc_parroquia", form.value.ruc_parroquia);
+            FORM_DATA.append("direccion_parroquia", form.value.direccion_parroquia);
+            FORM_DATA.append("nombre_representante", form.value.nombre_representante);
+            FORM_DATA.append("apellido_representante", form.value.apellido_representante);
+            FORM_DATA.append("documento_representante", form.value.documento_representante);
+            FORM_DATA.append("tipo_documento", form.value.tipo_documento);
+            FORM_DATA.append("telefono_parroquia", form.value.telefono_parroquia);
+            FORM_DATA.append("identificador_parroquia", form.value.identificador_parroquia);
+            FORM_DATA.append("logo_parroquia", form.value.logo_parroquia);
 
-        console.log(FORM_DATA);
+            console.log(FORM_DATA);
 
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/parroquia_update/" + id, FORM_DATA, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token.value}`,
-            }
-        }).then(res => {
-            //Se reinicia el timer
-            window.dispatchEvent(EVENT);
-            //Se actualiza el token con la respuesta del axios
-            localStorage.setItem('token', res.data.data.token);
-            token.value = localStorage.getItem('token');
-        });
-        //cargando_datos();
-        //Se lanza la alerta de éxito
-        TOAST.fire({
-            icon: 'success',
-            title: 'Informacion actualizada exitosamente'
-        })
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/parroquia_update/" + id, FORM_DATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                }
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
+            //cargando_datos();
+            //Se lanza la alerta de éxito
+            TOAST.fire({
+                icon: 'success',
+                title: 'Informacion actualizada exitosamente'
+            })
 
-    } catch (error) {
-        console.log(error);
-        const MENSAJE_ERROR = error.response.data.message;
-        if (error.response.status == 401) {
-            navigateTo('/error_401');
-        } else {
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: RES,
-                    confirmButtonColor: '#3F4280'
-                });
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
             } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: MENSAJE_ERROR,
-                    confirmButtonColor: '#3F4280'
-                });
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     }
