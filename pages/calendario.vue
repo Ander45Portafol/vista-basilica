@@ -127,8 +127,8 @@
                   </select>
                 </div>
                 <div class="relative z-0 mt-8">
-                  <input type="date" id="fecha_evento" v-model="form.fecha_evento"
-                    name="fecha_evento" :disabled="fecha_eventos"
+                  <input type="date" id="fecha_evento" v-model="form.fecha_evento" name="fecha_evento"
+                    :disabled="fecha_eventos"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                     placeholder="" autocomplete="off" />
                   <label for="evento"
@@ -394,7 +394,7 @@ export default defineComponent({
       personal: [],
       accion: null,
       zonas: [],
-      fecha_eventos:true,
+      fecha_eventos: true,
       token: null,
       form: {
         id_evento: "",
@@ -491,25 +491,41 @@ export default defineComponent({
       }
     },
     agregarEvento(selectInfo) {
-      const modalElement = document.getElementById('staticModal');
-      const closeButton = document.getElementById('closeModal');
-      const tituloModal = document.getElementById('modalText');
-      const modalOptions = {
-        backdrop: 'static',
-        backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
-      };
-      const modal = new Modal(modalElement, modalOptions);
-      tituloModal.textContent = 'Agregar'
-      this.fecha_eventos=true;
-      this.accion = "agregar";
-      modal.show();
-      closeButton.addEventListener('click', function () {
-        modal.hide();
-      });
-      fecha_evento.value = selectInfo.startStr;
-      document.getElementById('fecha_evento').value = selectInfo.startStr;
-      
+      const fecha_actual = new Date();
+      fecha_actual.setDate(fecha_actual.getDate() - 1);
+      const fecha_seleccionada = new Date(selectInfo.startStr);
+      fecha_actual.setHours(0, 0, 0, 0);
+      fecha_seleccionada.setHours(0, 0, 0, 0);
+      console.log(fecha_actual + ", " + fecha_seleccionada);
+
+      if (fecha_seleccionada < fecha_actual) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se permiten ingresar eventos, anteriores a la fecha actual",
+          confirmButtonColor: "#3F4280",
+        });
+      } else {
+        const modalElement = document.getElementById('staticModal');
+        const closeButton = document.getElementById('closeModal');
+        const tituloModal = document.getElementById('modalText');
+        const modalOptions = {
+          backdrop: 'static',
+          backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+        };
+        const modal = new Modal(modalElement, modalOptions);
+        tituloModal.textContent = 'Agregar'
+        this.fecha_eventos = true;
+        this.accion = "agregar";
+        modal.show();
+        closeButton.addEventListener('click', function () {
+          modal.hide();
+        });
+        fecha_evento.value = selectInfo.startStr;
+        document.getElementById('fecha_evento').value = selectInfo.startStr;
+
         console.log(fecha_evento.value);
+      }
     },
     async GuardarEvento() {
       try {
@@ -629,6 +645,16 @@ export default defineComponent({
     },
     async actualizarEvento(info) {
       await this.llenarUnEvento(info.event.id);
+      const fecha_actual = new Date();
+      fecha_actual.setDate(fecha_actual.getDate() - 1);
+      const fecha_seleccionada = new Date(this.form.fecha_evento);
+      fecha_actual.setHours(0, 0, 0, 0);
+      fecha_seleccionada.setHours(0, 0, 0, 0);
+      if (fecha_seleccionada < fecha_actual) {
+        this.fecha_eventos = true;
+      } else {
+        this.fecha_eventos = false;
+      }
       const modalElement = document.getElementById('staticModal');
       const closeButton = document.getElementById('closeModal');
       const tituloModal = document.getElementById('modalText');
@@ -637,9 +663,8 @@ export default defineComponent({
         backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
       };
       const modal = new Modal(modalElement, modalOptions);
-      tituloModal.textContent = 'Actualizar'
-      this.fecha_eventos=false;
-      this.accion = "actualizar"
+      tituloModal.textContent = 'Actualizar';
+      this.accion = "actualizar";
       modal.show();
       closeButton.addEventListener('click', function () {
         modal.hide();
@@ -687,9 +712,38 @@ export default defineComponent({
         }
       })
     },
-    eventosOcultos() {
+    async eventosOcultos() {
       document.getElementById('btneliminados').classList.add('active');
       document.getElementById('btneventos').classList.remove('active');
+      const borrar = this.calendarOptions.events;
+      borrar.remove();
+      const EVENT = new Event('reset-timer');
+      const eventos = ref(null);
+      this.token = localStorage.getItem('token');
+      try {
+        const { data: res } = await axios.get('/eventos', {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        eventos.value = res.data;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENT);
+        //Se refresca el valor del token con la respuesta del axios
+        localStorage.setItem('token', res.token);
+        this.token = localStorage.getItem('token');
+        this.calendarOptions.events = eventos.value.map((evento) => ({
+          id: evento.id,
+          title: evento.campos.nombre_evento,
+          start: `${evento.campos.fecha_evento}T${evento.campos.hora_inicial_evento}`,
+          end: `${evento.campos.fecha_evento}T${evento.campos.hora_final_evento}`,
+          display: '#5357aa',
+          color: '#5357aa',
+        }));
+      } catch (error) {
+        console.error(error);
+      }
+      console.log(borrar);
     },
     handleEvents(events) {
       this.currentEvents = events
