@@ -127,7 +127,7 @@
                             </div>
                             <div class="relative z-0 mt-10">
                                 <input type="text" id="cantidad_monetaria_minima" name="cantidad_monetaria_minima"
-                                    v-model="form.cantidad_monetaria_minima"
+                                    v-model="form.cantidad_monetaria_minima" @blur="convertirDecimales"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" />
                                 <label for="username"
@@ -157,7 +157,7 @@
                                         <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
                                         <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
                                         <div v-if="mostrarIconoBorrar"
-                                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                            class="absolute inset-0 h-44 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
                                                 viewBox="0 0 24 24"
                                                 style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
@@ -806,5 +806,14 @@ function validarDescripcionRango() {
     return res;
 }
 
+//Función para validar que la cantidad monetaria minima lleve 2 decimales
+function convertirDecimales() {
+    if (form.value.cantidad_monetaria_minima != null) {
+        var res = validaciones.convertirDecimales(form.value.cantidad_monetaria_minima, 2);
+        if (res != false) {
+            form.value.cantidad_monetaria_minima = res;
+        }
+    }
+}
 
 </script>
