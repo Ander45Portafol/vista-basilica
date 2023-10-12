@@ -89,7 +89,7 @@
             <div class="flex justify-evenly flex-wrap">
               <div class="flex-col w-52">
                 <div class="relative z-0">
-                  <input type="hidden" id="id_evento" v-model="form.id_evento">
+                  <input type="hidden" id="id_evento" @input="validarNombreEvento" v-model="form.id_evento">
                   <!-- Campo de entrada de texto -->
                   <input type="text" id="nombre_evento" name="nombre_evento" v-model="form.nombre_evento"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
@@ -98,9 +98,23 @@
                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                     - Evento</label>
                 </div>
+                <div v-if="!validarNombreEvento()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                  role="alert">
+                  <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                  <div>
+                    El nombre del evento solo permite <span class="font-medium">
+                      letras.</span>
+                  </div>
+                </div>
                 <div class="relative z-0 mt-12">
                   <!-- Campo de entrada de texto -->
-                  <input type="time" id="hora_final_evento" name="hora_final_evento" v-model="form.hora_final_evento"
+                  <input type="time" id="hora_final_evento" name="hora_final_evento" @input="validarHoraFinal"
+                    v-model="form.hora_final_evento"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                     placeholder=" " autocomplete="off" />
                   <label for="hora_final_evento"
@@ -108,13 +122,39 @@
                     final
                     - Evento</label>
                 </div>
+                <div v-if="!validarHoraFinal()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                  <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                  <div>
+                    La hora final debe ser mayor a la <span class="font-medium">
+                      hora inicial.</span>
+                  </div>
+                </div>
                 <div class="relative z-0 mt-8 pt-1">
-                  <input type="text" id="nombre_consultor" name="nombre_consultor" v-model="form.nombre_consultor"
+                  <input type="text" id="nombre_consultor" name="nombre_consultor" @input="validarNombreConsultor()"
+                    v-model="form.nombre_consultor"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                     placeholder=" " autocomplete="off" />
                   <label for="nombre_consultor"
                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
                     - Consultor</label>
+                </div>
+                <div v-if="!validarNombreConsultor()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                  role="alert">
+                  <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                  <div>
+                    El nombre del consultor solo permite <span class="font-medium">
+                      letras.</span>
+                  </div>
                 </div>
                 <div class="pt-4 mt-4 flex-col">
                   <label for="" class="text-sm absolute text-gray-200">Personal<span class="text-sm ml-1"> *
@@ -125,6 +165,18 @@
                     <option class="bg-gray-700" v-for="persona in personal" :key="persona.id" :value="persona.id">
                       {{ persona.campos.nombre_personal }}</option>
                   </select>
+                </div>
+                <div v-if="form.id_personal == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                  <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                  <div>
+                    Seleccione <span class="font-medium">
+                      una opción.</span>
+                  </div>
                 </div>
                 <div class="relative z-0 mt-8">
                   <input type="date" id="fecha_evento" v-model="form.fecha_evento" name="fecha_evento"
@@ -337,6 +389,7 @@ import axios from 'axios';
 import { Modal } from 'flowbite';
 import { defineComponent } from 'vue';
 import FullCalendar from '@fullcalendar/vue3';
+import validaciones from '../assets/validaciones.js';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import esLocale from '@fullcalendar/core/locales/es';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -748,6 +801,25 @@ export default defineComponent({
     handleEvents(events) {
       this.currentEvents = events
       console.log(this.currentEvents);
+    },
+    validarNombreConsultor() {
+      var res = validaciones.validarSoloLetras(this.form.nombre_consultor);
+      return res;
+    },
+    validarNombreEvento() {
+      var res = validaciones.validarSoloLetras(this.form.nombre_evento);
+      return res;
+    },
+    validarDescripcionEvento() {
+      var res = validaciones.validarSoloLetras(this.form.descripcion_evento);
+      return res;
+    },
+    validarHoraFinal() {
+      if (this.form.hora_inicial_evento < this.hora_final_evento) {
+        return false;
+      } else {
+        return true;
+      }
     },
   },
   async mounted() {
