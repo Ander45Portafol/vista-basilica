@@ -1104,6 +1104,8 @@ onMounted(async () => {
             cambios_guardados.value = true;
             read_only.value = false;
             read_only_laminas.value = false;
+            clases_preview_carousel.value.clases_carousel_preview = "flex hidden";
+            clases_preview_carousel.value.clases_carousel_vacio = "flex";
             limpiarPreviewBanner();
             limpiarFormComponente();
             limpiarFormLaminasSlider();
@@ -1282,6 +1284,7 @@ const form_banner = ref({
 });
 
 function limpiarFormBanner() {
+    cambios_guardados.value = true;
     form_banner.value.id_lamina_componente = "";
     form_banner.value.titulo_lamina = "";
     form_banner.value.contenido_lamina = "";
@@ -1355,13 +1358,15 @@ async function abrirModal() {
         BOTON_CERRAR.addEventListener("click", function () {
             MODAL.hide();
             pagina.value = 1;
-            limpiarFormComponente();
-            limpiarFormLaminasSlider();
             id_componente.value = "";
             laminas_slider.value = "";
             cambios_guardados.value = true;
             read_only.value = false;
             read_only_laminas.value = false;
+            clases_preview_carousel.value.clases_carousel_preview = "flex hidden";
+            clases_preview_carousel.value.clases_carousel_vacio = "flex";
+            limpiarFormComponente();
+            limpiarFormLaminasSlider();
         });
 
         const MODAL = new Modal(MODAL_ID, OPCIONES_MODAL);
@@ -1805,6 +1810,7 @@ async function cambiarPaginaInput() {
 }
 
 function limpiarFormLaminasSlider() {
+    cambios_guardados.value = true;
     form_laminas_slider.value.titulo_lamina = "";
     form_laminas_slider.value.subtitulo_lamina = "";
     form_laminas_slider.value.identificador_lamina = "";
@@ -1830,6 +1836,7 @@ const form_laminas_acordeon = ref({
 });
 
 function limpiarFormLaminasAcordeon() {
+    cambios_guardados.value = true;
     form_laminas_acordeon.value.titulo_lamina = "";
     form_laminas_acordeon.value.contenido_lamina = "";
     form_laminas_acordeon.value.identificador_lamina = "";
@@ -1854,7 +1861,8 @@ const read_only_laminas = ref(false);
 async function crearLamina() {
     if (read_only_laminas.value == false) {
         token.value = localStorage.getItem("token");
-
+        read_only_laminas.value = true;
+        cambios_guardados.value = true;
         try {
             if (informacion_componente_seleccionado.value.nombre == "Slider") {
                 const FORM_DATA = new FormData();
@@ -1946,8 +1954,6 @@ async function crearLamina() {
             });
 
             await leerLaminas();
-            read_only_laminas.value = true;
-            cambios_guardados.value = true;
         } catch (error) {
             console.log(error);
             cambios_guardados.value = true;
