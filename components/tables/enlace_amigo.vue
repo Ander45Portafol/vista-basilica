@@ -804,13 +804,6 @@ async function recuperarUnEnlace(id) {
         }
     });
 }
-
-//Validaciones
-function validarTitulo() {
-    var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_enlace);
-    return res;
-}
-
 const visible_ref = ref(false);
 const index_ref = ref(0);
 const imgs_ref = ref([]);
@@ -827,4 +820,12 @@ function mostrarLightBox(url) {
 function esconderLightBox() {
     visible_ref.value = false
 }
+
+//Validaciones
+function validarTitulo() {
+    var res = validaciones.validarSoloLetrasYNumeros(form.value.titulo_enlace);
+    return res;
+}
+
+
 </script>

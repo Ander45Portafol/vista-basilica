@@ -4,7 +4,8 @@
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
                 <img :src="api_url + usuario.campos.imagen_usuario"
-                    class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+                    @click="mostrarLightBox(api_url + usuario.campos.imagen_usuario)"
+                    class="h-10 w-10 cursor-pointer rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
                 <div
                     class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">{{
@@ -56,6 +57,9 @@
             </div>
         </div>
     </div>
+        <!--Llama la propiedad de lightbox para las imagenes-->
+        <vue-easy-lightbox :visible="visible_ref" :imgs="imgs_ref" :index="index_ref"
+        @hide="esconderLightBox"></vue-easy-lightbox>
     <!-- Main modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -372,6 +376,7 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import validaciones from '../../assets/validaciones.js';
+import VueEasyLightbox from 'vue-easy-lightbox'
 definePageMeta({
     layout: "default",
 });
@@ -881,6 +886,23 @@ async function recuperarUsuario(id, nombre_usuario) {
     });
 }
 
+
+const visible_ref = ref(false);
+const index_ref = ref(0);
+const imgs_ref = ref([]);
+
+function abrirLightBox() {
+    visible_ref.value = true;
+}
+
+function mostrarLightBox(url) {
+    imgs_ref.value = url;
+    abrirLightBox();
+}
+
+function esconderLightBox() {
+    visible_ref.value = false
+}
 //Validaciones
 function validarNombre() {
     var res = validaciones.validarSoloLetras(form.value.nombre_usuario);
