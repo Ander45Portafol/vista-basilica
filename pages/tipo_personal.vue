@@ -10,8 +10,7 @@
                 <div class="w-3/4 flex items-center h-full mt-4 max-[500px]:w-full">
                     <!-- Se enlaza la variable buscar con v-model y se le asigna el evento para el buscador -->
                     <input type="text" class="rounded-lg relative w-2/4 h-12 outline-none max-[800px]:w-full min-w-[200px]"
-                        placeholder="Buscar... (tipo personal)" v-model="buscar.buscador"
-                        @keyup="buscarTiposPersonales($event)" />
+                        placeholder="Buscar... (tipo personal)" v-model="buscar.buscador" @keyup="buscarTiposPersonales($event)" />
                     <div class="flex justify-end items-center">
                         <!-- Se le asigna la función para limpiar el buscador al botón -->
                         <button class="absolute mr-4" @click="limpiarBuscador()">
@@ -70,7 +69,7 @@
             </div>
             <!-- Línea divisora -->
             <div class="line bg-slate-800 h-0.5 mt-4 w-full min-w-[200px]"></div>
-            <!-- Se manda a traer la longitud del array de tipos_personales (el que trae los registros) y así saber cuantos registros son -->
+            <!-- Se manda a traer la longitud del array de tipos_personal (el que trae los registros) y así saber cuantos registros son -->
             <div class="h-screen">
                 <p v-if="tipos_personales.length > 0 && !ceroRegistrosEncontrados"
                     class="font-extrabold text-slate-900 mt-8 ml-4 max-[425px]:mt-16">{{ tipos_personales[pagina -
@@ -99,13 +98,12 @@
                 </div>
                 <div class="tables overflow-y-scroll h-3/5 pr-4">
                     <TablaCargando v-if="tipos_personales.length == 0 && !ceroRegistrosEncontrados" />
-                    <TablesTipoPeronal v-if="tipos_personales.length > 0" :datos_tipo_personal="tipos_personales"
-                        :actualizar_datos="cargarTabla" :paginacion="pagina" />
+                    <TablesTipoPersonal v-if="tipos_personales.length > 0" :datos_tipo_personal="tipos_personales" :actualizar_datos="cargarTabla"
+                        :paginacion="pagina" />
                 </div>
                 <div class="flex justify-center mt-6">
-                    <Paginacion v-if="tipos_personales.length > 1 && !ceroRegistrosEncontrados"
-                        v-model:pagina_actual="pagina" @cambioDePagina="cambioDePagina"
-                        :items_totales="tipos_personales.length" />
+                    <Paginacion v-if="tipos_personales.length > 1 && !ceroRegistrosEncontrados" v-model:pagina_actual="pagina"
+                        @cambioDePagina="cambioDePagina" :items_totales="tipos_personales.length" />
                 </div>
             </div>
         </div>
@@ -129,7 +127,7 @@
     width: 7px;
 }
 
-.tables::-webkit-scrollbar {
+.tables::-webkit-scrollbar-thumb {
     background: #32345A;
 }
 </style>
