@@ -145,7 +145,7 @@
             <div class="flex justify-evenly flex-wrap">
               <div class="flex-col w-52">
                 <div class="relative z-0">
-                  <input type="hidden" id="id_evento" v-model="form.id_evento" />
+                  <input type="hidden" id="id_evento" @input="validarNombreEvento" v-model="form.id_evento">
                   <!-- Campo de entrada de texto -->
                   <input
                     type="text"
@@ -162,12 +162,22 @@
                     >Nombre - Evento</label
                   >
                 </div>
+                <div v-if="!validarNombreEvento()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                  role="alert">
+                  <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                  <div>
+                    El nombre del evento solo permite <span class="font-medium">
+                      letras.</span>
+                  </div>
+                </div>
                 <div class="relative z-0 mt-12">
                   <!-- Campo de entrada de texto -->
-                  <input
-                    type="time"
-                    id="hora_final_evento"
-                    name="hora_final_evento"
+                  <input type="time" id="hora_final_evento" name="hora_final_evento" @input="validarHoraFinal"
                     v-model="form.hora_final_evento"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                     placeholder=" "
@@ -179,11 +189,20 @@
                     >Hora final - Evento</label
                   >
                 </div>
+                <div v-if="!validarHoraFinal()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                  <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                  <div>
+                    La hora final debe ser mayor a la <span class="font-medium">
+                      hora inicial.</span>
+                  </div>
+                </div>
                 <div class="relative z-0 mt-8 pt-1">
-                  <input
-                    type="text"
-                    id="nombre_consultor"
-                    name="nombre_consultor"
+                  <input type="text" id="nombre_consultor" name="nombre_consultor" @input="validarNombreConsultor()"
                     v-model="form.nombre_consultor"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                     placeholder=" "
@@ -194,6 +213,19 @@
                     class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                     >Nombre - Consultor</label
                   >
+                </div>
+                <div v-if="!validarNombreConsultor()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                  role="alert">
+                  <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                  <div>
+                    El nombre del consultor solo permite <span class="font-medium">
+                      letras.</span>
+                  </div>
                 </div>
                 <div class="pt-4 mt-4 flex-col">
                   <label for="" class="text-sm absolute text-gray-200"
@@ -216,6 +248,18 @@
                       {{ persona.campos.nombre_personal }}
                     </option>
                   </select>
+                </div>
+                <div v-if="form.id_personal == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                  <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
+                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                  <div>
+                    Seleccione <span class="font-medium">
+                      una opción.</span>
+                  </div>
                 </div>
                 <div class="relative z-0 mt-8">
                   <input
@@ -500,15 +544,17 @@ b {
 definePageMeta({
   layout: "principal",
 });
-import Swal from "sweetalert2";
-import axios from "axios";
-import { Modal } from "flowbite";
-import { defineComponent } from "vue";
-import FullCalendar from "@fullcalendar/vue3";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import esLocale from "@fullcalendar/core/locales/es";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
+
+import Swal from 'sweetalert2';
+import axios from 'axios';
+import { Modal } from 'flowbite';
+import { defineComponent } from 'vue';
+import FullCalendar from '@fullcalendar/vue3';
+import validaciones from '../assets/validaciones.js';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import esLocale from '@fullcalendar/core/locales/es';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 
 const fecha_evento = ref(null);
 //Metodo para mostrar las alertas
@@ -659,26 +705,41 @@ export default defineComponent({
       }
     },
     agregarEvento(selectInfo) {
-      const modalElement = document.getElementById("staticModal");
-      const closeButton = document.getElementById("closeModal");
-      const tituloModal = document.getElementById("modalText");
-      const modalOptions = {
-        backdrop: "static",
-        backdropClasses:
-          "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
-      };
-      const modal = new Modal(modalElement, modalOptions);
-      tituloModal.textContent = "Agregar";
-      this.fecha_eventos = true;
-      this.accion = "agregar";
-      modal.show();
-      closeButton.addEventListener("click", function () {
-        modal.hide();
-      });
-      fecha_evento.value = selectInfo.startStr;
-      document.getElementById("fecha_evento").value = selectInfo.startStr;
+      const fecha_actual = new Date();
+      fecha_actual.setDate(fecha_actual.getDate() - 1);
+      const fecha_seleccionada = new Date(selectInfo.startStr);
+      fecha_actual.setHours(0, 0, 0, 0);
+      fecha_seleccionada.setHours(0, 0, 0, 0);
+      console.log(fecha_actual + ", " + fecha_seleccionada);
 
-      console.log(fecha_evento.value);
+      if (fecha_seleccionada < fecha_actual) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se permiten ingresar eventos, anteriores a la fecha actual",
+          confirmButtonColor: "#3F4280",
+        });
+      } else {
+        const modalElement = document.getElementById('staticModal');
+        const closeButton = document.getElementById('closeModal');
+        const tituloModal = document.getElementById('modalText');
+        const modalOptions = {
+          backdrop: 'static',
+          backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+        };
+        const modal = new Modal(modalElement, modalOptions);
+        tituloModal.textContent = 'Agregar'
+        this.fecha_eventos = true;
+        this.accion = "agregar";
+        modal.show();
+        closeButton.addEventListener('click', function () {
+          modal.hide();
+        });
+        fecha_evento.value = selectInfo.startStr;
+        document.getElementById('fecha_evento').value = selectInfo.startStr;
+
+        console.log(fecha_evento.value);
+      }
     },
     async GuardarEvento() {
       try {
@@ -802,17 +863,27 @@ export default defineComponent({
     },
     async actualizarEvento(info) {
       await this.llenarUnEvento(info.event.id);
-      const modalElement = document.getElementById("staticModal");
-      const closeButton = document.getElementById("closeModal");
-      const tituloModal = document.getElementById("modalText");
+
+      const fecha_actual = new Date();
+      fecha_actual.setDate(fecha_actual.getDate() - 1);
+      const fecha_seleccionada = new Date(this.form.fecha_evento);
+      fecha_actual.setHours(0, 0, 0, 0);
+      fecha_seleccionada.setHours(0, 0, 0, 0);
+      if (fecha_seleccionada < fecha_actual) {
+        this.fecha_eventos = true;
+      } else {
+        this.fecha_eventos = false;
+      }
+      const modalElement = document.getElementById('staticModal');
+      const closeButton = document.getElementById('closeModal');
+      const tituloModal = document.getElementById('modalText');
       const modalOptions = {
         backdrop: "static",
         backdropClasses:
           "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
       };
       const modal = new Modal(modalElement, modalOptions);
-      tituloModal.textContent = "Actualizar";
-      this.fecha_eventos = false;
+      tituloModal.textContent = 'Actualizar';
       this.accion = "actualizar";
       modal.show();
       closeButton.addEventListener("click", function () {
@@ -862,13 +933,60 @@ export default defineComponent({
         }
       });
     },
-    eventosOcultos() {
-      document.getElementById("btneliminados").classList.add("active");
-      document.getElementById("btneventos").classList.remove("active");
+    async eventosOcultos() {
+      document.getElementById('btneliminados').classList.add('active');
+      document.getElementById('btneventos').classList.remove('active');
+      const borrar = this.calendarOptions.events;
+      borrar.remove();
+      const EVENT = new Event('reset-timer');
+      const eventos = ref(null);
+      this.token = localStorage.getItem('token');
+      try {
+        const { data: res } = await axios.get('/eventos', {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        });
+        eventos.value = res.data;
+        //Se reinicia el timer
+        window.dispatchEvent(EVENT);
+        //Se refresca el valor del token con la respuesta del axios
+        localStorage.setItem('token', res.token);
+        this.token = localStorage.getItem('token');
+        this.calendarOptions.events = eventos.value.map((evento) => ({
+          id: evento.id,
+          title: evento.campos.nombre_evento,
+          start: `${evento.campos.fecha_evento}T${evento.campos.hora_inicial_evento}`,
+          end: `${evento.campos.fecha_evento}T${evento.campos.hora_final_evento}`,
+          display: '#5357aa',
+          color: '#5357aa',
+        }));
+      } catch (error) {
+        console.error(error);
+      }
     },
     handleEvents(events) {
       this.currentEvents = events;
       console.log(this.currentEvents);
+    },
+    validarNombreConsultor() {
+      var res = validaciones.validarSoloLetras(this.form.nombre_consultor);
+      return res;
+    },
+    validarNombreEvento() {
+      var res = validaciones.validarSoloLetras(this.form.nombre_evento);
+      return res;
+    },
+    validarDescripcionEvento() {
+      var res = validaciones.validarSoloLetras(this.form.descripcion_evento);
+      return res;
+    },
+    validarHoraFinal() {
+      if (this.form.hora_inicial_evento < this.hora_final_evento) {
+        return false;
+      } else {
+        return true;
+      }
     },
   },
   async mounted() {
