@@ -432,7 +432,7 @@ async function crearSeccion() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
     console.log(form);
-    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
+    if (validarTituloSeccion() && validarSubtituloSeccion() && form.value.id_pagina != 0) {
         try {
             const FORM_DATA = new FormData();
             FORM_DATA.append("titulo_seccion", form.value.titulo_seccion);
@@ -593,7 +593,7 @@ async function leerUnaSeccion(id) {
 async function actualizarSeccion() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if (validarTituloSeccion() && validarSubtituloSeccion() && form.id_pagina != 0) {
+    if (validarTituloSeccion() && validarSubtituloSeccion() && form.value.id_pagina != 0) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
             var id = form.value.id_seccion;

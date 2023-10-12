@@ -357,7 +357,7 @@
                 <div class="p-8 space-y-6 flex-col">
                     <div class="flex justify-between items-center">
                         <p class="text-gray-100">Ingrese las imagenes que desee mostrar para sus proyectos publicos</p>
-                        <button class="bg-space h-10 w-14 flex justify-center items-center rounded-lg"
+                        <button class="bg-purpleLogin hover:bg-lightPurpleLogin h-10 w-14 flex justify-center items-center rounded-lg"
                             @click="seleccionarArchivos">
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">

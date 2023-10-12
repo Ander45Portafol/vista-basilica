@@ -578,7 +578,7 @@ async function leerUnMensaje(id) {
 async function actualizarMensaje() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if (validarNombre() && validarApellido() && validarTelefono() && form.estado_mensaje != 0 && form.id_contacto != 0) {
+    if (validarNombre() && validarApellido() && validarTelefono() && form.value.estado_mensaje != 0 && form.value.id_contacto != 0) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
             var id = form.value.id_mensaje;

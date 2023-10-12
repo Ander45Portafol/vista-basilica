@@ -296,7 +296,7 @@
                                         <img v-if="imagenPreview" :src="imagenPreview" class="w-40 rounded-lg h-44" />
                                         <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
                                         <div v-if="mostrarIconoBorrar"
-                                            class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                                            class="absolute h-44 inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px"
                                                 viewBox="0 0 24 24"
                                                 style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;">
@@ -379,7 +379,7 @@
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-4xl max-h-full">
             <!-- Modal content -->
-            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 modalG">
+            <div class="relative rounded-lg shadow dark:bg-gray-700 bg-black modal">
                 <!-- Modal header -->
                 <div class="flex items-start justify-between p-4 rounded-t">
                     <div class="flex-col pt-4 ml-4">
@@ -402,7 +402,7 @@
                     <div class="flex items-center justify-between">
                         <p class="text-gray-100">Ingrese las imagenes que desee mostrar para sus grupos parroquiales
                             publicos</p>
-                        <button class="flex items-center justify-center h-10 rounded-lg bg-space w-14"
+                        <button class="flex items-center justify-center h-10 rounded-lg bg-purpleLogin hover:bg-lightPurpleLogin w-14"
                             @click="seleccionarArchivos">
                             <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -419,9 +419,9 @@
                             <img :src="api_url + item.archivo_imagen" class="w-32 h-32 rounded-lg" />
                             <div @click="agregarImagenBorrada(item.id_imagen_grupo_parroquial)"
                                 class="absolute inset-0 flex items-center justify-center w-32 h-32 rounded-lg opacity-0 hover:opacity-100"
-                                style="background-color: rgba(179, 42, 42, 0.5);">
+                                style="background-color: rgba(0, 0, 0, 0.5);">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px" viewBox="0 0 24 24"
-                                    style="fill: rgb(23, 22, 22); transform: ; msFilter:;">
+                                    style="fill: #FFFFFF; transform: ; msFilter:;">
                                     <path
                                         d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
                                     </path>
@@ -676,7 +676,7 @@ async function crearGrupoParroquial() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
 
     token.value = localStorage.getItem('token');
-    if (validarNombreGrupo() && validarNombreEncargado() && validarApellidoEncargado() && form.id_categoria_grupo_parroquial != 0 &&
+    if (validarNombreGrupo() && validarNombreEncargado() && validarApellidoEncargado() && form.value.id_categoria_grupo_parroquial != 0 &&
         validarTelefono()
     ) {
         try {
@@ -851,7 +851,7 @@ async function leerUnGrupoParroquial(id) {
 async function actualizarGrupoParroquial() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if (validarNombreGrupo() && validarNombreEncargado() && validarApellidoEncargado() && form.id_categoria_grupo_parroquial != 0 &&
+    if (validarNombreGrupo() && validarNombreEncargado() && validarApellidoEncargado() && form.value.id_categoria_grupo_parroquial != 0 &&
         validarTelefono()) {
         try {
             var id = form.value.id_grupo_parroquial;

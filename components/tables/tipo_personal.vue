@@ -82,7 +82,8 @@
                 <div class="p-6 space-y-6 pb-10">
                     <form action="" @submit.prevent="submitForm()" class="flex justify-evenly">
                         <div class="flex-col w-64">
-                            <input type="hidden" name="id_tipo_personal" id="id_tipo_personal" v-model="form.id_tipo_personal">
+                            <input type="hidden" name="id_tipo_personal" id="id_tipo_personal"
+                                v-model="form.id_tipo_personal">
                             <div class="relative z-0 mt-6">
                                 <input type="text" id="tipo_personal" name="tipo_personal" required maxlength="50"
                                     @input="validarTipoPersonal()" v-model="form.tipo_personal"
@@ -146,8 +147,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para crear al botón -->
-                                <button id="btnModalAdd" type="submit"
-                                    :disabled=" !validarTipoPersonal()"
+                                <button id="btnModalAdd" type="submit" :disabled="!validarTipoPersonal()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[400px]:mx-4 max-[750px]:my-1 max-[750px]:ml-[-1px] max-[400px]:ml-6 max-[400px]:mr-[6px]">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -160,8 +160,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón -->
-                                <button id="btnModalUpdate" type="submit"
-                                    :disabled=" !validarTipoPersonal()"
+                                <button id="btnModalUpdate" type="submit" :disabled="!validarTipoPersonal()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[750px]:ml-0 = max-[400px]:mt-0 max-[400px]:mx-4 max-[750px]:mt-[1px]">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -212,7 +211,6 @@
 .modal-buttons button {
     background-color: #32345a;
 }
-
 </style>
 
 <script setup>
@@ -306,73 +304,75 @@ function accionForm(accion) {
 //Función para crear/actualizar un registro cuando se ejecuta el submit del form
 function submitForm() {
     if (formAccion == "crear") {
-         crearTiposPersonales();
+        crearTiposPersonales();
     } else {
         actualizarTiposPersonales();
     }
 }
 
 //Función para crear un tipo personal
-async function crearTiposPersonales () {
-    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-    token.value = localStorage.getItem('token');
-    try {
-        const FORM_DATA = new FormData();
-        FORM_DATA.append("tipo_personal", form.value.tipo_personal);
-        FORM_DATA.append(
-            "visibilidad_tipo_personal",
-            form.value.visibilidad_tipo_personal ? 1 : 0
-        );
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/tipos_personales/", FORM_DATA, {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            },
-        }).then(res => {
-            //Se reinicia el timer
-            window.dispatchEvent(EVENT);
-            //Se actualiza el token con la respuesta del axios
-            localStorage.setItem('token', res.data.data.token);
-            token.value = localStorage.getItem('token');
-        });
+async function crearTiposPersonales() {
+    if (validarTipoPersonal()) {
+        //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+        token.value = localStorage.getItem('token');
+        try {
+            const FORM_DATA = new FormData();
+            FORM_DATA.append("tipo_personal", form.value.tipo_personal);
+            FORM_DATA.append(
+                "visibilidad_tipo_personal",
+                form.value.visibilidad_tipo_personal ? 1 : 0
+            );
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/tipos_personales/", FORM_DATA, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
 
-        //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-        await props.actualizar_datos();
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await props.actualizar_datos();
 
-        document.getElementById('closeModal').click();
-        //Se lanza la alerta con el mensaje de éxito
-        // props.actualizar_datos();
-        TOAST.fire({
-            icon: 'success',
-            title: 'Tipo personal creado exitosamente'
-        });
-    } catch (error) {
-        console.log(error);
-        const MENSAJE_ERROR = error.response.data.message;
-        if (error.response.status == 401) {
-            navigateTo('/error_401');
-        } else {
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: RES,
-                    confirmButtonColor: '#3F4280'
-                });
+            document.getElementById('closeModal').click();
+            //Se lanza la alerta con el mensaje de éxito
+            // props.actualizar_datos();
+            TOAST.fire({
+                icon: 'success',
+                title: 'Tipo personal creado exitosamente'
+            });
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
             } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: MENSAJE_ERROR,
-                    confirmButtonColor: '#3F4280'
-                });
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     }
@@ -380,7 +380,7 @@ async function crearTiposPersonales () {
 
 async function estadoActualizar(id) {
     await leerUnTipoPersonal(id);
-    const  MODAL_ID= document.getElementById('staticModal');
+    const MODAL_ID = document.getElementById('staticModal');
     const BOTON_CERRAR = document.getElementById('closeModal');
     const TEXTO_MODAL = document.getElementById('modalText');
     const OPCIONES_MODAL = {
@@ -458,7 +458,7 @@ async function leerUnTipoPersonal(id) {
 async function actualizarTiposPersonales() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if ( validarTipoPersonal()) {
+    if (validarTipoPersonal()) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
             var id = form.value.id_tipo_personal;
@@ -608,80 +608,80 @@ async function borrarTipoPersonal(id,) {
 //Función para cambiar un usuario a activo
 async function recuperarTipoPersonal(id) {
 
-Swal.fire({
-    title: 'Confirmación',
-    text: "¿¿Desea recuperar el registro",
-    icon: 'warning',
-    reverseButtons: true,
-    showCancelButton: true,
-    confirmButtonColor: '#3F4280',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Confirmar',
-    cancelButtonText: 'Cancelar',
-    allowOutsideClick: false,
-}).then(async (result) => {
-    if (result.isConfirmed) {
-        try {
-            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-            token.value = localStorage.getItem('token');
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿¿Desea recuperar el registro",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        allowOutsideClick: false,
+    }).then(async (result) => {
+        if (result.isConfirmed) {
             try {
-                //Se realiza la petición axios
-                await axios.delete("/tipos_personales/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }).then(res => {
-                    //Se reinicia el timer
-                    window.dispatchEvent(EVENT);
-                    //Se actualiza el valor del token con la respuesta del axios
-                    localStorage.setItem('token', res.data.data.token);
-                    token.value = localStorage.getItem('token');
-                });;
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/tipos_personales/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el valor del token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+                    });;
 
-                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-                await props.actualizar_datos();
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
 
-                //Se lanza la alerta de éxito
-                TOAST.fire({
-                    icon: "success",
-                    title: "Tipo personal recuperado exitosamente",
-                });
-            } catch (error) {
-                console.log(error);
+                    //Se lanza la alerta de éxito
+                    TOAST.fire({
+                        icon: "success",
+                        title: "Tipo personal recuperado exitosamente",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
             }
-        }
-        catch (error) {
-            console.log(error);
-            const MENSAJE_ERROR = error.response.data.message;
-            if (error.response.status == 401) {
-                navigateTo('/error_401');
-            } else {
-                if (!error.response.data.errors) {
-                    //Se extrae el sqlstate (identificador de acciones SQL)
-                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                    const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: RES,
-                        confirmButtonColor: '#3F4280'
-                    });
+            catch (error) {
+                console.log(error);
+                const MENSAJE_ERROR = error.response.data.message;
+                if (error.response.status == 401) {
+                    navigateTo('/error_401');
                 } else {
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: MENSAJE_ERROR,
-                        confirmButtonColor: '#3F4280'
-                    });
+                    if (!error.response.data.errors) {
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: RES,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    } else {
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: MENSAJE_ERROR,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
                 }
             }
         }
-    }
-});
+    });
 }
 
 
