@@ -18,7 +18,7 @@
             <!-- Al darle clic al evento leerUnContacto ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                 <button v-if="misa.campos.visibilidad_misa == 1" @click.prevent="estadoActualizar(misa.id)"
+                <button v-if="misa.campos.visibilidad_misa == 1" @click.prevent="estadoActualizar(misa.id)"
                     class="h-10 w-10 rounded-md flex items-center ml-4 justify-center editbtn max-[400px]:mx-4">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -57,7 +57,7 @@
         </div>
     </div> <!--contained data -->
 
-    
+
     <!-- Modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -306,7 +306,7 @@ const form = ref({
     titulo_misa: "",
     descripcion_misa: "",
     visibilidad_misa: false,
-    
+
 });
 
 //Funciones para manejo del modal
@@ -357,76 +357,79 @@ function submitForm() {
 
 //Función para crear una misa
 async function crearMisa() {
-    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-    token.value = localStorage.getItem('token');
-    try {
-        const FORM_DATA = new FormData();
-        FORM_DATA.append("enlace_misa", form.value.enlace_misa);
-        FORM_DATA.append("fecha_misa", form.value.fecha_misa);
-        FORM_DATA.append("titulo_misa", form.value.titulo_misa);
-        FORM_DATA.append("descripcion_misa", form.value.descripcion_misa);
-        FORM_DATA.append(
-            "visibilidad_misa",
-            form.value.visibilidad_misa ? 1 : 0
-        );
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/misas/", FORM_DATA, {
-            headers: {
-                Authorization: `Bearer ${token.value}`,
-            },
-        }).then(res => {
-            //Se reinicia el timer
-            window.dispatchEvent(EVENT);
-            //Se actualiza el token con la respuesta del axios
-            localStorage.setItem('token', res.data.data.token);
-            token.value = localStorage.getItem('token');
-        });
+    if (validarTituloMisa()) {
+        //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+        token.value = localStorage.getItem('token');
+        try {
+            const FORM_DATA = new FormData();
+            FORM_DATA.append("enlace_misa", form.value.enlace_misa);
+            FORM_DATA.append("fecha_misa", form.value.fecha_misa);
+            FORM_DATA.append("titulo_misa", form.value.titulo_misa);
+            FORM_DATA.append("descripcion_misa", form.value.descripcion_misa);
+            FORM_DATA.append(
+                "visibilidad_misa",
+                form.value.visibilidad_misa ? 1 : 0
+            );
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/misas/", FORM_DATA, {
+                headers: {
+                    Authorization: `Bearer ${token.value}`,
+                },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
 
-        //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-        await props.actualizar_datos();
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await props.actualizar_datos();
 
-        document.getElementById('closeModal').click();
-        //Se lanza la alerta con el mensaje de éxito
-        // props.actualizar_datos();
-        TOAST.fire({
-            icon: 'success',
-            title: 'Misa creada exitosamente'
-        });
-    } catch (error) {
-        console.log(error);
-        const MENSAJE_ERROR = error.response.data.message;
-        if (error.response.status == 401) {
-            navigateTo('/error_401');
-        } else {
-            if (!error.response.data.errors) {
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: RES,
-                    confirmButtonColor: '#3F4280'
-                });
+            document.getElementById('closeModal').click();
+            //Se lanza la alerta con el mensaje de éxito
+            // props.actualizar_datos();
+            TOAST.fire({
+                icon: 'success',
+                title: 'Misa creada exitosamente'
+            });
+        } catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
             } else {
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: MENSAJE_ERROR,
-                    confirmButtonColor: '#3F4280'
-                });
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
         }
     }
 }
 
-async function estadoActualizar(id) {;
+async function estadoActualizar(id) {
+    ;
     await leerUnaMisa(id);
-    const  MODAL_ID= document.getElementById('staticModal');
+    const MODAL_ID = document.getElementById('staticModal');
     const BOTON_CERRAR = document.getElementById('closeModal');
     const TEXTO_MODAL = document.getElementById('modalText');
     const OPCIONES_MODAL = {
@@ -441,7 +444,7 @@ async function estadoActualizar(id) {;
     BOTON_CERRAR.addEventListener('click', function () {
         modal.hide();
         limpiarForm();
-   
+
     });
 }
 
@@ -667,80 +670,80 @@ async function borrarMisa(id,) {
 //Función para cambiar un usuario a activo
 async function recuperarUnaMisa(id) {
 
-Swal.fire({
-    title: 'Confirmación',
-    text: "¿¿Desea recuperar el registro",
-    icon: 'warning',
-    reverseButtons: true,
-    showCancelButton: true,
-    confirmButtonColor: '#3F4280',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Confirmar',
-    cancelButtonText: 'Cancelar',
-    allowOutsideClick: false,
-}).then(async (result) => {
-    if (result.isConfirmed) {
-        try {
-            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-            token.value = localStorage.getItem('token');
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿¿Desea recuperar el registro",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        allowOutsideClick: false,
+    }).then(async (result) => {
+        if (result.isConfirmed) {
             try {
-                //Se realiza la petición axios
-                await axios.delete("/misas/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }).then(res => {
-                    //Se reinicia el timer
-                    window.dispatchEvent(EVENT);
-                    //Se actualiza el valor del token con la respuesta del axios
-                    localStorage.setItem('token', res.data.data.token);
-                    token.value = localStorage.getItem('token');
-                });;
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/misas/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el valor del token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+                    });;
 
-                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-                await props.actualizar_datos();
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
 
-                //Se lanza la alerta de éxito
-                TOAST.fire({
-                    icon: "success",
-                    title: "Misa recuperada  exitosamente",
-                });
-            } catch (error) {
-                console.log(error);
+                    //Se lanza la alerta de éxito
+                    TOAST.fire({
+                        icon: "success",
+                        title: "Misa recuperada  exitosamente",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
             }
-        }
-        catch (error) {
-            console.log(error);
-            const MENSAJE_ERROR = error.response.data.message;
-            if (error.response.status == 401) {
-                navigateTo('/error_401');
-            } else {
-                if (!error.response.data.errors) {
-                    //Se extrae el sqlstate (identificador de acciones SQL)
-                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                    const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: RES,
-                        confirmButtonColor: '#3F4280'
-                    });
+            catch (error) {
+                console.log(error);
+                const MENSAJE_ERROR = error.response.data.message;
+                if (error.response.status == 401) {
+                    navigateTo('/error_401');
                 } else {
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: MENSAJE_ERROR,
-                        confirmButtonColor: '#3F4280'
-                    });
+                    if (!error.response.data.errors) {
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: RES,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    } else {
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: MENSAJE_ERROR,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
                 }
             }
         }
-    }
-});
+    });
 }
 
 

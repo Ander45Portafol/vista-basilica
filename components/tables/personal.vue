@@ -232,7 +232,7 @@
                                 </svg>
                             </button>
                             <!-- Se le coloca la función para crear al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                            <button id="btnModalAdd" type="submit"
+                            <button id="btnModalAdd" type="submit" :disabled="!validarNombrePersonal() || !validarApellidoPersonal() || !validarTelefono() || form.id_tipo_personal == 0"
                                 class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                 <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -245,7 +245,7 @@
                                 </svg>
                             </button>
                             <!-- Se le coloca la función para actualizar al botón y se evalua que ninguna función de validaciones sea false, si alguna es false el botón se desactiva -->
-                            <button id="btnModalUpdate" type="submit"
+                            <button id="btnModalUpdate" type="submit" :disabled="!validarNombrePersonal() || !validarApellidoPersonal() || !validarTelefono() || form.id_tipo_personal == 0"
                                 class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center">
                                 <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -425,7 +425,7 @@ function submitForm() {
 async function crearPersonal() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if (validarNombrePersonal() && validarApellidoPersonal() && validarTelefono() && form.id_tipo_personal != 0) {
+    if (validarNombrePersonal() && validarApellidoPersonal() && validarTelefono() && form.value.id_tipo_personal != 0) {
         try {
             const FORM_DATA = new FormData();
             FORM_DATA.append("nombre_personal", form.value.nombre_personal);
@@ -577,7 +577,7 @@ async function leerUnPersonal(id) {
 async function actualizarPersonal() {
     //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
     token.value = localStorage.getItem('token');
-    if (validarNombrePersonal() && validarApellidoPersonal() && validarTelefono() && form.id_tipo_personal != 0) {
+    if (validarNombrePersonal() && validarApellidoPersonal() && validarTelefono() && form.value.id_tipo_personal != 0) {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
             var id = form.value.id_personal;
