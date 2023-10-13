@@ -628,6 +628,9 @@ async function crearContacto() {
         icon: "success",
         title: "Contacto creado exitosamente",
       });
+
+      limpiarForm();
+
     } catch (error) {
       console.log(error);
       const MENSAJE_ERROR = error.response.data.message;
