@@ -645,13 +645,25 @@ export default defineComponent({
         const modal = new Modal(modalElement, modalOptions);
         tituloModal.textContent = 'Agregar'
         this.fecha_eventos = true;
+        fecha_evento.value = selectInfo.startStr;
+        this.form.fecha_evento = selectInfo.startStr;
         this.accion = "agregar";
+        this.form.nombre_evento = "";
+        this.form.descripcion_evento = "";
+        this.form.hora_inicial_evento = "";
+        this.form.hora_final_evento = "";
+        this.form.nombre_consultor = "";
+        this.form.apellido_consultor = "";
+        this.form.telefono_consultor = "";
+        this.form.visibilidad_evento = false;
+        this.form.modalidad_evento = 0;
+        this.form.id_personal = 0;
+        this.form.estado_evento = 0;
+        this.form.id_zona = 0;
         modal.show();
         closeButton.addEventListener('click', function () {
           modal.hide();
         });
-        fecha_evento.value = selectInfo.startStr;
-        document.getElementById('fecha_evento').value = selectInfo.startStr;
       }
     },
     async GuardarEvento() {
@@ -691,20 +703,17 @@ export default defineComponent({
             icon: "success",
             title: "Evento creado exitosamente",
           });
-          if (this.form.id_evento) {
-            this.form.id_evento = '';
-          }
-          this.form.nombre_evento = '';
-          this.form_descripcion_evento = '';
-          this.form.hora_inicial_evento = '';
-          this.form.hora_final_evento = '';
-          this.form.nombre_consultor = '';
-          this.form.apellido_consultor = '';
-          this.form.telefono_consultor = '';
+          this.form.nombre_evento = "";
+          this.form.descripcion_evento = "";
+          this.form.hora_inicial_evento = "";
+          this.form.hora_final_evento = "";
+          this.form.nombre_consultor = "";
+          this.form.apellido_consultor = "";
+          this.form.telefono_consultor = "";
           this.form.visibilidad_evento = false;
           this.form.modalidad_evento = 0;
-          this.form.estado_evento = 0;
           this.form.id_personal = 0;
+          this.form.estado_evento = 0;
           this.form.id_zona = 0;
         } catch (error) {
           console.log(error);
@@ -787,20 +796,18 @@ export default defineComponent({
             icon: "success",
             title: "Evento modificado exitosamente",
           });
-          if (this.form.id_evento) {
-            this.form.id_evento = '';
-          }
-          this.form.nombre_evento = '';
-          this.form_descripcion_evento = '';
-          this.form.hora_inicial_evento = '';
-          this.form.hora_final_evento = '';
-          this.form.nombre_consultor = '';
-          this.form.apellido_consultor = '';
-          this.form.telefono_consultor = '';
+          this.form.id_evento="";
+          this.form.nombre_evento = "";
+          this.form.descripcion_evento = "";
+          this.form.hora_inicial_evento = "";
+          this.form.hora_final_evento = "";
+          this.form.nombre_consultor = "";
+          this.form.apellido_consultor = "";
+          this.form.telefono_consultor = "";
           this.form.visibilidad_evento = false;
           this.form.modalidad_evento = 0;
-          this.form.estado_evento = 0;
           this.form.id_personal = 0;
+          this.form.estado_evento = 0;
           this.form.id_zona = 0;
         } catch (error) {
           console.log(error);
@@ -834,21 +841,6 @@ export default defineComponent({
       modal.show();
       closeButton.addEventListener("click", function () {
         modal.hide();
-        if (this.form.id_evento) {
-          this.form.id_evento = '';
-        }
-        this.form.nombre_evento = '';
-        this.form_descripcion_evento = '';
-        this.form.hora_inicial_evento = '';
-        this.form.hora_final_evento = '';
-        this.form.nombre_consultor = '';
-        this.form.apellido_consultor = '';
-        this.form.telefono_consultor = '';
-        this.form.visibilidad_evento = false;
-        this.form.modalidad_evento = 0;
-        this.form.estado_evento = 0;
-        this.form.id_personal = 0;
-        this.form.id_zona = 0;
       });
     },
     async eliminarEvento(id, titulo) {
