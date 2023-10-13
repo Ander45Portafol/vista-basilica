@@ -733,13 +733,23 @@ async function cambiarClave() {
             form_contras.value.confirmar_clave = "";
             form_contras.value.clave_actual = "";
 
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: error.response.data.message,
-                confirmButtonColor: "#3F4280",
-            });
+            if (error.response.data.errors) {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: error.response.data.errors,
+                    confirmButtonColor: "#3F4280",
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: error.response.data.message,
+                    confirmButtonColor: "#3F4280",
+                });
+            }
         }
     }
 }
@@ -849,6 +859,15 @@ async function actualizarPerfil() {
         });
     } catch (error) {
         console.log(error);
+
+        //Se muestra un sweetalert con el mensaje
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error.response.data.message,
+            confirmButtonColor: "#3F4280",
+        });
+
     }
 }
 
