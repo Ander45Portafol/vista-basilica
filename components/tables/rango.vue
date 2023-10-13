@@ -3,8 +3,10 @@
     <div
       class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
       <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
+
         <img :src="api_url + rango.campos.imagen_rango" @click="mostrarLightBox(api_url + rango.campos.imagen_rango)"
           class="h-10 w-10 cursor-pointer rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+
         <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
         <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
           <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
@@ -97,7 +99,7 @@
                   0 /100</span>
                 <label for="username"
                   class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                  - Rango</label>
+                  - Rango<span class="text-sm ml-1"> * </span></label>
               </div>
               <div v-if="!validarNombreRango()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
                 <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"
@@ -122,17 +124,19 @@
                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>
                   0 /1000</span>
                 <label for="username"
-                  class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
-                  - Rango</label>
+
+                  class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
+                  - Rango<span class="text-sm ml-1"> * </span></label>
               </div>
               <div class="relative z-0 mt-10">
                 <input type="text" id="cantidad_monetaria_minima" name="cantidad_monetaria_minima"
                   v-model="form.cantidad_monetaria_minima" @blur="convertirDecimales"
                   class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                  placeholder=" " autocomplete="off" />
+
+                  placeholder=" " autocomplete="off" required />
                 <label for="username"
                   class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Cantidad
-                  - Monetaria</label>
+                  - Monetaria<span class="text-sm ml-1"> * </span></label>
               </div>
               <div class="flex-col mt-6">
                 <label for="" class="text-gray-200">Visibilidad - Rango</label>

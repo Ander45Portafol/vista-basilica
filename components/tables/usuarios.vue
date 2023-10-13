@@ -226,7 +226,7 @@
                             </div>
                             <div class="relative z-0 mt-10">
                                 <input type="text" id="numero_documento_usuario" name="numero_documento_usuario"
-                                    maxlength="20" @input="validarNumeroDocumento()"
+                                    maxlength="20" @input="validarNumeroDocumento()" required
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.numero_documento_usuario" />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
@@ -607,6 +607,8 @@ async function crearUsuario() {
                 icon: 'success',
                 title: 'Usuario creado exitosamente'
             });
+
+            limpiarForm();
 
         } catch (error) {
             console.log(error);

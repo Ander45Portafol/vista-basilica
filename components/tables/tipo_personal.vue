@@ -500,6 +500,8 @@ async function crearTiposPersonales() {
         icon: "success",
         title: "Tipo personal creado exitosamente",
       });
+
+      limpiarForm();
     } catch (error) {
       console.log(error);
       const MENSAJE_ERROR = error.response.data.message;

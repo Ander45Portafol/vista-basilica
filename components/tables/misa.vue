@@ -574,12 +574,14 @@ async function crearMisa() {
       await props.actualizar_datos();
 
       document.getElementById("closeModal").click();
-      //Se lanza la alerta con el mensaje de éxito
-      // props.actualizar_datos();
+
       TOAST.fire({
         icon: "success",
         title: "Misa creada exitosamente",
       });
+
+      limpiarForm();
+
     } catch (error) {
       console.log(error);
       const MENSAJE_ERROR = error.response.data.message;

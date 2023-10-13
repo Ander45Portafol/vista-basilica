@@ -998,8 +998,6 @@ async function crearProyecto() {
           //Se actualiza el token con la respuesta del axios
           localStorage.setItem("token", res.data.data.token);
           token.value = localStorage.getItem("token");
-          console.log(token.value);
-          limpiarForm();
         });
       //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
       await props.actualizar_datos();
@@ -1009,6 +1007,9 @@ async function crearProyecto() {
         icon: "success",
         title: "Proyecto creado exitosamente",
       });
+
+      limpiarForm();
+
     } catch (error) {
       console.log(error);
       const MENSAJE_ERROR = error.response.data.message;

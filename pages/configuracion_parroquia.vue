@@ -21,7 +21,8 @@
                         <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100</span>
                         <label for="nombre_parroquia"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900  peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                            - Parroquia</label>
+                            - Parroquia<span class="text-sm ml-1"> *
+                            </span></label>
                     </div>
                     <div v-if="!validarNombreParroquia()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
                         role="alert">
@@ -38,7 +39,7 @@
                     </div>
                     <!-- Campo de entrada  RUC - Parroquia -->
                     <div class="relative z-0 mt-12">
-                        <input type="text" id="ruc_parroquia" name="ruc_parroquia" minlength="13" maxlength="13" required
+                        <input type="text" id="ruc_parroquia" name="ruc_parroquia" minlength="13" maxlength="13"
                             @input="validarRuc()"
                             class="block py-2.5 px-0 w-full text-sm text-slate-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.ruc_parroquia" />
@@ -62,14 +63,14 @@
                     </div>
                     <!-- Campo de texto Dirección - Parroquia -->
                     <div class="relative z-0 mt-12">
-                        <textarea type="text" id="direccion_parroquia" name="direccion_parroquia" maxlength="250" required
+                        <textarea type="text" id="direccion_parroquia" name="direccion_parroquia" maxlength="250"
                             class="block py-2.5 px-0 min-h-[3rem] h-[3rem] max-h-[12rem] w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model=form.direccion_parroquia />
                         <span class="text-xs text-gray-400 absolute bottom-0.5 right-3" v-if="form.direccion_parroquia">
                             {{
                                 form.direccion_parroquia.length }} /250</span>
                         <span class="text-xs text-gray-400 absolute bottom-0.5 right-3" v-else> 0 /250 </span>
-                        <label for="ruc_parroquia"
+                        <label for="direccion_parroquia"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Dirección
                             - Parroquia</label>
                     </div>
@@ -85,7 +86,8 @@
                         <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100 </span>
                         <label for="nombre_representante"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                            - Representante</label>
+                            - Representante<span class="text-sm ml-1"> *
+                            </span></label>
                     </div>
                     <div v-if="!validarNombreRepresentante()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
                         role="alert">
@@ -129,7 +131,7 @@
                 <!-- Campo de entrada  >Página web - Parroquia -->
                 <div class="flex-col w-80 max-[700px]:mt-10">
                     <div class="relative z-0">
-                        <input type="text" id="pagina_web" name="pagina_web" maxlength="250" required
+                        <input type="text" id="pagina_web" name="pagina_web" maxlength="250"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.pagina_web" />
                         <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.pagina_web">
@@ -143,7 +145,7 @@
                     <!-- Campo de entrada  >Idetificador - Parroquia -->
                     <div class="relative z-0 mt-12">
                         <input type="text" id="identificador_parroquia" name="identificador_parroquia" maxlength="100"
-                            required @input="validarIdentificacionFarroquia()"
+                            @input="validarIdentificacionFarroquia()"
                             class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-400 appearance-none dark:text-white focus:outline-none focus:ring-0 focus:border-gray-900 peer"
                             placeholder=" " autocomplete="off" v-model="form.identificador_parroquia" />
                         <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.identificador_parroquia">
@@ -178,7 +180,8 @@
                         <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /100 </span>
                         <label for="apellido_representante"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
-                            - Representante</label>
+                            - Representante<span class="text-sm ml-1"> *
+                            </span></label>
                     </div>
                     <div v-if="!validarApellidoRepresentante()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
                         role="alert">
@@ -205,7 +208,8 @@
                         <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else> 0 /10</span>
                         <label for="telefono_parroquia"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Teléfono
-                            - Parroquia</label>
+                            - Parroquia<span class="text-sm ml-1"> *
+                            </span></label>
                     </div>
                     <div v-if="!validarNumeroTelefono()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
                         role="alert">
@@ -233,7 +237,8 @@
                         <label for="documento_representante"
                             class="absolute text-base text-slate-900 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-slate-900 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">#
                             Documento
-                            - Representante</label>
+                            - Representante<span class="text-sm ml-1"> *
+                            </span></label>
                     </div>
                     <div v-if="!validarNumeroDocumento()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
                         role="alert">
@@ -288,7 +293,8 @@
                                     stroke-linecap="round" stroke-linejoin="round"></path>
                             </svg>
                         </button>
-                        <button id="btnModalAdd" type="submit" :disabled="!validarNombreParroquia() || !validarRuc() || !validarNombreRepresentante() || !validarApellidoRepresentante() || !validarNumeroTelefono() || !validarIdentificacionFarroquia() || !validarNumeroDocumento()"
+                        <button id="btnModalAdd" type="submit"
+                            :disabled="!validarNombreParroquia() || !validarRuc() || !validarNombreRepresentante() || !validarApellidoRepresentante() || !validarNumeroTelefono() || !validarIdentificacionFarroquia() || !validarNumeroDocumento()"
                             class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[400px]:mx-4 max-[750px]:my-1 max-[750px]:ml-[-1px] max-[400px]:ml-6 max-[400px]:mr-[6px]">
                             <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg" color="#000000">
