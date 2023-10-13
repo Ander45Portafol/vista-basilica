@@ -184,7 +184,7 @@
                 <label
                   for="nombre_personal"
                   class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Nombre - Personal</label
+                  >Nombre - Personal<span class="text-sm ml-1"> * </span></label
                 >
               </div>
               <div
@@ -217,7 +217,6 @@
                   id="telefono_personal"
                   name="telefono_personal"
                   maxlength="9"
-                  required
                   @input="validarTelefono()"
                   class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                   placeholder=" "
@@ -330,7 +329,7 @@
                 <label
                   for="apellido_personal"
                   class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Apellido - Personal</label
+                  >Apellido - Personal<span class="text-sm ml-1"> * </span></label
                 >
               </div>
               <div
@@ -363,7 +362,6 @@
                   id="correo_personal"
                   name="correo_personal"
                   maxlength="100"
-                  required
                   class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                   placeholder=" "
                   autocomplete="off"
@@ -717,6 +715,9 @@ async function crearPersonal() {
         icon: "success",
         title: "Personal creado exitosamente",
       });
+
+      limpiarForm();
+
     } catch (error) {
       console.log(error);
       const MENSAJE_ERROR = error.response.data.message;
