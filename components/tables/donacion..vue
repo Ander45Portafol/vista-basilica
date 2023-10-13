@@ -271,7 +271,6 @@ const props = defineProps({
     actualizar_datos: Function,
     paginacion: Number,
 });
-console.log(props.datos_donacion);
 //Evento para reiniciar el tiempo del componente del timer
 const EVENT = new Event('reset-timer');
 
@@ -511,7 +510,6 @@ async function actualizarDonacion() {
 
 //Codigo para cambiar el estado del usuarios a inactivo
 async function borrarDonacion(id,) {
-    console.log(id);
     Swal.fire({
         title: 'Confirmación',
         text: "¿Desea ocultar el registro?",

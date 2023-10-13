@@ -1,7 +1,6 @@
 <template>
-      <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
-      <div class="contained-data flex-col" v-for="zona in datos_zona[paginacion - 1]"
-        :key="zona.id">
+    <!-- Haciendo uso del v-for se evalua cada registro individualmente para poder llenar todas las cards -->
+    <div class="contained-data flex-col" v-for="zona in datos_zona[paginacion - 1]" :key="zona.id">
         <div
             class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
             <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
@@ -10,15 +9,14 @@
                     <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
                     <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]"> {{
                         zona.campos.nombre_zona }} </p>
-                            <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> {{
+                    <p class="font-normal text-sm text-gray-500 max-[750px]:text-[12px]"> {{
                         zona.campos.estado_zona }}</p>
                 </div>
             </div>
             <!-- Al darle clic al evento leerUnaZona ejecuta la funcion -->
             <div
                 class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
-                <button v-if="zona.campos.visibilidad_zona == 1"
-                    @click.prevent="estadoActualizar(zona.id)"
+                <button v-if="zona.campos.visibilidad_zona == 1" @click.prevent="estadoActualizar(zona.id)"
                     class="h-10 w-10 rounded-md flex items-center ml-4 justify-center editbtn max-[400px]:mx-4">
                     <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -30,8 +28,7 @@
                 </button>
                 <button
                     class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-                    @click="borrarZona(zona.id)"
-                    v-if="zona.campos.visibilidad_zona == 1">
+                    @click="borrarZona(zona.id)" v-if="zona.campos.visibilidad_zona == 1">
                     <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
                         xmlns="http://www.w3.org/2000/svg" color="#000000">
                         <path
@@ -58,8 +55,8 @@
         </div>
     </div> <!--contained data -->
 
-      <!-- Modal -->
-      <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
+    <!-- Modal -->
+    <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
         class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative w-full max-w-md max-h-full">
             <!-- Modal content -->
@@ -110,13 +107,13 @@
                                         clip-rule="evenodd"></path>
                                 </svg>
                                 <div>
-                                    El nombre de la zona  solo permite caracteres <span class="font-medium">
+                                    El nombre de la zona solo permite caracteres <span class="font-medium">
                                         alfanuméricos y algunos especiales (- / |).</span>
                                 </div>
                             </div>
 
-                              <!-- Campo de entrada Estado - Zona -->
-                              <div class="pt-4 mt-4 flex-col">
+                            <!-- Campo de entrada Estado - Zona -->
+                            <div class="pt-4 mt-4 flex-col">
                                 <label for="" class="absolute text-sm text-gray-200">Estado - Zona<span
                                         class="text-sm ml-1"> *
                                     </span></label>
@@ -127,8 +124,8 @@
                                     <option class="bg-gray-700" value="Ocupada">Ocupada</option>
                                     <option class="bg-gray-700" value="Libre">Libre</option>
                                 </select>
-                                <div v-if="form.estado_zona == 0"
-                                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                                <div v-if="form.estado_zona == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                                    role="alert">
                                     <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
@@ -174,8 +171,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para crear al botón -->
-                                <button id="btnModalAdd" type="submit"
-                                    :disabled=" !validarNombreZona()"
+                                <button id="btnModalAdd" type="submit" :disabled="!validarNombreZona()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[400px]:mx-4 max-[750px]:my-1 max-[750px]:ml-[-1px] max-[400px]:ml-6 max-[400px]:mr-[6px]">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -188,8 +184,7 @@
                                     </svg>
                                 </button>
                                 <!-- Se le coloca la función para actualizar al botón -->
-                                <button id="btnModalUpdate" type="submit"
-                                    :disabled=" !validarNombreZona()"
+                                <button id="btnModalUpdate" type="submit" :disabled="!validarNombreZona()"
                                     class="h-10 ml-2 w-10 rounded-lg flex justify-center items-center max-[750px]:ml-0 = max-[400px]:mt-0 max-[400px]:mx-4 max-[750px]:mt-[1px]">
                                     <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -214,7 +209,6 @@
 </template>
 
 <style scoped>
-
 .buttons-data .changebtn {
     border: 3px solid #3F4280;
 }
@@ -417,7 +411,7 @@ async function crearZona() {
 //Metodo para configurar el modal y enviar el id de la zona
 async function estadoActualizar(id) {
     await leerUnaZona(id);
-    const  MODAL_ID= document.getElementById('staticModal');
+    const MODAL_ID = document.getElementById('staticModal');
     const BOTON_CERRAR = document.getElementById('closeModal');
     const TEXTO_MODAL = document.getElementById('modalText');
     const OPCIONES_MODAL = {
@@ -446,7 +440,6 @@ async function leerUnaZona(id) {
                 Authorization: `Bearer ${token.value}`,
             },
         }).then(res => {
-            console.log(res.data);
             form.value = {
                 id_zona: res.data.data.id,
                 nombre_zona: res.data.data.campos.nombre_zona,
@@ -569,7 +562,6 @@ async function actualizarZona() {
 
 //Codigo para cambiar el estado de la zona  a inactivo
 async function borrarZona(id,) {
-    console.log(id);
     Swal.fire({
         title: 'Confirmación',
         text: "¿Desea ocultar el registro",
@@ -649,80 +641,80 @@ async function borrarZona(id,) {
 //Función para cambiar un usuario a activo
 async function recuperarZona(id) {
 
-Swal.fire({
-    title: 'Confirmación',
-    text: "¿¿Desea recuperar el registro",
-    icon: 'warning',
-    reverseButtons: true,
-    showCancelButton: true,
-    confirmButtonColor: '#3F4280',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Confirmar',
-    cancelButtonText: 'Cancelar',
-    allowOutsideClick: false,
-}).then(async (result) => {
-    if (result.isConfirmed) {
-        try {
-            //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-            token.value = localStorage.getItem('token');
+    Swal.fire({
+        title: 'Confirmación',
+        text: "¿¿Desea recuperar el registro",
+        icon: 'warning',
+        reverseButtons: true,
+        showCancelButton: true,
+        confirmButtonColor: '#3F4280',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        allowOutsideClick: false,
+    }).then(async (result) => {
+        if (result.isConfirmed) {
             try {
-                //Se realiza la petición axios
-                await axios.delete("/zonas/" + id, {
-                    headers: {
-                        Authorization: `Bearer ${token.value}`,
-                    },
-                }).then(res => {
-                    //Se reinicia el timer
-                    window.dispatchEvent(EVENT);
-                    //Se actualiza el valor del token con la respuesta del axios
-                    localStorage.setItem('token', res.data.data.token);
-                    token.value = localStorage.getItem('token');
-                });;
+                //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+                token.value = localStorage.getItem('token');
+                try {
+                    //Se realiza la petición axios
+                    await axios.delete("/zonas/" + id, {
+                        headers: {
+                            Authorization: `Bearer ${token.value}`,
+                        },
+                    }).then(res => {
+                        //Se reinicia el timer
+                        window.dispatchEvent(EVENT);
+                        //Se actualiza el valor del token con la respuesta del axios
+                        localStorage.setItem('token', res.data.data.token);
+                        token.value = localStorage.getItem('token');
+                    });;
 
-                //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-                await props.actualizar_datos();
+                    //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+                    await props.actualizar_datos();
 
-                //Se lanza la alerta de éxito
-                TOAST.fire({
-                    icon: "success",
-                    title: "Zonas recuperada exitosamente",
-                });
-            } catch (error) {
-                console.log(error);
+                    //Se lanza la alerta de éxito
+                    TOAST.fire({
+                        icon: "success",
+                        title: "Zonas recuperada exitosamente",
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
             }
-        }
-        catch (error) {
-            console.log(error);
-            const MENSAJE_ERROR = error.response.data.message;
-            if (error.response.status == 401) {
-                navigateTo('/error_401');
-            } else {
-                if (!error.response.data.errors) {
-                    //Se extrae el sqlstate (identificador de acciones SQL)
-                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
-                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                    const RES = validaciones.mensajeSqlState(SQL_STATE);
-
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: RES,
-                        confirmButtonColor: '#3F4280'
-                    });
+            catch (error) {
+                console.log(error);
+                const MENSAJE_ERROR = error.response.data.message;
+                if (error.response.status == 401) {
+                    navigateTo('/error_401');
                 } else {
-                    //Se muestra un sweetalert con el mensaje
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: MENSAJE_ERROR,
-                        confirmButtonColor: '#3F4280'
-                    });
+                    if (!error.response.data.errors) {
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: RES,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    } else {
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: MENSAJE_ERROR,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
                 }
             }
         }
-    }
-});
+    });
 }
 
 
