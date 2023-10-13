@@ -57,8 +57,8 @@
             </div>
         </div>
     </div>
-        <!--Llama la propiedad de lightbox para las imagenes-->
-        <vue-easy-lightbox :visible="visible_ref" :imgs="imgs_ref" :index="index_ref"
+    <!--Llama la propiedad de lightbox para las imagenes-->
+    <vue-easy-lightbox :visible="visible_ref" :imgs="imgs_ref" :index="index_ref"
         @hide="esconderLightBox"></vue-easy-lightbox>
     <!-- Main modal -->
     <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
@@ -388,7 +388,6 @@ const props = defineProps({
     actualizar_datos: Function,
     paginacion: Number,
 });
-console.log(props.paginacion);
 //Evento para reiniciar el tiempo del componente del timer
 const EVENT = new Event('reset-timer');
 //Seccion para cargar o modificar el DOM despues de haber cargado todo el template
@@ -435,7 +434,6 @@ async function llenarRolUsuario() {
             Authorization: `Bearer ${token.value}`,
         },
     });
-    console.log(res);
     roles.value = res;
 }
 
@@ -476,7 +474,6 @@ const cambiarImagen = () => {
     const file = input.files;
     if (file && file[0]) {
         form.value.imagen_usuario = file[0];
-        console.log(form.value.imagen_usuario);
         const reader = new FileReader();
         reader.onload = (e) => {
             imagenPreview.value = e.target.result;
@@ -566,7 +563,6 @@ async function crearUsuario() {
     if (validarNombre() && form.value.tipo_documento != 0 && validarUsuario() && form.value.id_rol_usuario != 0 && validarApellido() && validarNumeroDocumento() && validarNumeroTelefono()) {
         //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
         token.value = localStorage.getItem('token');
-        console.log(token.value);
         try {
             const FORMDATA = new FormData();
             FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
@@ -596,7 +592,6 @@ async function crearUsuario() {
                 // //Se actualiza el token con la respuesta del axios
                 localStorage.setItem('token', res.data.data.token);
                 token.value = localStorage.getItem('token');
-                console.log(token.value);
             });
             //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
             await props.actualizar_datos();
@@ -672,7 +667,6 @@ async function leerUnUsuario(id_usuario) {
                 Authorization: `Bearer ${token.value}`,
             },
         }).then(res => {
-            console.log(res.data);
             form.value = {
                 id_usuario: res.data.data.id,
                 nombre_usuario: res.data.data.campos.nombre_usuario,
@@ -755,7 +749,6 @@ async function actualizarUsuario() {
                 form.value.id_rol_usuario
             );
             FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
-            console.log(FORMDATA);
             await axios.post("/usuarios_update/" + id, FORMDATA, {
                 headers: {
                     "Content-Type": "multipart/form-data",
@@ -814,7 +807,6 @@ async function actualizarUsuario() {
 
 //Codigo para cambiar el estado del usuarios a inactivo
 async function borrarUsuario(id, nombre_usuario) {
-    console.log(id);
     Swal.fire({
         title: 'Confirmación',
         text: "¿Desea ocultar el usuario: " + nombre_usuario + "?",
