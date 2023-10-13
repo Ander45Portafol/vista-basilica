@@ -452,7 +452,6 @@ async function login() {
     //Si retorno un token se redirige a la página principal
     if (res != null) {
       if (!res.data.data.doble_factor) {
-        console.log(res.data.data.chequeo_cambio.cambio_necesario);
         //Se evalua si el usuario no ha cambiado su contraseña en los ultimos 3 meses
         if (!res.data.data.chequeo_cambio.cambio_necesario) {
           navigateTo('/principal');
@@ -466,7 +465,6 @@ async function login() {
         const cap_usuario = res.data.data.user.id_usuario;
         const cap_imagen = res.data.data.user.imagen_usuario;
         localStorage.setItem('token', cap_token)
-        console.log(localStorage.getItem('token'));
         localStorage.setItem('usuario', cap_usuario);
         localStorage.setItem('imagen_usuario', cap_imagen);
 

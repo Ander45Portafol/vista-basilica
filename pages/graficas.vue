@@ -352,7 +352,6 @@ async function leerNUsuarios() {
     window.dispatchEvent(EVENTO);
     localStorage.setItem("token", res.token);
     token.value = localStorage.getItem("token");
-    console.log(res);
   } catch (error) {
     console.log(error);
   }
@@ -406,7 +405,6 @@ async function leerNSecciones() {
     window.dispatchEvent(EVENTO);
     localStorage.setItem("token", res.token);
     token.value = localStorage.getItem("token");
-    console.log(res);
   } catch (error) {
     console.log(error);
   }

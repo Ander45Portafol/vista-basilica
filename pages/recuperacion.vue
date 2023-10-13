@@ -114,7 +114,6 @@ const Toast = Swal.mixin({
     }
 })
 async function validarCredenciales() {
-    console.log(form.value.nombre_usuario);
     try {
         const FORMDATA = new FormData();
         FORMDATA.append('usuario', form.value.nombre_usuario);
@@ -129,7 +128,6 @@ async function validarCredenciales() {
         console.log(error);
         if (!error.response.data.errors && !error.response.data.error) {
             const sqlState = validaciones.extraerSqlState(error.response.data.message);
-            console.log(sqlState);
             const res = validaciones.mensajeSqlState(sqlState);
 
             //Se muestra un sweetalert con el mensaje

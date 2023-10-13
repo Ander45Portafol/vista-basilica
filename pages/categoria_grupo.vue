@@ -396,8 +396,6 @@ function filtrarPaginas() {
         ceroRegistrosEncontrados.value = false;
     }
 
-    console.log(categoria_grupos.value);
-
     //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
     //y que se bugee la paginación
     if ((categoria_grupos.value.length < pagina.value) && pagina.value != 1) {
