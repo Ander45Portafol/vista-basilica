@@ -490,7 +490,6 @@ async function crearCategoriaGrupo() {
           //Se actualiza el token con la respuesta del axios
           localStorage.setItem("token", res.data.data.token);
           token.value = localStorage.getItem("token");
-          limpiarForm();
         });
 
       //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
@@ -503,6 +502,9 @@ async function crearCategoriaGrupo() {
         icon: "success",
         title: "Categoria del grupo creada exitosamente",
       });
+
+      limpiarForm();
+
     } catch (error) {
       console.log(error);
       const MENSAJE_ERROR = error.response.data.message;

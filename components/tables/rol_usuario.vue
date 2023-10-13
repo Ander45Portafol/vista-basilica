@@ -211,7 +211,7 @@
                 <label
                   for="rol_usuario"
                   class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Titulo - Seccion<span class="text-sm ml-1"> * </span></label
+                  >Rol - Usuario<span class="text-sm ml-1"> * </span></label
                 >
                 <!-- Se coloca un if que evalua si la función de validar es false, así se muestra la alerta solo cuando es false -->
                 <div
