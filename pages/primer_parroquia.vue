@@ -354,7 +354,6 @@ const cambiarImagen = () => {
     const file = input.files;
     if (file && file[0]) {
         form.value.logo_parroquia = file[0];
-        console.log(form.value.logo_parroquia);
         const reader = new FileReader();
         reader.onload = (e) => {
             imagenPreview.value = e.target.result;
