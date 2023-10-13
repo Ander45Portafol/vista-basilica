@@ -3,8 +3,10 @@
     <div
       class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
       <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-        <img :src="api_url + rango.campos.imagen_rango"
-          class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+
+        <img :src="api_url + rango.campos.imagen_rango" @click="mostrarLightBox(api_url + rango.campos.imagen_rango)"
+          class="h-10 w-10 cursor-pointer rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
+
         <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
         <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
           <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
@@ -53,6 +55,9 @@
       </div>
     </div>
   </div>
+  <!--Llama la propiedad de lightbox para las imagenes-->
+  <vue-easy-lightbox :visible="visible_ref" :imgs="imgs_ref" :index="index_ref"
+    @hide="esconderLightBox"></vue-easy-lightbox>
 
   <!-- Main modal -->
   <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
@@ -119,6 +124,7 @@
                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>
                   0 /1000</span>
                 <label for="username"
+
                   class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
                   - Rango<span class="text-sm ml-1"> * </span></label>
               </div>
@@ -126,6 +132,7 @@
                 <input type="text" id="cantidad_monetaria_minima" name="cantidad_monetaria_minima"
                   v-model="form.cantidad_monetaria_minima" @blur="convertirDecimales"
                   class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
+
                   placeholder=" " autocomplete="off" required />
                 <label for="username"
                   class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Cantidad
@@ -255,6 +262,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import validaciones from "../../assets/validaciones.js";
+import VueEasyLightbox from "vue-easy-lightbox";
 
 const props = defineProps({
   //Prop que se utiliza para cargar los datos de la tabla
@@ -787,6 +795,23 @@ async function recuperarUnRango(id) {
       }
     }
   });
+}
+
+const visible_ref = ref(false);
+const index_ref = ref(0);
+const imgs_ref = ref([]);
+
+function abrirLightBox() {
+  visible_ref.value = true;
+}
+
+function mostrarLightBox(url) {
+  imgs_ref.value = url;
+  abrirLightBox();
+}
+
+function esconderLightBox() {
+  visible_ref.value = false;
 }
 
 //Validaciones
