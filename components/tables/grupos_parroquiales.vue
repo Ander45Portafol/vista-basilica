@@ -469,6 +469,11 @@
   border: 3px solid #3f4280;
 }
 
+.image-container {
+  border: 3px solid #fff;
+}
+
+
 .modal {
   background: linear-gradient(180deg,
       rgba(63, 66, 128, 0.6241) 0%,
