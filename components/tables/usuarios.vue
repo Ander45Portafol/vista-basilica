@@ -225,8 +225,8 @@
                                 </div>
                             </div>
                             <div class="relative z-0 mt-10">
-                                <input type="text" id="numero_documento_usuario" name="numero_documento_usuario" maxlength="20"
-                                    @input="validarNumeroDocumento()"
+                                <input type="text" id="numero_documento_usuario" name="numero_documento_usuario"
+                                    maxlength="20" @input="validarNumeroDocumento()"
                                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
                                     placeholder=" " autocomplete="off" v-model="form.numero_documento_usuario" />
                                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0"
@@ -499,9 +499,9 @@ const form = ref({
     telefono_usuario: "",
     idioma: "Español (ES)",
     tema: "Claro",
-    fecha_cambio:"",
-    fecha_bloqueo:"",
-    autenticable:false,
+    fecha_cambio: "",
+    fecha_bloqueo: "",
+    autenticable: false,
     visibilidad_usuario: false,
     id_rol_usuario: 0,
 });
@@ -563,75 +563,77 @@ function submitForm() {
 
 //Metodo para agregar un nuevo usuario
 async function crearUsuario() {
-    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-    token.value = localStorage.getItem('token');
-    console.log(token.value);
-    try {
-        const FORMDATA = new FormData();
-        FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
-        FORMDATA.append("apellido_usuario", form.value.apellido_usuario);
-        FORMDATA.append("usuario", form.value.usuario);
-        FORMDATA.append("numero_documento_usuario", form.value.numero_documento_usuario);
-        FORMDATA.append("tipo_documento", form.value.tipo_documento);
-        FORMDATA.append("correo_usuario", form.value.correo_usuario);
-        FORMDATA.append("telefono_usuario", form.value.telefono_usuario);
-        FORMDATA.append("tema", form.value.tema);
-        FORMDATA.append("idioma", form.value.idioma);
-        FORMDATA.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
-        FORMDATA.append(
-            "id_rol_usuario",
-            form.value.id_rol_usuario
-        );
-        FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
-        //Se realiza la petición axios mandando la ruta y el formData
-        await axios.post("/usuarios", FORMDATA, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token.value}`,
-            },
-        }).then(res => {
-            //Se reinicia el timer
-            window.dispatchEvent(EVENT);
-            // //Se actualiza el token con la respuesta del axios
-            localStorage.setItem('token', res.data.data.token);
-            token.value = localStorage.getItem('token');
-            console.log(token.value);
-        });
-        //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-        await props.actualizar_datos();
+    if (validarNombre() && form.value.tipo_documento != 0 && validarUsuario() && form.value.id_rol_usuario != 0 && validarApellido() && validarNumeroDocumento() && validarNumeroTelefono()) {
+        //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+        token.value = localStorage.getItem('token');
+        console.log(token.value);
+        try {
+            const FORMDATA = new FormData();
+            FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
+            FORMDATA.append("apellido_usuario", form.value.apellido_usuario);
+            FORMDATA.append("usuario", form.value.usuario);
+            FORMDATA.append("numero_documento_usuario", form.value.numero_documento_usuario);
+            FORMDATA.append("tipo_documento", form.value.tipo_documento);
+            FORMDATA.append("correo_usuario", form.value.correo_usuario);
+            FORMDATA.append("telefono_usuario", form.value.telefono_usuario);
+            FORMDATA.append("tema", form.value.tema);
+            FORMDATA.append("idioma", form.value.idioma);
+            FORMDATA.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
+            FORMDATA.append(
+                "id_rol_usuario",
+                form.value.id_rol_usuario
+            );
+            FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
+            //Se realiza la petición axios mandando la ruta y el formData
+            await axios.post("/usuarios", FORMDATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                },
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                // //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+                console.log(token.value);
+            });
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await props.actualizar_datos();
 
-        document.getElementById('closeModal').click();
-        // props.actualizar_datos();
-        Toast.fire({
-            icon: 'success',
-            title: 'Usuario creado exitosamente'
-        });
-
-    } catch (error) {
-        console.log(error);
-        const mensajeError = error.response.data.message;
-        if (!error.response.data.errors) {
-            const sqlState = validaciones.extraerSqlState(mensajeError);
-            const res = validaciones.mensajeSqlState(sqlState);
-
-            //Se cierra el modal
             document.getElementById('closeModal').click();
+            // props.actualizar_datos();
+            Toast.fire({
+                icon: 'success',
+                title: 'Usuario creado exitosamente'
+            });
 
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: res,
-                confirmButtonColor: '#3F4280'
-            });
-        } else {
-            //Se muestra un sweetalert con el mensaje
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: mensajeError,
-                confirmButtonColor: '#3F4280'
-            });
+        } catch (error) {
+            console.log(error);
+            const mensajeError = error.response.data.message;
+            if (!error.response.data.errors) {
+                const sqlState = validaciones.extraerSqlState(mensajeError);
+                const res = validaciones.mensajeSqlState(sqlState);
+
+                //Se cierra el modal
+                document.getElementById('closeModal').click();
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: mensajeError,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
         }
     }
 }
@@ -698,57 +700,113 @@ async function leerUnUsuario(id_usuario) {
         });
     } catch (error) {
         console.log(error);
+        const MENSAJE_ERROR = error.response.data.message;
+        if (error.response.status == 401) {
+            navigateTo('/error_401');
+        } else {
+            if (!error.response.data.errors) {
+                //Se extrae el sqlstate (identificador de acciones SQL)
+                const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: RES,
+                    confirmButtonColor: '#3F4280'
+                });
+            } else {
+                //Se muestra un sweetalert con el mensaje
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: MENSAJE_ERROR,
+                    confirmButtonColor: '#3F4280'
+                });
+            }
+        }
     }
 }
 
 //Metodo para actualizar la informacion de un usuario
 async function actualizarUsuario() {
-    //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
-    token.value = localStorage.getItem('token');
-    try {
-        var id = form.value.id_usuario;
-        const FORMDATA = new FormData();
-        FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
-        FORMDATA.append("apellido_usuario", form.value.apellido_usuario);
-        FORMDATA.append("usuario", form.value.usuario);
-        FORMDATA.append("numero_documento_usuario", form.value.numero_documento_usuario);
-        FORMDATA.append("tipo_documento", form.value.tipo_documento);
-        FORMDATA.append("correo_usuario", form.value.correo_usuario);
-        FORMDATA.append("telefono_usuario", form.value.telefono_usuario);
-        FORMDATA.append("tema", form.value.tema);
-        FORMDATA.append("idioma", form.value.idioma);
-        FORMDATA.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
-        FORMDATA.append(
-            "id_rol_usuario",
-            form.value.id_rol_usuario
-        );
-        FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
-        console.log(FORMDATA);
-        await axios.post("/usuarios_update/" + id, FORMDATA, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token.value}`,
+    if (validarNombre() && form.value.tipo_documento != 0 && validarUsuario() && form.value.id_rol_usuario != 0 && validarApellido() && validarNumeroDocumento() && validarNumeroTelefono()) {
+        //Se actualiza el valor del token (esto para evitar errores con todos los refresh del token)
+        token.value = localStorage.getItem('token');
+        try {
+            var id = form.value.id_usuario;
+            const FORMDATA = new FormData();
+            FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
+            FORMDATA.append("apellido_usuario", form.value.apellido_usuario);
+            FORMDATA.append("usuario", form.value.usuario);
+            FORMDATA.append("numero_documento_usuario", form.value.numero_documento_usuario);
+            FORMDATA.append("tipo_documento", form.value.tipo_documento);
+            FORMDATA.append("correo_usuario", form.value.correo_usuario);
+            FORMDATA.append("telefono_usuario", form.value.telefono_usuario);
+            FORMDATA.append("tema", form.value.tema);
+            FORMDATA.append("idioma", form.value.idioma);
+            FORMDATA.append("visibilidad_usuario", form.value.visibilidad_usuario ? 1 : 0);
+            FORMDATA.append(
+                "id_rol_usuario",
+                form.value.id_rol_usuario
+            );
+            FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
+            console.log(FORMDATA);
+            await axios.post("/usuarios_update/" + id, FORMDATA, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token.value}`,
+                }
+            }).then(res => {
+                //Se reinicia el timer
+                window.dispatchEvent(EVENT);
+                //Se actualiza el token con la respuesta del axios
+                localStorage.setItem('token', res.data.data.token);
+                token.value = localStorage.getItem('token');
+            });
+
+            //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
+            await props.actualizar_datos();
+
+            document.getElementById('closeModal').click();
+            // props.actualizar_datos();
+            Toast.fire({
+                icon: 'success',
+                title: 'Usuario actualizado exitosamente'
+            });
+        }
+        catch (error) {
+            console.log(error);
+            const MENSAJE_ERROR = error.response.data.message;
+            if (error.response.status == 401) {
+                navigateTo('/error_401');
+            } else {
+                if (!error.response.data.errors) {
+                    //Se extrae el sqlstate (identificador de acciones SQL)
+                    const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                    //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                    const RES = validaciones.mensajeSqlState(SQL_STATE);
+
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: RES,
+                        confirmButtonColor: '#3F4280'
+                    });
+                } else {
+                    //Se muestra un sweetalert con el mensaje
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: MENSAJE_ERROR,
+                        confirmButtonColor: '#3F4280'
+                    });
+                }
             }
-        }).then(res => {
-            //Se reinicia el timer
-            window.dispatchEvent(EVENT);
-            //Se actualiza el token con la respuesta del axios
-            localStorage.setItem('token', res.data.data.token);
-            token.value = localStorage.getItem('token');
-        });
-
-        //Se leen todas las páginas y en dado caso haya algo escrito en el buscador se filtran los datos
-        await props.actualizar_datos();
-
-        document.getElementById('closeModal').click();
-        // props.actualizar_datos();
-        Toast.fire({
-            icon: 'success',
-            title: 'Usuario actualizado exitosamente'
-        });
-    }
-    catch (error) {
-        console.log(error);
+        }
     }
 }
 
@@ -797,27 +855,39 @@ async function borrarUsuario(id, nombre_usuario) {
                 }
             }
             catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
+                console.log(error);
+                const MENSAJE_ERROR = error.response.data.message;
+                if (error.response.status == 401) {
+                    navigateTo('/error_401');
+                } else {
+                    if (!error.response.data.errors) {
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
-                });
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: RES,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    } else {
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: MENSAJE_ERROR,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
+                }
             }
         }
     });
 }
+
 //Función para cambiar un usuario a activo
 async function recuperarUsuario(id, nombre_usuario) {
 
@@ -864,23 +934,34 @@ async function recuperarUsuario(id, nombre_usuario) {
                 }
             }
             catch (error) {
-                //Se extrae el mensaje de error
-                const mensajeError = error.response.data.message;
-                //Se extrae el sqlstate (identificador de acciones SQL)
-                const sqlState = validaciones.extraerSqlState(mensajeError);
-                //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
-                const res = validaciones.mensajeSqlState(sqlState);
+                console.log(error);
+                const MENSAJE_ERROR = error.response.data.message;
+                if (error.response.status == 401) {
+                    navigateTo('/error_401');
+                } else {
+                    if (!error.response.data.errors) {
+                        //Se extrae el sqlstate (identificador de acciones SQL)
+                        const SQL_STATE = validaciones.extraerSqlState(MENSAJE_ERROR);
+                        //Se llama la función de mensajeSqlState para mostrar un mensaje de error relacionado al sqlstate
+                        const RES = validaciones.mensajeSqlState(SQL_STATE);
 
-                //Se cierra el modal
-                document.getElementById("closeModal").click();
-
-                //Se muestra un sweetalert con el mensaje
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: res,
-                    confirmButtonColor: "#3F4280",
-                });
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: RES,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    } else {
+                        //Se muestra un sweetalert con el mensaje
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: MENSAJE_ERROR,
+                            confirmButtonColor: '#3F4280'
+                        });
+                    }
+                }
             }
         }
     });

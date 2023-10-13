@@ -368,7 +368,7 @@ async function deshabilitarToken() {
   }).then(async (result) => {
     //Si el usuario selecciono "Confirmar"
     if (result.isConfirmed) {
-      navigateTo('/');
+      window.location.href = '/';
     }
   });
 }
