@@ -1,21 +1,12 @@
 <template>
-  <div
-    class="contained-data flex-col"
-    v-for="rango in datos_rangos[paginacion - 1]"
-    :key="rango.id"
-  >
+  <div class="contained-data flex-col" v-for="rango in datos_rangos[paginacion - 1]" :key="rango.id">
     <div
-      class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]"
-    >
+      class="data-contained flex justify-between mt-4 rounded-xl p-4 max-[400px]:flex-wrap max-[400px]:w-full min-w-[200px]">
       <div class="flex justify-start w-3/4 items-center max-[400px]:w-full">
-        <img
-          :src="api_url + rango.campos.imagen_rango"
-          class="h-10 w-10 rounded-lg border-2 border-gray-800 max-[400px]:hidden"
-        />
+        <img :src="api_url + rango.campos.imagen_rango" @click="mostrarLightBox(api_url + rango.campos.imagen_rango)"
+          class="h-10 w-10 cursor-pointer rounded-lg border-2 border-gray-800 max-[400px]:hidden" />
         <!--Con la implementación de una variable que permite visualizar la información contenida en cada uno-->
-        <div
-          class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center"
-        >
+        <div class="datainfo flex-col ml-8 max-[400px]:p-0 max-[400px]:w-full max-[400px]:ml-0 max-[400px]:text-center">
           <p class="font-extrabold text-xl text-salte-900 max-[750px]:text-[18px]">
             {{ rango.campos.nombre_rango }}
           </p>
@@ -26,104 +17,49 @@
       </div>
       <!-- Al darle clic al evento leerUnEnlace ejecuta la funcion -->
       <div
-        class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2"
-      >
-        <button
-          class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn"
-          id="btnedit"
-          v-if="rango.campos.visibilidad_rango == 1"
-          @click.prevent="estadoActualizar(rango.id)"
-        >
-          <svg
-            width="26px"
-            height="26px"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            color="#000000"
-          >
+        class="buttons-data flex justify-center items-center max-[750px]:flex-col max-[400px]:flex-row max-[400px]:m-auto max-[400px]:mt-2">
+        <button class="h-10 w-10 rounded-md flex items-center justify-center max-[400px]:mx-4 editbtn" id="btnedit"
+          v-if="rango.campos.visibilidad_rango == 1" @click.prevent="estadoActualizar(rango.id)">
+          <svg width="26px" height="26px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg" color="#000000">
             <path
               d="M3 21h18M12.222 5.828L15.05 3 20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 00-.293.707v4.536h4.536a1 1 0 00.707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"
-              stroke="#C99856"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
+              stroke="#C99856" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
           </svg>
         </button>
         <button
           class="h-10 w-10 rounded-md flex items-center justify-center ml-4 deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-          @click="borrarRango(rango.id)"
-          v-if="rango.campos.visibilidad_rango == 1"
-        >
-          <svg
-            width="26px"
-            height="26px"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            color="#000000"
-          >
+          @click="borrarRango(rango.id)" v-if="rango.campos.visibilidad_rango == 1">
+          <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+            xmlns="http://www.w3.org/2000/svg" color="#000000">
             <path
               d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
-              stroke="#872727"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
+              stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
           </svg>
         </button>
-        <button
-          @click="recuperarUnRango(rango.id)"
+        <button @click="recuperarUnRango(rango.id)"
           class="h-10 w-10 rounded-md flex items-center justify-center ml-4 changebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
-          v-else
-        >
-          <svg
-            width="24px"
-            height="24px"
-            stroke-width="3"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            color="#000000"
-          >
-            <path
-              d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11"
-              stroke="#3F4280"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
-            <path
-              d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
-              stroke="#3F4280"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
-            <path
-              d="M7.05 16h-4.4a.6.6 0 00-.6.6V21"
-              stroke="#3F4280"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
+          v-else>
+          <svg width="24px" height="24px" stroke-width="3" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg" color="#000000">
+            <path d="M21.168 8A10.003 10.003 0 0012 2C6.815 2 2.55 5.947 2.05 11" stroke="#3F4280" stroke-width="3"
+              stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M17 8h4.4a.6.6 0 00.6-.6V3M2.881 16c1.544 3.532 5.068 6 9.168 6 5.186 0 9.45-3.947 9.951-9"
+              stroke="#3F4280" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M7.05 16h-4.4a.6.6 0 00-.6.6V21" stroke="#3F4280" stroke-width="3" stroke-linecap="round"
+              stroke-linejoin="round"></path>
           </svg>
         </button>
       </div>
     </div>
   </div>
+  <!--Llama la propiedad de lightbox para las imagenes-->
+  <vue-easy-lightbox :visible="visible_ref" :imgs="imgs_ref" :index="index_ref"
+    @hide="esconderLightBox"></vue-easy-lightbox>
 
   <!-- Main modal -->
-  <div
-    id="staticModal"
-    data-modal-backdrop="static"
-    tabindex="-1"
-    aria-hidden="true"
-    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
-  >
+  <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
+    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative w-full max-w-3xl max-h-full">
       <!-- Modal content -->
       <div class="relative rounded-lg shadow modal">
@@ -133,23 +69,13 @@
             <p class="text-3xl font-bold text-gray-100" id="modalText"></p>
             <p class="text-lg font-medium text-gray-400">Rangos</p>
           </div>
-          <button
-            type="button"
-            id="closeModal"
+          <button type="button" id="closeModal"
             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-            data-modal-hide="staticModal"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
+            data-modal-hide="staticModal">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
                 d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clip-rule="evenodd"
-              ></path>
+                clip-rule="evenodd"></path>
             </svg>
           </button>
         </div>
@@ -161,117 +87,62 @@
               <input type="hidden" v-model="form.id_rango" />
 
               <div class="relative z-0">
-                <input
-                  type="text"
-                  id="nombre_rango"
-                  name="nombre_rango"
-                  v-model="form.nombre_rango"
-                  maxlength="100"
-                  required
-                  @input="validarNombreRango()"
+                <input type="text" id="nombre_rango" name="nombre_rango" v-model="form.nombre_rango" maxlength="100"
+                  required @input="validarNombreRango()"
                   class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                  placeholder=" "
-                  autocomplete="off"
-                />
-                <span
-                  class="text-xs text-gray-400 absolute bottom-0.5 right-0"
-                  v-if="form.nombre_rango"
-                >
-                  {{ form.nombre_rango.length }} /100</span
-                >
+                  placeholder=" " autocomplete="off" />
+                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.nombre_rango">
+                  {{ form.nombre_rango.length }} /100</span>
                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>
-                  0 /100</span
-                >
-                <label
-                  for="username"
-                  class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Nombre - Rango</label
-                >
+                  0 /100</span>
+                <label for="username"
+                  class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
+                  - Rango</label>
               </div>
-              <div
-                v-if="!validarNombreRango()"
-                class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                role="alert"
-              >
-                <svg
-                  aria-hidden="true"
-                  class="flex-shrink-0 inline w-5 h-5 mr-3"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
+              <div v-if="!validarNombreRango()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
+                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd"
                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clip-rule="evenodd"
-                  ></path>
+                    clip-rule="evenodd"></path>
                 </svg>
                 <div>
                   El nombre del rango solo permite caracteres
                   <span class="font-medium">
-                    alfanuméricos y algunos especiales (- / |).</span
-                  >
+                    alfanuméricos y algunos especiales (- / |).</span>
                 </div>
               </div>
               <div class="relative z-0 mt-10">
-                <input
-                  type="text"
-                  id="descripcion_rango"
-                  name="descripcion_rango"
-                  v-model="form.descripcion_rango"
-                  maxlength="1000"
-                  required
+                <input type="text" id="descripcion_rango" name="descripcion_rango" v-model="form.descripcion_rango"
+                  maxlength="1000" required
                   class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                  placeholder=" "
-                  autocomplete="off"
-                />
-                <span
-                  class="text-xs text-gray-400 absolute bottom-0.5 right-0"
-                  v-if="form.descripcion_rango"
-                >
-                  {{ form.descripcion_rango.length }} /1000</span
-                >
+                  placeholder=" " autocomplete="off" />
+                <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-if="form.descripcion_rango">
+                  {{ form.descripcion_rango.length }} /1000</span>
                 <span class="text-xs text-gray-400 absolute bottom-0.5 right-0" v-else>
-                  0 /1000</span
-                >
-                <label
-                  for="username"
-                  class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Descripcion - Rango</label
-                >
+                  0 /1000</span>
+                <label for="username"
+                  class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripcion
+                  - Rango</label>
               </div>
               <div class="relative z-0 mt-10">
-                <input
-                  type="text"
-                  id="cantidad_monetaria_minima"
-                  name="cantidad_monetaria_minima"
-                  v-model="form.cantidad_monetaria_minima"
-                  @blur="convertirDecimales"
+                <input type="text" id="cantidad_monetaria_minima" name="cantidad_monetaria_minima"
+                  v-model="form.cantidad_monetaria_minima" @blur="convertirDecimales"
                   class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                  placeholder=" "
-                  autocomplete="off"
-                />
-                <label
-                  for="username"
-                  class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                  >Cantidad - Monetaria</label
-                >
+                  placeholder=" " autocomplete="off" />
+                <label for="username"
+                  class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Cantidad
+                  - Monetaria</label>
               </div>
               <div class="flex-col mt-6">
                 <label for="" class="text-gray-200">Visibilidad - Rango</label>
                 <div class="flex justify-start mt-2">
                   <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      value=""
-                      class="sr-only peer"
-                      id="visibilidad_rango"
-                      name="visibilidad_rango"
-                      v-model="form.visibilidad_rango"
-                    />
+                    <input type="checkbox" value="" class="sr-only peer" id="visibilidad_rango" name="visibilidad_rango"
+                      v-model="form.visibilidad_rango" />
                     <div
-                      class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
-                    ></div>
+                      class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                    </div>
                   </label>
                 </div>
               </div>
@@ -282,146 +153,66 @@
                 <div class="flex-col m-auto">
                   <div
                     class="h-44 w-40 border-2 border-slate-900 ml-14 rounded-lg cursor-pointer relative max-[630px]:m-auto"
-                    @click="seleccionarArchivo"
-                    @mouseover="iconoBorrarTrue"
-                    @mouseleave="iconoBorrarFalse"
-                  >
-                    <img
-                      v-if="imagenPreview"
-                      :src="imagenPreview"
-                      class="h-44 w-40 rounded-lg"
-                    />
-                    <input
-                      type="file"
-                      ref="inputImagen"
-                      class="hidden"
-                      @change="cambiarImagen"
-                    />
-                    <div
-                      v-if="mostrarIconoBorrar"
-                      class="absolute inset-0 h-44 flex items-center justify-center bg-black bg-opacity-50 rounded-lg"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="60px"
-                        height="60px"
-                        viewBox="0 0 24 24"
-                        style="fill: rgba(255, 255, 255, 1); transform: ; msfilter: "
-                      >
+                    @click="seleccionarArchivo" @mouseover="iconoBorrarTrue" @mouseleave="iconoBorrarFalse">
+                    <img v-if="imagenPreview" :src="imagenPreview" class="h-44 w-40 rounded-lg" />
+                    <input type="file" ref="inputImagen" class="hidden" @change="cambiarImagen" />
+                    <div v-if="mostrarIconoBorrar"
+                      class="absolute inset-0 h-44 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="60px" height="60px" viewBox="0 0 24 24"
+                        style="fill: rgba(255, 255, 255, 1); transform: ; msfilter: ">
                         <path
-                          d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"
-                        ></path>
+                          d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z">
+                        </path>
                       </svg>
                     </div>
                   </div>
                   <div class="m-auto max-[630px]:text-center max-[630px]:ml-[-58px]">
-                    <button
-                      type="button"
-                      class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300 text-center"
-                      @click="seleccionarArchivo"
-                    >
+                    <button type="button" class="w-40 ml-14 py-2 mt-3 bg-white rounded-md hover:bg-slate-300 text-center"
+                      @click="seleccionarArchivo">
                       Seleccionar Imagen
                     </button>
                   </div>
                 </div>
               </div>
               <div class="modal-buttons mt-24 flex justify-end items-end">
-                <button
-                  class="h-10 w-10 rounded-lg flex justify-center items-center mr-4"
-                  type="button"
-                  id="btnModalClear"
-                  @click="limpiarForm()"
-                >
-                  <svg
-                    width="22px"
-                    height="22px"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    color="#000000"
-                  >
-                    <path
-                      d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7"
-                      stroke="#23B7A0"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                    ></path>
+                <button class="h-10 w-10 rounded-lg flex justify-center items-center mr-4" type="button"
+                  id="btnModalClear" @click="limpiarForm()">
+                  <svg width="22px" height="22px" viewBox="0 0 24 24" stroke-width="2" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" color="#000000">
+                    <path d="M11 21H4a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v7" stroke="#23B7A0" stroke-width="2"
+                      stroke-linecap="round"></path>
                     <path
                       d="M2 7h20M5 5.01l.01-.011M8 5.01l.01-.011M11 5.01l.01-.011M21.666 16.667C21.049 15.097 19.636 14 17.99 14c-1.758 0-3.252 1.255-3.793 3"
-                      stroke="#23B7A0"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></path>
+                      stroke="#23B7A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                     <path
                       d="M19.995 16.772H21.4a.6.6 0 00.6-.6V14.55M14.334 19.333C14.953 20.903 16.366 22 18.01 22c1.758 0 3.252-1.255 3.793-3"
-                      stroke="#23B7A0"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></path>
-                    <path
-                      d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622"
-                      stroke="#23B7A0"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    ></path>
+                      stroke="#23B7A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M16.005 19.228H14.6a.6.6 0 00-.6.6v1.622" stroke="#23B7A0" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round"></path>
                   </svg>
                 </button>
-                <button
-                  class="h-10 w-10 rounded-lg flex justify-center items-center"
-                  id="btnModalAdd"
-                  type="submit"
-                  :disabled="!validarNombreRango()"
-                >
-                  <svg
-                    width="22px"
-                    height="22px"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    color="#000000"
-                  >
+                <button class="h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd" type="submit"
+                  :disabled="!validarNombreRango()">
+                  <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" color="#000000">
                     <path
                       d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                      stroke="#23B7A0"
-                      stroke-width="2"
-                    ></path>
+                      stroke="#23B7A0" stroke-width="2"></path>
                     <path
                       d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                      stroke="#23B7A0"
-                      stroke-width="2"
-                    ></path>
+                      stroke="#23B7A0" stroke-width="2"></path>
                   </svg>
                 </button>
-                <button
-                  class="h-10 w-10 rounded-lg flex justify-center items-center"
-                  type="submit"
-                  id="btnModalUpdate"
-                  :disabled="!validarNombreRango()"
-                >
-                  <svg
-                    width=" 22px"
-                    height="22px"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    color="#000000"
-                  >
+                <button class="h-10 w-10 rounded-lg flex justify-center items-center" type="submit" id="btnModalUpdate"
+                  :disabled="!validarNombreRango()">
+                  <svg width=" 22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" color="#000000">
                     <path
                       d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                      stroke="#23B7A0"
-                      stroke-width="2"
-                    ></path>
+                      stroke="#23B7A0" stroke-width="2"></path>
                     <path
                       d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                      stroke="#23B7A0"
-                      stroke-width="2"
-                    ></path>
+                      stroke="#23B7A0" stroke-width="2"></path>
                   </svg>
                 </button>
               </div>
@@ -451,11 +242,9 @@
 }
 
 .modal {
-  background: linear-gradient(
-    180deg,
-    rgba(63, 66, 128, 0.6241) 0%,
-    rgba(49, 50, 71, 0.5609) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(63, 66, 128, 0.6241) 0%,
+      rgba(49, 50, 71, 0.5609) 100%);
   background-color: #1e1e1e;
 }
 
@@ -469,6 +258,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import validaciones from "../../assets/validaciones.js";
+import VueEasyLightbox from "vue-easy-lightbox";
 
 const props = defineProps({
   //Prop que se utiliza para cargar los datos de la tabla
@@ -1001,6 +791,23 @@ async function recuperarUnRango(id) {
       }
     }
   });
+}
+
+const visible_ref = ref(false);
+const index_ref = ref(0);
+const imgs_ref = ref([]);
+
+function abrirLightBox() {
+  visible_ref.value = true;
+}
+
+function mostrarLightBox(url) {
+  imgs_ref.value = url;
+  abrirLightBox();
+}
+
+function esconderLightBox() {
+  visible_ref.value = false;
 }
 
 //Validaciones
