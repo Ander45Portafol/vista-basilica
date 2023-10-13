@@ -468,6 +468,8 @@ async function crearAnuncio() {
                 icon: "success",
                 title: "Anuncio creado exitosamente",
             });
+
+            limpiarForm();
         } catch (error) {
             console.log(error);
             const mensajeError = error.response.data.message;
