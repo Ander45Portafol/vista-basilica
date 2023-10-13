@@ -10,7 +10,11 @@
             </button>
             <div class="container_cards w-full h-full pr-6 overflow-y-scroll">
               <ul class="ml-[-20px] text-[14px]">
-                <li v-for="evento in currentEvents" :key="evento.id" class="flex items-center rounded-md bg-gray-200 p-5">
+                <li
+                  v-for="evento in currentEvents"
+                  :key="evento.id"
+                  class="flex items-center rounded-md bg-gray-200 p-5"
+                >
                   <div class="flex-col w-[100%]">
                     <p class="font-semibold">
                       Dia:
@@ -34,13 +38,26 @@
                       Nombre evento: <span class="font-normal">{{ evento.title }}</span>
                     </p>
                     <div class="flex justify-center mt-4">
-                      <button @click="eliminarEvento(evento.id, evento.title)"
-                        class="h-10 w-10 rounded-md flex items-center justify-center deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4">
-                        <svg width="26px" height="26px" viewBox="0 0 24 24" stroke-width="2" fill="none"
-                          xmlns="http://www.w3.org/2000/svg" color="#000000">
+                      <button
+                        @click="eliminarEvento(evento.id, evento.title)"
+                        class="h-10 w-10 rounded-md flex items-center justify-center deletebtn max-[750px]:ml-0 max-[750px]:mt-2 max-[400px]:mt-0 max-[400px]:mx-4"
+                      >
+                        <svg
+                          width="26px"
+                          height="26px"
+                          viewBox="0 0 24 24"
+                          stroke-width="2"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          color="#000000"
+                        >
                           <path
                             d="M20 9l-1.995 11.346A2 2 0 0116.035 22h-8.07a2 2 0 01-1.97-1.654L4 9M21 6h-5.625M3 6h5.625m0 0V4a2 2 0 012-2h2.75a2 2 0 012 2v2m-6.75 0h6.75"
-                            stroke="#872727" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            stroke="#872727"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></path>
                         </svg>
                       </button>
                     </div>
@@ -81,8 +98,13 @@
     </div>
   </div>
   <!-- Modal principal-->
-  <div id="staticModal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true"
-    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+  <div
+    id="staticModal"
+    data-modal-backdrop="static"
+    tabindex="-1"
+    aria-hidden="true"
+    class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full"
+  >
     <div class="relative w-full max-w-4xl max-h-full">
       <!-- Contenido del modal -->
       <div class="relative rounded-lg shadow modal">
@@ -94,13 +116,23 @@
             <p class="text-lg font-medium text-gray-400">Evento</p>
           </div>
           <!-- Boton para cerrar el modal -->
-          <button type="button" id="closeModal"
+          <button
+            type="button"
+            id="closeModal"
             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-            data-modal-hide="staticModal">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd"
+            data-modal-hide="staticModal"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
                 d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clip-rule="evenodd"></path>
+                clip-rule="evenodd"
+              ></path>
             </svg>
           </button>
         </div>
@@ -110,110 +142,200 @@
             <div class="flex justify-evenly flex-wrap">
               <div class="flex-col w-52">
                 <div class="relative z-0">
-                  <input type="hidden" id="id_evento" @input="validarNombreEvento" v-model="form.id_evento">
+                  <input
+                    type="hidden"
+                    id="id_evento"
+                    @input="validarNombreEvento"
+                    v-model="form.id_evento"
+                  />
                   <!-- Campo de entrada de texto -->
-                  <input type="text" id="nombre_evento" name="nombre_evento" v-model="form.nombre_evento" required
+                  <input
+                    type="text"
+                    id="nombre_evento"
+                    name="nombre_evento"
+                    v-model="form.nombre_evento"
+                    required
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                    placeholder=" " autocomplete="off" />
-                  <label for="nombre_evento"
-                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                    - Evento<span class="text-sm ml-1"> *
-                    </span></label>
+                    placeholder=" "
+                    autocomplete="off"
+                  />
+                  <label
+                    for="nombre_evento"
+                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Nombre - Evento<span class="text-sm ml-1"> * </span></label
+                  >
                 </div>
-                <div v-if="!validarNombreEvento()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                  role="alert">
-                  <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
+                <div
+                  v-if="!validarNombreEvento()"
+                  class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                  role="alert"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="flex-shrink-0 inline w-5 h-5 mr-3"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clip-rule="evenodd"></path>
+                      clip-rule="evenodd"
+                    ></path>
                   </svg>
                   <div>
-                    El nombre del evento solo permite <span class="font-medium">
-                      letras, números y algunos carácteres especiales (| / -).</span>
+                    El nombre del evento solo permite
+                    <span class="font-medium">
+                      letras, números y algunos carácteres especiales (| / -).</span
+                    >
                   </div>
                 </div>
                 <div class="relative z-0 mt-12">
                   <!-- Campo de entrada de texto -->
-                  <input type="time" id="hora_final_evento" name="hora_final_evento" v-model="form.hora_final_evento"
+                  <input
+                    type="time"
+                    id="hora_final_evento"
+                    required
+                    name="hora_final_evento"
+                    v-model="form.hora_final_evento"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                    placeholder=" " autocomplete="off" />
-                  <label for="hora_final_evento"
-                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Hora
-                    final - Evento</label>
+                    placeholder=" "
+                    autocomplete="off"
+                    :min="form.hora_inicial_evento"
+                  />
+                  <label
+                    for="hora_final_evento"
+                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Hora final - Evento<span class="text-sm ml-1"> * </span></label
+                  >
                 </div>
                 <div class="relative z-0 mt-8 pt-1">
-                  <input type="text" id="nombre_consultor" name="nombre_consultor" @input="validarNombreConsultor()"
+                  <input
+                    type="text"
+                    id="nombre_consultor"
+                    name="nombre_consultor"
+                    @input="validarNombreConsultor()"
                     v-model="form.nombre_consultor"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                    placeholder=" " autocomplete="off" />
-                  <label for="nombre_consultor"
-                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Nombre
-                    - Consultor</label>
+                    placeholder=" "
+                    autocomplete="off"
+                  />
+                  <label
+                    for="nombre_consultor"
+                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Nombre - Consultor</label
+                  >
                 </div>
-                <div v-if="!validarNombreConsultor()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                  role="alert">
-                  <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
+                <div
+                  v-if="!validarNombreConsultor()"
+                  class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                  role="alert"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="flex-shrink-0 inline w-5 h-5 mr-3"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clip-rule="evenodd"></path>
+                      clip-rule="evenodd"
+                    ></path>
                   </svg>
                   <div>
-                    El nombre del consultor solo permite <span class="font-medium">
-                      letras.</span>
+                    El nombre del consultor solo permite
+                    <span class="font-medium"> letras.</span>
                   </div>
                 </div>
                 <div class="pt-4 mt-4 flex-col">
-                  <label for="" class="text-sm absolute text-gray-200">Personal<span class="text-sm ml-1"> *
-                    </span></label>
-                  <select id="underline_select" v-model="form.id_personal"
-                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                  <label for="" class="text-sm absolute text-gray-200"
+                    >Personal<span class="text-sm ml-1"> * </span></label
+                  >
+                  <select
+                    id="underline_select"
+                    v-model="form.id_personal"
+                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                  >
                     <option value="0" class="bg-gray-700 text-white">
                       Seleccione una opción
                     </option>
-                    <option class="bg-gray-700" v-for="persona in personal" :key="persona.id" :value="persona.id">
+                    <option
+                      class="bg-gray-700"
+                      v-for="persona in personal"
+                      :key="persona.id"
+                      :value="persona.id"
+                    >
                       {{ persona.campos.nombre_personal }}
                     </option>
                   </select>
                 </div>
-                <div v-if="form.id_personal == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
-                  <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
+                <div
+                  v-if="form.id_personal == 0"
+                  class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                  role="alert"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="flex-shrink-0 inline w-5 h-5 mr-3"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clip-rule="evenodd"></path>
+                      clip-rule="evenodd"
+                    ></path>
                   </svg>
-                  <div>
-                    Seleccione <span class="font-medium">
-                      una opción.</span>
-                  </div>
+                  <div>Seleccione <span class="font-medium"> una opción.</span></div>
                 </div>
                 <div class="relative z-0 mt-8">
-                  <input type="date" id="fecha_evento" v-model="form.fecha_evento" name="fecha_evento"
+                  <input
+                    type="date"
+                    id="fecha_evento"
+                    v-model="form.fecha_evento"
+                    name="fecha_evento"
                     :disabled="fecha_eventos"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                    placeholder="" autocomplete="off" />
-                  <label for="evento"
-                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Fecha
-                    evento</label>
+                    placeholder=""
+                    autocomplete="off"
+                  />
+                  <label
+                    for="evento"
+                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Fecha evento</label
+                  >
                 </div>
               </div>
               <div class="flex-col w-52">
                 <div class="relative z-0">
                   <!-- Campo de entrada de texto -->
-                  <input type="text" id="descripcion_evento" name="descripcion_evento" v-model="form.descripcion_evento"
+                  <input
+                    type="text"
+                    id="descripcion_evento"
+                    name="descripcion_evento"
+                    v-model="form.descripcion_evento"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                    placeholder=" " autocomplete="off" />
-                  <label for="descripcion_evento"
-                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Descripción
-                    - Evento</label>
+                    placeholder=" "
+                    autocomplete="off"
+                  />
+                  <label
+                    for="descripcion_evento"
+                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Descripción - Evento</label
+                  >
                 </div>
                 <div class="pt-4 mt-6 flex-col">
-                  <label for="" class="text-sm absolute text-gray-200">Modalidad - Evento<span class="text-sm ml-1"> *
-                    </span></label>
-                  <select id="underline_select" v-model="form.modalidad_evento"
-                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                  <label for="" class="text-sm absolute text-gray-200"
+                    >Modalidad - Evento<span class="text-sm ml-1"> * </span></label
+                  >
+                  <select
+                    id="underline_select"
+                    v-model="form.modalidad_evento"
+                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                  >
                     <option value="0" class="bg-gray-700 text-white">
                       Seleccione una opción
                     </option>
@@ -223,83 +345,140 @@
                     </option>
                     <option class="bg-gray-700" value="Común">Común</option>
                   </select>
-                  <div v-if="form.modalidad_evento == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                    role="alert">
-                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd"
+                  <div
+                    v-if="form.modalidad_evento == 0"
+                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                    role="alert"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="flex-shrink-0 inline w-5 h-5 mr-3"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
                         d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clip-rule="evenodd"></path>
+                        clip-rule="evenodd"
+                      ></path>
                     </svg>
-                    <div>
-                      Seleccione <span class="font-medium">
-                        una opción.</span>
-                    </div>
+                    <div>Seleccione <span class="font-medium"> una opción.</span></div>
                   </div>
                 </div>
                 <div class="relative z-0 mt-8">
                   <!-- Campo de entrada de texto -->
-                  <input type="text" id="apellido_consultor" name="apellido_consultor" v-model="form.apellido_consultor"
+                  <input
+                    type="text"
+                    id="apellido_consultor"
+                    name="apellido_consultor"
+                    v-model="form.apellido_consultor"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                    placeholder=" " autocomplete="off" @input="validarApellidoConsultor" />
-                  <label for="apelliido_consultor"
-                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Apellido
-                    - Consultor</label>
+                    placeholder=" "
+                    autocomplete="off"
+                    @input="validarApellidoConsultor"
+                  />
+                  <label
+                    for="apelliido_consultor"
+                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Apellido - Consultor</label
+                  >
                 </div>
-                <div v-if="!validarApellidoConsultor()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                  role="alert">
-                  <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd"
+                <div
+                  v-if="!validarApellidoConsultor()"
+                  class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                  role="alert"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="flex-shrink-0 inline w-5 h-5 mr-3"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
                       d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clip-rule="evenodd"></path>
+                      clip-rule="evenodd"
+                    ></path>
                   </svg>
                   <div>
-                    El apellido del consultor solo permite <span class="font-medium">
-                      letras.</span>
+                    El apellido del consultor solo permite
+                    <span class="font-medium"> letras.</span>
                   </div>
                 </div>
                 <div class="pt-4 mt-4 flex-col">
-                  <label for="" class="text-sm absolute text-gray-200">Zona<span class="text-sm ml-1"> * </span></label>
-                  <select id="underline_select" v-model="form.id_zona"
-                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                  <label for="" class="text-sm absolute text-gray-200"
+                    >Zona<span class="text-sm ml-1"> * </span></label
+                  >
+                  <select
+                    id="underline_select"
+                    v-model="form.id_zona"
+                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                  >
                     <option value="0" class="bg-gray-700 text-white">
                       Seleccione una opción
                     </option>
-                    <option class="bg-gray-700" v-for="zona in zonas" :key="zona.id" :value="zona.id">
+                    <option
+                      class="bg-gray-700"
+                      v-for="zona in zonas"
+                      :key="zona.id"
+                      :value="zona.id"
+                    >
                       {{ zona.campos.nombre_zona }}
                     </option>
                   </select>
-                  <div v-if="form.id_zona == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent" role="alert">
-                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd"
+                  <div
+                    v-if="form.id_zona == 0"
+                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                    role="alert"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="flex-shrink-0 inline w-5 h-5 mr-3"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
                         d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clip-rule="evenodd"></path>
+                        clip-rule="evenodd"
+                      ></path>
                     </svg>
-                    <div>
-                      Seleccione <span class="font-medium">
-                        una opción.</span>
-                    </div>
+                    <div>Seleccione <span class="font-medium"> una opción.</span></div>
                   </div>
                 </div>
               </div>
               <div class="flex-col w-52">
                 <div class="relative z-0">
                   <!-- Campo de entrada de texto -->
-                  <input type="time" id="hora_inicial_evento" name="hora_inicial_evento"
-                    v-model="form.hora_inicial_evento" :max="form.hora_final_evento"
+                  <input
+                    type="time"
+                    id="hora_inicial_evento"
+                    name="hora_inicial_evento"
+                    v-model="form.hora_inicial_evento"
+                    required
+                    :max="form.hora_final_evento"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                    placeholder=" " autocomplete="off" />
-                  <label for="hora_inicial_evento" :min="form.hora_inicial_evento"
-                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Hora
-                    inicial - Evento</label>
+                    placeholder=" "
+                    autocomplete="off"
+                  />
+                  <label
+                    for="hora_inicial_evento"
+                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Hora inicial - Evento<span class="text-sm ml-1"> * </span></label
+                  >
                 </div>
                 <div class="pt-4 flex-col mt-6">
-                  <label for="" class="text-sm absolute text-gray-200">Estado - Evento<span class="text-sm ml-1"> *
-                    </span></label>
-                  <select id="underline_select" v-model="form.estado_evento"
-                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                  <label for="" class="text-sm absolute text-gray-200"
+                    >Estado - Evento<span class="text-sm ml-1"> * </span></label
+                  >
+                  <select
+                    id="underline_select"
+                    v-model="form.estado_evento"
+                    class="block mt-4 py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                  >
                     <option value="0" class="bg-gray-700 text-white">
                       Seleccione una opción
                     </option>
@@ -308,39 +487,65 @@
                     <option class="bg-gray-700" value="Finalizado">Finalizado</option>
                     <option class="bg-gray-700" value="Cancelado">Cancelado</option>
                   </select>
-                  <div v-if="form.estado_evento == 0" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                    role="alert">
-                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd"
+                  <div
+                    v-if="form.estado_evento == 0"
+                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                    role="alert"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="flex-shrink-0 inline w-5 h-5 mr-3"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
                         d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clip-rule="evenodd"></path>
+                        clip-rule="evenodd"
+                      ></path>
                     </svg>
-                    <div>
-                      Seleccione <span class="font-medium">
-                        una opción.</span>
-                    </div>
+                    <div>Seleccione <span class="font-medium"> una opción.</span></div>
                   </div>
                 </div>
                 <div class="relative z-0 mt-8">
                   <!-- Campo de entrada de texto -->
-                  <input type="text" id="telefono_consultor" name="telefono_consultor" v-model="form.telefono_consultor"
+                  <input
+                    type="text"
+                    id="telefono_consultor"
+                    name="telefono_consultor"
+                    v-model="form.telefono_consultor"
                     class="block py-2.5 px-0 w-full text-sm text-gray-200 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 peer focus:border-moradoClaroLogin peer"
-                    placeholder=" " autocomplete="off" @input="validarNumeroTelefono" />
-                  <label for="telefono_consultor"
-                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Teléfono
-                    - Consultor</label>
-                  <div v-if="!validarNumeroTelefono()" class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
-                    role="alert">
-                    <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                      viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd"
+                    placeholder=" "
+                    autocomplete="off"
+                    @input="validarNumeroTelefono"
+                  />
+                  <label
+                    for="telefono_consultor"
+                    class="absolute text-sm text-gray-200 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                    >Teléfono - Consultor</label
+                  >
+                  <div
+                    v-if="!validarNumeroTelefono()"
+                    class="flex mt-2 mb-0 text-sm text-red-400 bg-transparent"
+                    role="alert"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      class="flex-shrink-0 inline w-5 h-5 mr-3"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
                         d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                        clip-rule="evenodd"></path>
+                        clip-rule="evenodd"
+                      ></path>
                     </svg>
                     <div>
-                      El número de teléfono ingresado <span class="font-medium">
-                        no tiene el formato correcto.</span>
+                      El número de teléfono ingresado
+                      <span class="font-medium"> no tiene el formato correcto.</span>
                     </div>
                   </div>
                 </div>
@@ -348,27 +553,55 @@
                   <label for="" class="text-sm text-gray-200">Visibilidad - Evento</label>
                   <div class="flex justify-start mt-2">
                     <label class="relative inline-flex items-center mb-5 cursor-pointer">
-                      <input type="checkbox" value="" class="sr-only peer" v-model="form.visibilidad_evento" />
+                      <input
+                        type="checkbox"
+                        value=""
+                        class="sr-only peer"
+                        v-model="form.visibilidad_evento"
+                      />
                       <div
-                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                      </div>
+                        class="w-9 h-5 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+                      ></div>
                     </label>
                   </div>
                 </div>
               </div>
             </div>
             <div class="flex justify-end mt-14 mr-8">
-              <button class="bg-space h-10 w-10 rounded-lg flex justify-center items-center" id="btnModalAdd"
+              <button
+                class="bg-space h-10 w-10 rounded-lg flex justify-center items-center"
+                id="btnModalAdd"
                 type="submit"
-                :disabled="!validarNombreEvento() || !validarNombreConsultor() || !validarApellidoConsultor() || !validarNumeroTelefono() || this.form.id_zona == 0 || this.form.estado_evento == 0 || this.form.id_personal == 0 || this.form.modalidad_evento == 0">
-                <svg width="22px" height="22px" stroke-width="2" viewBox="0 0 24 24" fill="none"
-                  xmlns="http://www.w3.org/2000/svg" color="#000000">
+                :disabled="
+                  !validarNombreEvento() ||
+                  !validarNombreConsultor() ||
+                  !validarApellidoConsultor() ||
+                  !validarNumeroTelefono() ||
+                  this.form.id_zona == 0 ||
+                  this.form.estado_evento == 0 ||
+                  this.form.id_personal == 0 ||
+                  this.form.modalidad_evento == 0
+                "
+              >
+                <svg
+                  width="22px"
+                  height="22px"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  color="#000000"
+                >
                   <path
                     d="M3 19V5a2 2 0 012-2h11.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0121 7.828V19a2 2 0 01-2 2H5a2 2 0 01-2-2z"
-                    stroke="#23B7A0" stroke-width="2"></path>
+                    stroke="#23B7A0"
+                    stroke-width="2"
+                  ></path>
                   <path
                     d="M8.6 9h6.8a.6.6 0 00.6-.6V3.6a.6.6 0 00-.6-.6H8.6a.6.6 0 00-.6.6v4.8a.6.6 0 00.6.6zM6 13.6V21h12v-7.4a.6.6 0 00-.6-.6H6.6a.6.6 0 00-.6.6z"
-                    stroke="#23B7A0" stroke-width="2"></path>
+                    stroke="#23B7A0"
+                    stroke-width="2"
+                  ></path>
                 </svg>
               </button>
             </div>
@@ -398,9 +631,11 @@ ul {
 }
 
 .modal {
-  background: linear-gradient(180deg,
-      rgba(63, 66, 128, 0.6241) 0%,
-      rgba(49, 50, 71, 0.5609) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(63, 66, 128, 0.6241) 0%,
+    rgba(49, 50, 71, 0.5609) 100%
+  );
   background-color: #1e1e1e;
 }
 
@@ -460,16 +695,16 @@ definePageMeta({
   layout: "principal",
 });
 
-import Swal from 'sweetalert2';
-import axios from 'axios';
-import { Modal } from 'flowbite';
-import { defineComponent } from 'vue';
-import FullCalendar from '@fullcalendar/vue3';
-import validaciones from '../assets/validaciones.js';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import esLocale from '@fullcalendar/core/locales/es';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
+import Swal from "sweetalert2";
+import axios from "axios";
+import { Modal } from "flowbite";
+import { defineComponent } from "vue";
+import FullCalendar from "@fullcalendar/vue3";
+import validaciones from "../assets/validaciones.js";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import esLocale from "@fullcalendar/core/locales/es";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 
 const fecha_evento = ref(null);
 //Metodo para mostrar las alertas
@@ -606,7 +841,7 @@ export default defineComponent({
             localStorage.setItem("token", res.data.token);
             this.token = localStorage.getItem("token");
           });
-      } catch (error) { }
+      } catch (error) {}
     },
     handleWeekendsToggle() {
       this.calendarOptions.weekends = !this.calendarOptions.weekends; // update a property
@@ -633,15 +868,16 @@ export default defineComponent({
           confirmButtonColor: "#3F4280",
         });
       } else {
-        const modalElement = document.getElementById('staticModal');
-        const closeButton = document.getElementById('closeModal');
-        const tituloModal = document.getElementById('modalText');
+        const modalElement = document.getElementById("staticModal");
+        const closeButton = document.getElementById("closeModal");
+        const tituloModal = document.getElementById("modalText");
         const modalOptions = {
-          backdrop: 'static',
-          backdropClasses: 'bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40',
+          backdrop: "static",
+          backdropClasses:
+            "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
         };
         const modal = new Modal(modalElement, modalOptions);
-        tituloModal.textContent = 'Agregar'
+        tituloModal.textContent = "Agregar";
         this.fecha_eventos = true;
         fecha_evento.value = selectInfo.startStr;
         this.form.fecha_evento = selectInfo.startStr;
@@ -659,13 +895,22 @@ export default defineComponent({
         this.form.estado_evento = 0;
         this.form.id_zona = 0;
         modal.show();
-        closeButton.addEventListener('click', function () {
+        closeButton.addEventListener("click", function () {
           modal.hide();
         });
       }
     },
     async GuardarEvento() {
-      if (this.validarNombreEvento() && this.validarNombreConsultor() && this.validarApellidoConsultor() && this.validarNumeroTelefono() && this.form.id_zona != 0 && this.form.estado_evento != 0 && this.form.id_personal != 0 && this.form.modalidad_evento != 0) {
+      if (
+        this.validarNombreEvento() &&
+        this.validarNombreConsultor() &&
+        this.validarApellidoConsultor() &&
+        this.validarNumeroTelefono() &&
+        this.form.id_zona != 0 &&
+        this.form.estado_evento != 0 &&
+        this.form.id_personal != 0 &&
+        this.form.modalidad_evento != 0
+      ) {
         try {
           const EVENT = new Event("reset-timer");
           this.token = localStorage.getItem("token");
@@ -757,7 +1002,16 @@ export default defineComponent({
       }
     },
     async modificarEvento() {
-      if (this.validarNombreEvento() && this.validarNombreConsultor() && this.validarApellidoConsultor() && this.validarNumeroTelefono() && this.form.id_zona != 0 && this.form.estado_evento != 0 && this.form.id_personal != 0 && this.form.modalidad_evento != 0) {
+      if (
+        this.validarNombreEvento() &&
+        this.validarNombreConsultor() &&
+        this.validarApellidoConsultor() &&
+        this.validarNumeroTelefono() &&
+        this.form.id_zona != 0 &&
+        this.form.estado_evento != 0 &&
+        this.form.id_personal != 0 &&
+        this.form.modalidad_evento != 0
+      ) {
         let id = this.form.id_evento;
         const EVENT = new Event("reset-timer");
         this.token = localStorage.getItem("token");
@@ -794,7 +1048,7 @@ export default defineComponent({
             icon: "success",
             title: "Evento modificado exitosamente",
           });
-          this.form.id_evento="";
+          this.form.id_evento = "";
           this.form.nombre_evento = "";
           this.form.descripcion_evento = "";
           this.form.hora_inicial_evento = "";
@@ -825,16 +1079,16 @@ export default defineComponent({
       } else {
         this.fecha_eventos = false;
       }
-      const modalElement = document.getElementById('staticModal');
-      const closeButton = document.getElementById('closeModal');
-      const tituloModal = document.getElementById('modalText');
+      const modalElement = document.getElementById("staticModal");
+      const closeButton = document.getElementById("closeModal");
+      const tituloModal = document.getElementById("modalText");
       const modalOptions = {
         backdrop: "static",
         backdropClasses:
           "bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40",
       };
       const modal = new Modal(modalElement, modalOptions);
-      tituloModal.textContent = 'Actualizar';
+      tituloModal.textContent = "Actualizar";
       this.accion = "actualizar";
       modal.show();
       closeButton.addEventListener("click", function () {
@@ -885,15 +1139,15 @@ export default defineComponent({
       });
     },
     async eventosOcultos() {
-      document.getElementById('btneliminados').classList.add('active');
-      document.getElementById('btneventos').classList.remove('active');
+      document.getElementById("btneliminados").classList.add("active");
+      document.getElementById("btneventos").classList.remove("active");
       const borrar = this.calendarOptions.events;
       borrar.remove();
-      const EVENT = new Event('reset-timer');
+      const EVENT = new Event("reset-timer");
       const eventos = ref(null);
-      this.token = localStorage.getItem('token');
+      this.token = localStorage.getItem("token");
       try {
-        const { data: res } = await axios.get('/eventos', {
+        const { data: res } = await axios.get("/eventos", {
           headers: {
             Authorization: `Bearer ${this.token}`,
           },
@@ -902,15 +1156,15 @@ export default defineComponent({
         //Se reinicia el timer
         window.dispatchEvent(EVENT);
         //Se refresca el valor del token con la respuesta del axios
-        localStorage.setItem('token', res.token);
-        this.token = localStorage.getItem('token');
+        localStorage.setItem("token", res.token);
+        this.token = localStorage.getItem("token");
         this.calendarOptions.events = eventos.value.map((evento) => ({
           id: evento.id,
           title: evento.campos.nombre_evento,
           start: `${evento.campos.fecha_evento}T${evento.campos.hora_inicial_evento}`,
           end: `${evento.campos.fecha_evento}T${evento.campos.hora_final_evento}`,
-          display: '#5357aa',
-          color: '#5357aa',
+          display: "#5357aa",
+          color: "#5357aa",
         }));
       } catch (error) {
         console.error(error);
