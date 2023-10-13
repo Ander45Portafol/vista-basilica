@@ -359,7 +359,6 @@ const cambiarImagen = () => {
     const file = input.files;
     if (file && file[0]) {
         form.value.logo_parroquia = file[0];
-        console.log(form.value.logo_parroquia);
         const reader = new FileReader();
         reader.onload = (e) => {
             imagenPreview.value = e.target.result;
@@ -421,9 +420,6 @@ async function cargando_datos() {
             Authorization: `Bearer ${token.value}`,
         },
     }).then(res => {
-        // datos_comfiguracion_parroquia.value = res.data.data;
-        // console.log(datos_comfiguracion_parroquia.value);
-        console.log(res.data.data[0].id);
         form.value = {
             id_configuracion_parroquia: res.data.data[0].id,
             nombre_parroquia: res.data.data[0].campos.nombre_parroquia,
@@ -471,7 +467,6 @@ async function actualizarConfiguracionParroquia() {
         try {
             //Se establece una variable de id con el valor que tiene guardado la variable form
             var id = form.value.id_configuracion_parroquia;
-            console.log(id);
             //Se crea una constante para guardar el valor actual que tienen todos los campos del form
             const FORM_DATA = new FormData();
             FORM_DATA.append("nombre_parroquia", form.value.nombre_parroquia);
@@ -485,8 +480,6 @@ async function actualizarConfiguracionParroquia() {
             FORM_DATA.append("telefono_parroquia", form.value.telefono_parroquia);
             FORM_DATA.append("identificador_parroquia", form.value.identificador_parroquia);
             FORM_DATA.append("logo_parroquia", form.value.logo_parroquia);
-
-            console.log(FORM_DATA);
 
             //Se realiza la petición axios mandando la ruta y el formData
             await axios.post("/parroquia_update/" + id, FORM_DATA, {

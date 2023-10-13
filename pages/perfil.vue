@@ -590,7 +590,6 @@ async function cargando_datos(id_usuario) {
                 autenticable: res.data.data.user.autenticable,
             };
             data_usuario.value = res.data.data.user;
-            console.log(data_usuario.value);
             if (res.data.data.user.imagen_usuario != null) {
                 form.value.imagen_usuario = res.data.data.user.imagen_usuario;
                 imagenPreview.value = api_url + form.value.imagen_usuario;
@@ -665,7 +664,6 @@ const cambiarImagen = () => {
     const file = input.files;
     if (file && file[0]) {
         form.value.imagen_usuario = file[0];
-        console.log(form.value.imagen_usuario);
         const reader = new FileReader();
         reader.onload = (e) => {
             imagenPreview.value = e.target.result;
@@ -807,7 +805,6 @@ async function actualizarPerfil() {
     try {
         //Se establece una variable de id con el valor que tiene guardado la variable form
         var id = form.value.id_usuario;
-        console.log(id);
         //Se crea una constante para guardar el valor actual que tienen todos los campos del form
         const FORMDATA = new FormData();
         FORMDATA.append("nombre_usuario", form.value.nombre_usuario);
@@ -823,7 +820,6 @@ async function actualizarPerfil() {
         FORMDATA.append("id_rol_usuario", form.value.id_rol_usuario);
         FORMDATA.append("imagen_usuario", form.value.imagen_usuario);
         FORMDATA.append("autenticable", form.value.autenticable ? 1 : 0);
-        console.log(FORMDATA);
 
         //Se realiza la petición axios mandando la ruta y el formData
         await axios

@@ -583,7 +583,6 @@ export default defineComponent({
             },
           })
           .then((res) => {
-            console.log(res);
             this.form = {
               id_evento: res.data.data.id,
               nombre_evento: res.data.data.campos.nombre_evento,
@@ -625,7 +624,6 @@ export default defineComponent({
       const fecha_seleccionada = new Date(selectInfo.startStr);
       fecha_actual.setHours(0, 0, 0, 0);
       fecha_seleccionada.setHours(0, 0, 0, 0);
-      console.log(fecha_actual + ", " + fecha_seleccionada);
 
       if (fecha_seleccionada < fecha_actual) {
         Swal.fire({
@@ -928,7 +926,6 @@ export default defineComponent({
     },
     handleEvents(events) {
       this.currentEvents = events;
-      console.log(this.currentEvents);
     },
     validarNombreConsultor() {
       var res = validaciones.validarSoloLetras(this.form.nombre_consultor);

@@ -243,7 +243,6 @@ async function leerComponentes() {
 
             //Se asigna el valor de la respuesta de axios a la constante data
             data.value = res.data;
-            console.log(data.value);
 
             //Se limpia el array de registros paginados
             componentes.value = [];
@@ -397,8 +396,6 @@ function filtrarPaginas() {
         //Se actualiza el valor de la constante de búsqueda a false
         ceroRegistrosEncontrados.value = false;
     }
-
-    console.log(componentes.value);
 
     //Se evalua si el número de páginas es menor al valor de la constante de pagina, esto para evitar errores de eliminar un registro de una página que solo tenía un registro 
     //y que se bugee la paginación
