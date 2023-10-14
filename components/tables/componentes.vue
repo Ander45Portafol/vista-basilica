@@ -2168,7 +2168,7 @@ async function llenarPreviewSlider() {
                 items: ITEMS_INDICADORES,
             },
         };
-        if (document.getElementById("carouselP-item-1")) {
+        if (ITEMS[0].el) {
             const CAROUSEL = new Carousel(ITEMS, OPTIONS);
             CAROUSEL.cycle();
             // set event listeners for prev and next buttons
