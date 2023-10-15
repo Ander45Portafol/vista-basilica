@@ -17,10 +17,6 @@ const datos_dashboard = ref({
 //Evento para reiniciar el tiempo del componente del timer
 const EVENTO = new Event('reset-timer');
 
-// Aqui ira la condicion de si existen mas de 3 optiones dentro del menu de navegacion, entonces mostrar el icono de barra de navegacion
-// function perfil(){
-//     navigateTo('/perfil');
-// }
 //Funcion para generar un reporte
 onMounted(() => {
     token.value = localStorage.getItem('token');

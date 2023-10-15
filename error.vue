@@ -57,8 +57,7 @@ async function volverAlInicio() {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
             }).then(res => {
-                if (res.data.message == 'El token de acceso es valido.') {
-                    clearError();
+                if (res.data.message == 'Acceso concedido.') {
                     navigateTo('/principal');
                 } else {
                     //Si no, volverá a la página del login
