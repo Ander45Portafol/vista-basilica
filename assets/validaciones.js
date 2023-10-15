@@ -241,7 +241,6 @@ const validaciones = {
 
   //Validar que la contraseña ingresada contenga un caracter especial
   validarContraEspeciales(texto) {
-    console.log(texto);
     if (texto.includes('_')) {
       return true;
     } else if (texto != null && texto.trim() != "") {
