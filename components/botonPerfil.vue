@@ -9,7 +9,6 @@ const imagen = ref(null);
 onMounted(() => {
     function cargarImagen() {
         imagen.value = localStorage.getItem('imagen_usuario');
-        console.log(imagen.value);
     }
     cargarImagen();
 });
