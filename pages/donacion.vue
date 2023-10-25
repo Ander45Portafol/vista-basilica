@@ -25,17 +25,6 @@
                 <!-- Botones  -->
                 <div
                     class="buttons flex mt-4 mr-[-15px] max-[800px]:mt-4 min-w-[100px] max-[450px]:m-auto max-[450px]:mt-3">
-                    <button @click="generarReporte"
-                        class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2">
-                        <svg width="28px" height="28px" stroke-width="2.5" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg" color="#000000">
-                            <path
-                                d="M3 17h18M6 10V3.6a.6.6 0 01.6-.6h10.8a.6.6 0 01.6.6V10m3 10.4V14a4 4 0 00-4-4H7a4 4 0 00-4 4v6.4a.6.6 0 00.6.6h16.8a.6.6 0 00.6-.6z"
-                                stroke="#1B1C30" stroke-width="2.5"></path>
-                            <path d="M17 13.01l.01-.011" stroke="#1B1C30" stroke-width="2.5" stroke-linecap="round"
-                                stroke-linejoin="round"></path>
-                        </svg>
-                    </button>
                     <!-- Falta un boton por que me dijo daniel que no lo ibamos a usar  -->
                     <button @click="visibilidadRegistros" type="button"
                         class="w-12 h-10 flex items-center justify-center ml-4 rounded-lg max-[800px]:w-8 max-[800px]:h-8 max-[800px]:ml-2 max-[450px]:mx-8">
@@ -210,17 +199,6 @@ async function visibilidadRegistros() {
     }
 }
 
-//Funcion para generar un reporte
-async function generarReporte() {
-    //Constante donde se almacena la respuesta que retorna de la api
-    const ruta = new URL(`http://127.0.0.1:8000/api/evento_reporte`);
-    //Le añadimos el token en la ruta del reporte
-    ruta.searchParams.append('token', token.value);
-    //Le añadimos el id del usuario que ha iniciado sesion, se captura mediante el token
-    ruta.searchParams.append('id', id.value);
-    // Se abre el reporte en una nueva pestaña del navegador web.
-    window.open(ruta.href);
-}
 
 async function cargarTabla() {
     await leerDonaciones();

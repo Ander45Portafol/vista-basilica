@@ -1,7 +1,8 @@
 <template>
     <div class="contained h-screen w-screen flex overflow-hidden flex-col">
-        <div class="flex justify-start ml-10 mt-8"> 
-            <NuxtLink to="/" class="bg-darkSpace h-14 w-44 rounded-2xl flex justify-center items-center text-white gap-3 text-2xl font-bold">
+        <div class="flex justify-start ml-10 mt-8">
+            <NuxtLink to="/"
+                class="bg-darkSpace h-14 w-44 rounded-2xl flex justify-center items-center text-white gap-3 text-2xl font-bold">
                 <svg width="30px" height="30px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg" color="#FFF">
                     <path
@@ -46,7 +47,7 @@
                                         - Usuario</label>
                                 </div>
                                 <div class="flex justify-center items-end h-28">
-                                    <button type="submit"
+                                    <button type="submit" id="btnverificar"
                                         class="w-48 h-12 bg-darkSpace text-white flex items-center justify-center gap-4 mt-8 rounded-xl text-xl">
                                         <svg width="28px" height="28px" stroke-width="2" viewBox="0 0 24 24" fill="none"
                                             xmlns="http://www.w3.org/2000/svg" color="#000000">
@@ -93,9 +94,9 @@ definePageMeta({
 onMounted(() => {
 
 });
-function limpiarForm(){
-    form.value.nombre_usuario="";
-    form.value.correo_usuario="";
+function limpiarForm() {
+    form.value.nombre_usuario = "";
+    form.value.correo_usuario = "";
 }
 const form = ref({
     nombre_usuario: "",
@@ -118,6 +119,11 @@ async function validarCredenciales() {
         const FORMDATA = new FormData();
         FORMDATA.append('usuario', form.value.nombre_usuario);
         FORMDATA.append('correo_usuario', form.value.correo_usuario);
+        document.getElementById('btnverificar').disabled = true;
+        var tiempoDeBloqueo = 60000;
+        setTimeout(function () {
+            document.getElementById('btnverificar').disabled = false;
+        }, tiempoDeBloqueo);
         await axios.post('/check_data', FORMDATA);
         Toast.fire({
             icon: 'success',

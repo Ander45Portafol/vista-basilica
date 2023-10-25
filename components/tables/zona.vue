@@ -201,9 +201,6 @@
                     </form>
                 </div>
             </div>
-            <pre>
-                {{ form }}
-        </pre>
         </div>
     </div>
 </template>
